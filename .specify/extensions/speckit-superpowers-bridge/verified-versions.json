@@ -1,0 +1,63 @@
+{
+  "verified_at": "2026-10-12T18:44:39Z",
+  "spec_kit_version": "1.1.3",
+  "superpowers_version": "7.0.0",
+  "codex_cli_version": "0.162.1",
+  "claude_code_version": null,
+  "bridge_version": "1.4.0",
+  "platforms": [
+    {
+      "name": "Linux bash",
+      "script_flavor": "sh",
+      "status": "pass",
+      "spec_kit_version": "1.1.3",
+      "evidence": "specs/020-codex-latest-compatibility/verification.md",
+      "notes": "Native install and live Codex workflow passed."
+    },
+    {
+      "name": "Windows PowerShell",
+      "script_flavor": "ps",
+      "status": "pass",
+      "spec_kit_version": "1.1.3",
+      "evidence": "specs/020-codex-latest-compatibility/verification.md",
+      "notes": "Native install and live Codex workflow passed."
+    },
+    {
+      "name": "macOS bash",
+      "script_flavor": "sh",
+      "status": "pass",
+      "spec_kit_version": "1.1.3",
+      "evidence": "specs/020-codex-latest-compatibility/verification.md",
+      "notes": "Hosted shell smoke and portability passed; no live Codex test."
+    }
+  ],
+  "agents": [
+    {
+      "name": "Codex",
+      "version": "0.162.1",
+      "status": "pass",
+      "platform": "Linux bash / Windows PowerShell",
+      "evidence": "specs/020-codex-latest-compatibility/verification.md",
+      "notes": "CLI 0.162.1; gpt-6.1-sol low; bounded real-model workflow passed on both platforms."
+    },
+    {
+      "name": "Claude Code",
+      "version": null,
+      "status": "not-tested",
+      "platform": "Mirrored-source structural checks only",
+      "evidence": "specs/020-codex-latest-compatibility/verification.md",
+      "notes": "No live Claude Code version or behavior verified in this run."
+    }
+  ],
+  "notes": "Maintained repair fork. Native SK/SP files unchanged. Linux and Windows real-model workflows passed; macOS shell-only; Claude Code not live-tested.",
+  "release_evidence": "specs/020-codex-latest-compatibility/verification.md",
+  "candidate_runtime_sha256": "086566a6073989bbed12a2568c2890a7271be20f1965c66a32b1a83768561531",
+  "candidate_source_sha": "048cf1e9b839ef34fcf1a36e0af2cabcc1d06e44",
+  "tested_candidate_zip_sha256": "b1aad8b436764e7ba95887169cb6bbb4a72ffd14257e323d8b521dc2d25b1146",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "low",
+  "main_calls": 20,
+  "reviewer_spawns": 6,
+  "model_evidence_url": "https://github.com/Self-Command/sp-sk-bridge-compat-ci/actions/runs/38292614419",
+  "script_evidence_url": "https://github.com/Self-Command/speckit-superpowers-bridge/actions/runs/38287975618"
+}
