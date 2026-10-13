@@ -1,50 +1,173 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# 可扩展综合社交社区平台项目宪法
 
-## Core Principles
+本宪法固化当前已确认的产品与工程原则，约束后续规格、计划、任务、实现和验收。
+完整业务规则及验收仍由 PRD 承载；本宪法不新增产品决策，不替代需求批准或实际验证。
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## 核心原则
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 一、通用平台与完整首版交付
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- 产品必须交付通用社交社区与完整插件平台，不得擅自缩减为校园、兴趣、独立业务应用，
+  或只有插件入口的演示壳；行业用途、插件组合和未来部署形态由使用者自主选择。
+- 首版范围及排除项按 PRD 执行，覆盖 iOS、Android、服务端、后台、只读分享网页、
+  AI/MCP、官方业务插件及正式开发者文档、工具和隔离开发测试能力。
+  官方社交与 AI 业务必须实际可用，具备持久化、服务端授权、正常及异常流程和跨入口一致性。
+- 可以按依赖分阶段交付，但阶段完成、MVP、接口预留或 mock 演示不得取消最终范围、
+  擅自延期首版能力或降低验收标准。未完成部分必须保留追溯及真实状态。
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+依据：PRD 第 0、1、24 节；S17、S18、S21；PLT-01–06、DEV-01–04、TST-01–04、AC-43–50。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### 二、既定技术栈与经核验的复用
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- 移动端必须使用 Expo、React Native 与 Expo UI，覆盖 iOS 和 Android；
+  后端必须使用 Supabase 官方 Docker Compose 在自有或自管服务器自托管；
+  管理后台必须基于 Kiranism 的 Next.js、shadcn/ui 模板适配真实身份、权限与业务。
+- 不得以更换上述技术栈回避实现困难；Supabase Studio 不替代社区运营后台，
+  模板认证、示例数据和页面不构成产品交付。
+- 具体稳定版本、锁定方式、组件覆盖、原生构建与跨端兼容须在技术规划阶段核验并记录。
+  额外基础设施必须说明实际缺口、费用、维护及数据流向；不得假定自托管具备托管云全部能力。
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+依据：PRD 第 2、22.2 节；TECH-01–04、AC-36。
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### 三、核心持续有效与插件受控治理
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- 身份、权限、安全与隔离、统一配置、审计、扩展契约、插件管理及生命周期属于平台核心，
+  不得随业务插件停用或卸载失效；必要删除、撤权、证据保护和到期清理必须持续执行。
+  可调整参数必须共用服务端权威配置及适用版本，配置不得关闭核心检查或恢复已撤销资格。
+- 官方业务插件默认全部启用。停用或卸载存在有效依赖时必须默认阻止并展示影响；
+  只有管理员明确选择联动范围且授权、安全与兼容检查通过后，才能联动停用。
+  联动停用不等于自动卸载或清理依赖模块，停用必须落实到调用、写入、作业和在途业务。
+- 历史数据按当前资格通过受控路径只读，无法安全展示时使用不泄露正文的占位。
+  卸载默认保留数据并继续原分类期限与清理义务，额外主动永久清理须另行授权确认；
+  兼容重装仅恢复仍有效且有权的数据，不重置期限或复活已删、已清理、已撤权记录。
+- 插件必须声明来源、版本、权限、依赖、兼容与数据责任；每个安装、升级版本须按 PRD 审核，
+  新增敏感权限不得静默取得。插件权限、数据及环境必须隔离，服务端依据当前身份、
+  资源和插件授权执行检查；入口隐藏、旧令牌、缓存或高权限凭据不得成为越权路径。
+- 首版自用及受邀开发者按审核准入；超级管理员负责邀请、具体版本审核认可、敏感权限批准、
+  生产版本及作用范围确认。自用可兼任开发、审核、发布，但各步骤须分别操作留档，
+  不豁免逐操作授权、必要确认、MFA、再次验证和审计；云端通过不自动授权生产启用。
+  申诉仍须由不同于原处置人的合格人员最终复核，无第二人时保持待复核。
+- 发布先按指定名单灰度，扩大前再次确认；兼容旧功能继续可用，不兼容扩展明确提示更新，
+  只有核心无法安全兼容才强制更新整个 App。配置、后端部署、兼容 OTA 与原生重建须分别处理；
+  失败、迁移及恢复限制必须可查，回滚不得扩大权限或复活已撤销状态。
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+依据：PRD 第 14、16、19.2、24 节；S21；GOV-07、ADM-02–07、CFG-01–13、
+PLT-02–06、PLG-01–06、UPD-01–05、AC-29–30、AC-38–50。
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### 四、最小授权、隐私与只读 AI/MCP
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- 全部端、插件、API、RLS、实时订阅、媒体、搜索、通知、分享、旧版本和缓存必须遵循
+  最小权限、最小必要数据及当前资源授权。撤权须按 PRD 的访问分级生效并取得实测证据，
+  不能仅隐藏入口、删除详情链接或等待客户端清理；保留副本不授予普通访问权。
+- AI/MCP 仅在当前用户请求范围内只读，不得自动发布内容、评论、点赞、关注、发送私信，
+  修改账号或执行管理变更，也不得开放任意数据库、网络执行或跨用户读取能力。
+- AI 使用必须同时满足当前可见性、作者账户与逐帖用途许可及依赖规则；受限内容仅按 PRD
+  的主动选择、授权和告知场景处理。草稿仅在本人主动选择并明确确认必要处理时使用；
+  私信、治理证据和管理员记录不得成为默认来源或通用读取入口。
+  来源失效或用途撤回后，实质依赖的历史回答、标题、复制与后续上下文必须同步受限。
+- 第三方 AI 推理、相关日志、存储及分包处理须符合已确认的中国大陆境内、不用于训练边界，
+  接入真实数据前核验处理位置、保留、删除及条款；未获单独批准不得跨境，
+  不得因故障、成本保护或配置切换自动转至未经批准或不合格服务。
+- 首期中国大陆、邀请制内测、18 岁及以上与主动年龄资格声明按 PRD 执行；
+  声明不得表述为已经核验真实年龄，文档制定不得表述为已满足身份核验或公开上线条件。
+
+依据：PRD 第 3–4、9、11–17、21 节；AUTH-02、VIS-01–03、AI-04–15、DM-09–11、
+MEDIA-01–04、DATA-01–04、ADM-07、CFG-10–11、AC-02、AC-06、AC-21–25、AC-31–32、AC-42、AC-50。
+
+### 五、GitHub Actions 云端验证与同版本证据
+
+- S19 是强制交付约束：全部编译、构建、功能、接口、RLS/安全、集成、回归、端到端，
+  以及布局、样式、交互和视觉验收必须通过 GitHub Actions 在云端执行并自动记录。
+  必须覆盖移动双端、后端、后台、分享页面、AI/MCP、官方及受邀插件与开发者工具，
+  包括全部适用验收场景和性能、容量、AI 评估，不能以单端结果代表整体。
+- AI 可以编辑代码、测试和工作流，提交、推送后读取云端结果并修复；
+  不得在本地运行项目、项目测试、调试预览或验收，也不得使用本地电脑 runner 绕过限制。
+  本地文件编辑、文档核对、代码阅读和提交可以进行，不替代必需云端验证。
+- 实际验收必须运行对应原生产物、隔离后端及真实后台和网页，验证真实接口与跨端流程。
+  静态审查、编译成功、工作流存在、mock 或浏览器概念稿不能单独证明功能通过；
+  截图不能替代交互执行，Web 页面不能替代 iOS/Android 原生验证。
+- 证据必须关联提交 SHA、构建产物与各端/插件版本、Actions run、环境与配置、用例范围及结果，
+  保留实际运行记录和必要日志、报告、截图、视觉差异、交互轨迹或录像及产物。
+  证据不得泄露秘密或无关私人内容；缺失、跳过、取消、超时、基础设施不可用或失败不得报告通过。
+  修复后必须重新取得当前版本的云端验证与必要回归证据，不得沿用其他版本结果消除失败。
+- 云端 runner、移动设备、浏览器、服务、产物存储及预算须后续核验，不假定已采购或可用；
+  资源不足记录阻塞，不退回本地验收。生产常驻服务独立部署，Actions 不承担长期生产托管；
+  开发/测试的数据、凭据、日志与副作用须与生产隔离，默认使用受控测试账号和模拟数据。
+
+依据：PRD 第 20.1、20.3、20.5、22.2、24.5–24.6 节；S19；TECH-05、CI-01–08、
+TST-01–04、AC-35、AC-43–55。
+
+### 六、设计一致性与原生可用性
+
+- 视觉方向遵循已归档资料：原生感、Linear 式简洁、灰阶与低饱和紫色强调、内容优先；
+  X 仅作布局参考，不引入其品牌、配色或未确认功能。
+- UI-SPEC、设计令牌和归档 HTML/CSS/JS 是可追溯设计输入；旧流程和虚构数据不能覆盖最新 PRD，
+  草稿未画页面不能成为遗漏首版能力的理由。浏览器草稿不替代真实原生实现。
+- 各端与插件须使用统一组件规则、语义颜色、主题和状态表达，并按原生平台适配字体缩放、
+  对比度、触控区域、安全区、键盘、读屏、焦点及减少动态效果。
+  不得机械照搬弱对比、小点击区域、固定像素、模拟手机外框或伪系统栏。
+  加载、空、错误、失权、删除、停用及不兼容状态须可理解、可操作，不显示假成功。
+- UI 验收必须取得实际 iOS/Android 客户端、后台、分享页及插件页面的云端视觉与交互证据，
+  关联设计版本、需求/验收、设备或视口、主题、字号与状态；原生适配差异须记录依据。
+
+依据：PRD 第 18 节；UX-01–08、CFG-13、EXT-01–02、CI-03–06、AC-35、AC-52、AC-55；
+UI-SPEC 第 1–3、6–10 节，设计令牌及归档草稿。
+
+### 七、完整追溯与受控变更
+
+- 后续规格、计划、任务、设计和验收必须关联有效 PRD 需求编号、来源、适用 AC 及设计依据，
+  覆盖依赖、权限、状态、异常及跨端路径；合并实现可以共用方案，不能合并掉需求或降低标准。
+- 必须区分已确认、已确认默认、暂定、待确认、编制建议及后续范围。
+  已确认规则不得重开为同一需求访谈；工程细化须记录依据与影响，不能伪装成用户决策。
+  未决条件按原节点核验，候选数值、模板示例和供应商默认值不得变成未经批准的承诺。
+- 本宪法用于固化已确认原则，不得据此推翻原始需求。
+  涉及范围、技术栈、权限、隐私、验证方式或验收标准的实质变更，须明确提出影响、取得用户确认，
+  再同步宪法、PRD、设计资料及相关规格、计划、任务和验收；不能借阶段、配置或插件规避变更程序。
+
+依据：PRD 第 0、19、21–23 节；S18–S22；UX-08、CI-02、CI-05–06；UI-SPEC 第 9 节。
+
+## 适用依据与未决事项
+
+本版依据为 [PRD v0.9](../../docs/product/PRD.md)、
+[PRD 审查记录](../../docs/product/PRD-REVIEW.md)、
+[UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[设计归档说明](../../docs/design/README.md)、
+[设计令牌](../../docs/design/design-tokens.json)及归档
+[HTML](../../docs/design/prototype/index.html)、[CSS](../../docs/design/prototype/native-ui-v6.css)、
+[JS](../../docs/design/prototype/native-ui-v6.js)。这些依据不等同于整份 PRD 获批或产品验收通过。
+
+效力按用户最新明确决定及 PRD 当前有效规则确定；设计资料承接业务规则，令牌保留提取参考，
+历史草稿用于表达布局。通用技能、模板示例及工程惯例与本宪法冲突时，生成产物必须落实本宪法，
+不得套用“测试可选”“先完成 MVP”或本地验证示例而取消既定要求。
+
+PRD 第 21.1 节的 Q-02、Q-03、Q-04、Q-08、Q-10、Q-11、Q-16 保留各自剩余状态及核验节点。
+品牌与域名、具体版本、供应商/模型、预算与排期、云端资源、容量/性能及 AI 质量暂定指标、
+媒体残余窗口、清理/备份实际能力、治理与公开上线条件等，不由本宪法自行定案。
+PRD 已确认默认值继续有效；Q-10 后续 AI 能力及正式认证不因有入口默认启用。
+
+TODO(RATIFICATION_DATE)：既有占位文件和 Git 历史未记录正式首次批准日期，
+不得以模板初始化日期代填；取得明确批准记录后补齐。最后修订日期记录本次成文日期。
+
+## 执行流程与审查门禁
+
+1. 进入后续阶段须依用户安排及对应基线确认，宪法成文与提交不自动启动规格、计划、任务或实现。
+   阶段输入须带入有效 PRD、设计资料、需求/AC 映射、宪法版本及尚未满足的条件。
+2. 规划前和设计完成后必须进行宪法检查，核对七项原则、完整范围与追溯。
+   任务生成和变更审查继续检查覆盖；发现遗漏、冲突或未经确认的实质变更必须记录并处理，
+   不能只填写复杂度说明就豁免原则。
+3. 后续实现的验证计划必须将 PRD 与设计验收映射到 Actions 云端检查、实际运行环境和证据，
+   明确需要核验的工具、资源及成本。开发者文档和插件样例遵守同一云端路径与隔离边界。
+4. 正式交付版本须完成全部必需验收，无未解决的阻断/严重问题；权限泄露不能由普通质量指标抵消。
+   文档完成、代码提交、构建成功、云端验收、生产授权和上线条件必须分别据实报告。
+
+## 治理
+
+- 本宪法是工程治理基线，不取代完整 PRD，不改变既有确认状态；出现资料冲突时须定位最新用户决定，
+  记录差异并按上述变更规则同步，不以宪法摘要删减原要求。
+- 修订须记录原因、受影响原则/需求、范围与权限/隐私/验证影响、需同步资料及迁移安排；
+  实质变更取得用户确认后生效，文案修正不得隐藏行为变化。
+- 宪法使用语义化版本：不兼容的原则删除或重定义升主版本；新增原则或实质扩充升次版本；
+  不改变语义的澄清、纠错升修订版本。本次由无有效版本的占位模板首次成文为 1.0.0。
+- 每次修订记录批准日期的可核验依据及最后修订日期；历史未知项如实保留 TODO。
+  规格、计划、任务、合并审查和交付审查须核对当前宪法及证据，不将文档一致性检查表述为产品通过验收。
+
+**版本**: 1.0.0 | **首次批准日期**: TODO(RATIFICATION_DATE) | **最后修订日期**: 2026-10-14
