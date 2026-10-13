@@ -745,7 +745,7 @@ S21 用户采纳本轮六项建议：官方业务默认启用并可受控停用�
 
 **UX-06** 无障碍覆盖发布、评论、私信、举报、处罚、身份验证等核心流程；不能只测首页。长文本、三层回复、图片描述、长昵称、输入法与窄屏不遮挡主要操作。概念 HTML 检查不能代替真实 iOS / Android 设备验证。
 
-参考资料：[x/README.md](../../x/README.md)。当前概念稿是 `.superpowers/brainstorm/686-1791866721/content/native-social-layout-complete-v6.html`；文件用于设计评估，无真实账号、持久化业务、模型服务或完成权限实现的含义。
+视觉参考来自用户提供的 X App 截图，仅用于布局参考，不构成新增产品需求；原 `x/` 参考目录已按用户要求移除。当前概念稿是 `.superpowers/brainstorm/686-1791866721/content/native-social-layout-complete-v6.html`；文件用于设计评估，无真实账号、持久化业务、模型服务或完成权限实现的含义。
 
 ## 19. 参数状态与需核验条件
 
