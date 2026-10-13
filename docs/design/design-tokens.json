@@ -1,0 +1,229 @@
+{
+  "version": "1.0",
+  "recorded_on": "2026-10-14",
+  "purpose": "从已接受 v6 草稿提取的 UI 设计参考；不直接作为运行时配置或原生尺寸",
+  "source": {
+    "prototype": "prototype/index.html",
+    "css": "prototype/native-ui-v6.css",
+    "js": "prototype/native-ui-v6.js",
+    "original_html_sha256": "3D81228A139D5E3C9B09326EF71B7D819409B2E9DB2C08CF9DA2F2CEA9546924",
+    "css_sha256": "A48E121BAEFB4A797F6FE865358E3F12F5CEB7049A822A0FC66C1EAF0571FDDC",
+    "js_sha256": "C54527F501DB5019BA567FF3AB39DFBE3A16B5F2F2E2BAAF0FDB279835D05057",
+    "requirements": [
+      "UX-07",
+      "UX-08"
+    ]
+  },
+  "units": {
+    "reference": "CSS px，以 390 × 844 草稿为参考",
+    "native": "按 iOS / Android 原生单位、字体缩放、真实安全区及触控要求适配"
+  },
+  "themes": {
+    "light": {
+      "bg": "#fff",
+      "fg": "#18181b",
+      "secondary": "#74747f",
+      "tertiary": "#a0a0aa",
+      "line": "#eeeef1",
+      "surface": "#f5f5f7",
+      "surface2": "#fafafa",
+      "accent": "#6965d8",
+      "accent-soft": "#f0effb",
+      "overlay": "#00000038",
+      "sheet": "#fff"
+    },
+    "dark": {
+      "bg": "#111113",
+      "fg": "#f2f2f4",
+      "secondary": "#96969f",
+      "tertiary": "#63636e",
+      "line": "#242429",
+      "surface": "#1c1c21",
+      "surface2": "#161619",
+      "accent": "#a49df1",
+      "accent-soft": "#282439",
+      "overlay": "#00000070",
+      "sheet": "#1c1c21"
+    }
+  },
+  "typography": {
+    "draft_font_stack": [
+      "Arial",
+      "Microsoft YaHei UI",
+      "Microsoft YaHei",
+      "sans-serif"
+    ],
+    "native_font": "沿用系统中文字体与无障碍缩放，草稿字体不是指定商用字体",
+    "roles": {
+      "screen_title": {
+        "font_size": 19,
+        "font_weight": 700,
+        "letter_spacing_em": -0.04,
+        "selector": ".native-title"
+      },
+      "body_feed": {
+        "font_size": 14,
+        "line_height": 1.75,
+        "selector": ".body-copy"
+      },
+      "body_detail": {
+        "font_size": 16,
+        "line_height": 1.8,
+        "selector": ".detail-text"
+      },
+      "body_reply": {
+        "font_size": 13,
+        "line_height": 1.8,
+        "selector": ".comment-text"
+      },
+      "body_ai": {
+        "font_size": 14,
+        "line_height": 1.9,
+        "selector": ".assistant-prose"
+      },
+      "profile_name": {
+        "font_size": 23,
+        "font_weight": 650,
+        "line_height": 1.45,
+        "selector": ".profile-name"
+      },
+      "empty_title": {
+        "font_size": 23,
+        "font_weight": 600,
+        "line_height": 1.5,
+        "selector": ".native-empty h3"
+      },
+      "secondary": {
+        "reference_sizes": [
+          10,
+          11,
+          12
+        ],
+        "policy": "草稿参考值，必要信息不能因小字号或低对比度不可读"
+      }
+    }
+  },
+  "layout": {
+    "reference_viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "header": {
+      "height": 56,
+      "horizontal_padding": 12,
+      "side_columns": 92
+    },
+    "tab_bar": {
+      "content_height": 58,
+      "home_indicator_placeholder_height": 22
+    },
+    "page_horizontal_padding": [
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "feed_row": {
+      "padding": [
+        18,
+        16,
+        13
+      ],
+      "avatar": 38,
+      "gap": 11
+    },
+    "person_row": {
+      "padding": [
+        19,
+        17
+      ],
+      "avatar": 42,
+      "gap": 11
+    },
+    "drawer": {
+      "width_percent": 82,
+      "max_width": 324,
+      "row_min_height": 54
+    },
+    "sheet": {
+      "max_height_percent": 80,
+      "horizontal_padding": 20,
+      "option_min_height": 58
+    },
+    "reference_tap": {
+      "min_width": 44,
+      "min_height": 44,
+      "note": "其他小控件在草稿中更小；原生实现必须扩大实际触控区"
+    },
+    "spacing_examples": [
+      4,
+      6,
+      8,
+      11,
+      12,
+      16,
+      17,
+      18,
+      20,
+      24,
+      28
+    ]
+  },
+  "radii": {
+    "search": 13,
+    "media": 14,
+    "quote": 12,
+    "ai_input": 21,
+    "message": 16,
+    "sheet_top": 24,
+    "solid_button": 22,
+    "avatar": "circle"
+  },
+  "icons": {
+    "view_box": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "style": "圆端点、圆连接的细描边 SVG",
+    "sizes": {
+      "navigation": 25,
+      "header": 23,
+      "list": 18,
+      "interaction": [
+        16,
+        17,
+        18,
+        20
+      ],
+      "drawer": 22
+    },
+    "stroke_width_reference": [
+      1.65,
+      1.7,
+      1.75,
+      1.8,
+      1.85
+    ],
+    "selected": "加深前景或略加粗；后写覆盖后的底部 AI 选中图标为 fg 前景色且无强调底块",
+    "labels": "侧栏、设置、菜单为图标＋文字；拥挤操作区纯图标仍有读屏名称"
+  },
+  "motion": {
+    "drawer_ms": 200,
+    "sheet_ms": 180,
+    "page_ms": 180,
+    "scrim_ms": [
+      120,
+      160
+    ],
+    "timing": "ease-out",
+    "reduced_motion": "停止非必要动画和过渡"
+  },
+  "exclusions": [
+    "桌面预览工具栏、手机外壳圆角与投影、伪系统状态栏不属于生产设计 token",
+    "认证示例蓝色、示例头像色与书本插画不是平台强调色或真实认证承诺",
+    "默认主题选择及原生控件细节由正式方案记录；颜色调整遵守 CFG-13"
+  ]
+}

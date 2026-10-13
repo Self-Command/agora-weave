@@ -1,0 +1,3 @@
+# Preserve the original draft bytes for the recorded SHA-256 values.
+native-ui-v6.css -text whitespace=cr-at-eol
+native-ui-v6.js -text whitespace=cr-at-eol
