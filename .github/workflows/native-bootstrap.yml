@@ -137,6 +137,9 @@ jobs:
           sudo apt-get install -y --no-install-recommends libpulse0 >> native-output/system-packages.log 2>&1
           dpkg-query -W -f='${Package}=${Version}\n' libpulse0 > native-output/system-package-versions.txt
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'system-images;android-36;google_apis;x86_64' 'emulator' > native-output/sdk-install.log 2>&1
+          test -x "$ANDROID_HOME/platform-tools/adb"
+          printf '%s/platform-tools\n' "$ANDROID_HOME" >> "$GITHUB_PATH"
+          "$ANDROID_HOME/platform-tools/adb" version > native-output/adb-version.txt
           cat "$ANDROID_HOME/system-images/android-36/google_apis/x86_64/source.properties" > native-output/system-image.properties
           test -x "$ANDROID_HOME/emulator/emulator"
           "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1
