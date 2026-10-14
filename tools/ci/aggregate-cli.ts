@@ -31,7 +31,7 @@ const jobResult = (pattern: string) => {
   const selected = liveJobs.filter(job => String(job.name).includes(pattern));
   return selected.length === 1 ? selected[0].conclusion || selected[0].status : 'missing_or_ambiguous';
 };
-let collected: Record<string, any> = {};
+let collected: Record<string, any>;
 let previous: Record<string, unknown>[] = [];
 try {
   collected = JSON.parse(readFileSync('verify-output/collected-checks.json', 'utf8'));

@@ -20,11 +20,11 @@ export function deriveOrchestrationSource(input: unknown): Record<string, unknow
   const conditions: Record<string, string> = {};
   let current = '';
   for (const line of input.workflow.split(/\r?\n/)) {
-    const job = line.match(/^  ([\w-]+):$/);
+    const job = line.match(/^ {2}([\w-]+):$/);
     if (job) { current = job[1]; dependencies[current] = []; continue; }
-    const needs = line.match(/^    needs: ([\w-]+|\[[\w, -]+\])$/);
-    if (needs && current) dependencies[current] = needs[1].replace(/[\[\]]/g, '').split(/, */);
-    const condition = line.match(/^    if: (.+)$/);
+    const needs = line.match(/^ {4}needs: ([\w-]+|\[[\w, -]+\])$/);
+    if (needs && current) dependencies[current] = needs[1].replace(/[[\]]/g, '').split(/, */);
+    const condition = line.match(/^ {4}if: (.+)$/);
     if (condition && current) conditions[current] = condition[1];
   }
   if (['reports', 'review', 'gate'].some(job => conditions[job] !== '${{ always() }}')) return deny('conditional_source_aggregation');

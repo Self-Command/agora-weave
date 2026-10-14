@@ -12,3 +12,9 @@
 当前Codex已读取7c4f740的后台/分享各明暗及390/1280宽度的8张全图：标题可读、居中且无裁切。实际导航/刷新/返回结果由Playwright报告支持。记录尚未完成档案摘要和最终版本绑定，不作正式审查通过，不生成产品基准。
 
 重复原生run的取消保留原始cancelled状态，不计通过。后续共享verify调用须重新在最终SHA取得所有适用证据；路径过滤不能充当豁免。
+# 2026-10-15 依赖工具冻结及最低 Android 主题调查
+
+`20a513c` 的 Actions run `38635654333` 在真实 Node22.23.3/npm10.9.9 上完成工具依赖冻结，锁摘要为 `8cb3ebedea518954777aee8e24ea04ed7fcdb7ec68399094f9005c048e89651c`。既有 package version 未变，新增81个验证工具及其依赖条目；131项工程断言及类型检查通过。实际 ESLint 首次执行发现8处无用赋值、未使用异常变量及正则写法问题，保留原 JSON；修正后须在新SHA重跑 immutable install、lint和受影响回归。
+
+原生 run `38631669393`／`3726c43d` 的 Android API24 暗色断言实际失败：设备配置符合 dark，但实际背景 RGB 为255,255,255。原始截图、仪器日志和像素记录均保留，不能把配置成功代替视觉成功。[Expo SDK57 SystemUI](https://github.com/expo/expo/blob/sdk-57/packages/expo-system-ui/android/src/main/java/expo/modules/systemui/singletons/SystemUI.kt) 在API<28以省电状态驱动 automatic；[Android7 PowerManager](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-7.0.0_r1/services/core/java/com/android/server/power/PowerManagerService.java) 要求断开充电并观察真实低功耗状态。修正的是 Actions 主题驱动前置，保留 Kotlin 配置／像素 oracle 与应用不变；该驱动前置更正不冒充产品缺陷的合格Red。后续仍须实际 light/dark截图和对应断言全部通过，最低iOS及真实服务联通另验。
+

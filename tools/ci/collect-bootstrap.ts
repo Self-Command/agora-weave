@@ -61,7 +61,7 @@ for (const item of catalog) {
     if (String(file.path).endsWith('.png')) images.push(id);
   }
   const name = String(item.artifact_name);
-  let kind = '', ids: string[] = [], jobPattern = '', raw: Record<string, unknown> = {}, identity: Record<string, any>;
+  let kind: string, ids: string[] = [], jobPattern = '', raw: Record<string, unknown>, identity: Record<string, any>;
   try {
     if (name.startsWith('verify-checkset-')) {
       kind = 'engineering'; ids = ['bootstrap.engineering', 'bootstrap.discovery']; jobPattern = ' / discover';
@@ -120,7 +120,7 @@ for (const item of catalog) {
         cleanupIdentity = identity;
       } catch { /* An absent postcondition record leaves cleanup incomplete. */ }
     }
-  } catch (error) {
+  } catch {
     for (const id of ids) observed.push({ id, state: 'missing', source_sha: sha, artifact_id: item.artifact_id,
       reason: 'Required original executor file is missing, unreadable or unbound' });
   }
