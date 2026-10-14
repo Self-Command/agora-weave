@@ -88,7 +88,7 @@ function bootstrapPath(value: string): boolean {
     'tests/e2e/bootstrap/', 'tests/e2e/ios/', 'tests/e2e/android/', '.github/workflows/', 'infra/ci/', 'supabase/upstream/',
     'docs/engineering/', '.specify/bridge-snapshots/', '.specify/extensions/agoraweave-ci/',
     '.agents/skills/agoraweave-ci-', '.claude/skills/agoraweave-ci-', 'specs/001-agoraweave-v1/'].some(prefix => normalized.startsWith(prefix)) ||
-    [...shellFiles, 'package.json', 'package-lock.json', '.gitignore', '.gitmodules', 'superpowers-v7', '.specify/extensions.yml',
+    [...shellFiles, 'package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', 'superpowers-v7', '.specify/extensions.yml',
       '.specify/superpowers-handoff.json', '.specify/bridge-events.jsonl',
       '.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1'].includes(normalized);
 }

@@ -1,0 +1,6 @@
+{
+  "scope": "bootstrap-test-tool-extension",
+  "previous_lock_sha256": "dd97ae49cd831171de62f21d1a681f69621a1f9ea8d449ed9da3159530391b45",
+  "packages": { "eslint": "10.12.0", "@eslint/js": "10.0.1", "typescript-eslint": "8.71.2", "ajv": "8.20.0", "ajv-formats": "3.0.1" },
+  "readiness": "not_evaluated"
+}

@@ -41,6 +41,9 @@ jobs:
           NODE
           npm run ci:install > install-output/install.log 2>&1
           npm run ci:typecheck > install-output/typecheck.log 2>&1 || { cat install-output/typecheck.log; exit 1; }
+          mkdir -p lint-output
+          npm run ci:lint
+          cp lint-output/report.json install-output/lint-report.json
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       - if: ${{ always() }}

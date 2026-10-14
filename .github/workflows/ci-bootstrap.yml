@@ -56,8 +56,10 @@ jobs:
           const request = JSON.parse(readFileSync('infra/ci/dependency-freeze-request.json', 'utf8'));
           const root = JSON.parse(readFileSync('package.json', 'utf8'));
           const previous = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
+          const allowed = { eslint: '10.12.0', '@eslint/js': '10.0.1', 'typescript-eslint': '8.71.2', ajv: '8.20.0', 'ajv-formats': '3.0.1' };
           if (request.scope !== 'bootstrap-test-tool-extension' || request.previous_lock_sha256 !== previous ||
-            request.package !== '@playwright/test' || root.devDependencies?.[request.package] !== request.version) {
+            !request.packages || Object.keys(request.packages).length !== Object.keys(allowed).length ||
+            Object.entries(allowed).some(([name, version]) => request.packages[name] !== version || root.devDependencies?.[name] !== version)) {
             throw new Error('Unmatched cloud dependency freeze request');
           }
           NODE
@@ -101,6 +103,17 @@ jobs:
         run: |
           npm run ci:discover
           npm run ci:run
+      - name: Run the actual independent linter
+        run: |
+          mkdir -p lint-output
+          npm run ci:lint
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-lint-${{ github.run_id }}-${{ github.run_attempt }}
+          path: lint-output/
+          if-no-files-found: error
+          retention-days: 7
       - name: Preserve discovery and original execution report
         if: ${{ always() && hashFiles('tools/ci/validation-manifest.json') != '' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
