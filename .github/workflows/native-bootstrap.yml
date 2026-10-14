@@ -1,7 +1,25 @@
 name: Native shell bootstrap
 on:
   push:
+    paths:
+      - 'apps/mobile/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/native-bootstrap.yml'
+      - 'tests/e2e/ios/**'
+      - 'tests/e2e/android/**'
   pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/native-bootstrap.yml'
+      - 'tests/e2e/ios/**'
+      - 'tests/e2e/android/**'
+  workflow_call:
+concurrency:
+  group: native-bootstrap-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
 permissions:
   contents: read
 jobs:

@@ -47,6 +47,20 @@ jobs:
           const digest = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
           if (digest !== expected.lock_sha256 || process.version !== expected.node) throw new Error('Frozen lock/toolchain mismatch');
           NODE
+            if [ -f infra/ci/dependency-freeze-request.json ]; then
+              node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          const request = JSON.parse(readFileSync('infra/ci/dependency-freeze-request.json', 'utf8'));
+          const root = JSON.parse(readFileSync('package.json', 'utf8'));
+          const previous = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
+          if (request.scope !== 'bootstrap-test-tool-extension' || request.previous_lock_sha256 !== previous ||
+            request.package !== '@playwright/test' || root.devDependencies?.[request.package] !== request.version) {
+            throw new Error('Unmatched cloud dependency freeze request');
+          }
+          NODE
+              npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+            fi
             npm ci --no-audit --no-fund
           else
             npm install --package-lock-only --ignore-scripts --no-audit --no-fund
@@ -85,6 +99,26 @@ jobs:
           NEXT_TELEMETRY_DISABLED: '1'
         shell: bash
         run: npm run ci:build:web > freeze-output/web-build.log 2>&1 || { cat freeze-output/web-build.log; exit 1; }
+      - name: Execute real browser shells and collect navigation traces
+        if: ${{ hashFiles('tests/e2e/bootstrap/playwright.config.ts') != '' }}
+        shell: bash
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: |
+          set -eu
+          mkdir -p web-output
+          npx --no-install playwright install --with-deps chromium > web-output/browser-install.log 2>&1
+          npx --no-install playwright --version > web-output/playwright-version.txt
+          export CHECKOUT_SHA=$(git rev-parse HEAD)
+          npm run ci:e2e:web > web-output/web-test.log 2>&1 || { cat web-output/web-test.log; exit 1; }
+      - name: Preserve real Web shell execution and captures
+        if: ${{ always() && hashFiles('tests/e2e/bootstrap/playwright.config.ts') != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-web-${{ github.run_id }}-${{ github.run_attempt }}
+          path: web-output/
+          if-no-files-found: error
+          retention-days: 7
       - name: Return first cloud resolution for reviewed commit
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
