@@ -1,0 +1,5 @@
+:root { color-scheme: light dark; --background: #ffffff; --foreground: #18181b; }
+@media (prefers-color-scheme: dark) { :root { --background: #111113; --foreground: #f2f2f4; } }
+body { margin: 0; color: var(--foreground); background: var(--background); font-family: Arial, 'Microsoft YaHei UI', sans-serif; }
+main { min-height: 100svh; display: grid; place-content: center; padding: 1.5rem; }
+h1 { font-size: 1.4375rem; font-weight: 600; }

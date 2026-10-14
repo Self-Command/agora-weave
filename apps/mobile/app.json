@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "AgoraWeave",
+    "slug": "agoraweave",
+    "scheme": "agoraweave",
+    "version": "0.0.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "ios": { "bundleIdentifier": "org.agoraweave.app", "supportsTablet": true },
+    "android": { "package": "org.agoraweave.app" },
+    "plugins": ["expo-router"]
+  }
+}
