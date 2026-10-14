@@ -437,6 +437,189 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T18:14:58.182627Z",
       "cause_summary": "Raw source assertions failed with healthy transport before implementation; original complete target and activated regression reports are retained."
+    },
+    {
+      "cycle_id": "ci-source-aggregate-001",
+      "behavior_id": "ci.source-aggregate",
+      "case_titles": [
+        "SA01: exact frozen authenticated check set can pass after all actual admissions",
+        "SA02: physical resource or absent original report remains blocked without reducing the frozen set",
+        "SA03: preserved unresolved attempts cannot be concealed by a green final attempt",
+        "SA04: incomplete collection, stale checkout and unverified source fail closed",
+        "SA05: unread reports or missing review, archive, TDD, cleanup, graph and bridge reject"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/source-aggregate.spec.ts",
+      "fixture_file": "tests/integration/ci/source-aggregate.spec.ts",
+      "red": {
+        "sha": "06dd84464729f5de0ee0e7668e7e5fd2f2780752",
+        "run_id": "38622148570",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "db9230239ba3038d81763cf3193c725798d3ad62",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T19:18:03.194234Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-actual-orchestration-001",
+      "behavior_id": "ci.actual-orchestration",
+      "case_titles": [
+        "OS01: current nonempty reports and actual workflow dependencies prove the executor chain while aggregation is invoked",
+        "OS02: missing dependency or conditional aggregation is refused even when every visible job looks green",
+        "OS03: source mismatch missing runtime reports empty discovery or a missing actual job cannot be masked by a called aggregator"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/orchestration-source.spec.ts",
+      "fixture_file": "tests/integration/ci/orchestration-source.spec.ts",
+      "red": {
+        "sha": "5015def6bc8e2369d9c0d68e0c94ebcf5ec4557d",
+        "run_id": "38632459669",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "17ca3f646a265cf866e5c6bacd364c8d18e0b472",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T20:31:33.345717Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-implementation-order-001",
+      "behavior_id": "ci.implementation-order",
+      "case_titles": [
+        "TA01: implementation added after the claimed Green cannot form an authenticated TDD cycle"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tdd-ancestry.spec.ts",
+      "fixture_file": "tests/integration/ci/tdd-ancestry.spec.ts",
+      "red": {
+        "sha": "943228b85806b8147a21610cfe8e10d0035cf754",
+        "run_id": "38633431573",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "53feed9257f6c718ae865c766c99584a5fa76552",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T20:37:29.665424Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-canonical-entries-001",
+      "behavior_id": "ci.canonical-entries",
+      "case_titles": [
+        "CE01: every approved shared executor entry exists as an actual command before it can be invoked"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/security/ci/required-entries.spec.ts",
+      "fixture_file": "tests/security/ci/required-entries.spec.ts",
+      "red": {
+        "sha": "60a1af2bbe5ca54e7def168244aa67dc7fd5cb65",
+        "run_id": "38635056391",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "20a513c244e3f443146de8daf125139666d026f4",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T20:51:38.768288Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-review-schema-001",
+      "behavior_id": "ci.review-schema",
+      "case_titles": [
+        "RS01: the frozen JSON schemas accept complete code and actual-image records",
+        "RS02: required fields, actual date formats, image enums and false reading claims reject",
+        "RS03: unresolved, missing and wrong-kind review records stay blocked without losing their original payload"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/security/ci/review-schema.spec.ts",
+      "fixture_file": "tests/security/ci/review-schema.spec.ts",
+      "red": {
+        "sha": "e48abb48eaf57a697cd1c4e13baab7a7a3882562",
+        "run_id": "38636744597",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "9846f17a1b39d042a0a0c2798d65d13c81abbd79",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T21:02:39.733865Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-exact-tdd-selection-001",
+      "behavior_id": "ci.exact-tdd-selection",
+      "case_titles": [
+        "TP01: exact original titles select loop cases and overlapping case IDs without borrowing another behavior",
+        "TP02: missing duplicated or ambiguous source assertions cannot enter a TDD cycle"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tdd-cases.spec.ts",
+      "fixture_file": "tests/integration/ci/tdd-cases.spec.ts",
+      "red": {
+        "sha": "3cb8ab4e0bdc3c4f2e057d019f1975d42e847436",
+        "run_id": "38637477965",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "87e032d1506217528e508d8a3f4d8393fcc78025",
+        "run_id": "38639374321",
+        "attempt": 1
+      },
+      "implementation_sha": "f148b864605500cd6d66117dd3d372eccb8d3d85",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T21:08:26.774047Z",
+      "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
     }
   ]
 }
