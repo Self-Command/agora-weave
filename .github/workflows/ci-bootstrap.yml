@@ -263,6 +263,7 @@ jobs:
         id: assertions
         shell: bash
         run: |
+          npm run ci:install
           set +e
           node --experimental-strip-types --test --test-reporter=tap \
             tests/contract/ci/*.spec.ts tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts \

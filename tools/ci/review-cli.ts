@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { bindReviewRecord } from './review-record.ts';
+import { validateReviewSchema } from './review-schema.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Review record validation is Actions only');
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
@@ -18,8 +19,9 @@ for (const kind of ['code', 'visual']) {
   const bytes = readFileSync(location);
   if (bytes.length > 2 * 1024 * 1024) throw new Error('Review record exceeds bounded input size');
   const record = JSON.parse(bytes.toString());
-  const result = bindReviewRecord(record, contexts[kind]);
-  assessments.push({ ...result, review_kind: kind, record_digest: createHash('sha256').update(bytes).digest('hex') });
+  const schema = validateReviewSchema(kind, record);
+  const result = schema.state === 'passed' ? bindReviewRecord(record, contexts[kind]) : schema;
+  assessments.push({ ...result, schema, review_kind: kind, record_digest: createHash('sha256').update(bytes).digest('hex') });
 }
 mkdirSync('review-output', { recursive: true });
 writeFileSync('review-output/validation.json', JSON.stringify({ target_sha: sha, source: 'github-actions',

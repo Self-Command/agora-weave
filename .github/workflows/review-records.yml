@@ -21,6 +21,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" verify-output
+      - name: Install frozen schema validation tools
+        run: npm run ci:install
       - name: Read exact private current Codex records without exposing their payloads
         shell: bash
         env:
