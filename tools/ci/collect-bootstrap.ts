@@ -51,7 +51,8 @@ for (const item of catalog) {
   execFileSync('python3', ['tools/ci/index-archive.py', `${item.directory}/source.zip`, `${item.directory}/raw-files.json`, root]);
   const rawFiles = parse(item.directory, 'raw-files.json') as Record<string, any>[];
   for (const file of rawFiles) {
-    if (String(file.path).includes('.xcresult/') || !/\.(png|json|xml|tap|txt|log)$/.test(file.path)) continue;
+    if (String(file.path).includes('.xcresult/') || !/\.(png|json|xml|tap)$/.test(file.path) &&
+      !/^(android-theme-.+|schema-seed-probe.*|database-health)\.txt$/.test(file.path)) continue;
     const id = `artifact:${item.artifact_id}/${file.path}`;
     verifiedInputs.push({ id, digest: file.sha256 });
     if (String(file.path).endsWith('.png')) images.push(id);
