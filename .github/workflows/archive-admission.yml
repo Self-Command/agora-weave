@@ -59,6 +59,7 @@ jobs:
             fi
             sleep 5
           done
+          cp "$RUNNER_TEMP/archive-expiry-read.log" archive-admission/expiry-observation.log
           cleanup
           removed=false
           if [ ! -e "$key" ] && [ ! -e "$hosts" ] && [ ! -e "$batch" ]; then removed=true; fi
