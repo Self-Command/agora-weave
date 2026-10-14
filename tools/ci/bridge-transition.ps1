@@ -34,13 +34,31 @@ $taskArtifact = ($taskArtifactsJson | ConvertFrom-Json).artifacts | Where-Object
     $_.name -eq "bridge-admission-$($taskRun.id)-$($taskRun.run_attempt)" -and -not $_.expired
 }
 if (@($taskArtifact).Count -ne 1) { throw 'Missing unique cloud bridge receipt' }
+$taskArtifact = @($taskArtifact)[0]
+if ($taskArtifact.workflow_run.head_sha -ne $taskHead -or [string]$taskArtifact.workflow_run.id -ne [string]$taskRun.id -or
+    $taskArtifact.digest -notmatch '^sha256:[a-f0-9]{64}$' -or $taskArtifact.size_in_bytes -gt 1048576) { throw 'Invalid cloud bridge archive identity' }
 $taskDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ("agoraweave-cloud-transition-" + [Guid]::NewGuid())
 New-Item -ItemType Directory -Path $taskDirectory | Out-Null
 try {
-    # Downloads only an identified Actions artifact. No repository code is executed locally.
-    & gh run download "$($taskRun.id)" --repo $taskRepository --name $taskArtifact.name --dir $taskDirectory
-    if ($LASTEXITCODE -ne 0) { throw 'Cloud bridge receipt download failed' }
-    $taskReceipt = Get-Content -LiteralPath (Join-Path $taskDirectory 'bridge-admission.json') -Raw | ConvertFrom-Json
+    # GitHub CLI handles the authenticated REST redirect; preserve exact ZIP bytes for digest verification.
+    $taskZipPath = Join-Path $taskDirectory 'source.zip'
+    $taskDownloadInfo = [System.Diagnostics.ProcessStartInfo]::new('gh')
+    foreach ($taskArgument in @('api', "repos/$taskRepository/actions/artifacts/$($taskArtifact.id)/zip")) { $taskDownloadInfo.ArgumentList.Add($taskArgument) }
+    $taskDownloadInfo.RedirectStandardOutput = $true
+    $taskDownloadInfo.UseShellExecute = $false
+    $taskDownload = [System.Diagnostics.Process]::Start($taskDownloadInfo)
+    $taskZipFile = [System.IO.File]::Create($taskZipPath)
+    try { $taskDownload.StandardOutput.BaseStream.CopyTo($taskZipFile) } finally { $taskZipFile.Dispose() }
+    $taskDownload.WaitForExit()
+    if ($taskDownload.ExitCode -ne 0 -or ('sha256:' + (Get-FileHash -LiteralPath $taskZipPath -Algorithm SHA256).Hash.ToLowerInvariant()) -ne $taskArtifact.digest) {
+        throw 'Cloud bridge ZIP source digest mismatch'
+    }
+    $taskZip = [System.IO.Compression.ZipFile]::OpenRead($taskZipPath)
+    try {
+        if ($taskZip.Entries.Count -ne 1 -or $taskZip.Entries[0].FullName -ne 'bridge-admission.json' -or $taskZip.Entries[0].Length -gt 1048576) { throw 'Unexpected cloud bridge archive content' }
+        $taskReader = [System.IO.StreamReader]::new($taskZip.Entries[0].Open())
+        try { $taskReceipt = $taskReader.ReadToEnd() | ConvertFrom-Json } finally { $taskReader.Dispose() }
+    } finally { $taskZip.Dispose() }
     if ($taskReceipt.target_sha -ne $taskHead -or $taskReceipt.actor -ne $Actor -or $taskReceipt.feature -ne $Feature -or
         $taskReceipt.mode -ne $Mode -or $taskReceipt.transition -ne $Transition -or $taskReceipt.state -ne 'passed' -or
         $taskReceipt.source -ne 'github-actions' -or $taskReceipt.runner_environment -ne 'github-hosted' -or
