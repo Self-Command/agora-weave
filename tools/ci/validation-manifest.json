@@ -2445,7 +2445,14 @@
         "tests/integration/ci/archive.spec.ts"
       ],
       "id": "ci.archive"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/review-binding.spec.ts"
+      ],
+      "id": "ci.review-binding"
     }
   ],
-  "engineering_case_count": 96
+  "engineering_case_count": 102
 }
