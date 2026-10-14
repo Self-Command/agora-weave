@@ -93,6 +93,20 @@ jobs:
         if: ${{ hashFiles('infra/ci/toolchain-lock.json') != '' }}
         shell: bash
         run: npm run ci:typecheck > freeze-output/typecheck.log 2>&1 || { cat freeze-output/typecheck.log; exit 1; }
+      - name: Discover and execute the actual approved nonempty engineering set
+        if: ${{ hashFiles('tools/ci/validation-manifest.json') != '' }}
+        shell: bash
+        run: |
+          npm run ci:discover
+          npm run ci:run
+      - name: Preserve discovery and original execution report
+        if: ${{ always() && hashFiles('tools/ci/validation-manifest.json') != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-checkset-${{ github.run_id }}-${{ github.run_attempt }}
+          path: check-output/
+          if-no-files-found: error
+          retention-days: 7
       - name: Build both real Web shells
         if: ${{ hashFiles('infra/ci/toolchain-lock.json') != '' }}
         env:
