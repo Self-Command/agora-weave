@@ -42,7 +42,7 @@ status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown�
 | review_disposition | finding与文件／页面／区域／需求／证据、处置人／理由、修复SHA、当前重审／回归或可核验独立反证；decision_required尚未处理阻塞 |
 | completion_record | feature／task／mode、当前SHA／contract_hash／check_set_hash、有效全部run／attempt／产物／报告摘要、read_by／read_at／summary／unresolved_items、门禁结论；新提交失效 |
 
-GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或完成报告；一个run成功、review已请求、checkbox齐全或模型自评均不足。AI缺凭据／空或截断／拒绝／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。
+GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或完成报告；一个run成功、review已请求、checkbox齐全或模型自评均不足。当前Codex审查记录缺失／空或截断／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。
 
 正式证据分类归档于有权私有存储，测试90天、正式发行初始1年，敏感内容遵更短业务期限/脱敏；价格/存储Q-03/16准入。run URL和artifact默认保留不永久；不得把真实手机号/私信/草稿/AI完整原文写长存报告。引用合成fixture标识、必要授权日志/状态/截图即可。收到旧版结果必须重新验证实际发行，不手改index抹失败。
 
@@ -51,3 +51,5 @@ GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则
 Actions覆盖四类/混合变更、同包更换攻击、无超级管理员确认、DEC-001冷却、审批后权限/范围变更、名单内外、扩灰无确认、native不兼容、旧端核心安全/不安全、失败/中断/重试、迁移部分/不可逆、回滚复活攻击及证据缺失。任何未确认生产影响或名单外能力成功为缺陷；不在本轮执行这些操作。
 
 初始化／门禁另验证零用例、尚未存在的业务脚本、必需skip／neutral、前置失败导致聚合未执行、queued／超时／取消、只等一个run、旧SHA／PR merge误配／错误artifact、清单缩减、未读报告、Red环境错误／oracle换绿、AI假报告／漏图／秘密泄露、基准自批／自动重拍和直接旧脚本设complete等拒绝案例。full-release读取所有必需最终报告，不用bootstrap探针替业务验收。
+
+按[ED-11／ED-12](../reviews/execution-decisions-2026-10-15.md)，开发代码／视觉审查由当前Codex分别记录执行者、会话、SHA、输入／实际图像摘要、覆盖、findings和处置；Actions核记录绑定，所有项目执行／采集仍只在Actions。私有原证据归档目标为用户服务器，专用受限存储身份、不公开服务连接、校上传与回读摘要并执行上述分类保留；服务器不作runner。旧独立开发审查API凭据要求取消，产品AI凭据要求不变。

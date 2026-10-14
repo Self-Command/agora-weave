@@ -16,7 +16,7 @@
 
 ### 1.1 首次初始化验收
 
-按cloud-validation §2，先只写基础设施，Actions实际安装固定工具并运行真实Compose、网页与双端原生壳、测试发现／报告／截图差异／交互／归档清理、独立AI代码和图像审查探针、桥接版本适配与拒绝探针。无业务检查在初始化清单记not_yet_applicable及激活节点，禁止把缺测试脚本包装成成功。故意失败／零用例／错误SHA／缺报告／跳过／取消／未确认基准必须被聚合和桥接拒绝；保存原始失败与“预期拒绝被观察”记录，不伪造passed。
+按cloud-validation §2，先只写基础设施，Actions实际安装固定工具并运行真实Compose、网页与双端原生壳、测试发现／报告／截图差异／交互／归档清理、当前Codex代码与实际图像审查及记录绑定探针、桥接版本适配与拒绝探针。无业务检查在初始化清单记not_yet_applicable及激活节点，禁止把缺测试脚本包装成成功。故意失败／零用例／错误SHA／缺报告／跳过／取消／未确认基准必须被聚合和桥接拒绝；保存原始失败与“预期拒绝被观察”记录，不伪造passed。
 
 最先只提供可调度的最小配置／接口壳／日志通道；它能运行后，报告聚合、桥接门禁和审查适配等工程行为也用该Actions通道先测试Red再实现Green，不以初始化为理由先实现全部逻辑。项目门禁脚本只在Actions计算与验证，本地SP只读取匹配结果／报告及桥接元数据，不运行项目工具。
 
@@ -72,8 +72,8 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 | plugins | `npm run ci:plugins`；`npm run ci:developer-journey` | 两插件实际隔离、生命周期、三端从零样例/SDK/CLI/文档闭环 |
 | ai-real | `npm run ci:ai:integration`；`npm run ci:ai:eval` | 合格真实模型/工具/来源/政策/限额/自动有标签评估；未准入不通过 |
 | measurement-recovery | `npm run ci:performance`；`npm run ci:recovery` | 固定负载/失败分布、陈旧备份安全重放/对象恢复和清理证据 |
-| ai-code-review | 固定Codex候选或另经准入工具，只读final diff／源码／需求／真实验证报告，真实模型调用 | schema合规findings／覆盖／证据；处置并当前SHA重审，缺工具／凭据拒绝 |
-| ai-visual-review | 真实图像输入＋UI-SPEC／基准／页面矩阵／差异／交互报告，逐批云端审阅 | iOS／Android／后台／分享／插件适用各状态的语义审查及处置，不能只比较截图 |
+| code-review-record | 当前Codex读取final diff／源码／需求／真实报告；Actions只校审查记录和输入摘要 | 覆盖／findings／证据／处置与当前SHA绑定，缺审查或无法判断拒绝 |
+| visual-review-record | 当前Codex实际读取全图／裁图、UI-SPEC／基准／页面矩阵／差异／交互报告；Actions校图像摘要绑定 | 各端适用状态语义审查及处置完整，缺实际图片／漏范围拒绝 |
 | aggregate | `npm run ci:evidence` | 同发行必需check全passed才输出通过；任何缺证据/版本不匹配拒绝 |
 
 上述job按阶段接入：ci-ready前真实安装／Compose／壳与采集／审查调用链可运行；核心Green前当前已激活schema／fixtures／service／security／concurrency／recovery与各端组件job及对应脚本均已实现；各故事进入行为前接入自己的实际套件；US14扩充full-release及受控部署。表中完整作业集合不是允许将核心必需执行拖到US14的理由。
@@ -118,9 +118,9 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 首次由Actions真实各端生成baseline-candidate，附已确认原型／UI-SPEC／token摘要、平台适配理由、AI视觉报告和交互／无障碍证据。无旧基准时按design_reference审查，不制造零diff；由用户或其明确授权的设计验收人确认具体候选摘要／覆盖矩阵后才成为基准，确认尚未发生时awaiting_confirmation，不宣称视觉通过。初始化壳和历史HTML自身均不作产品基准。
 
-后续同设备/OS/字体快照0.5%像素差异作为告警，动态区域须预登记遮罩且不能遮内容/错误/授权状态；布局/遮挡/触达/业务状态为独立硬断言。即使低于告警值，AI语义／交互／权限失败仍拒绝。保存before／after／diff和审查结论；不能自动接受差异、update-snapshots或重拍择优。需改基准时保旧图与失败，附设计依据及适当批准，实质改变先用户决定，再云端审查新候选和重验。阈值是工程起点，稳定性核验后登记，不把像素相近代AI视觉或交互通过。
+后续同设备/OS/字体快照0.5%像素差异作为告警，动态区域须预登记遮罩且不能遮内容/错误/授权状态；布局/遮挡/触达/业务状态为独立硬断言。即使低于告警值，AI语义／交互／权限失败仍拒绝。保存before／after／diff和审查结论；不能自动接受差异、update-snapshots或重拍择优。需改基准时保旧图与失败，附设计依据及适当批准，实质改变先用户决定，再审查Actions采集的新候选并云端重验。阈值是工程起点，稳定性核验后登记，不把像素相近代AI视觉或交互通过。
 
-代码AI审查与视觉AI审查各为独立必需实际调用：分别存输入／图像摘要、提示／schema、工具／模型、请求／run／用量、覆盖及findings／处置。输出格式错误、拒绝、截断、漏文件／漏图、模型不可用或不能判断都阻塞。编写代理阅读并修复，当前SHA重审及必要回归；误报须独立核事实和反证，不自行忽略。视觉模型不能仅看静态图推定读屏或按钮已运行，代码模型不能代测试。
+按ED-11，当前Codex分别记录代码和视觉审查：执行者／会话、目标SHA、代码／图像／报告摘要、覆盖、findings、处置与未知项。原图和运行报告从Actions取得并校验，记录存受控私有库，由Actions核绑定；不部署额外审查AI或要求API Key。缺图／漏文件／未处理缺陷／无法判断仍阻塞，修复后当前SHA重审与真实回归。静态图不能证明读屏或按钮已执行，代码阅读不能代测试。
 
 真正VoiceOver/TalkBack执行注册、发布、评论、私信、举报、处罚、申诉等流程；保焦点/朗读/操作报告与设备会话证据。自动audit、可访问性树、模拟器截图只辅助。视频/GIF检验播放/暂停/Wi-Fi蜂窝/静音/省流量/减少动效、文件真实格式，iOS/Android都必须通过；GIF picker不能静默降首帧。
 
@@ -151,3 +151,5 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 每run生成[release evidence](contracts/release-evidence.md) index，绑定同提交/产物/配置/环境/工具/页面状态/AC-AS/报告/截图/差异/交互，并关联TDD链、基准确认、开发AI审查／处置和报告读取。必需check缺失、取消、超时、跳过、环境不可用、真模型/物理设备未执行或版本不同都不能通过；失败同样上传脱敏证据。聚合须显式识别必需项，GitHub绿图标／neutral不作产品通过。修复后重验受影响行为和必要回归，正式发行完成全必需集合。报告使用合成数据，秘密/私人原文不入长存档。
 
 生产另经超级管理员当前MFA和DEC-001核验对准确版本/权限/迁移/环境/名单确认，观察后扩大再确认；Actions通过不自动部署。预览/验证工作流不能写生产配置或执行迁移。实际生产发布/采购/外部真实消息均非本轮授权内容。
+
+最新审查与服务器证据存储决定见 [ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)。

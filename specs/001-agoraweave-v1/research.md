@@ -185,7 +185,9 @@ TDD S_R先测试提交，Actions真实断言因行为缺失／真实缺陷失败
 
 桥接文字仍为SP6.4.2 adapter，实际安装SP7.0.0可识别Task N，但还需红绿／Expected／接口预检／整体测试等完整适配。仓库init-options为SK1.0.12，已验证组合记录SK1.1.3／SP7／bridge1.4.0，不能继承其兼容声明。初始化以当前组合执行云端任务提取、远端task-done和错误SHA／缺报告拒绝探针；失败且既定条件无法解决才按宪法九报告选择，不自动升级或更改原生技能。这里只读调查，没有创建adapter／handoff或运行探针。
 
-## RD-13 — 开发AI代码与视觉审查候选
+## RD-13 — 开发AI代码与视觉审查候选（历史路线）
+
+**2026-10-15已被ED-11取代**：用户明确要求并确认当前Codex完成代码与Actions实际图像／报告审查，取消额外独立云端AI／API资源要求。以下保留原调查历史，不是当前实施门禁；当前规则见cloud-validation §6及[执行决定](reviews/execution-decisions-2026-10-15.md)。
 
 **Decision（候选，尚待CV-D01准入）**：独立Linux Actions job分别使用官方Codex Action运行非交互代码审查和图像视觉审查，冻结action／CLI／proxy；输入只读、结果结构化。具体模型必须显式配置获准ID，不使用默认模型隐含决定。代码读final diff、必要完整源码、需求契约及真实验证报告；视觉通过--image实际附各端截图、基准／参考和UI-SPEC／页面状态／交互报告。每批覆盖和图像digest都登记，不能只给模型文件名。
 

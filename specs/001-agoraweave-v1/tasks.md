@@ -16,6 +16,8 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **Organization**：Setup → Foundational → 17故事（P1再P2，各组按US编号）→全量封口。编号是清单引用顺序；执行服从下方实现依赖DAG。P2作为P1真实依赖须提前实施，优先级不删减首版。
 
+**最新执行决定**：按[ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)同步当前Codex代码和真实云端图像审查、用户服务器私有存储；285个任务ID、真实Actions执行／TDD／基准确认要求不变。
+
 **本轮边界**：按最新规划重新生成本清单并刷新必需`ready`桥接交接，全部任务均未勾选。下列代码／工作流／测试／证据路径是未来拟实施目标，尚未建立或运行。`ready`只说明交接资料齐全，不是`ci-ready`、业务验收、有效`complete`或生产授权。
 
 ## Format: `[ID] [P?] [Story] Description`
@@ -24,7 +26,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - `[P]`只表示同一波前置全部满足后的不同文件任务可并行；不能跨Red／Green并行，也不要求自动委派。
 - 本地仅编辑／阅读文件、Git及调度／等待／下载读取Actions。项目静态检查、编译构建测试运行和验收全部Actions；“通过工作流”是未来云端调度任务，不在本地执行npm／工具脚本。
 - 一个汇总Red任务须为每个实现行为分别记录红链，不代表阶段内任意实现可以共用无关Red。每个实现任务勾选前同样须当前S_G和已激活必需集合、报告读取及审查，不能最后才补TDD。
-- 缺资源按ED-07在实际需用时说明用途、最小权限及对象后索取。public仓库、Codex路线/模型工程核定、阿里云短信、本人基准确认人及用户负责预算资源运营的决定不重问。
+- 缺资源按ED-07在实际需用时说明用途、最小权限及对象后索取。public仓库、当前Codex审查方式（ED-11）、阿里云短信、本人基准确认人及用户负责预算资源运营的决定不重问。
 - 新实质冲突或既定目标实测不满足按宪法九说明影响与选项并等明确决定；仅暂停依赖工作，不降范围、暗换服务、放宽权限或改本地验收。
 
 ## Path Conventions 与公共模型约束
@@ -59,10 +61,10 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 ### Tests — 先写目标断言
 
 - [ ] T008 [P] 编写 `tests/contract/ci/evidence.spec.ts`、`tests/integration/ci/aggregate.spec.ts`，先断言证据状态／摘要／全必需集合／全部attempt与始终聚合；覆盖缺脚本、零用例、skip／neutral、前置失败、错误 SHA／artifact、只等一个 run、清单缩减和取消／超时；额外断言冻结Node/Expo关联组/平台React隔离/官方Compose及action-image-tool摘要一致、三端真实壳与服务健康，错误或缺真实运行报告拒绝（QR-006,QR-007,QR-001,QR-004）。
-- [ ] T009 [P] 编写 `tests/integration/ci/verify-orchestration.spec.ts`，断言实际verify事件／dispatch与共享job的SHA/profile/check_set、安装→真实服务→非空发现→各端执行→原报告→独立AI审查→始终聚合调用边；注入聚合存在而服务/端job缺失、调用依赖缺边、空矩阵、缺npm脚本、零用例、报告缺失和核心激活未接线均拒绝，绿路径必须真实非空运行（QR-002–007,QR-010）。
+- [ ] T009 [P] 编写 `tests/integration/ci/verify-orchestration.spec.ts`，断言实际verify事件／dispatch与共享job的SHA/profile/check_set、安装→真实服务→非空发现→各端执行→原报告→当前Codex代码／视觉审查记录→始终聚合调用边；注入聚合存在而服务/端job缺失、调用依赖缺边、空矩阵、缺npm脚本、零用例、报告缺失和核心激活未接线均拒绝，绿路径必须真实非空运行（QR-002–007,QR-010）。
 - [ ] T010 [P] 编写 `tests/integration/ci/tdd-cycle.spec.ts`，断言 S_R 先于实现、真实缺行为断言失败／报告读取、S_G同 oracle 和适用回归、final新Green；环境故障假Red、删断言换绿和oracle实质变化未重建链均拒绝（QR-003,QR-007）。
 - [ ] T011 [P] 编写 `tests/security/ci/bridge-gate.spec.ts`，覆盖 bootstrap-only含业务、未ci-ready开始业务、hook未执行／被过滤、旧SHA／未读报告／未提交修改／直接旧脚本complete／task-done exit0假完成；检查 raw桥接状态不能充有效完成证据；拒绝本地项目执行／本地runner代验标记和未获准的业务执行，云端调度身份与实际environment来源一致（QR-007,QR-008,QR-002）。
-- [ ] T012 [P] 编写 `tests/security/ci/review-baseline.spec.ts`，断言 AI 真实调用／真实图像／结构输出／覆盖／处置，拒绝假报告、截断、漏图、秘密外发、未确认首基准／模型自批／自动更新基准及低像素差异掩盖交互错误；核开发审查最小工程/合成截图及禁止生产用户/秘密外发，验证/预览通道无生产凭据（QR-005,QR-007,QR-010,QR-009）。
+- [ ] T012 [P] 编写 `tests/security/ci/review-baseline.spec.ts`，断言当前Codex审查记录与实际代码／图像／报告摘要、当前SHA、覆盖／处置绑定，拒绝假报告、截断、漏图、秘密外发、未确认首基准／自批／自动更新基准及低像素差异掩盖交互错误；全部执行和采集仍只在Actions，审查只用必要工程／合成截图，无生产用户或秘密（QR-005,QR-007,QR-010,QR-009）。
 ### Actions Red — 读取真实失败后才实现
 
 - [ ] T013 通过 `.github/workflows/ci-bootstrap.yml` 将以上工程行为逐项只提交目标测试 S_R，在 Actions 实际执行并读取缺行为断言与前置健康；按 `contracts/cloud-validation.md` §4 将 red_observed 及完整红链登记到受控证据库 `ci/tdd-cycles/`，每个对应实现前均须有合格Red（QR-003,QR-006）。
@@ -72,20 +74,20 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T015 实现 `tools/ci/collect-evidence.ts`、`tools/ci/archive-evidence.ts`：失败也上传，按 artifact_id经官方REST下载校 raw与archive不同摘要，存 run/attempt/checkout/config/runtime/tools；私有档案普通90天、正式初始1年、敏感服从短期限，撤临时凭据与sandbox并记录清理失败（QR-006,QR-009）。
 - [ ] T016 实现 `tools/ci/aggregate.ts` 并在 `.github/workflows/ci-bootstrap.yml`、`.github/workflows/verify-release.yml` 始终运行 `agoraweave/ci-gate`；枚举冻结集合及全部attempt／原报告，最终指定有效attempt须真实通过，未解决 failed/skipped/cancelled/timed_out/missing/unavailable/unknown 或摘要／版本错配均拒绝；预期Red／拒绝探针原failed保留，只记观察事实不计业务passed，不能择绿隐藏失败或只看GitHub图标；实际verify业务job与调用链由T021建立，聚合读取各job原报告，聚合存在不证明执行器已可运行；先接bootstrap的真实聚合，verify聚合在T021建立实际job时接入；不可提前调用未建立的工作流（QR-003,QR-007）。
 - [ ] T017 实现 `.github/workflows/tdd-cycle.yml`、`tools/ci/tdd-cycle.ts` 和 `package.json` 的 ci:tdd：记录 behavior/cases/oracle/fixture/test摘要、S_R/S_G/final、红失败因果和回归；预期Red保原failed只确认观察，不计业务passed，不触发合并／生产；同T021的真实发现／执行／报告接口接线，工程Red从最小bootstrap入口执行，业务Red/Green复用已就绪增量job；每个尚未实现的npm入口在实际使用前建立，不允许仅登记名字；T021前工程迭代使用已可运行bootstrap/harness接口，T021建立后再接其发现/执行器；不为创建共享编排自身形成T017↔T021就绪循环（QR-003,QR-006,QR-007）。
-- [ ] T018 在 `docs/engineering/development-ai-admission.md`、`infra/ci/review-policy.json` 登记已选官方 Codex路线与用户5A/6B授权；实际需API资源时索取并按官方能力／账户核定代码及图像模型ID、训练／地域／分包／保留删除／费用，仅必要工程资料与合成截图，排除真实用户／生产／秘密，未满足不调用不ci-ready（QR-008,QR-009,QR-010）。
-- [ ] T019 创建独立 Linux `.github/workflows/ai-code-review.yml`、`tools/ci/review/code-prompt.md`、`tools/ci/schemas/ai-code-review.schema.json`；按RD-13固定Codex Action SHA及CLI/proxy0.162.1，read-only/drop-sudo/不持久Git凭据，显式模型读final diff／必要上下文／契约／实际报告，保存请求／用量／覆盖／findings／未判断，不执行受审仓库脚本或有秘密pull_request_target代码（QR-007,QR-010）。
-- [ ] T020 创建独立 `.github/workflows/ai-visual-review.yml`、`tools/ci/review/visual-prompt.md`、`tools/ci/schemas/ai-visual-review.schema.json`；真实附每批各端全图及必要裁图摘要、设计／基准／页面矩阵／差异／交互报告，逐状态结构审查，漏范围／拒绝／截断／unknown拒绝，AI不可编辑基准／批准发行（QR-005,QR-007,QR-010）。
-- [ ] T021 实现 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`tools/ci/discover-targets.ts`、`tools/ci/run-check-set.ts` 及 `package.json` 的实际ci:install/health/discover/contracts/lint/typecheck/run/e2e/evidence入口；在最小bootstrap通道与T013逐行为有效工程Red之后调用已有T003–T020真实安装、Compose健康、初始化schema/seed探针、静态契约、网页/双端壳交互、报告采集归档和独立AI审查，显式job依赖与始终聚合；初始化同SHA使用bootstrap清单及bootstrap-only范围，不等待ci-ready/business-start，不实现业务、不把壳当业务通过；受审激活清单接business-increment，未实现项保后续激活点，缺脚本／发现为空／缺job／调用缺边真实拒绝，禁止只转发聚合check（QR-001–010）。
+- [ ] T018 在 `docs/engineering/development-ai-admission.md`、`infra/ci/review-policy.json` 登记ED-11当前Codex代码／图像审查、覆盖与证据绑定协议；取消额外审查API账号与独立云端模型，记录必要工程／合成输入、排除真实用户／生产／秘密，缺实际输入或审查仍不ci-ready（QR-008,QR-009,QR-010）。
+- [ ] T019 创建 `tools/ci/review/code-review.md`、`tools/ci/schemas/ai-code-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex读取final diff／必要上下文／契约／实际报告，私有保存执行者／会话／SHA／输入摘要／覆盖／findings／处置／未判断；Actions校记录绑定，不伪造独立模型调用，不执行不可信受审脚本或给审查生产权限（QR-007,QR-010）。
+- [ ] T020 创建 `tools/ci/review/visual-review.md`、`tools/ci/schemas/ai-visual-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex实际读取各端全图／必要裁图、设计／基准／页面矩阵／差异／交互报告，按图像摘要与当前SHA逐状态记录，漏范围／截断／unknown拒绝，不可编辑基准或批准发行（QR-005,QR-007,QR-010）。
+- [ ] T021 实现 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`tools/ci/discover-targets.ts`、`tools/ci/run-check-set.ts` 及 `package.json` 的实际ci:install/health/discover/contracts/lint/typecheck/run/e2e/evidence入口；在最小bootstrap通道与T013逐行为有效工程Red之后调用已有T003–T020真实安装、Compose健康、初始化schema/seed探针、静态契约、网页/双端壳交互、报告采集归档和当前Codex代码／视觉审查记录，显式job依赖与始终聚合；初始化同SHA使用bootstrap清单及bootstrap-only范围，不等待ci-ready/business-start，不实现业务、不把壳当业务通过；受审激活清单接business-increment，未实现项保后续激活点，缺脚本／发现为空／缺job／调用缺边真实拒绝，禁止只转发聚合check（QR-001–010）。
 - [ ] T022 实现仅Actions执行的 `tools/ci/bridge-gate.ts` 与结果schema，绑定actor/feature/mode/current SHA/contract/check_set；start核ci-ready祖先及未漂移基础输入，complete冻结当前SHA等待全集合并校下载报告／TDD／AI／基准／回归／read_by/read_at后生成私有 `completion-records/`，新提交或受审输入变化失效（QR-006,QR-007,QR-008）。
 - [ ] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
 - [ ] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
 - [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 核准当前／最低iOS16.4和Android7、物理VoiceOver/TalkBack／键盘／媒体／推送通道及最小临时服务凭据；实际需用按ED-07索取，Actions真实最小采集／归档／撤租约探针，模拟器不能补缺物理资源（QR-004,QR-005,QR-008）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T026 通过 `.github/workflows/ci-bootstrap.yml` 重跑当前冻结依赖的 S_G与所有已激活初始化套件／两个真实AI通道／三端壳／清理／拒绝探针；保存原负向状态与预期拒绝观察，处理findings后同SHA重审，核不同事件及实际保护所需check，不随意关闭既有保护；同时从事件／dispatch真实调用T021共享编排，在bootstrap清单及bootstrap-only范围取得非空安装／健康／目标发现／三端壳／报告归档／独立AI审查的完整同SHA链，全部拒绝探针可核，不等待业务准入（QR-001,QR-003,QR-007）。
+- [ ] T026 通过 `.github/workflows/ci-bootstrap.yml` 重跑当前冻结依赖的 S_G与所有已激活初始化套件／当前Codex代码与实际图像审查记录／三端壳／清理／拒绝探针；保存原负向状态与预期拒绝观察，处理findings后同SHA重审，核不同事件及实际保护所需check，不随意关闭既有保护；同时从事件／dispatch真实调用T021共享编排，在bootstrap清单及bootstrap-only范围取得非空安装／健康／目标发现／三端壳／报告归档／当前Codex代码／视觉审查记录的完整同SHA链，全部拒绝探针可核，不等待业务准入（QR-001,QR-003,QR-007）。
 - [ ] T027 依据 `tools/ci/validation-manifest.json` 等待最终初始化SHA全必需结果，逐一下载校验读取并写私有 `ci/readiness/`；门禁仅确认ci-ready及初始化任务，不设feature complete、不批准产品基准；依赖／清单／门禁变更必须在新SHA重新验真才能进入Phase2；ci-ready必须包含T021增量执行器的真实调用与原报告读取，非空发现及job依赖链齐全；初始化不可因business-start反向依赖ci-ready形成循环（QR-006,QR-007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 2: Foundational — 持续有效核心
 
@@ -133,7 +135,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T051 通过 `.github/workflows/verify-release.yml` 执行核心同目标 S_G、当前已激活套件／接口／安全并发／恢复与各端组件交互、实际AI代码／视觉审查；读完原报告且findings闭环后写私有 `completion-records/foundation/`，新SHA重验，不把基础fixture或壳当后续全业务通过；前置T033已提供全部已激活迁移／seed／真实套件／各端组件入口和非空执行证据，依赖失败／缺脚本或调用边拒绝；不依赖US14首次创建验证器（QR-003–007,QR-010）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 3: User Story 1 — 安全加入和管理账号 (Priority: P1)
 
@@ -167,7 +169,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T064 [US1] 通过 `.github/workflows/verify-release.yml` 在真实Auth/阿里云合格测试通道／DB／双端App及后台运行US1全部独立用例、当前目标Green／安全回归／AI代码视觉审查；读取同最终SHA报告并满足适用基准确认后存私有 `completion-records/us1/`，US17实际物理清理继续必需、不以注销UI代清理AC（FR-001–008,FR-103–107,QR-003–007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 4: User Story 3 — 发布内容并恢复草稿 (Priority: P1)
 
@@ -205,7 +207,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T081 [US3] 通过 `.github/workflows/verify-release.yml` 执行US3真实接口/对象/并发/双端发布草稿与既有回归，同目标S_G及final新Green、当前AI审查与适用基准；读报告存私有 `completion-records/us3/`，US4完整投票与US9收录消费就绪后重跑关联AC，原AC摘要不替全文；对T069在双端原生产物及必要物理端按V19A读实际网络/Range字节/播放音量/帧/视区/预取取消报告；US2偏好和各消费入口就绪后重跑同oracle及当前权限回归（FR-018–027,FR-112–113,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 5: User Story 5 — 控制可见性、编辑、删除与恢复 (Priority: P1)
 
@@ -236,7 +238,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T093 [US5] 通过 `.github/workflows/verify-release.yml` 运行US5当前真实层的S_G/回归并阅读报告；全部消费者已可运行后执行完整跨入口AC及现版本AI审查/视觉确认，存私有 `completion-records/us5/`，依赖未执行不能勾此完整验收任务或称全撤权通过（FR-041–052,FR-108–111,QR-003–007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 6: User Story 7 — 处理私信请求与正常会话 (Priority: P1)
 
@@ -269,7 +271,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T105 [US7] 通过 `.github/workflows/verify-release.yml` 执行US7完整请求/资格/消息/附件/并发/双端/真实Realtime与既有回归，读同目标与final新Green/AI审查/视觉基准报告存私有 `completion-records/us7/`；US2实际关系变化、US15通知与US17备份就绪后再验证交叉用例，不遗落AS-02；V09在真实DB完整执行双向创建A→B/B→A、重试、过期、accept/direct-send竞争并核一pending/initial/正常会话及通知效果，负向原报告和消息/未读域证据均保存；私信GIF按V19A保双端实际帧/网络/交互及逐消息撤权报告（FR-061–072,QR-003–007,FR-065,FR-067,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 7: User Story 8 — 使用有来源的只读 AI (Priority: P1)
 
@@ -306,7 +308,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T121 [US8] 通过 `.github/workflows/verify-release.yml` 执行US8真实模型/只读工具/来源用途/撤回/限额/双端及自动有标签评估、适用回归和独立开发AI代码视觉审查；读final SHA报告存私有 `completion-records/us8/`，普通质量/性能保暂定并将实测供用户确认，来源安全硬门槛不降低（FR-073–089,QR-003–007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 8: User Story 10 — 治理、处罚、独立申诉与授权后台 (Priority: P1)
 
@@ -342,7 +344,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T136 [US10] 通过 `.github/workflows/verify-release.yml` 执行US10完整五角色/审核并发/处罚申诉/文档发布读取及注册AI消费竞态、真实Web/双端与AI审查、视觉基准；读取同final报告存私有 `completion-records/us10/`，合成资料不等正式运营正文已供或生产已批准；后台合法媒体预览逐浏览器V19A适用行为、当前权限和必要设置回归，保存真实网络/播放器/交互报告（FR-095–107,FR-002,FR-078–079,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 9: User Story 11 — 管理统一配置 (Priority: P1)
 
@@ -373,7 +375,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T148 [US11] 通过 `.github/workflows/verify-release.yml` 验US11真实多consumer/角色/旧值/并发/原子回滚与Web/双端流程，全部consumer就绪后重跑AC38–42/AS04和对应回归，读final SHA/AI代码视觉报告存私有 `completion-records/us11/`，不得以注册条目齐全代真实生效；FR-113关联真实设置与全部已实现播放器consumer，按V19A验证平台更新/回滚不覆盖个人选择，未就绪完整consumer仍未完成；ED-10按V12B复验匿名/登录分享配置来源与App相反保存值隔离，伪query无私人投影、页面操作不改DB；账号偏好仍由App GET/PATCH管理（FR-130–141,QR-003–007,FR-113,FR-091–092）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 10: User Story 13 — 安装、停用、升级与卸载插件 (Priority: P1)
 
@@ -409,7 +411,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T163 [US13] 通过 `.github/workflows/verify-release.yml` 对US13真实隔离/生命周期/迁移/role/MFA/管理页取得S_G及必要回归；US12三端与全部官方模块/US17清理/US14生产拒绝完成后跑完整AC43–46/50，读final SHA/审查/基准报告存私有 `completion-records/us13/`，未齐不勾完整验收（FR-142–159,QR-003–007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 11: User Story 14 — 验证、确认、灰度发布与旧端兼容 (Priority: P1)
 
@@ -444,7 +446,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T177 [US14] 通过 `.github/workflows/verify-release.yml` 在合成sandbox完整跑四类变更、无确认/摘要篡改/名单/兼容/中断恢复/产物替换负向，读final SHA与全部适用AI审查/视觉回归证据存私有 `completion-records/us14/`；完整首版AC51–53须所有故事就绪后的Final gate，验证通过仍不授权生产（FR-160–164,QR-001–009）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 12: User Story 17 — 分类清理和安全恢复数据 (Priority: P1)
 
@@ -476,7 +478,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T188 [US17] 通过 `.github/workflows/verify-release.yml` 实际陈旧备份/对象/缺日志/插件缺席/共享权益/到期/部分失败重试/配置回滚复活攻击与ED05测量，所有后续consumer就绪后完整恢复回归；读final SHA安全/测量/AI代码视觉报告存私有 `completion-records/us17/`，未验证轮转/目标不能写已达标（FR-114–118,QR-003–007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 13: User Story 2 — 维护资料和选择社交关系 (Priority: P2)
 
@@ -511,7 +513,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T202 [US2] 通过 `.github/workflows/verify-release.yml` 执行US2全部身份/名称/关系竞态/资格及双端真实流程，US7/US8/US9/US15消费者接入后复验跨入口/旧链接/请求独立/过滤，读final SHA与审查基准报告存私有 `completion-records/us2/`；T192覆盖App真实设置读写和主页当前播放，对全部已实现合法App消费者重跑V19A偏好/系统/媒体资格联动，分享按ED-10独立默认/页面状态验证，未实现消费者仍后续必需；I3按T192对真实HTTP方法/注册表/客户端、部分更新保留、PUT405/Allow、CAS/非法值无半保存及幂等重试/不同payload冲突复验；App账号改变不作为分享偏好来源，ED-10隔离待US9真实流程齐全后仍必需（FR-009–017,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 14: User Story 4 — 参与投票与有边界的讨论 (Priority: P2)
 
@@ -544,7 +546,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T214 [US4] 通过 `.github/workflows/verify-release.yml` 执行US4全部真实评论/票竞态与双端当前Green/回归，AI/搜索/分享/通知已接入后复验统计与源失效，读final SHA/AI代码视觉/基准报告存私有 `completion-records/us4/`，不以点赞mock或页面图代统计安全；评论GIF按V19A保实际网络/帧/播放器/交互证据，设置和共享策略变更重跑适用回归（FR-028–040,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 15: User Story 6 — 浏览、发现、互动和私密收藏 (Priority: P2)
 
@@ -576,7 +578,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T225 [US6] 通过 `.github/workflows/verify-release.yml` 执行US6真实Auth/DB查询/信号/互动/权限/分页竞态/双端与运营后台、已激活回归和AI代码视觉审查，读final SHA与基准报告存私有 `completion-records/us6/`；AI/分享/通知接入后再次核信号与当前输出；流/搜索/收藏/详情各入口按V19A同oracle及设置变化回归，保存双端网络/播放/预取/声音/视区原报告（FR-053–060,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 16: User Story 9 — 分享并控制搜索引擎收录 (Priority: P2)
 
@@ -607,7 +609,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T235 [US9] 通过 `.github/workflows/verify-release.yml` 实际浏览器/分享会话直接API/机器人源码/媒体/陈旧job/配置与App设置跑US9所有V12/12A当前Green/回归，读final SHA和独立代码视觉/基准证据存私有 `completion-records/us9/`，分享白名单不能仅静态文件存在；分享实际视频/GIF逐浏览器V19A适用组合、真实点击回退及网络/播放原报告，不由截图推断；V12B按ED-10真实验证匿名/登录默认相同来源、相反账号always/never和preload及App改变不影响分享、无私人API/SSR/config/hydration/缓存/媒体/登录响应泄漏、页面全部控件可操作且DB不变/不假保存；原网络/播放/请求审计与账号前后版本报告齐全，账号设置仍App GET/PATCH且媒体撤权硬门槛不降（FR-090–094,QR-003–007,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 17: User Story 12 — 依据正式工具独立开发和云端测试插件 (Priority: P2)
 
@@ -642,7 +644,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T249 [US12] 通过 `.github/workflows/verify-release.yml` 执行US12原oracle S_G与developer-journey真实云端从零闭环、正式SDK包摘要/各Host单端及集成/受审A-B共享拒绝/资源异常/生命周期恢复，读final SHA/代码视觉基准/文档覆盖存私有 `completion-records/us12/`；未真实走通或须改核心不完成AC48–50；实际三端Host媒体入口按V19A适用策略/系统/网络/权限消费回归；缺实际组件或媒体binding未激活保完整验收未完成（FR-142,FR-148–151,FR-165–173,QR-003–009,FR-113）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 18: User Story 15 — 接收通知并应对独立故障 (Priority: P2)
 
@@ -675,11 +677,11 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T261 [US15] 通过 `.github/workflows/verify-release.yml` 完成US15全部真实事件/各独立故障/多端未读/默认锁屏与必要物理推送集成、跨入口撤权/AI和DM接受/停用回归，读final SHA与代码视觉基准证据存私有 `completion-records/us15/`，provider accepted报告不足代替设备结果（FR-119–124,QR-003–009）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 19: User Story 16 — 在各端获得真实可用的界面 (Priority: P2)
 
-**Goal / Purpose**：全UI-SPEC页面/状态及正式资料流程真实原生与网页可用，取得用户本人具体基准确认和独立AI视觉复检；通用基础和每页验收贯穿实施；全入口媒体行为与物理播放汇总。
+**Goal / Purpose**：全UI-SPEC页面/状态及正式资料流程真实原生与网页可用，取得用户本人具体基准确认和当前Codex实际图像复检；通用基础和每页验收贯穿实施；全入口媒体行为与物理播放汇总。
 
 **Independent Test**：V19；AC-35/52/55，SC-016。iOS/Android最低+当前OS/真实读屏/键盘/播放与后台分享插件对应页面，主题/窄屏/100%-200%大字/长文/加载空错误失权提交未知等全部有证据；五入口侧栏正确、中文可达无假成功，用户确认具体基准摘要，不能网页代原生。 V19A全部实际入口的组件/按audience合法播放输入、双端物理网络/帧/音量/读屏与当前权限；截图不证明播放。 I3 App方法/更新与I4分享默认/页面状态分源；V12B的零私人读取/同步和DB未变须有实际报告。
 
@@ -707,7 +709,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - [ ] T274 [US16] 通过 `.github/workflows/verify-release.yml` 对US16所有适用实际页面/状态/设备主题矩阵、物理读屏交互/大字键盘播放/中文内容与完整基准确认跑当前S_G及回归，执行独立真实图像AI审查逐状态处置并重审，读final SHA原报告存私有 `completion-records/us16/`；漏图漏状态未确认基准不通过；T265完整V19A入口/策略矩阵及实际物理播放/网络/音量/字节报告齐全，App个人设置与获准App消费者行为一致，分享依ED-10核默认/页面状态；截图或一般可访问性检查不能证明播放通过；I3 App GET/PATCH及ED-10分享默认/页面操作各自V19A/V12B报告齐全，匿名/登录无个人读取／同步／DB写入及真实浏览器点击回退，分享不要求消费账号设置（FR-125–129,QR-003–010,FR-113,FR-091–092）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 20: Polish & Cross-Cutting — 全量复检、测量与交付封口
 
@@ -730,12 +732,12 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
 - [ ] T281 通过 `.github/workflows/verify-release.yml` 以full-release对同一final SHA/冻结产物完整执行quickstart所有必需云端jobs与55AC/AS/SC、两个A-B及八官方业务/四类更新/物理原生/真实AI/最新日志恢复/全部配置消费者；任何skip/取消超时缺资源unknown错版拒绝，原失败与完整Green证据均保留；完整V19A每项网络/视区/系统条件/声音/preload和合法媒体入口真实证据齐全，含C1双向并发与I1非空调用链，缺组件/缺消费不算全量通过；I3真实方法/部分PATCH/PUT拒绝/CAS幂等及V12B ED-10全部来源/页面操作/零私人读写/不泄漏/不假同步与当前媒体资格证据完整，缺报告仍未通过（FR-001–173,QR-001–010,SC-001–018）。
-- [ ] T282 通过 `.github/workflows/ai-code-review.yml`、`.github/workflows/ai-visual-review.yml` 在final SHA再次真实独立审全部修改/契约/真实测试报告及全端矩阵原图/基准/交互，闭环findings并对应版本重审；开发AI只必要工程/合成数据，未判/漏范围/工具缺失/未本人基准确认不通过（QR-005–007,QR-009–010）。
+- [ ] T282 当前Codex依据 `tools/ci/review/code-review.md`、`tools/ci/review/visual-review.md` 在final SHA再次审全部修改／契约／真实测试报告和全端矩阵实际原图／基准／交互；私有记录摘要／覆盖／findings／处置并在Actions校验，修复后对应版本重审；未判／漏范围／缺图／未本人基准确认不通过，审查只用必要工程／合成数据（QR-005–007,QR-009–010）。
 - [ ] T283 根据 `contracts/release-evidence.md` 与 `contracts/cloud-validation.md` 从当前SHA冻结全集枚举所有run/attempt/job等待终态，按artifact_id下载校raw/archive摘要并实际阅读；写私有 `release-archives/` 与 `completion-records/final/`，记录read_by/read_at/版本环境清单摘要/审查处置基准确认，失败也归档/临时租约清理结果可查，公开仅脱敏索引（QR-006–009,FR-173）。
 - [ ] T284 仅在当前SHA全量证据验真和读取满足后，使用已实现 `tools/ci/bridge-transition.ps1` 云端可信结果更新 `.specify/superpowers-handoff.json` 并将满足的canonical `specs/001-agoraweave-v1/tasks.md`任务勾选；任何未提交修改/新SHA/清单漂移使旧完成无效，task-done与直接旧脚本不得假complete；本任务也是未来实施步骤，本轮不执行；checkbox或交接元数据若形成新提交，同样先对新SHA重验并读取再承认有效完成（QR-007–008）。
 - [ ] T285 交付 `docs/operations/release-package-index.md`、`docs/operations/known-limitations.md` 的同版包/正式文档/工具/恢复限制/资源成本和真实验收报告，明确独立常驻部署及各渠道事实；如需真实生产动作届时由超管按US14具体版本权限范围名单MFA确认，扩大另确认，云端通过或这份清单不预授权生产（FR-160–173,QR-006–010）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、独立AI审查及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Dependencies & Execution Order
 

@@ -1,6 +1,6 @@
 # 执行边界
 
-依据：根 `AGENTS.md`、宪法 v3.0.1、`specs/001-agoraweave-v1/{spec,plan,tasks}.md`、`contracts/cloud-validation.md` 和已确认的 ED-05–10。任务清单是唯一完成契约，现有全部 285 项仍未完成。
+依据：根 `AGENTS.md`、宪法 v3.0.1、`specs/001-agoraweave-v1/{spec,plan,tasks}.md`、`contracts/cloud-validation.md` 和已确认的 ED-05–12。任务清单是唯一完成契约，现有全部 285 项仍未完成。
 
 ## 初始化范围
 
@@ -8,7 +8,7 @@
 
 | 路径 | 允许内容 |
 | --- | --- |
-| `.github/workflows/` | 初始化、测试先行、报告、只读独立审查及验证调度 |
+| `.github/workflows/` | 初始化、测试先行、报告、审查记录校验及验证调度 |
 | `tools/ci/`、`tests/{contract,integration,security}/ci/`、`tests/fixtures/bootstrap/` | 工程门禁、采集、发现及拒绝探针；不包含社区业务 |
 | `tests/e2e/bootstrap/`、`tests/e2e/{ios,android}/BootstrapShell*` | 无业务壳的真实交互与隔离服务联通 |
 | `package.json`、`package-lock.json`、`apps/{mobile,admin,share}/` | 固定官方依赖与无业务客户端壳；不能因路径获准而加入业务 |
@@ -30,6 +30,6 @@ Red 必须来自健康前置下的目标缺行为断言，保留原始 failed �
 
 所有报告关联目标和实际 checkout SHA、run／attempt、环境、工具版本与摘要。公开仓库只出现允许公开的技术索引、纯合成探针和脱敏日志；完整私有证据及 completion record 必须进入受控存储。资源缺失时记录 `unavailable`，保留任务未完成。
 
-业务准入前必须取得同版三端壳、官方 Compose、增量编排非空执行、真实开发 AI 代码及图像审查、资源准入与拒绝探针。首张壳截图不作为产品视觉基准；首次产品候选由用户本人确认。
+业务准入前必须取得同版三端壳、官方 Compose、增量编排非空执行、当前 Codex 代码及实际云端图像审查记录、资源准入与拒绝探针。首张壳截图不作为产品视觉基准；首次产品候选由用户本人确认。
 
 构建／验证成功不授权生产部署、迁移、权限生效、灰度或扩大。新实质冲突遵循宪法九，既定决定不重复询问。

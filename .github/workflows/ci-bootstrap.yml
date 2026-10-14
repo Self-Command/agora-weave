@@ -100,3 +100,128 @@ jobs:
           path: bootstrap-output/
           if-no-files-found: error
           retention-days: 7
+
+  archive-transport:
+    name: Private raw transport archive (not ci-ready)
+    needs: transport
+    if: ${{ always() && github.event_name == 'push' && github.repository == 'Self-Command/agora-weave' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    env:
+      TARGET_SHA: ${{ github.sha }}
+    steps:
+      - name: Install fixed archive Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+      - name: Download and verify original raw archives
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { mkdirSync, writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const root = 'https://api.github.com/repos/Self-Command/agora-weave';
+          const headers = { Authorization: `Bearer ${process.env.GH_TOKEN}`,
+            Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+          const sources = [
+            { id: '38593654084', sha: '1c81fb28cc9d5cf16394a476a400db2b71577df9' },
+            { id: process.env.GITHUB_RUN_ID, sha: process.env.TARGET_SHA },
+          ];
+          async function metadata(path) {
+            const response = await fetch(root + path, { headers });
+            if (!response.ok) throw new Error(`Metadata HTTP ${response.status}`);
+            return await response.json();
+          }
+          mkdirSync('evidence-upload', { recursive: true });
+          for (const source of sources) {
+            const run = await metadata(`/actions/runs/${source.id}`);
+            if (run.head_sha !== source.sha || run.event !== 'push' || run.name !== 'CI bootstrap') throw new Error('Source run mismatch');
+            const jobs = await metadata(`/actions/runs/${source.id}/attempts/${run.run_attempt}/jobs?per_page=100`);
+            const transport = jobs.jobs.filter(job => job.name === 'Bootstrap transport (not ci-ready)');
+            if (transport.length !== 1 || transport[0].status !== 'completed') throw new Error('Source transport is not complete');
+            const listing = await metadata(`/actions/runs/${source.id}/artifacts?per_page=100`);
+            const matches = listing.artifacts.filter(a => !a.expired && a.name === `bootstrap-transport-${source.id}-${run.run_attempt}`);
+            if (matches.length !== 1) throw new Error('Missing or ambiguous raw archive');
+            const artifact = matches[0];
+            const response = await fetch(`${root}/actions/artifacts/${artifact.id}/zip`, { headers });
+            if (!response.ok) throw new Error(`Artifact HTTP ${response.status}`);
+            const bytes = Buffer.from(await response.arrayBuffer());
+            const digest = createHash('sha256').update(bytes).digest('hex');
+            if (`sha256:${digest}` !== artifact.digest) throw new Error('Raw archive digest mismatch');
+            const directory = `evidence-upload/${source.id}`;
+            mkdirSync(directory, { recursive: true });
+            const archivePath = `${directory}/source.zip`;
+            writeFileSync(archivePath, bytes);
+            const health = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'transport.json'], { encoding: 'utf8' }));
+            if (health.target_sha !== source.sha || health.checkout_sha !== source.sha || health.run_id !== source.id) throw new Error('Raw checkout identity mismatch');
+            const record = {
+              schema_version: 1, state: 'downloaded_and_verified', readiness: 'not_evaluated',
+              repository: 'Self-Command/agora-weave', source_run: source.id,
+              source_attempt: run.run_attempt, source_sha: source.sha,
+              source_workflow_conclusion: run.conclusion,
+              source_job_conclusion: transport[0].conclusion,
+              artifact_id: artifact.id, archive_sha256: digest, archive_bytes: bytes.length,
+              contract_digests: health.contract_digests,
+              archive_run: process.env.GITHUB_RUN_ID, archive_attempt: process.env.GITHUB_RUN_ATTEMPT,
+              retention_class: 'ordinary', retention_days: 90,
+              remote_directory: `/archive/ordinary/${source.sha}_${source.id}_${run.run_attempt}_${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_RUN_ATTEMPT}`,
+              verified_at: new Date().toISOString(),
+            };
+            writeFileSync(`${directory}/provenance.json`, JSON.stringify(record, null, 2) + '\n');
+          }
+          NODE
+      - name: Transfer to dedicated SFTP storage and verify readback
+        shell: bash
+        env:
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          umask 077
+          key="$RUNNER_TEMP/evidence-ssh-key"
+          hosts="$RUNNER_TEMP/evidence-known-hosts"
+          trap 'rm -f "$key" "$hosts" "$RUNNER_TEMP/evidence-sftp-batch"' EXIT
+          test -n "$EVIDENCE_SSH_PRIVATE_KEY"
+          test -n "$EVIDENCE_SSH_HOST"
+          test -n "$EVIDENCE_SSH_USER"
+          test -n "$EVIDENCE_SSH_KNOWN_HOSTS"
+          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" > "$key"
+          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" > "$hosts"
+          for directory in evidence-upload/*; do
+            remote=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1])).remote_directory)' "$directory/provenance.json")
+            mkdir -p "$directory/readback"
+            printf 'mkdir %s\nput %s/source.zip %s/source.zip\nput %s/provenance.json %s/provenance.json\nget %s/source.zip %s/readback/source.zip\nget %s/provenance.json %s/readback/provenance.json\n' \
+              "$remote" "$directory" "$remote" "$directory" "$remote" "$remote" "$directory" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
+            sftp -q -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
+              -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
+              "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
+            cmp "$directory/source.zip" "$directory/readback/source.zip"
+            cmp "$directory/provenance.json" "$directory/readback/provenance.json"
+            node --input-type=module - "$directory" <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          const directory = process.argv[2];
+          const provenance = JSON.parse(readFileSync(`${directory}/provenance.json`, 'utf8'));
+          const actual = createHash('sha256').update(readFileSync(`${directory}/readback/source.zip`)).digest('hex');
+          if (actual !== provenance.archive_sha256) throw new Error('Remote readback digest mismatch');
+          writeFileSync(`${directory}/receipt.json`, JSON.stringify({ ...provenance,
+            state: 'archived_raw_and_readback_verified', archived_at: new Date().toISOString(),
+            meaning: 'Raw transport only; source failure remains failure; not ci-ready',
+          }, null, 2) + '\n');
+          NODE
+            printf 'put %s/receipt.json %s/receipt.json\nget %s/receipt.json %s/readback/receipt.json\n' \
+              "$directory" "$remote" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
+            sftp -q -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
+              -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
+              "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
+            cmp "$directory/receipt.json" "$directory/readback/receipt.json"
+          done
+          printf 'Original source results archived and readback verified; readiness not evaluated\n' >> "$GITHUB_STEP_SUMMARY"
