@@ -81,6 +81,7 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath native-output/ios-tests-light.xcresult \
             CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-light.log 2>&1
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-light.xcresult > native-output/ios-tests-light.json
+          xcrun xcresulttool export attachments --path native-output/ios-tests-light.xcresult --output-path native-output/ios-attachments-light
           xcrun simctl io "$device" screenshot native-output/ios-light.png
           xcrun simctl terminate "$device" org.agoraweave.app
           xcrun simctl ui "$device" appearance dark
@@ -91,6 +92,7 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath native-output/ios-tests-dark.xcresult \
             CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-dark.log 2>&1
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-dark.xcresult > native-output/ios-tests-dark.json
+          xcrun xcresulttool export attachments --path native-output/ios-tests-dark.xcresult --output-path native-output/ios-attachments-dark
           xcrun simctl io "$device" screenshot native-output/ios-dark.png
           xcrun simctl shutdown "$device"
       - name: Preserve actual iOS environment and shell results
@@ -131,10 +133,13 @@ jobs:
           printf 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"\n' | sudo tee /etc/udev/rules.d/99-agoraweave-kvm.rules > /dev/null
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+          sudo apt-get update > native-output/system-packages.log 2>&1
+          sudo apt-get install -y --no-install-recommends libpulse0 >> native-output/system-packages.log 2>&1
+          dpkg-query -W -f='${Package}=${Version}\n' libpulse0 > native-output/system-package-versions.txt
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'system-images;android-36;google_apis;x86_64' 'emulator' > native-output/sdk-install.log 2>&1
           cat "$ANDROID_HOME/system-images/android-36/google_apis/x86_64/source.properties" > native-output/system-image.properties
           test -x "$ANDROID_HOME/emulator/emulator"
-          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1 || true
+          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1
       - name: Install frozen dependencies and build actual Android shell
         shell: bash
         run: |
