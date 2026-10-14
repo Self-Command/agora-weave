@@ -1,0 +1,11 @@
+{
+  "name": "agoraweave",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "22.23.3", "npm": "10.9.9" },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "ci:contracts": "node --experimental-strip-types --test tests/contract/ci/*.spec.ts tests/integration/ci/*.spec.ts"
+  }
+}

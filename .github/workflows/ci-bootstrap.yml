@@ -62,17 +62,32 @@ jobs:
             process.exitCode = 1;
           }
           NODE
+      - name: Execute engineering evidence assertions
+        id: assertions
+        shell: bash
+        run: |
+          set +e
+          node --experimental-strip-types --test --test-reporter=tap \
+            tests/contract/ci/evidence.spec.ts tests/integration/ci/aggregate.spec.ts \
+            > bootstrap-output/engineering.tap 2>&1
+          raw_exit=$?
+          set -e
+          cat bootstrap-output/engineering.tap
+          printf '%s\n' "$raw_exit" > bootstrap-output/assertions-exit-code.txt
+          exit "$raw_exit"
       - name: Save raw step outcome
         if: ${{ always() }}
         shell: bash
         env:
           HEALTH_OUTCOME: ${{ steps.health.outcome }}
+          ASSERTIONS_OUTCOME: ${{ steps.assertions.outcome }}
         run: |
           mkdir -p bootstrap-output
           node --input-type=module <<'NODE'
           import { writeFileSync } from 'node:fs';
           writeFileSync('bootstrap-output/outcome.json', JSON.stringify({
             outcome: process.env.HEALTH_OUTCOME || 'missing',
+            assertions_outcome: process.env.ASSERTIONS_OUTCOME || 'missing',
             run_id: process.env.RUN_ID, attempt: process.env.RUN_ATTEMPT,
             readiness: 'not_evaluated',
           }, null, 2) + '\n');
