@@ -20,7 +20,7 @@ export type CollectionResult = {
 
 type Fields = Record<string, unknown>;
 const fields = (value: unknown): value is Fields => value !== null && typeof value === 'object' && !Array.isArray(value);
-const fail = (reason: string): never => { throw new Error(`source_${reason}`); };
+function fail(reason: string): never { throw new Error(`source_${reason}`); }
 
 /** Authenticating a source preserves its outcome; it does not assess the reported checks. */
 export async function collectEvidence(request: CollectionRequest, fetcher: typeof fetch = fetch): Promise<CollectionResult> {

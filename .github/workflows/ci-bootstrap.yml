@@ -268,6 +268,59 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  collect-source:
+    name: Authenticate actual raw source (not ci-ready)
+    needs: transport
+    if: ${{ always() && github.event_name == 'push' && github.repository == 'Self-Command/agora-weave' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout exact collector implementation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Install fixed collection Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+      - name: Fetch every actual attempt and verify downloaded archive bytes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import { writeFileSync, mkdirSync } from 'node:fs';
+          import { collectEvidence } from './tools/ci/collect-evidence.ts';
+          const result = await collectEvidence({
+            repository: process.env.GITHUB_REPOSITORY, run_id: process.env.GITHUB_RUN_ID,
+            expected_sha: process.env.GITHUB_SHA, expected_attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+            workflow_path: '.github/workflows/ci-bootstrap.yml',
+            artifact_name: `bootstrap-transport-${process.env.GITHUB_RUN_ID}-${process.env.GITHUB_RUN_ATTEMPT}`,
+            token: process.env.GH_TOKEN,
+          });
+          mkdirSync('source-output', { recursive: true });
+          const { archive, source_run, attempts, ...receipt } = result;
+          writeFileSync('source-output/source-receipt.json', JSON.stringify({ ...receipt,
+            checkout_sha: process.env.GITHUB_SHA, run_id: process.env.GITHUB_RUN_ID,
+            attempt: Number(process.env.GITHUB_RUN_ATTEMPT), readiness: 'not_evaluated',
+            source_attempts: attempts?.map(item => ({ run_id: item.id, attempt: item.run_attempt,
+              head_sha: item.head_sha, status: item.status, conclusion: item.conclusion })),
+          }, null, 2) + '\n');
+          if (result.state !== 'verified_source') throw new Error(`Source authentication blocked: ${result.reason_codes.join(',')}`);
+          NODE
+      - name: Preserve actual source authentication receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: source-output/
+          if-no-files-found: error
+          retention-days: 7
+
   archive-transport:
     name: Private raw transport archive (not ci-ready)
     needs: transport
