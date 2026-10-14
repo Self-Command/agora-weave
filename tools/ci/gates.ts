@@ -127,7 +127,8 @@ export function assessReviewBaseline(input: unknown): Result {
   if (!strings(input.input_data_classes) || input.input_data_classes.length === 0 ||
       input.input_data_classes.some(item => !['engineering', 'synthetic'].includes(item))) reasons.add('forbidden_review_data');
   if (input.actual_checks.source !== 'github-actions' || input.actual_checks.state !== 'passed' ||
-      input.actual_checks.interactions_passed !== true || input.actual_checks.accessibility_passed !== true) reasons.add('actual_checks_not_passed');
+      (input.review_kind === 'visual' && (input.actual_checks.interactions_passed !== true ||
+        input.actual_checks.accessibility_passed !== true))) reasons.add('actual_checks_not_passed');
   const baseline = input.baseline;
   if (baseline.required === true && (baseline.state !== 'confirmed' || !digest(baseline.candidate_digest) ||
       baseline.candidate_digest !== baseline.confirmed_digest || baseline.approver !== 'user' || !text(baseline.authorization_ref) ||

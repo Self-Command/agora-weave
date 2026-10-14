@@ -7,6 +7,7 @@ function rawFiles(value: unknown): value is Fields[] {
   if (!Array.isArray(value) || !value.length || value.length > 10000 || !value.every(fields)) return false;
   const paths = value.map(file => file.path);
   return new Set(paths).size === paths.length && value.every(file => typeof file.path === 'string' &&
+    Object.keys(file).every(key => ['path', 'sha256', 'size_bytes'].includes(key)) &&
     /^[A-Za-z0-9_. /-]+$/.test(file.path) && !file.path.startsWith('/') &&
     file.path.split('/').every(part => part && part !== '..' && part !== '.') &&
     hash(file.sha256) && Number.isSafeInteger(file.size_bytes) && Number(file.size_bytes) >= 0 && Number(file.size_bytes) <= 128 * 1024 * 1024);
@@ -27,7 +28,8 @@ export function planArchive(input: unknown): Record<string, unknown> {
   }
   if (!['engineering', 'synthetic', 'sensitive'].includes(String(input.data_class)) ||
     !['ordinary', 'formal'].includes(String(input.retention_class))) return deny('invalid_archive_class');
-  if (!fields(input.cleanup) || !['revoked', 'not_used'].includes(String(input.cleanup.credentials)) ||
+  if (!fields(input.cleanup) || Object.keys(input.cleanup).some(key => !['credentials', 'sandbox', 'scope'].includes(key)) ||
+    !['revoked', 'not_used'].includes(String(input.cleanup.credentials)) ||
     input.cleanup.sandbox !== 'removed') return deny('cleanup_incomplete');
   const archivedAt = typeof input.archived_at === 'string' ? Date.parse(input.archived_at) : NaN;
   if (!Number.isFinite(archivedAt)) return deny('invalid_archive_time');
