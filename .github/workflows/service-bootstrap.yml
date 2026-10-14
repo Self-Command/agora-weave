@@ -68,29 +68,17 @@ jobs:
           compose=(docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env"
             -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json")
           "${compose[@]}" pull
-          "${compose[@]}" up -d
-          for attempt in $(seq 1 90); do
-            status=$("${compose[@]}" ps --format json || true)
-            if printf '%s' "$status" | grep -q '"Health":"healthy"'; then break; fi
-            sleep 2
-          done
+          "${compose[@]}" up -d --wait --wait-timeout 300
           "${compose[@]}" exec -T db pg_isready -U postgres -h localhost > service-output/database-health.txt
           "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
           "${compose[@]}" exec -T storage wget -q -O - http://localhost:5000/status > service-output/storage-health.json
           "${compose[@]}" ps --format json > service-output/service-health.json
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-          const records = readFileSync('service-output/service-health.json', 'utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line));
-          const required = ['supabase-db', 'supabase-studio', 'supabase-envoy', 'supabase-auth', 'supabase-rest', 'supabase-storage', 'supabase-meta', 'supabase-imgproxy'];
-          const missing = required.filter(name => !records.some(record => record.Service === name && record.Health === 'healthy'));
-          if (missing.length) throw new Error(`Required official services not healthy: ${missing.join(',')}`);
-          NODE
       - name: Capture sanitized real container failure detail
         if: ${{ always() }}
         shell: bash
         run: |
           node --input-type=module <<'NODE'
-          import { execFileSync } from 'node:child_process';
+          import { execFileSync, spawnSync } from 'node:child_process';
           import { readFileSync, writeFileSync, existsSync } from 'node:fs';
           const environmentPath = `${process.env.RUNNER_TEMP}/agoraweave-ci.env`;
           if (!existsSync(environmentPath)) process.exit(0);
@@ -104,9 +92,8 @@ jobs:
             const ids = execFileSync('docker', [...args, 'ps', '-a', '-q'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
             const records = ids.map(id => {
               const [container] = JSON.parse(execFileSync('docker', ['inspect', id], { encoding: 'utf8' }));
-              let logs = '';
-              try { logs = execFileSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
-              catch (error) { logs = `${error.stdout || ''}\n${error.stderr || ''}`; }
+              const logProcess = spawnSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8' });
+              const logs = `${logProcess.stdout || ''}\n${logProcess.stderr || ''}`;
               return { name: container.Name, state: container.State.Status, health: container.State.Health?.Status,
                 health_log: container.State.Health?.Log?.slice(-8).map(entry => sanitize(entry.Output || '')),
                 exit_code: container.State.ExitCode, logs: sanitize(logs) };
