@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.File
 
 class BootstrapShellTest {
   @Test
@@ -28,5 +29,8 @@ class BootstrapShellTest {
     context.startActivity(context.packageManager.getLaunchIntentForPackage(targetPackage)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     assertTrue(device.wait(Until.hasObject(By.text("AgoraWeave")), 10000))
     assertEquals(targetPackage, device.currentPackageName)
+    val captureRoot = context.getExternalFilesDir(null)!!
+    device.dumpWindowHierarchy(File(captureRoot, "bootstrap-ui.xml"))
+    assertTrue(device.takeScreenshot(File(captureRoot, "bootstrap-resume.png")))
   }
 }
