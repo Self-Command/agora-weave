@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Current Codex actual image review binding",
+  "type": "object",
+  "required": ["reviewer", "review_kind", "execution_mode", "session_ref", "target_sha", "contract_digest", "reviewed_at", "images", "coverage", "findings", "unresolved_items", "interaction_report_refs", "accessibility_report_refs", "baseline", "output_complete"],
+  "properties": {
+    "reviewer": { "const": "current-codex" },
+    "review_kind": { "const": "visual" },
+    "execution_mode": { "const": "current-codex-reading" },
+    "session_ref": { "type": "string", "minLength": 1 },
+    "target_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "contract_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "images": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["id", "sha256", "platform", "state", "theme", "viewport", "read_at", "full_screen"], "properties": { "id": { "type": "string", "minLength": 1 }, "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "platform": { "enum": ["ios", "android", "admin", "share"] }, "state": { "type": "string", "minLength": 1 }, "theme": { "enum": ["light", "dark"] }, "viewport": { "type": "string", "minLength": 1 }, "read_at": { "type": "string", "format": "date-time" }, "full_screen": { "const": true } } } },
+    "coverage": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "findings": { "type": "array", "items": { "type": "object", "required": ["id", "severity", "state", "evidence_ref"], "properties": { "id": { "type": "string", "minLength": 1 }, "severity": { "enum": ["critical", "important", "minor"] }, "state": { "enum": ["fixed_and_rechecked", "disproved_with_evidence"] }, "evidence_ref": { "type": "string", "minLength": 1 } } } },
+    "unresolved_items": { "type": "array", "maxItems": 0 },
+    "interaction_report_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "accessibility_report_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "baseline": { "type": "object", "required": ["required", "state"], "properties": { "required": { "type": "boolean" }, "state": { "enum": ["not_created", "not_required", "confirmed"] } } },
+    "output_complete": { "const": true }
+  }
+}

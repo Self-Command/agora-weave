@@ -1,7 +1,20 @@
 name: Isolated official services bootstrap
 on:
   push:
+    paths:
+      - 'supabase/upstream/**'
+      - 'infra/ci/compose.yml'
+      - 'infra/ci/images.lock.json'
+      - 'infra/ci/network-policy.yml'
+      - '.github/workflows/service-bootstrap.yml'
   pull_request:
+    paths:
+      - 'supabase/upstream/**'
+      - 'infra/ci/compose.yml'
+      - 'infra/ci/images.lock.json'
+      - 'infra/ci/network-policy.yml'
+      - '.github/workflows/service-bootstrap.yml'
+  workflow_call:
 permissions:
   contents: read
 jobs:
