@@ -1,0 +1,144 @@
+name: Native shell bootstrap
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  ios:
+    name: iOS shell exact toolchain (not ci-ready)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Confirm required Xcode 26.4.1 is actually available
+        shell: bash
+        run: |
+          mkdir -p native-output
+          sw_vers > native-output/macos-version.txt
+          ls -d /Applications/Xcode*.app > native-output/xcode-inventory.txt
+          test -d /Applications/Xcode_26.4.1.app
+          sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          xcodebuild -version > native-output/xcode-version.txt
+          xcrun simctl list runtimes -j > native-output/ios-runtimes.json
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+      - name: Install frozen dependencies and generate no-business native shell
+        shell: bash
+        run: |
+          npm ci --no-audit --no-fund
+          cd apps/mobile
+          CI=1 npm run ci:prebuild -- --platform ios
+          cd ios
+          pod install > ../../../native-output/pod-install.log 2>&1
+      - name: Build install and capture actual iOS shell
+        shell: bash
+        run: |
+          set -eu
+          xcodebuild -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+            -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/ios-derived" CODE_SIGNING_ALLOWED=NO \
+            > native-output/ios-build.log 2>&1
+          device=$(xcrun simctl list devices available -j | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=Object.values(JSON.parse(s).devices).flat().filter(d=>d.name.includes("iPhone"));if(!a.length)process.exit(1);process.stdout.write(a[0].udid)})')
+          xcrun simctl boot "$device"
+          xcrun simctl bootstatus "$device" -b
+          xcrun simctl install "$device" "$RUNNER_TEMP/ios-derived/Build/Products/Release-iphonesimulator/AgoraWeave.app"
+          xcrun simctl ui "$device" appearance light
+          xcrun simctl launch "$device" org.agoraweave.app
+          sleep 8
+          xcrun simctl io "$device" screenshot native-output/ios-light.png
+          xcrun simctl terminate "$device" org.agoraweave.app
+          xcrun simctl ui "$device" appearance dark
+          xcrun simctl launch "$device" org.agoraweave.app
+          sleep 3
+          xcrun simctl io "$device" screenshot native-output/ios-dark.png
+          xcrun simctl shutdown "$device"
+      - name: Preserve actual iOS environment and shell results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-ios-${{ github.run_id }}-${{ github.run_attempt }}
+          path: native-output/
+          if-no-files-found: error
+          retention-days: 7
+
+  android:
+    name: Android shell actual runtime (not ci-ready)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      ANDROID_AVD_HOME: /home/runner/.android/avd
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+      - name: Prepare SDK and record actual toolchain
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p native-output
+          test -d "$JAVA_HOME_17_X64"
+          printf 'JAVA_HOME=%s\n' "$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          printf '%s/bin\n' "$JAVA_HOME_17_X64" >> "$GITHUB_PATH"
+          "$JAVA_HOME_17_X64/bin/java" -version > native-output/java-version.txt 2>&1
+          printf 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"\n' | sudo tee /etc/udev/rules.d/99-agoraweave-kvm.rules > /dev/null
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'system-images;android-36;google_apis;x86_64' 'emulator' > native-output/sdk-install.log 2>&1
+          cat "$ANDROID_HOME/system-images/android-36/google_apis/x86_64/source.properties" > native-output/system-image.properties
+          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt
+      - name: Install frozen dependencies and build actual Android shell
+        shell: bash
+        run: |
+          npm ci --no-audit --no-fund
+          cd apps/mobile
+          CI=1 npm run ci:prebuild -- --platform android
+          cd android
+          ./gradlew assembleRelease --no-daemon > ../../../native-output/android-build.log 2>&1
+      - name: Install launch resume and capture Android shell
+        shell: bash
+        run: |
+          set -eu
+          echo no | avdmanager create avd --name agoraweave-ci --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
+          "$ANDROID_HOME/emulator/emulator" -avd agoraweave-ci -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > native-output/emulator.log 2>&1 &
+          adb wait-for-device
+          for attempt in $(seq 1 90); do
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ]; then break; fi
+            sleep 2
+          done
+          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1
+          adb shell input keyevent 82
+          adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+          adb shell cmd uimode night no
+          adb shell am start -W -n org.agoraweave.app/.MainActivity > native-output/android-launch.txt
+          sleep 8
+          adb shell uiautomator dump /sdcard/bootstrap-ui.xml
+          adb pull /sdcard/bootstrap-ui.xml native-output/android-ui.xml
+          grep -q 'AgoraWeave' native-output/android-ui.xml
+          adb exec-out screencap -p > native-output/android-light.png
+          adb shell input keyevent KEYCODE_HOME
+          adb shell cmd uimode night yes
+          adb shell am start -W -n org.agoraweave.app/.MainActivity > native-output/android-resume.txt
+          sleep 3
+          adb exec-out screencap -p > native-output/android-dark.png
+          adb emu kill
+      - name: Preserve actual Android environment and shell results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-android-${{ github.run_id }}-${{ github.run_attempt }}
+          path: native-output/
+          if-no-files-found: error
+          retention-days: 7
