@@ -8,7 +8,7 @@ function rawFiles(value: unknown): value is Fields[] {
   const paths = value.map(file => file.path);
   return new Set(paths).size === paths.length && value.every(file => typeof file.path === 'string' &&
     Object.keys(file).every(key => ['path', 'sha256', 'size_bytes'].includes(key)) &&
-    /^[A-Za-z0-9_. /-]+$/.test(file.path) && !file.path.startsWith('/') &&
+    /^[A-Za-z0-9_. ~=/-]+$/.test(file.path) && !file.path.startsWith('/') &&
     file.path.split('/').every(part => part && part !== '..' && part !== '.') &&
     hash(file.sha256) && Number.isSafeInteger(file.size_bytes) && Number(file.size_bytes) >= 0 && Number(file.size_bytes) <= 128 * 1024 * 1024);
 }

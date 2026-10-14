@@ -31,8 +31,8 @@ jobs:
       - name: Authenticate every original artifact and index bounded raw ZIP members
         env:
           GH_TOKEN: ${{ github.token }}
-          SOURCE_RUN_ID: ${{ inputs.source_run_id || '38616557700' }}
-          SOURCE_SHA: ${{ inputs.source_sha || '1839242dff1658e6f877f0716ad2313840eb29ed' }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id || '38636632772' }}
+          SOURCE_SHA: ${{ inputs.source_sha || 'e2908de7da82e195a7087dde0b1e57842d8a9c8f' }}
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: node --experimental-strip-types tools/ci/collect-archives.ts
       - name: Transfer complete originals to the dedicated private store and verify readback
