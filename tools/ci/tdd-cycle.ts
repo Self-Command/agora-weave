@@ -17,6 +17,9 @@ export function deriveTddCycle(input: unknown): Record<string, unknown> {
   const red = input.red;
   const ancestor = (before: string, after: string) => before !== after &&
     Array.isArray(ancestors[after]) && (ancestors[after] as unknown[]).every(sha) && (ancestors[after] as string[]).includes(before);
+  if (input.implementation_sha !== input.green.sha && !ancestor(input.implementation_sha, input.green.sha)) {
+    return deny('implementation_not_present_at_green');
+  }
   const inputIdentity = [input.red, input.green, input.final].every(record =>
     ['test_digest', 'fixture_digest', 'oracle_digest'].every(key => record[key] === red[key]));
   if (!inputIdentity) return deny('changed_authenticated_tdd_inputs');
