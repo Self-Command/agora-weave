@@ -2466,7 +2466,14 @@
         "tests/security/ci/legacy-transition.spec.ts"
       ],
       "id": "ci.legacy-transition"
+    },
+    {
+      "command": "ci:contracts",
+      "id": "ci.bootstrap-raw",
+      "files": [
+        "tests/integration/ci/bootstrap-reports.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 109
+  "engineering_case_count": 114
 }
