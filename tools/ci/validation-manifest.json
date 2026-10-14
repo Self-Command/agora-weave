@@ -2459,7 +2459,14 @@
         "tests/integration/ci/tdd-source.spec.ts"
       ],
       "id": "ci.tdd-source"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/legacy-transition.spec.ts"
+      ],
+      "id": "ci.legacy-transition"
     }
   ],
-  "engineering_case_count": 108
+  "engineering_case_count": 109
 }
