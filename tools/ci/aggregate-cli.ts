@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { aggregateBootstrap } from './aggregate.ts';
+import { deriveOrchestrationSource } from './orchestration-source.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Aggregation is Actions only');
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
@@ -60,7 +61,7 @@ try {
     collected.observed?.filter((item: Record<string, unknown>) => item.artifact_id).every((item: Record<string, unknown>) =>
       receipts.some(receipt => String(receipt.artifact_id) === String(item.artifact_id)));
 } catch { privateArchive = false; }
-const observed = (collected.observed || []).map((check: Record<string, any>) => {
+let observed = (collected.observed || []).map((check: Record<string, any>) => {
   const state = check.id === 'bootstrap.source-archive' ? privateArchive ? 'passed' : 'missing' :
     check.id === 'bootstrap.codex-code-review' ? reviewState('code') : check.id === 'bootstrap.codex-visual-review' ? reviewState('visual') :
     check.id === 'bootstrap.cleanup' && (!privateArchive || check.state !== 'passed') ? 'missing' : undefined;
@@ -69,6 +70,17 @@ const observed = (collected.observed || []).map((check: Record<string, any>) => 
     source_sha: sha, check_set_digest: digest, raw_report_digest: state === 'passed' ?
       hash(JSON.stringify(check.id === 'bootstrap.source-archive' ? receipts : review)) : undefined };
 });
+const orchestration = deriveOrchestrationSource({ expected_sha: sha, expected_check_set_digest: digest,
+  repository: process.env.GITHUB_REPOSITORY, source_authenticated: currentSource,
+  actual_case_count: manifest.engineering_case_count, source_run_id: sourceRunId, run: liveRun, jobs: liveJobs,
+  checks: observed, reports_complete: currentSource && collected.collection_complete === true,
+  workflow: readFileSync('.github/workflows/verify-increment.yml', 'utf8'),
+  dispatcher: readFileSync('.github/workflows/verify-release.yml', 'utf8'),
+  scripts: JSON.parse(readFileSync('package.json', 'utf8')).scripts,
+  review: { code: reviewState('code'), visual: reviewState('visual'), report_digest: hash(JSON.stringify(review)) } });
+observed = observed.map((check: Record<string, any>) => check.id !== 'bootstrap.orchestration' ? check :
+  { ...check, state: orchestration.state, source_verified: currentSource, source_sha: sha, check_set_digest: digest,
+    source_job_conclusion: orchestration.state === 'passed' ? 'success' : 'missing', raw_report_digest: hash(JSON.stringify(orchestration)) });
 const observedState = (id: string) => observed.filter((item: Record<string, any>) => item.id === id && item.state === 'passed').length === 1 ? 'passed' : 'missing';
 const result = aggregateBootstrap({ profile: 'bootstrap', expected_sha: sha, target_sha: collected.target_sha,
   expected_check_set_digest: digest, check_set_digest: collected.check_set_digest,
@@ -77,7 +89,7 @@ const result = aggregateBootstrap({ profile: 'bootstrap', expected_sha: sha, tar
   observed, previous_attempts: previous, collection_complete: collected.collection_complete,
   reports_read: reviewState('code') === 'passed' && reviewState('visual') === 'passed',
   code_review: reviewState('code'), visual_review: reviewState('visual'), tdd: observedState('bootstrap.tdd'),
-  private_archive: privateArchive ? 'passed' : 'missing', cleanup: observedState('bootstrap.cleanup'), orchestration: 'missing',
+  private_archive: privateArchive ? 'passed' : 'missing', cleanup: observedState('bootstrap.cleanup'), orchestration: observedState('bootstrap.orchestration'),
   bridge: needs.bridge.result === 'success' ? 'passed' : 'missing' });
 mkdirSync('gate-output', { recursive: true });
 writeFileSync('gate-output/readiness.json', JSON.stringify({ ...result, source: 'github-actions',
@@ -87,4 +99,5 @@ writeFileSync('gate-output/readiness.json', JSON.stringify({ ...result, source: 
   limitation: 'Current Codex final records, complete TDD coverage and remaining actual admissions are required',
   feature_complete: false }, null, 2) + '\n');
 writeFileSync('gate-output/final-source-job-outcomes.json', JSON.stringify({ run: liveRun, jobs: liveJobs }, null, 2) + '\n');
+writeFileSync('gate-output/orchestration.json', JSON.stringify(orchestration, null, 2) + '\n');
 if (result.state !== 'passed') throw new Error('Initialization blocked: ' + JSON.stringify(result.reason_codes));
