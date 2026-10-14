@@ -56,3 +56,10 @@ test('A05: verified private readback must bind the same archive, index and every
     assert.equal(verifyReadback(plan, { ...readback, ...patch }).state, 'blocked');
   }
 });
+
+test('A06: nested unregistered fields cannot copy credentials into the private index', () => {
+  for (const patch of [{ cleanup: { ...fixture().cleanup, token: 'synthetic-secret' } },
+    { raw_files: [{ ...fixture().raw_files[0], private_key: 'synthetic-secret' }] }]) {
+    assert.equal(planArchive({ ...fixture(), ...patch }).state, 'blocked');
+  }
+});

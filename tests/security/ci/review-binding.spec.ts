@@ -50,3 +50,10 @@ test('RB06: unauthenticated, local, stale target and empty required input contex
     assert.equal(bindReviewRecord(record, { ...context, ...patch }).state, 'blocked');
   }
 });
+
+test('RB07: code record validation binds actual contracts independently of physical accessibility admission', () => {
+  const { record, context } = fixture();
+  record.review_kind = context.review_kind = 'code';
+  record.actual_checks = context.actual_checks = { ...context.actual_checks, interactions_passed: false, accessibility_passed: false };
+  assert.equal(bindReviewRecord(record, context).state, 'passed');
+});
