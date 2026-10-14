@@ -2438,7 +2438,14 @@
       "files": [
         "tests/integration/ci/check-set.spec.ts"
       ]
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/archive.spec.ts"
+      ],
+      "id": "ci.archive"
     }
   ],
-  "engineering_case_count": 91
+  "engineering_case_count": 96
 }
