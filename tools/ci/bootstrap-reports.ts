@@ -69,5 +69,13 @@ export function assessBootstrapRaw(input: unknown): Record<string, unknown> {
       !/text="AgoraWeave"/.test(raw.hierarchy) || !hashes(raw.images)) return deny('incomplete_raw_android');
     return passed(['android:light:launch-resume', 'android:dark:launch-resume']);
   }
+  if (input.kind === 'ios') {
+    if ([raw.light, raw.dark].some(summary => !fields(summary) || summary.result !== 'Passed' ||
+      summary.totalTestCount !== 1 || summary.passedTests !== 1 || summary.failedTests !== 0 ||
+      summary.skippedTests !== 0 || summary.expectedFailures !== 0 ||
+      !Array.isArray(summary.testFailures) || summary.testFailures.length) ||
+      !hashes(raw.images) || raw.images.length < 4) return deny('incomplete_raw_ios');
+    return passed(['ios:light:launch-resume', 'ios:dark:launch-resume']);
+  }
   return deny('unregistered_raw_report_kind');
 }
