@@ -1,0 +1,48 @@
+name: Cloud bootstrap bridge admission
+on:
+  push:
+    paths:
+      - '.github/workflows/bridge-admission.yml'
+      - 'tools/ci/bridge-gate.ts'
+      - 'tools/ci/bridge-transition.ps1'
+      - '.specify/extensions.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/bridge-admission.yml'
+      - 'tools/ci/bridge-gate.ts'
+      - 'tools/ci/bridge-transition.ps1'
+      - '.specify/extensions.yml'
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Execute actual native ownership pre-hook
+        id: ownership
+        shell: pwsh
+        run: |
+          & ./.specify/extensions/speckit-superpowers-bridge/scripts/powershell/guard-command.ps1 -Action 'superpowers:executing-plans' -Actor codex
+          if (-not $?) { throw 'Native ownership guard failed' }
+          git restore -- .specify/bridge-events.jsonl
+      - name: Assess committed bootstrap scope and frozen contract bindings
+        env:
+          ACTUAL_PRE_HOOK: ${{ steps.ownership.outcome }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node --experimental-strip-types tools/ci/bridge-gate.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bridge-admission-${{ github.run_id }}-${{ github.run_attempt }}
+          path: bridge-output/
+          if-no-files-found: error
+          retention-days: 7
