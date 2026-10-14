@@ -63,7 +63,16 @@ for (const item of catalog) {
   const name = String(item.artifact_name);
   let kind: string, ids: string[] = [], jobPattern = '', raw: Record<string, unknown>, identity: Record<string, any>;
   try {
-    if (name.startsWith('verify-checkset-')) {
+    if (name.startsWith('bootstrap-tooling-')) {
+      kind = 'tooling'; ids = ['bootstrap.tooling']; jobPattern = ' / tooling / compatibility';
+      identity = parse(root, 'mapping.json');
+      const tasks = readFileSync('specs/001-agoraweave-v1/tasks.md');
+      const canonicalTaskIds = tasks.toString().split(/\r?\n/).filter(line => /^- \[ \] T\d{3}\b/.test(line))
+        .map(line => line.match(/T\d{3}/)![0]);
+      raw = { mapping: identity, refusal: parse(root, 'effective-refusal.json'), canonical_task_ids: canonicalTaskIds,
+        tasks_sha256: hash(tasks), first_brief: read(root, 'first-brief.md'), last_brief: read(root, 'last-brief.md'),
+        ledger: read(root, 'raw-native-ledger.md'), command: read(root, 'raw-task-command.log') };
+    } else if (name.startsWith('verify-checkset-')) {
       kind = 'engineering'; ids = ['bootstrap.engineering', 'bootstrap.discovery']; jobPattern = ' / discover';
       identity = parse(root, 'execution.json'); raw = { tap: read(root, 'engineering.tap'), expected_count: manifest.engineering_case_count };
       if (parse(root, 'discovery.json').state !== 'discovered') throw new Error('Missing actual discovery');

@@ -60,6 +60,9 @@ jobs:
           writeFileSync('tooling-output/mapping.json', JSON.stringify({ source: 'github-actions',
             checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
             run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+            runner_environment: process.env.RUNNER_ENVIRONMENT,
+            check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+            toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
             spec_kit: options.speckit_version, superpowers: '7.0.0', superpowers_commit: submodule,
             tasks_sha256: createHash('sha256').update(tasks).digest('hex'), mapping: ids.map((id, index) => ({ id, task: index + 1 })),
             expected_completion: 'refused', readiness: 'not_evaluated' }, null, 2) + '\n');
@@ -83,13 +86,15 @@ jobs:
           node --experimental-strip-types --input-type=module <<'NODE'
           import { assessBridgeGate } from './tools/ci/gates.ts';
           import { writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const target = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
           const result = assessBridgeGate({ raw_handoff_status: 'complete', raw_task_done_exit_code: 0,
-            transition: 'complete', target_sha: process.env.GITHUB_SHA });
+            transition: 'complete', target_sha: target });
           if (result.state !== 'blocked') throw new Error('Raw native completion bypassed effective gate');
           writeFileSync('tooling-output/effective-refusal.json', JSON.stringify({ ...result,
             raw_native_completion: 'preserved', effective_completion: false, canonical_tasks_completed: [],
             source: 'github-actions', run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
-            target_sha: process.env.GITHUB_SHA }, null, 2) + '\n');
+            target_sha: target }, null, 2) + '\n');
           NODE
           cp "$workspace/task-1-tests.log" tooling-output/raw-task-command.log
       - if: ${{ always() }}

@@ -16,6 +16,32 @@ export function assessBootstrapRaw(input: unknown): Record<string, unknown> {
     return deny('invalid_raw_source_identity');
   }
   const raw = input.raw;
+  if (input.kind === 'tooling') {
+    const mapping = raw.mapping, refusal = raw.refusal;
+    const ids = raw.canonical_task_ids;
+    if (!fields(mapping) || !fields(refusal) || !Array.isArray(ids) || !ids.length ||
+      ids.some(id => typeof id !== 'string' || !/^T\d{3}$/.test(id)) || new Set(ids).size !== ids.length ||
+      !Array.isArray(mapping.mapping) || mapping.mapping.length !== ids.length || !mapping.mapping.every(fields) ||
+      mapping.mapping.some((item, index) => item.id !== ids[index] || item.task !== index + 1) ||
+      mapping.spec_kit !== '1.0.12' || mapping.superpowers !== '7.0.0' ||
+      mapping.superpowers_commit !== 'bb92a77741419a4ab5f06e711a283343f1ada0c3' ||
+      typeof raw.tasks_sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(raw.tasks_sha256) || mapping.tasks_sha256 !== raw.tasks_sha256 ||
+      ['source', 'runner_environment', 'checkout_sha', 'run_id', 'attempt', 'check_set_digest', 'toolchain_digest']
+        .some(key => mapping[key] !== (input.identity as Fields)[key]) || mapping.expected_completion !== 'refused' ||
+      refusal.state !== 'blocked' || refusal.effective_completion !== false || refusal.raw_native_completion !== 'preserved' ||
+      refusal.source !== 'github-actions' || refusal.target_sha !== input.target_sha ||
+      refusal.run_id !== input.run_id || refusal.attempt !== input.attempt ||
+      !Array.isArray(refusal.canonical_tasks_completed) || refusal.canonical_tasks_completed.length ||
+      typeof raw.ledger !== 'string' || !raw.ledger.includes('Task 1: complete') ||
+      typeof raw.command !== 'string' || !raw.command.includes('Synthetic cloud exit zero; no canonical completion')) {
+      return deny('incomplete_raw_tooling');
+    }
+    for (const [brief, id] of [[raw.first_brief, ids[0]], [raw.last_brief, ids.at(-1)]]) {
+      if (typeof brief !== 'string' || !brief.includes(String(id)) ||
+        ['Expected:', 'Interface checks:', 'Overall regression:'].some(field => !brief.includes(field))) return deny('incomplete_raw_tooling_brief');
+    }
+    return passed([...ids.map(id => `tooling:${String(id)}`), 'tooling:raw-complete-effectively-refused']);
+  }
   if (input.kind === 'bridge') {
     const admission = raw.admission;
     if (!fields(admission) || admission.target_sha !== input.target_sha ||
