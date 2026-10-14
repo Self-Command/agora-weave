@@ -264,6 +264,7 @@ jobs:
             Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
           const sources = [
             { id: '38593654084', sha: '1c81fb28cc9d5cf16394a476a400db2b71577df9' },
+            { id: '38600654805', sha: 'e02159512f0d8411d15beea0d5725c3a1cee2a22' },
             { id: process.env.GITHUB_RUN_ID, sha: process.env.TARGET_SHA },
           ];
           async function metadata(path) {
@@ -328,6 +329,31 @@ jobs:
                 red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
                   reviewed_at: '2026-10-14T16:27:00Z', health: 'success',
                   conclusion: 'Observed raw TAP and checkout health; failure is absent evidence/aggregate behavior, no import/compile/discovery/credential error' },
+                green_state: 'not_implemented', raw_failure_preserved: true,
+              };
+            }
+            if (source.id === '38600654805') {
+              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
+              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
+              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' || !tap.includes('# pass 30') || !tap.includes('# fail 35')) throw new Error('Observed gate Red source changed');
+              const paths = ['tests/integration/ci/verify-orchestration.spec.ts', 'tests/integration/ci/tdd-cycle.spec.ts',
+                'tests/security/ci/bridge-gate.spec.ts', 'tests/security/ci/review-baseline.spec.ts', 'tests/fixtures/bootstrap/gates.ts'];
+              const digests = {};
+              for (const path of paths) {
+                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
+                if (file.encoding !== 'base64') throw new Error('Cannot bind gate Red input');
+                digests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
+              }
+              record.red_observation = {
+                cycle_id: 'ci-gates-002', state: 'red_observed', S_R: source.sha,
+                source_run: source.id, source_attempt: run.run_attempt,
+                behavior_ids: ['ci.orchestration-graph', 'ci.tdd-cycle', 'ci.bridge-gate', 'ci.codex-review-baseline'],
+                requirements: ['QR-003', 'QR-005', 'QR-007', 'QR-008', 'QR-009', 'QR-010'],
+                test_fixture_digests: digests, assertion_failures: 35, existing_regressions_passed: 30,
+                actual_failure: 'Four callable gate shells return unknown; semantic acceptance/rejection assertions fail',
+                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
+                  reviewed_at: '2026-10-14T16:43:00Z', health: 'success',
+                  conclusion: 'Read all 35 raw failures; imports/discovery healthy; prior 30 behaviors pass; target gate behavior absent' },
                 green_state: 'not_implemented', raw_failure_preserved: true,
               };
             }
