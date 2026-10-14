@@ -22,7 +22,7 @@ on:
       - 'infra/ci/android-bootstrap-tests.gradle'
   workflow_call:
 concurrency:
-  group: native-bootstrap-${{ github.head_ref || github.ref_name }}
+  group: native-bootstrap-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: false
 permissions:
   contents: read
@@ -65,7 +65,17 @@ jobs:
         shell: bash
         run: |
           set -eu
-          device=$(xcrun simctl list devices available -j | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const a=Object.values(JSON.parse(s).devices).flat().filter(d=>d.name.includes("iPhone"));if(!a.length)process.exit(1);process.stdout.write(a[0].udid)})')
+          xcrun simctl list devices available -j > native-output/ios-devices.json
+          device=$(node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const devices = JSON.parse(readFileSync('native-output/ios-devices.json', 'utf8')).devices;
+          const runtime = 'com.apple.CoreSimulator.SimRuntime.iOS-26-4';
+          const selected = devices[runtime]?.find(device => device.isAvailable && device.name.includes('iPhone'));
+          if (!selected) throw new Error('Pinned current iOS 26.4 runtime/device unavailable');
+          writeFileSync('native-output/ios-selected-device.json', JSON.stringify({ ...selected, runtime }, null, 2) + '\n');
+          process.stdout.write(selected.udid);
+          NODE
+          )
           xcodebuild -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
             -configuration Release -sdk iphonesimulator -destination "platform=iOS Simulator,id=$device" \
             -derivedDataPath "$RUNNER_TEMP/ios-derived" CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
@@ -105,12 +115,17 @@ jobs:
           retention-days: 7
 
   android:
-    name: Android shell actual runtime (not ci-ready)
+    name: Android shell API ${{ matrix.api }} actual runtime (not ci-ready)
     runs-on: ubuntu-24.04
     timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [24, 36]
     env:
       ANDROID_USER_HOME: /home/runner/.android
       ANDROID_AVD_HOME: /home/runner/.android/avd
+      ANDROID_API: ${{ matrix.api }}
     steps:
       - name: Checkout exact target
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -136,11 +151,11 @@ jobs:
           sudo apt-get update > native-output/system-packages.log 2>&1
           sudo apt-get install -y --no-install-recommends libpulse0 >> native-output/system-packages.log 2>&1
           dpkg-query -W -f='${Package}=${Version}\n' libpulse0 > native-output/system-package-versions.txt
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'system-images;android-36;google_apis;x86_64' 'emulator' > native-output/sdk-install.log 2>&1
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' "system-images;android-$ANDROID_API;google_apis;x86_64" 'emulator' > native-output/sdk-install.log 2>&1
           test -x "$ANDROID_HOME/platform-tools/adb"
           printf '%s/platform-tools\n' "$ANDROID_HOME" >> "$GITHUB_PATH"
           "$ANDROID_HOME/platform-tools/adb" version > native-output/adb-version.txt
-          cat "$ANDROID_HOME/system-images/android-36/google_apis/x86_64/source.properties" > native-output/system-image.properties
+          cat "$ANDROID_HOME/system-images/android-$ANDROID_API/google_apis/x86_64/source.properties" > native-output/system-image.properties
           test -x "$ANDROID_HOME/emulator/emulator"
           "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1
       - name: Install frozen dependencies and build actual Android shell
@@ -161,7 +176,7 @@ jobs:
           set -eu
           mkdir -p "$ANDROID_AVD_HOME"
           echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name agoraweave-ci \
-            --path "$ANDROID_AVD_HOME/agoraweave-ci.avd" --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
+            --path "$ANDROID_AVD_HOME/agoraweave-ci.avd" --package "system-images;android-$ANDROID_API;google_apis;x86_64" --device pixel_6
           "$ANDROID_HOME/emulator/emulator" -list-avds > native-output/avd-inventory.txt
           grep -qx agoraweave-ci native-output/avd-inventory.txt
           "$ANDROID_HOME/emulator/emulator" -avd agoraweave-ci -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > native-output/emulator.log 2>&1 &
@@ -191,7 +206,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: bootstrap-android-${{ github.run_id }}-${{ github.run_attempt }}
+          name: bootstrap-android-api${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: native-output/
           if-no-files-found: error
           retention-days: 7

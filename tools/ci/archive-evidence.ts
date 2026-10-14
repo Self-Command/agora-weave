@@ -32,8 +32,7 @@ export function planArchive(input: unknown): Record<string, unknown> {
   const archivedAt = typeof input.archived_at === 'string' ? Date.parse(input.archived_at) : NaN;
   if (!Number.isFinite(archivedAt)) return deny('invalid_archive_time');
   const expiry = new Date(archivedAt);
-  if (input.retention_class === 'formal') expiry.setUTCFullYear(expiry.getUTCFullYear() + 1);
-  else expiry.setUTCDate(expiry.getUTCDate() + 90);
+  expiry.setUTCDate(expiry.getUTCDate() + (input.retention_class === 'formal' ? 365 : 90));
   if (input.data_class === 'sensitive') {
     const sensitiveExpiry = typeof input.sensitive_expires_at === 'string' ? Date.parse(input.sensitive_expires_at) : NaN;
     if (!Number.isFinite(sensitiveExpiry) || sensitiveExpiry <= archivedAt || sensitiveExpiry > archivedAt + 7 * 86400000) {
@@ -42,7 +41,7 @@ export function planArchive(input: unknown): Record<string, unknown> {
     expiry.setTime(Math.min(expiry.getTime(), sensitiveExpiry));
   }
   return { ...input, state: 'archive_planned', reason_codes: [],
-    remote_directory: `/ci/${input.run_id}-${input.attempt}-${input.artifact_id}`,
+    remote_directory: `/archive/${input.data_class === 'sensitive' ? 'sensitive' : input.retention_class}/${input.target_sha}_${input.run_id}_${input.attempt}_${input.artifact_id}`,
     expires_at: expiry.toISOString(), storage: 'dedicated-private-sftp', readiness: 'not_evaluated' };
 }
 
