@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "scope": "bootstrap-only",
+  "coverage": "partial",
+  "cycles": [{
+    "cycle_id": "ci-authenticated-tdd-source-001",
+    "behavior_id": "ci.authenticated-tdd-source",
+    "case_ids": ["TS01", "TS02", "TS03", "TS04"],
+    "requirements": ["QR-003", "QR-006", "QR-007"],
+    "test_file": "tests/integration/ci/tdd-source.spec.ts",
+    "fixture_file": "tests/integration/ci/tdd-source.spec.ts",
+    "red": { "sha": "a4006311fd82cd131b64ecdd4712c1ca0efa79b2", "run_id": "38620297025", "attempt": 1 },
+    "green": { "sha": "db9230239ba3038d81763cf3193c725798d3ad62", "run_id": "38622519942", "attempt": 1 },
+    "implementation_sha": "3ed66dd2170037e536eccc01ef273e4ea60ae4f2",
+    "cause": "missing_behavior",
+    "cause_read_by": "current-codex",
+    "cause_read_at": "2026-10-14T19:03:00Z",
+    "cause_summary": "All four TS assertions returned unknown with healthy source transport; 104 existing assertions passed. Original failure retained."
+  }]
+}

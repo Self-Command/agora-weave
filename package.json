@@ -12,7 +12,8 @@
     "ci:e2e:web": "playwright test --config tests/e2e/bootstrap/playwright.config.ts",
     "ci:install": "npm ci --no-audit --no-fund",
     "ci:discover": "node --experimental-strip-types tools/ci/discover-targets.ts",
-    "ci:run": "node --experimental-strip-types tools/ci/test-harness.ts"
+    "ci:run": "node --experimental-strip-types tools/ci/test-harness.ts",
+    "ci:tdd": "node --experimental-strip-types tools/ci/tdd-journal.ts"
   },
   "devDependencies": { "@playwright/test": "1.64.1" }
 }
