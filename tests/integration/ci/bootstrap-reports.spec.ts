@@ -60,3 +60,14 @@ test('BR05: failed original job or different checkout/digests never passes from 
     assert.equal(assessBootstrapRaw({ ...fixture('engineering', { tap, expected_count: 1 }), ...patch }).state, 'blocked');
   }
 });
+
+test('BR06: both original XCTest summaries and all launch/resume images are required', () => {
+  const summary = { result: 'Passed', totalTestCount: 1, passedTests: 1, failedTests: 0, skippedTests: 0,
+    expectedFailures: 0, testFailures: [] };
+  const raw = { light: summary, dark: summary, images: Array(4).fill('d'.repeat(64)) };
+  assert.equal(assessBootstrapRaw(fixture('ios', raw)).state, 'passed');
+  for (const patch of [{ dark: { ...summary, skippedTests: 1 } }, { light: { ...summary, failedTests: 1 } },
+    { images: ['d'.repeat(64)] }, { dark: { ...summary, result: 'Failed' } }]) {
+    assert.equal(assessBootstrapRaw(fixture('ios', { ...raw, ...patch })).state, 'blocked');
+  }
+});
