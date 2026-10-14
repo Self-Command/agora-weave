@@ -1,2 +1,15 @@
 # Local brainstorming previews and session artifacts.
 /.superpowers/
+node_modules/
+.next/
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.tsbuildinfo
+**/.env
+**/.env.local
+**/.env.*.local
+bootstrap-output/
+freeze-output/
+playwright-report/
+test-results/
