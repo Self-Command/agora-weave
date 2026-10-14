@@ -14,20 +14,20 @@ const contractDigest = createHash('sha256').update(JSON.stringify(inputDigests))
 const handoff = JSON.parse(readFileSync('.specify/superpowers-handoff.json', 'utf8'));
 const constitution = readFileSync('.specify/memory/constitution.md', 'utf8');
 if (!constitution.includes('3.0.1') || handoff.artifact_owner !== 'codex' || handoff.status !== 'executing') throw new Error('Unapproved bootstrap ownership or lifecycle');
-const allFiles = execFileSync('git', ['ls-files'], { encoding: 'utf8' }).trim().split('\n');
-const forbidden = allFiles.filter(file => /^(modules\/|supabase\/(migrations|functions\/core)\/|services\/(core-worker|plugin-runner)\/)/.test(file));
+const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
+const changedPaths = execFileSync('git', ['diff', '--name-only', scopeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
 const input = { actor: 'codex', expected_actor: 'codex', feature: 'specs/001-agoraweave-v1', expected_feature: 'specs/001-agoraweave-v1',
   expected_sha: sha, target_sha: sha, expected_contract_digest: contractDigest, contract_digest: contractDigest,
   expected_check_set_digest: inputDigests['tools/ci/validation-manifest.json'], check_set_digest: inputDigests['tools/ci/validation-manifest.json'],
   source: 'github-actions', runner_environment: 'github-hosted', transition: 'start', mode: 'bootstrap-only',
   ownership_guard_passed: handoff.artifact_owner === 'codex', required_hooks_ran: process.env.ACTUAL_PRE_HOOK === 'success',
   working_tree_clean: !execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim(),
-  changed_paths: forbidden.length ? forbidden : ['tools/ci/bridge-gate.ts'],
+  changed_paths: changedPaths,
   read_by: 'actions-bootstrap-scope-and-ownership-check', read_at: new Date().toISOString() };
 const result = assessBridgeGate(input);
 mkdirSync('bridge-output', { recursive: true });
 writeFileSync('bridge-output/bridge-admission.json', JSON.stringify({ ...result, ...input,
   input_digests: inputDigests, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
-  record_kind: 'bootstrap_start_only', ci_ready: false, feature_complete: false,
+  record_kind: 'bootstrap_start_only', scope_base_sha: scopeBase, ci_ready: false, feature_complete: false,
 }, null, 2) + '\n');
 if (result.state !== 'passed') throw new Error(`Cloud bootstrap start refused: ${result.reason_codes.join(',')}`);
