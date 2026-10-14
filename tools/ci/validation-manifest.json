@@ -2487,7 +2487,14 @@
       "files": [
         "tests/security/ci/mandatory-hooks.spec.ts"
       ]
+    },
+    {
+      "id": "ci.actual-bridge-scope",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/bridge-scope.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 121
+  "engineering_case_count": 122
 }
