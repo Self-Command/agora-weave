@@ -2473,7 +2473,14 @@
       "files": [
         "tests/integration/ci/bootstrap-reports.spec.ts"
       ]
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/source-aggregate.spec.ts"
+      ],
+      "id": "ci.source-aggregate"
     }
   ],
-  "engineering_case_count": 115
+  "engineering_case_count": 120
 }
