@@ -73,6 +73,36 @@ jobs:
           "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
           "${compose[@]}" exec -T storage wget -q -O - http://localhost:5000/status > service-output/storage-health.json
           "${compose[@]}" ps --format json > service-output/service-health.json
+      - name: Capture sanitized real container failure detail
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+          const environmentPath = `${process.env.RUNNER_TEMP}/agoraweave-ci.env`;
+          if (!existsSync(environmentPath)) process.exit(0);
+          const secretValues = readFileSync(environmentPath, 'utf8').split('\n').map(line => line.slice(line.indexOf('=') + 1))
+            .filter(value => value.length >= 16).sort((a, b) => b.length - a.length);
+          const sanitize = value => secretValues.reduce((result, secret) => result.split(secret).join('[REDACTED]'), value);
+          const args = ['compose', '--project-directory', 'supabase/upstream/docker', '--env-file', environmentPath,
+            '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml',
+            '-f', `${process.env.RUNNER_TEMP}/agoraweave-images.json`];
+          try {
+            const ids = execFileSync('docker', [...args, 'ps', '-a', '-q'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+            const records = ids.map(id => {
+              const [container] = JSON.parse(execFileSync('docker', ['inspect', id], { encoding: 'utf8' }));
+              let logs = '';
+              try { logs = execFileSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+              catch (error) { logs = `${error.stdout || ''}\n${error.stderr || ''}`; }
+              return { name: container.Name, state: container.State.Status, health: container.State.Health?.Status,
+                exit_code: container.State.ExitCode, logs: sanitize(logs) };
+            });
+            writeFileSync('service-output/container-diagnostics.json', JSON.stringify(records, null, 2) + '\n');
+          } catch (error) {
+            writeFileSync('service-output/diagnostics-error.txt', sanitize(error.message));
+          }
+          NODE
       - name: Remove isolated service resources
         id: cleanup
         if: ${{ always() }}
