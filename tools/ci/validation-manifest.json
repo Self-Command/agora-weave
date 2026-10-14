@@ -2501,7 +2501,14 @@
       ],
       "id": "ci.orchestration-source",
       "command": "ci:contracts"
+    },
+    {
+      "id": "ci.tdd-implementation-order",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-ancestry.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 129
+  "engineering_case_count": 130
 }
