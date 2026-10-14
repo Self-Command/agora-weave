@@ -2,19 +2,126 @@
   "schema_version": 1,
   "scope": "bootstrap-only",
   "coverage": "partial",
-  "cycles": [{
-    "cycle_id": "ci-authenticated-tdd-source-001",
-    "behavior_id": "ci.authenticated-tdd-source",
-    "case_ids": ["TS01", "TS02", "TS03", "TS04"],
-    "requirements": ["QR-003", "QR-006", "QR-007"],
-    "test_file": "tests/integration/ci/tdd-source.spec.ts",
-    "fixture_file": "tests/integration/ci/tdd-source.spec.ts",
-    "red": { "sha": "a4006311fd82cd131b64ecdd4712c1ca0efa79b2", "run_id": "38620297025", "attempt": 1 },
-    "green": { "sha": "db9230239ba3038d81763cf3193c725798d3ad62", "run_id": "38622519942", "attempt": 1 },
-    "implementation_sha": "3ed66dd2170037e536eccc01ef273e4ea60ae4f2",
-    "cause": "missing_behavior",
-    "cause_read_by": "current-codex",
-    "cause_read_at": "2026-10-14T19:03:00Z",
-    "cause_summary": "All four TS assertions returned unknown with healthy source transport; 104 existing assertions passed. Original failure retained."
-  }]
+  "cycles": [
+    {
+      "cycle_id": "ci-authenticated-tdd-source-001",
+      "behavior_id": "ci.authenticated-tdd-source",
+      "case_ids": [
+        "TS01",
+        "TS02",
+        "TS03",
+        "TS04"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tdd-source.spec.ts",
+      "fixture_file": "tests/integration/ci/tdd-source.spec.ts",
+      "red": {
+        "sha": "a4006311fd82cd131b64ecdd4712c1ca0efa79b2",
+        "run_id": "38620297025",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "db9230239ba3038d81763cf3193c725798d3ad62",
+        "run_id": "38622519942",
+        "attempt": 1
+      },
+      "implementation_sha": "3ed66dd2170037e536eccc01ef273e4ea60ae4f2",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T19:03:00Z",
+      "cause_summary": "All four TS assertions returned unknown with healthy source transport; 104 existing assertions passed. Original failure retained."
+    },
+    {
+      "case_ids": [
+        "HK01"
+      ],
+      "green": {
+        "run_id": "38625246395",
+        "sha": "3ae5d29791873f98e5bcaf80f63434931b6df7ab",
+        "attempt": 1
+      },
+      "behavior_id": "ci.native-mandatory-hooks",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T19:36:27.313328Z",
+      "cycle_id": "ci-native-mandatory-hooks-001",
+      "test_file": "tests/security/ci/mandatory-hooks.spec.ts",
+      "fixture_file": "tests/security/ci/mandatory-hooks.spec.ts",
+      "requirements": [
+        "QR-007",
+        "QR-008"
+      ],
+      "implementation_sha": "3ae5d29791873f98e5bcaf80f63434931b6df7ab",
+      "cause_summary": "Mandatory native hook registration was absent; HK01 failed while the other 120 assertions and transport health passed.",
+      "red": {
+        "run_id": "38624695447",
+        "sha": "846ec10afa8ee2253fc67966ce12300c63ee27ec",
+        "attempt": 1
+      }
+    },
+    {
+      "case_ids": [
+        "BS01"
+      ],
+      "green": {
+        "run_id": "38626126984",
+        "sha": "f954f9028c71c0e21a65c762052469392aad195d",
+        "attempt": 1
+      },
+      "behavior_id": "ci.actual-bootstrap-scope",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T19:42:19.656095Z",
+      "cycle_id": "ci-actual-bootstrap-scope-001",
+      "test_file": "tests/security/ci/bridge-scope.spec.ts",
+      "fixture_file": "tests/security/ci/bridge-scope.spec.ts",
+      "requirements": [
+        "QR-007",
+        "QR-008"
+      ],
+      "implementation_sha": "f954f9028c71c0e21a65c762052469392aad195d",
+      "cause_summary": "A real isolated Git change adding an unregistered mobile business path was wrongly admitted; BS01 failed with the other 121 assertions and transport health passed.",
+      "red": {
+        "run_id": "38625565628",
+        "sha": "331bf8dec0980ce4765fe076d9ef6f8f82c17162",
+        "attempt": 1
+      }
+    },
+    {
+      "case_ids": [
+        "BR08",
+        "BR09",
+        "BR10"
+      ],
+      "green": {
+        "run_id": "38631031249",
+        "sha": "7899f261ed6c81fdae3326706fc03c078da19d0d",
+        "attempt": 1
+      },
+      "behavior_id": "ci.original-admission-sources",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T20:17:54.464708Z",
+      "cycle_id": "ci-original-admission-sources-001",
+      "test_file": "tests/integration/ci/bootstrap-reports.spec.ts",
+      "fixture_file": "tests/integration/ci/bootstrap-reports.spec.ts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-009"
+      ],
+      "implementation_sha": "7899f261ed6c81fdae3326706fc03c078da19d0d",
+      "cause_summary": "BR08-BR10 rejected valid source records because the parser kinds were absent; 123 existing assertions and transport health passed. Identical target assertions and all 126 assertions passed after implementation.",
+      "red": {
+        "run_id": "38630585631",
+        "sha": "a464daa8b551ff4536606f366ee73a70bf2d3445",
+        "attempt": 1
+      }
+    }
+  ]
 }

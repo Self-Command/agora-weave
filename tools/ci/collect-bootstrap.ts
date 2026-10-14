@@ -114,9 +114,11 @@ for (const item of catalog) {
       check_set_digest: checkSetDigest, source_job_conclusion: matches[0]?.conclusion || 'missing',
       raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)), artifact_id: item.artifact_id });
     if (kind === 'service' && result.state === 'passed') {
-      cleanupEnvironments.push(parse(root, 'cleanup.json'));
-      cleanupSources.push({ artifact_id: item.artifact_id, raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
-      cleanupIdentity = identity;
+      try {
+        cleanupEnvironments.push(parse(root, 'cleanup.json'));
+        cleanupSources.push({ artifact_id: item.artifact_id, raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
+        cleanupIdentity = identity;
+      } catch { /* An absent postcondition record leaves cleanup incomplete. */ }
     }
   } catch (error) {
     for (const id of ids) observed.push({ id, state: 'missing', source_sha: sha, artifact_id: item.artifact_id,
