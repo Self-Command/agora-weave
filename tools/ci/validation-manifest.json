@@ -2452,7 +2452,14 @@
         "tests/security/ci/review-binding.spec.ts"
       ],
       "id": "ci.review-binding"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-source.spec.ts"
+      ],
+      "id": "ci.tdd-source"
     }
   ],
-  "engineering_case_count": 104
+  "engineering_case_count": 108
 }
