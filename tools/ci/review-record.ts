@@ -19,15 +19,16 @@ export function bindReviewRecord(record: unknown, context: unknown): Record<stri
     return deny('invalid_authenticated_review_context');
   }
   const actualInputs = context.verified_inputs;
+  const recordInputs = record.inputs;
   const ids = actualInputs.map(item => item.id);
   if (!strings(ids) || actualInputs.some(item => !hash(item.digest)) ||
-    actualInputs.some(actual => !record.inputs.some(input => input.id === actual.id && input.digest === actual.digest && input.read === true)) ||
-    record.inputs.some(input => !actualInputs.some(actual => actual.id === input.id && actual.digest === input.digest))) {
+    actualInputs.some(actual => !recordInputs.some(input => input.id === actual.id && input.digest === actual.digest && input.read === true)) ||
+    recordInputs.some(input => !actualInputs.some(actual => actual.id === input.id && actual.digest === input.digest))) {
     return deny('review_input_bytes_mismatch');
   }
   const bound = { ...record, expected_sha: context.expected_sha, expected_contract_digest: context.contract_digest,
     required_inputs: ids, required_coverage: context.required_coverage, required_images: context.required_images,
-    inputs: record.inputs.map(input => ({ ...input, verified_digest: actualInputs.find(actual => actual.id === input.id)?.digest })),
+    inputs: recordInputs.map(input => ({ ...input, verified_digest: actualInputs.find(actual => actual.id === input.id)?.digest })),
     actual_checks: context.actual_checks, baseline: context.baseline };
   return assessReviewBaseline(bound);
 }
