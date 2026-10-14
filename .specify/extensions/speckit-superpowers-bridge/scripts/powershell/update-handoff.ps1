@@ -77,6 +77,14 @@ function New-BridgeSnapshot {
 $repoRoot = if (Get-Command Get-BridgeRepoRoot -ErrorAction SilentlyContinue) { Get-BridgeRepoRoot } else { (Get-Location).Path }
 $Actor = Resolve-BridgeActor -Argument $Actor
 
+# Project compatibility entry: raw native completion cannot authorize effective completion.
+if ($Status -eq 'complete') {
+    $projectTransition = Join-Path $repoRoot 'tools/ci/bridge-transition.ps1'
+    if (-not (Test-Path -LiteralPath $projectTransition)) { throw 'Missing mandatory AgoraWeave cloud completion gate' }
+    & $projectTransition -Transition complete -Mode full-release -Actor $Actor
+    if (-not $?) { throw 'AgoraWeave cloud completion gate refused the transition' }
+}
+
 $specifyDir = Join-Path $repoRoot ".specify"
 if (-not (Test-Path -LiteralPath $specifyDir)) { throw "Missing .specify directory. Run this from a Spec Kit project." }
 
