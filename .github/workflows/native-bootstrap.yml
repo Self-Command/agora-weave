@@ -91,6 +91,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
+      ANDROID_USER_HOME: /home/runner/.android
       ANDROID_AVD_HOME: /home/runner/.android/avd
     steps:
       - name: Checkout exact target
@@ -130,10 +131,16 @@ jobs:
         shell: bash
         run: |
           set -eu
-          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name agoraweave-ci --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name agoraweave-ci \
+            --path "$ANDROID_AVD_HOME/agoraweave-ci.avd" --package 'system-images;android-36;google_apis;x86_64' --device pixel_6
+          "$ANDROID_HOME/emulator/emulator" -list-avds > native-output/avd-inventory.txt
+          grep -qx agoraweave-ci native-output/avd-inventory.txt
           "$ANDROID_HOME/emulator/emulator" -avd agoraweave-ci -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > native-output/emulator.log 2>&1 &
-          adb wait-for-device
+          emulator_pid=$!
+          timeout 180 adb wait-for-device
           for attempt in $(seq 1 90); do
+            kill -0 "$emulator_pid"
             if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ]; then break; fi
             sleep 2
           done

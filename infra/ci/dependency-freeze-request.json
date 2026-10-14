@@ -1,9 +1,0 @@
-{
-  "scope": "bootstrap-test-tool-extension",
-  "previous_lock_sha256": "ca8c51be6d919707893b94c7148b591f4864e2f9be0ec56db326713c6e666fd8",
-  "package": "@playwright/test",
-  "version": "1.64.1",
-  "reason": "T007 real Web shell runtime and capture",
-  "source": "https://registry.npmjs.org/@playwright%2ftest/1.64.1",
-  "readiness": "not_evaluated"
-}
