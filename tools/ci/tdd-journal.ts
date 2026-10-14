@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { collectEvidence } from './collect-evidence.ts';
 import { deriveTddCycle } from './tdd-cycle.ts';
+import { selectTddCases } from './tdd-cases.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('TDD journal requires GitHub-hosted Actions');
 const repository = process.env.GITHUB_REPOSITORY!;
@@ -36,11 +37,9 @@ for (const cycle of catalog.cycles) {
     execFileSync('python3', ['tools/ci/index-archive.py', `${root}/source.zip`, `${root}/raw-files.json`, `${root}/raw`]);
     const raw = readFileSync(`${root}/raw/engineering.tap`, 'utf8');
     const outcome = JSON.parse(readFileSync(`${root}/raw/outcome.json`, 'utf8'));
-    const assertions = [...raw.matchAll(/^(not )?ok (\d+) - (.+)\r?$/gm)];
-    const selected = assertions.filter(item => cycle.case_ids.some((id: string) => item[3].startsWith(`${id}:`)));
-    if (selected.length !== cycle.case_ids.length || cycle.case_ids.some((id: string) =>
-      selected.filter(item => item[3].startsWith(`${id}:`)).length !== 1)) throw new Error('TDD target discovery incomplete');
-    const failed = selected.filter(item => item[1]).length;
+    const selected = selectTddCases(raw, cycle);
+    if (!selected.length) throw new Error('TDD target discovery incomplete');
+    const failed = selected.filter(item => item.failed).length;
     const test = execFileSync('git', ['show', `${source.sha}:${cycle.test_file}`]);
     const fixture = execFileSync('git', ['show', `${source.sha}:${cycle.fixture_file}`]);
     return { ...source, source_authenticated: true, source: 'github-actions', discovered: selected.length,
@@ -49,7 +48,8 @@ for (const cycle of catalog.cycles) {
       regressions_passed: /^# fail 0\r?$/m.test(raw) && /^# cancelled 0\r?$/m.test(raw) && /^# skipped 0\r?$/m.test(raw),
       test_digest: hash(test), fixture_digest: hash(fixture), oracle_digest: hash(test),
       original_conclusion: result.original_conclusion, archive_sha256: result.archive_sha256,
-      artifact_id: result.artifact_id, raw_report_digest: hash(raw), original_attempts: result.attempts };
+      artifact_id: result.artifact_id, selected_assertions: selected,
+      raw_report_digest: hash(raw), original_attempts: result.attempts };
   }
   const red = await execution(cycle.red, 'red');
   const green = await execution(cycle.green, 'green');

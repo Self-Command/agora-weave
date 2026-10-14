@@ -122,6 +122,239 @@
         "sha": "a464daa8b551ff4536606f366ee73a70bf2d3445",
         "attempt": 1
       }
+    },
+    {
+      "cycle_id": "ci-original-evidence-001",
+      "behavior_id": "ci.original-evidence",
+      "case_titles": [
+        "E01: matching nonempty required execution can pass evidence assessment",
+        "E02: required failed execution cannot be accepted",
+        "E02: required skipped execution cannot be accepted",
+        "E02: required neutral execution cannot be accepted",
+        "E02: required cancelled execution cannot be accepted",
+        "E02: required timed_out execution cannot be accepted",
+        "E02: required missing execution cannot be accepted",
+        "E02: required unavailable execution cannot be accepted",
+        "E02: required unknown execution cannot be accepted",
+        "E02: required running execution cannot be accepted",
+        "E02: required queued execution cannot be accepted",
+        "E03: mismatched target_sha blocks the report",
+        "E03: mismatched checkout_sha blocks the report",
+        "E03: mismatched check_set_digest blocks the report",
+        "E03: mismatched toolchain_digest blocks the report",
+        "E04: an artifact with a different downloaded digest blocks the report",
+        "E05: missing raw report or artifact is not evidence",
+        "E06: missing script cannot turn into success by omission",
+        "E07: zero discovery and incomplete execution cannot pass",
+        "E08: required case omission or skipped case cannot pass",
+        "E09: deferred applicability is distinct from actual passing execution",
+        "E10: local execution markers cannot satisfy Actions evidence",
+        "E11: an empty required case set cannot be accepted"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/contract/ci/evidence.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/evidence.ts",
+      "red": {
+        "run_id": "38593654084",
+        "sha": "1c81fb28cc9d5cf16394a476a400db2b71577df9",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38598655109",
+        "sha": "8ac18e146b81f29ccf7c3f8925387469760929af",
+        "attempt": 1
+      },
+      "implementation_sha": "8ac18e146b81f29ccf7c3f8925387469760929af",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:27:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-aggregate-001",
+      "behavior_id": "ci.original-aggregate",
+      "case_titles": [
+        "A01: all declared required checks need real complete execution",
+        "A02: waiting for only one of two required checks must block",
+        "A03: empty required manifest and zero attempts must block",
+        "A04: a green retry does not conceal an unresolved failed attempt",
+        "A05: cancelled or skipped prerequisites cannot be hidden by a passed aggregator",
+        "A06: a caller cannot replace the frozen check-set digest",
+        "A07: an expected Red observation alone never supplies required Green evidence"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/aggregate.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/evidence.ts",
+      "red": {
+        "run_id": "38593654084",
+        "sha": "1c81fb28cc9d5cf16394a476a400db2b71577df9",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38598655109",
+        "sha": "8ac18e146b81f29ccf7c3f8925387469760929af",
+        "attempt": 1
+      },
+      "implementation_sha": "8ac18e146b81f29ccf7c3f8925387469760929af",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:27:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-orchestration-001",
+      "behavior_id": "ci.original-orchestration",
+      "case_titles": [
+        "O01: complete dispatched nonempty initialization execution graph can pass",
+        "O02: aggregator alone cannot conceal missing install executor",
+        "O02: aggregator alone cannot conceal missing service executor",
+        "O02: aggregator alone cannot conceal missing discover executor",
+        "O02: aggregator alone cannot conceal missing admin executor",
+        "O02: aggregator alone cannot conceal missing share executor",
+        "O02: aggregator alone cannot conceal missing ios executor",
+        "O02: aggregator alone cannot conceal missing android executor",
+        "O02: aggregator alone cannot conceal missing reports executor",
+        "O02: aggregator alone cannot conceal missing review executor",
+        "O03: missing dependency edge, cycle, empty matrix and undispatched graph block",
+        "O04: zero discovery, missing script, skipped execution, missing raw report all block",
+        "O05: SHA/profile/check-set mismatch or conditional aggregation blocks"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/verify-orchestration.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/gates.ts",
+      "red": {
+        "run_id": "38600654805",
+        "sha": "e02159512f0d8411d15beea0d5725c3a1cee2a22",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38601771277",
+        "sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+        "attempt": 1
+      },
+      "implementation_sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:43:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-tdd-001",
+      "behavior_id": "ci.original-tdd",
+      "case_titles": [
+        "D01: read semantic Red before implementation plus same-oracle Green and final regression can pass",
+        "D02: compile failure is not a behavior Red",
+        "D02: import failure is not a behavior Red",
+        "D02: network failure is not a behavior Red",
+        "D02: credential failure is not a behavior Red",
+        "D02: no_tests failure is not a behavior Red",
+        "D02: service_unavailable failure is not a behavior Red",
+        "D03: successful Red, unhealthy prerequisite, absent causal read or prior implementation blocks",
+        "D04: changed test/oracle/fixture cannot borrow the old Red",
+        "D05: reversed ancestry, failed regression, stale final or rewritten Red blocks"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tdd-cycle.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/gates.ts",
+      "red": {
+        "run_id": "38600654805",
+        "sha": "e02159512f0d8411d15beea0d5725c3a1cee2a22",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38601771277",
+        "sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+        "attempt": 1
+      },
+      "implementation_sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:43:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-bridge-001",
+      "behavior_id": "ci.original-bridge",
+      "case_titles": [
+        "B01: approved bootstrap authoring can start without circular ci-ready dependency",
+        "B02: bootstrap denies business, path traversal and unexpected executable locations",
+        "B03: business requires verified ci-ready ancestor and unchanged initialization inputs",
+        "B04: raw complete status or task-done cannot replace complete evidence",
+        "B05: only same-target complete/read/reviewed/regressed evidence can complete",
+        "B06: actor/contract/SHA mismatch, missing read identity or local runner blocks"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/security/ci/bridge-gate.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/gates.ts",
+      "red": {
+        "run_id": "38600654805",
+        "sha": "e02159512f0d8411d15beea0d5725c3a1cee2a22",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38601771277",
+        "sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+        "attempt": 1
+      },
+      "implementation_sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:43:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-review-001",
+      "behavior_id": "ci.original-review",
+      "case_titles": [
+        "R01: current Codex actual-image review with bound reports and user-approved baseline can pass",
+        "R02: missing actual image, input digest mismatch, incomplete coverage or truncated output blocks",
+        "R03: private/production/secret inputs and unresolved judgment block",
+        "R04: unknown, automatic, model-approved or wrong-candidate baseline blocks",
+        "R05: low pixel difference cannot conceal failed actual interaction or accessibility",
+        "R06: different target SHA or invented independent model call blocks this reviewer route"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/security/ci/review-baseline.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/gates.ts",
+      "red": {
+        "run_id": "38600654805",
+        "sha": "e02159512f0d8411d15beea0d5725c3a1cee2a22",
+        "attempt": 1
+      },
+      "green": {
+        "run_id": "38601771277",
+        "sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+        "attempt": 1
+      },
+      "implementation_sha": "b5df454b850d8bdeca91996c28997729dcffb71e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T16:43:00Z",
+      "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
     }
   ]
 }
