@@ -150,6 +150,25 @@ jobs:
               down --volumes --remove-orphans
           fi
           rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { existsSync, writeFileSync } from 'node:fs';
+          const filter = 'label=com.docker.compose.project=' + process.env.COMPOSE_PROJECT_NAME;
+          const inspect = (kind, args) => {
+            const raw = execFileSync('docker', args, { encoding: 'utf8' });
+            writeFileSync('service-output/cleanup-' + kind + '.txt', raw);
+            return raw.trim().split(/\r?\n/).filter(Boolean);
+          };
+          const remaining_containers = inspect('containers', ['ps', '-aq', '--filter', filter]);
+          const remaining_volumes = inspect('volumes', ['volume', 'ls', '-q', '--filter', filter]);
+          const remaining_networks = inspect('networks', ['network', 'ls', '-q', '--filter', filter]);
+          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
+          const complete = !remaining_containers.length && !remaining_volumes.length && !remaining_networks.length && temporary_files_removed;
+          writeFileSync('service-output/cleanup.json', JSON.stringify({ source: 'github-actions',
+            environment: process.env.CI_ENVIRONMENT, cleanup: complete ? 'success' : 'failure',
+            remaining_containers, remaining_volumes, remaining_networks, temporary_files_removed }, null, 2) + '\n');
+          if (!complete) throw new Error('Isolated resources or temporary service files remain');
+          NODE
       - name: Preserve truthful health and cleanup outcomes
         if: ${{ always() }}
         shell: bash

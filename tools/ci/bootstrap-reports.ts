@@ -1,4 +1,5 @@
 import { normalizeExecution } from './run-check-set.ts';
+import { assessBridgeGate } from './gates.ts';
 
 type Fields = Record<string, unknown>;
 const fields = (value: unknown): value is Fields => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -15,6 +16,33 @@ export function assessBootstrapRaw(input: unknown): Record<string, unknown> {
     return deny('invalid_raw_source_identity');
   }
   const raw = input.raw;
+  if (input.kind === 'bridge') {
+    const admission = raw.admission;
+    if (!fields(admission) || admission.target_sha !== input.target_sha ||
+      admission.check_set_digest !== input.check_set_digest || admission.ci_ready !== false || admission.feature_complete !== false ||
+      admission.transition !== 'start' || admission.mode !== 'bootstrap-only' ||
+      assessBridgeGate({ ...admission, expected_sha: input.target_sha,
+        expected_check_set_digest: input.check_set_digest }).state !== 'passed') return deny('invalid_raw_bridge');
+    return passed(['bridge:bootstrap-start']);
+  }
+  if (input.kind === 'cleanup') {
+    if (!Array.isArray(raw.environments) || raw.environments.length !== 2 || !raw.environments.every(fields)) return deny('incomplete_raw_cleanup');
+    const environments = raw.environments;
+    if (['dev', 'test'].some(environment => environments.filter(item => item.environment === environment).length !== 1) ||
+      environments.some(item => item.cleanup !== 'success' || item.temporary_files_removed !== true ||
+        ['remaining_containers', 'remaining_volumes', 'remaining_networks'].some(key => !Array.isArray(item[key]) || (item[key] as unknown[]).length))) {
+      return deny('residual_raw_cleanup');
+    }
+    return passed(['cleanup:dev', 'cleanup:test']);
+  }
+  if (input.kind === 'tdd') {
+    const journal = raw.journal;
+    if (!fields(journal) || journal.target_sha !== input.target_sha || journal.coverage !== 'complete' ||
+      journal.state !== 'recorded_cycles_verified' || !Array.isArray(journal.records) || !journal.records.length ||
+      !journal.records.every(fields) || journal.records.some(record => record.target_sha !== input.target_sha ||
+        !fields(record.assessment) || record.assessment.state !== 'passed')) return deny('incomplete_raw_tdd_coverage');
+    return passed(journal.records.map(record => `tdd:${String(record.cycle_id)}`));
+  }
   if (input.kind === 'engineering') {
     const result = normalizeExecution({ format: 'tap', raw: raw.tap, expected_count: raw.expected_count, exit_code: 0 });
     return result.state === 'passed' ? passed(Array.from({ length: Number(raw.expected_count) }, (_, index) => `engineering:${index + 1}`)) : deny('raw_engineering_not_passed');

@@ -64,6 +64,9 @@ for (const cycle of catalog.cycles) {
 }
 const passed = records.length > 0 && records.every(record => (record.assessment as Record<string, unknown>).state === 'passed');
 writeFileSync('tdd-output/journal.json', JSON.stringify({ source: 'github-actions', target_sha: sha,
+  checkout_sha: sha, runner_environment: process.env.RUNNER_ENVIRONMENT,
+  check_set_digest: hash(readFileSync('tools/ci/validation-manifest.json')),
+  toolchain_digest: hash(readFileSync('infra/ci/toolchain-lock.json')),
   run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT), records,
   state: passed ? 'recorded_cycles_verified' : 'blocked', coverage: catalog.coverage,
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');

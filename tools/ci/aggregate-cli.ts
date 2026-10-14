@@ -62,20 +62,22 @@ try {
 } catch { privateArchive = false; }
 const observed = (collected.observed || []).map((check: Record<string, any>) => {
   const state = check.id === 'bootstrap.source-archive' ? privateArchive ? 'passed' : 'missing' :
-    check.id === 'bootstrap.codex-code-review' ? reviewState('code') : check.id === 'bootstrap.codex-visual-review' ? reviewState('visual') : undefined;
+    check.id === 'bootstrap.codex-code-review' ? reviewState('code') : check.id === 'bootstrap.codex-visual-review' ? reviewState('visual') :
+    check.id === 'bootstrap.cleanup' && (!privateArchive || check.state !== 'passed') ? 'missing' : undefined;
   if (!state) return check;
   return { ...check, state, source_verified: currentSource, source_job_conclusion: state === 'passed' ? 'success' : 'missing',
     source_sha: sha, check_set_digest: digest, raw_report_digest: state === 'passed' ?
       hash(JSON.stringify(check.id === 'bootstrap.source-archive' ? receipts : review)) : undefined };
 });
+const observedState = (id: string) => observed.filter((item: Record<string, any>) => item.id === id && item.state === 'passed').length === 1 ? 'passed' : 'missing';
 const result = aggregateBootstrap({ profile: 'bootstrap', expected_sha: sha, target_sha: collected.target_sha,
   expected_check_set_digest: digest, check_set_digest: collected.check_set_digest,
   source_authenticated: currentSource, frozen_required_ids: manifest.bootstrap_checks.filter((check: Record<string, unknown>) =>
     check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id),
   observed, previous_attempts: previous, collection_complete: collected.collection_complete,
   reports_read: reviewState('code') === 'passed' && reviewState('visual') === 'passed',
-  code_review: reviewState('code'), visual_review: reviewState('visual'), tdd: 'missing',
-  private_archive: privateArchive ? 'passed' : 'missing', cleanup: 'missing', orchestration: 'missing',
+  code_review: reviewState('code'), visual_review: reviewState('visual'), tdd: observedState('bootstrap.tdd'),
+  private_archive: privateArchive ? 'passed' : 'missing', cleanup: observedState('bootstrap.cleanup'), orchestration: 'missing',
   bridge: needs.bridge.result === 'success' ? 'passed' : 'missing' });
 mkdirSync('gate-output', { recursive: true });
 writeFileSync('gate-output/readiness.json', JSON.stringify({ ...result, source: 'github-actions',

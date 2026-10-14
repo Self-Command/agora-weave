@@ -40,6 +40,9 @@ const catalog = JSON.parse(readFileSync('archive-output/catalog.json', 'utf8')) 
 const observed: Record<string, unknown>[] = [];
 const verifiedInputs: Record<string, string>[] = [];
 const images: string[] = [];
+const cleanupEnvironments: Record<string, unknown>[] = [];
+const cleanupSources: Record<string, unknown>[] = [];
+let cleanupIdentity: Record<string, any> | undefined;
 const parse = (root: string, file: string) => JSON.parse(readFileSync(`${root}/${file}`, 'utf8'));
 const read = (root: string, file: string) => readFileSync(`${root}/${file}`, 'utf8');
 function allPng(root: string): string[] {
@@ -64,6 +67,12 @@ for (const item of catalog) {
       kind = 'engineering'; ids = ['bootstrap.engineering', 'bootstrap.discovery']; jobPattern = ' / discover';
       identity = parse(root, 'execution.json'); raw = { tap: read(root, 'engineering.tap'), expected_count: manifest.engineering_case_count };
       if (parse(root, 'discovery.json').state !== 'discovered') throw new Error('Missing actual discovery');
+    } else if (name.startsWith('bridge-admission-')) {
+      kind = 'bridge'; ids = ['bootstrap.bridge']; jobPattern = ' / bridge / scope';
+      identity = parse(root, 'bridge-admission.json'); raw = { admission: identity };
+    } else if (name.startsWith('tdd-journal-')) {
+      kind = 'tdd'; ids = ['bootstrap.tdd']; jobPattern = ' / tdd / journal';
+      identity = parse(root, 'journal.json'); raw = { journal: identity };
     } else if (name.startsWith('bootstrap-services-')) {
       kind = 'service'; identity = parse(root, 'configuration.json'); ids = [`bootstrap.${identity.environment}-services`];
       jobPattern = `Official Compose (${identity.environment},`;
@@ -104,10 +113,23 @@ for (const item of catalog) {
     for (const id of ids) observed.push({ id, ...result, source_verified: true, source_sha: sha,
       check_set_digest: checkSetDigest, source_job_conclusion: matches[0]?.conclusion || 'missing',
       raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)), artifact_id: item.artifact_id });
+    if (kind === 'service' && result.state === 'passed') {
+      cleanupEnvironments.push(parse(root, 'cleanup.json'));
+      cleanupSources.push({ artifact_id: item.artifact_id, raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
+      cleanupIdentity = identity;
+    }
   } catch (error) {
     for (const id of ids) observed.push({ id, state: 'missing', source_sha: sha, artifact_id: item.artifact_id,
       reason: 'Required original executor file is missing, unreadable or unbound' });
   }
+}
+if (cleanupIdentity) {
+  const result = assessBootstrapRaw({ kind: 'cleanup', target_sha: sha, check_set_digest: checkSetDigest,
+    toolchain_digest: toolchainDigest, source_authenticated: true, source_job_state: 'success',
+    run_id: runId, attempt: Number(run.run_attempt), identity: cleanupIdentity, raw: { environments: cleanupEnvironments } });
+  observed.push({ id: 'bootstrap.cleanup', ...result, source_verified: true, source_sha: sha,
+    check_set_digest: checkSetDigest, source_job_conclusion: result.state === 'passed' ? 'success' : 'missing',
+    raw_report_digest: hash(JSON.stringify(cleanupSources)), source_artifacts: cleanupSources });
 }
 const requiredIds = manifest.bootstrap_checks.filter((check: Record<string, unknown>) => check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id);
 for (const id of requiredIds) if (!observed.some(check => check.id === id)) observed.push({ id,

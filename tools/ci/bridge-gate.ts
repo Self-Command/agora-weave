@@ -28,6 +28,7 @@ const result = assessBridgeGate(input);
 mkdirSync('bridge-output', { recursive: true });
 writeFileSync('bridge-output/bridge-admission.json', JSON.stringify({ ...result, ...input,
   input_digests: inputDigests, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+  checkout_sha: sha, toolchain_digest: inputDigests['infra/ci/toolchain-lock.json'],
   record_kind: 'bootstrap_start_only', scope_base_sha: scopeBase, ci_ready: false, feature_complete: false,
 }, null, 2) + '\n');
 if (result.state !== 'passed') throw new Error(`Cloud bootstrap start refused: ${result.reason_codes.join(',')}`);
