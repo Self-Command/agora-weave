@@ -46,10 +46,21 @@ test('BR03: official service report needs every container, isolated ports, schem
 
 test('BR04: Android parser needs actual light/dark instrumentation, foreground hierarchy and both images', () => {
   const raw = { light_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n', dark_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n',
-    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)] };
+    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)],
+    light_theme: 'light:16', dark_theme: 'dark:32' };
   assert.equal(assessBootstrapRaw(fixture('android', raw)).state, 'passed');
   for (const patch of [{ dark_log: 'FAILURES!!!\nTests run: 1, Failures: 1' }, { images: [] },
     { hierarchy: '<node package="com.google.android.apps.nexuslauncher" text="AgoraWeave" />' }]) {
+    assert.equal(assessBootstrapRaw(fixture('android', { ...raw, ...patch })).state, 'blocked');
+  }
+});
+
+test('BR07: a named dark capture with a light or absent actual configuration is rejected', () => {
+  const raw = { light_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n', dark_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n',
+    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)],
+    light_theme: 'light:16', dark_theme: 'dark:32' };
+  assert.equal(assessBootstrapRaw(fixture('android', raw)).state, 'passed');
+  for (const patch of [{ dark_theme: 'light:16' }, { dark_theme: '' }, { light_theme: 'light:32' }]) {
     assert.equal(assessBootstrapRaw(fixture('android', { ...raw, ...patch })).state, 'blocked');
   }
 });
