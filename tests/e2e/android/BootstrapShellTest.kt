@@ -2,6 +2,10 @@ package org.agoraweave.bootstrap
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.app.UiModeManager
+import android.content.Context
+import android.os.Build
+import android.os.SystemClock
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -19,6 +23,13 @@ class BootstrapShellTest {
     val theme = InstrumentationRegistry.getArguments().getString("theme")
     assertTrue("An explicit expected theme is required", theme == "light" || theme == "dark")
     val expectedNight = if (theme == "dark") Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+    if (Build.VERSION.SDK_INT < 29) {
+      val modes = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+      modes.nightMode = if (theme == "dark") UiModeManager.MODE_NIGHT_YES else UiModeManager.MODE_NIGHT_NO
+      val deadline = SystemClock.uptimeMillis() + 15000
+      while ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) != expectedNight &&
+        SystemClock.uptimeMillis() < deadline) SystemClock.sleep(100)
+    }
     assertEquals("The actual device configuration must match the named capture theme", expectedNight,
       context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())

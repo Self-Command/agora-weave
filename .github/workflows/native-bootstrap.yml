@@ -168,6 +168,15 @@ jobs:
           sudo apt-get install -y --no-install-recommends libpulse0 >> native-output/system-packages.log 2>&1
           dpkg-query -W -f='${Package}=${Version}\n' libpulse0 > native-output/system-package-versions.txt
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' "system-images;android-$ANDROID_API;google_apis;x86_64" 'emulator' > native-output/sdk-install.log 2>&1
+          ndk_ready=false
+          for attempt in 1 2 3; do
+            if "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.1.12297006' > "native-output/ndk-install-$attempt.log" 2>&1; then
+              ndk_ready=true
+              break
+            fi
+          done
+          test "$ndk_ready" = true
+          cat "$ANDROID_HOME/ndk/27.1.12297006/source.properties" > native-output/ndk-version.txt
           test -x "$ANDROID_HOME/platform-tools/adb"
           printf '%s/platform-tools\n' "$ANDROID_HOME" >> "$GITHUB_PATH"
           "$ANDROID_HOME/platform-tools/adb" version > native-output/adb-version.txt

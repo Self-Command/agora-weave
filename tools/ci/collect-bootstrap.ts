@@ -84,6 +84,7 @@ for (const item of catalog) {
       ids = [identity.platform === 'android-api24' ? 'bootstrap.minimum-android' : 'bootstrap.android'];
       jobPattern = `Android shell API ${identity.platform.replace('android-api', '')} actual`;
       raw = { light_log: read(root, 'android-tests-light.log'), dark_log: read(root, 'android-tests-dark.log'),
+        light_theme: read(root, 'android-theme-light.txt'), dark_theme: read(root, 'android-theme-dark.txt'),
         hierarchy: read(root, 'android-ui.xml'), images: [hash(readFileSync(`${root}/android-light.png`)), hash(readFileSync(`${root}/android-dark.png`))] };
     } else if (name.startsWith('verify-install-')) {
       identity = parse(root, 'identity.json'); ids = ['bootstrap.install']; jobPattern = ' / install';

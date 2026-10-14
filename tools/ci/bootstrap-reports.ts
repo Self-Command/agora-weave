@@ -66,7 +66,9 @@ export function assessBootstrapRaw(input: unknown): Record<string, unknown> {
     if ([raw.light_log, raw.dark_log].some(log => typeof log !== 'string' ||
       !/^OK \(1 test\)\r?$/m.test(log) || /FAILURES|INSTRUMENTATION_FAILED|Exception|Error in /m.test(log)) ||
       typeof raw.hierarchy !== 'string' || !/package="org\.agoraweave\.app"/.test(raw.hierarchy) ||
-      !/text="AgoraWeave"/.test(raw.hierarchy) || !hashes(raw.images)) return deny('incomplete_raw_android');
+      !/text="AgoraWeave"/.test(raw.hierarchy) || !hashes(raw.images) ||
+      typeof raw.light_theme !== 'string' || raw.light_theme.trim() !== 'light:16' ||
+      typeof raw.dark_theme !== 'string' || raw.dark_theme.trim() !== 'dark:32') return deny('incomplete_raw_android');
     return passed(['android:light:launch-resume', 'android:dark:launch-resume']);
   }
   if (input.kind === 'ios') {
