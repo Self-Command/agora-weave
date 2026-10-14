@@ -28,9 +28,15 @@ permissions:
   contents: read
 jobs:
   ios:
-    name: iOS shell exact toolchain (not ci-ready)
+    name: iOS shell ${{ matrix.ios }} exact toolchain (not ci-ready)
     runs-on: macos-26
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        ios: ['16.4', '26.4']
+    env:
+      IOS_VERSION: ${{ matrix.ios }}
     steps:
       - name: Checkout exact target
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -46,6 +52,10 @@ jobs:
           test -d /Applications/Xcode_26.4.1.app
           sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
           xcodebuild -version > native-output/xcode-version.txt
+          if [ "$IOS_VERSION" = '16.4' ]; then
+            xcodebuild -downloadPlatform iOS -buildVersion 16.4 > native-output/minimum-runtime-download.log 2>&1
+            xcrun simctl create agoraweave-ci-minimum com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-16-4 > native-output/minimum-device-udid.txt
+          fi
           xcrun simctl list runtimes -j > native-output/ios-runtimes.json
       - name: Install fixed Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -69,9 +79,10 @@ jobs:
           device=$(node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from 'node:fs';
           const devices = JSON.parse(readFileSync('native-output/ios-devices.json', 'utf8')).devices;
-          const runtime = 'com.apple.CoreSimulator.SimRuntime.iOS-26-4';
-          const selected = devices[runtime]?.find(device => device.isAvailable && device.name.includes('iPhone'));
-          if (!selected) throw new Error('Pinned current iOS 26.4 runtime/device unavailable');
+          const runtime = `com.apple.CoreSimulator.SimRuntime.iOS-${process.env.IOS_VERSION.replaceAll('.', '-')}`;
+          const selected = devices[runtime]?.find(device => device.isAvailable &&
+            (process.env.IOS_VERSION === '16.4' ? device.name === 'agoraweave-ci-minimum' : device.name.includes('iPhone')));
+          if (!selected) throw new Error('Required actual iOS runtime/device unavailable');
           writeFileSync('native-output/ios-selected-device.json', JSON.stringify({ ...selected, runtime }, null, 2) + '\n');
           process.stdout.write(selected.udid);
           NODE
@@ -84,7 +95,6 @@ jobs:
           xcrun simctl bootstatus "$device" -b
           xcrun simctl install "$device" "$RUNNER_TEMP/ios-derived/Build/Products/Release-iphonesimulator/AgoraWeave.app"
           xcrun simctl ui "$device" appearance light
-          xcrun simctl launch "$device" org.agoraweave.app
           xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
             -configuration Release -destination "platform=iOS Simulator,id=$device" \
             -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
@@ -92,10 +102,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-light.log 2>&1
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-light.xcresult > native-output/ios-tests-light.json
           xcrun xcresulttool export attachments --path native-output/ios-tests-light.xcresult --output-path native-output/ios-attachments-light
-          xcrun simctl io "$device" screenshot native-output/ios-light.png
-          xcrun simctl terminate "$device" org.agoraweave.app
           xcrun simctl ui "$device" appearance dark
-          xcrun simctl launch "$device" org.agoraweave.app
           xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
             -configuration Release -destination "platform=iOS Simulator,id=$device" \
             -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
@@ -103,13 +110,12 @@ jobs:
             CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-dark.log 2>&1
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-dark.xcresult > native-output/ios-tests-dark.json
           xcrun xcresulttool export attachments --path native-output/ios-tests-dark.xcresult --output-path native-output/ios-attachments-dark
-          xcrun simctl io "$device" screenshot native-output/ios-dark.png
           xcrun simctl shutdown "$device"
       - name: Preserve actual iOS environment and shell results
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: bootstrap-ios-${{ github.run_id }}-${{ github.run_attempt }}
+          name: bootstrap-ios-${{ matrix.ios }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: native-output/
           if-no-files-found: error
           retention-days: 7

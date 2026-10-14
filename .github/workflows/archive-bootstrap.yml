@@ -94,7 +94,6 @@ jobs:
           rm -f "$key" "$hosts" "$batch"
           test ! -e "$key"
           mkdir -p archive-receipts
-          cp archive-output/[0-9]*/receipt.json archive-receipts/ 2>/dev/null || true
           node --input-type=module <<'NODE'
           import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
           const catalog = JSON.parse(readFileSync('archive-output/catalog.json', 'utf8'));
