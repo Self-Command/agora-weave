@@ -2536,7 +2536,14 @@
       "files": [
         "tests/integration/ci/xcresult-archive.spec.ts"
       ]
+    },
+    {
+      "id": "ci.event-bound-source-selection",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/source-run-selection.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 137
+  "engineering_case_count": 138
 }
