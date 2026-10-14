@@ -6,7 +6,8 @@ import stat
 import sys
 import zipfile
 
-source, output = map(Path, sys.argv[1:])
+source, output = map(Path, sys.argv[1:3])
+extraction_root = Path(sys.argv[3]).resolve() if len(sys.argv) == 4 else None
 records = []
 names = set()
 expanded = 0
@@ -26,12 +27,25 @@ with zipfile.ZipFile(source) as archive:
             raise ValueError('Original raw archive exceeds bounded indexing size')
         digest = hashlib.sha256()
         actual_size = 0
+        destination = None
+        if extraction_root:
+            destination_path = extraction_root.joinpath(*parts).resolve()
+            if not destination_path.is_relative_to(extraction_root):
+                raise ValueError('Archive extraction escaped its isolated root')
+            destination_path.parent.mkdir(parents=True, exist_ok=True)
+            destination = destination_path.open('xb')
         with archive.open(member) as stream:
-            while chunk := stream.read(1024 * 1024):
-                actual_size += len(chunk)
-                if actual_size > member.file_size:
-                    raise ValueError('Original raw size mismatch')
-                digest.update(chunk)
+            try:
+                while chunk := stream.read(1024 * 1024):
+                    actual_size += len(chunk)
+                    if actual_size > member.file_size:
+                        raise ValueError('Original raw size mismatch')
+                    digest.update(chunk)
+                    if destination:
+                        destination.write(chunk)
+            finally:
+                if destination:
+                    destination.close()
         if actual_size != member.file_size:
             raise ValueError('Truncated original raw archive')
         records.append({'path': name, 'sha256': digest.hexdigest(), 'size_bytes': actual_size})

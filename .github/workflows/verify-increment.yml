@@ -33,6 +33,8 @@ jobs:
             source: 'github-actions', runner_environment: process.env.RUNNER_ENVIRONMENT,
             run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
             package_lock_sha256: actualLock, node: process.version, scope: 'bootstrap-only',
+            check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+            toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
             readiness: 'not_evaluated',
           }, null, 2) + '\n');
           NODE

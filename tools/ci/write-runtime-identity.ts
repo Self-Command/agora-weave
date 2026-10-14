@@ -16,5 +16,7 @@ writeFileSync(`${output}/identity.json`, JSON.stringify({ checkout_sha: checkout
   node: process.version, input_digests: Object.fromEntries(inputs.map(file =>
     [file, createHash('sha256').update(readFileSync(file)).digest('hex')])),
   platform: process.env.IOS_VERSION ? `ios-${process.env.IOS_VERSION}` : process.env.ANDROID_API ? `android-api${process.env.ANDROID_API}` : 'web',
+  check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+  toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
   scope: 'no-business-shell', readiness: 'not_evaluated',
 }, null, 2) + '\n');
