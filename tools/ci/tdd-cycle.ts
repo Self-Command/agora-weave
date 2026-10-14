@@ -14,10 +14,11 @@ export function deriveTddCycle(input: unknown): Record<string, unknown> {
     !Number.isInteger(input.red.failed) || Number(input.red.failed) < 1 ||
     input.green.failed !== 0 || input.final.failed !== 0) return deny('invalid_authenticated_tdd_source');
   const ancestors = input.history.ancestors;
+  const red = input.red;
   const ancestor = (before: string, after: string) => before !== after &&
     Array.isArray(ancestors[after]) && (ancestors[after] as unknown[]).every(sha) && (ancestors[after] as string[]).includes(before);
   const inputIdentity = [input.red, input.green, input.final].every(record =>
-    ['test_digest', 'fixture_digest', 'oracle_digest'].every(key => record[key] === input.red[key]));
+    ['test_digest', 'fixture_digest', 'oracle_digest'].every(key => record[key] === red[key]));
   if (!inputIdentity) return deny('changed_authenticated_tdd_inputs');
   const assessment = assessTddCycle({ ...input, verified_ancestry: {
     red_before_implementation: ancestor(input.red.sha, input.implementation_sha),
