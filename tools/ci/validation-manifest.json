@@ -2515,7 +2515,14 @@
         "tests/security/ci/required-entries.spec.ts"
       ],
       "id": "ci.required-shared-entries"
+    },
+    {
+      "id": "ci.review-json-schema",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/review-schema.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 131
+  "engineering_case_count": 134
 }
