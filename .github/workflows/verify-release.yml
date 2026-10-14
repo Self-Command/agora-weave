@@ -1,0 +1,20 @@
+name: Approved initialization verification
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-release.yml'
+      - '.github/workflows/verify-increment.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/verify-release.yml'
+      - '.github/workflows/verify-increment.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: verify-initialization-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  bootstrap:
+    uses: ./.github/workflows/verify-increment.yml
+    secrets: inherit

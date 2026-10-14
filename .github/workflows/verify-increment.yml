@@ -1,0 +1,151 @@
+name: Shared approved check-set execution
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Check frozen checkout dependencies and bootstrap scope
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p install-output
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const lock = JSON.parse(readFileSync('infra/ci/toolchain-lock.json', 'utf8'));
+          const actualLock = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
+          if (actualLock !== lock.lock_sha256 || process.version !== lock.node) throw new Error('Frozen toolchain differs');
+          const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (sha !== (process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA)) throw new Error('Unexpected actual checkout');
+          writeFileSync('install-output/identity.json', JSON.stringify({ checkout_sha: sha,
+            source: 'github-actions', runner_environment: process.env.RUNNER_ENVIRONMENT,
+            run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+            package_lock_sha256: actualLock, node: process.version, scope: 'bootstrap-only',
+            readiness: 'not_evaluated',
+          }, null, 2) + '\n');
+          NODE
+          npm run ci:install > install-output/install.log 2>&1
+          npm run ci:typecheck > install-output/typecheck.log 2>&1 || { cat install-output/typecheck.log; exit 1; }
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-install-${{ github.run_id }}-${{ github.run_attempt }}
+          path: install-output/
+          if-no-files-found: error
+          retention-days: 7
+  service:
+    needs: install
+    uses: ./.github/workflows/service-bootstrap.yml
+    secrets: inherit
+  discover:
+    needs: [install, service]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Install discover and execute approved nonempty targets
+        run: |
+          npm run ci:install
+          npm run ci:discover
+          npm run ci:run
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-checkset-${{ github.run_id }}-${{ github.run_attempt }}
+          path: check-output/
+          if-no-files-found: error
+          retention-days: 7
+  web:
+    needs: discover
+    uses: ./.github/workflows/web-bootstrap.yml
+  native:
+    needs: discover
+    uses: ./.github/workflows/native-bootstrap.yml
+  reports:
+    needs: [install, service, discover, web, native]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Preserve all executor job outcomes before aggregation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p verify-output
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs?per_page=100" > verify-output/original-jobs.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" > verify-output/original-artifacts.json
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-executor-outcomes-${{ github.run_id }}-${{ github.run_attempt }}
+          path: verify-output/
+          if-no-files-found: error
+          retention-days: 7
+  gate:
+    name: agoraweave/ci-gate
+    needs: [install, service, discover, web, native, reports]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Refuse readiness while required admission or evidence is unavailable
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          mkdir -p gate-output
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const needs = JSON.parse(process.env.NEEDS_JSON);
+          const devices = JSON.parse(readFileSync('infra/ci/device-matrix.json', 'utf8'));
+          const reasons = Object.entries(needs).filter(([, result]) => result.result !== 'success').map(([id, result]) => `${id}:${result.result}`);
+          for (const device of devices.devices) if (!['passed'].includes(device.state)) reasons.push(`${device.id}:${device.state}`);
+          if (devices.native_backend_connectivity.state !== 'passed') reasons.push('native_backend_connectivity:unavailable');
+          reasons.push('private_complete_evidence_and_current_codex_records:missing');
+          writeFileSync('gate-output/readiness.json', JSON.stringify({ state: 'blocked', reasons,
+            target_sha: process.env.GITHUB_SHA, run_id: process.env.GITHUB_RUN_ID,
+            attempt: Number(process.env.GITHUB_RUN_ATTEMPT), source: 'github-actions',
+            scope: 'bootstrap-only', feature_complete: false,
+          }, null, 2) + '\n');
+          throw new Error(`Initialization remains blocked: ${reasons.join(', ')}`);
+          NODE
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: gate-output/
+          if-no-files-found: error
+          retention-days: 7
