@@ -2563,7 +2563,12 @@
       ],
       "id": "ci.actual-tooling-admission",
       "command": "ci:contracts"
+    },
+    {
+      "files": ["tests/integration/ci/web-report-handoff.spec.ts"],
+      "id": "ci.actual-web-report-handoff",
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 139
+  "engineering_case_count": 140
 }
