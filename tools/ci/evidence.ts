@@ -52,10 +52,11 @@ export function assessReport(input: unknown): Assessment {
   if (!identifiers(input.required_case_ids) || !records(report.cases)) {
     reasons.add('missing_cases');
   } else {
-    const caseIds = report.cases.map(item => item.id);
-    if (new Set(caseIds).size !== caseIds.length || report.cases.length !== report.executed ||
-        report.cases.some(item => typeof item.id !== 'string' || item.state !== 'passed') ||
-        input.required_case_ids.some(id => !report.cases.some(item => item.id === id && item.state === 'passed'))) {
+    const cases = report.cases;
+    const caseIds = cases.map(item => item.id);
+    if (new Set(caseIds).size !== caseIds.length || cases.length !== report.executed ||
+        cases.some(item => typeof item.id !== 'string' || item.state !== 'passed') ||
+        input.required_case_ids.some(id => !cases.some(item => item.id === id && item.state === 'passed'))) {
       reasons.add('incomplete_cases');
     }
   }
