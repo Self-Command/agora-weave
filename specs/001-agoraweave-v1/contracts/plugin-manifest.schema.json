@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agoraweave:plugin-manifest:1.0",
+  "title": "AgoraWeave plugin manifest 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "version", "source", "maintainer", "compatibility", "entrypoints", "permissions", "dependencies", "conflicts", "configuration", "migrations", "data_lifecycle", "changes", "files_manifest"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$"},
+    "version": {"$ref": "#/$defs/semver"},
+    "source": {"enum": ["official", "invited", "self-use"]},
+    "maintainer": {"type": "string", "minLength": 1, "maxLength": 120},
+    "compatibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["platform_range", "sdk_range", "api_contract", "ui_schema", "native_runtimes"],
+      "properties": {
+        "platform_range": {"$ref": "#/$defs/range"}, "sdk_range": {"$ref": "#/$defs/range"},
+        "api_contract": {"const": "v1"}, "ui_schema": {"const": "1.0"},
+        "native_runtimes": {"type": "array", "uniqueItems": true, "maxItems": 20, "items": {"type": "string", "minLength": 1, "maxLength": 100}}
+      }
+    },
+    "entrypoints": {
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {"mobile": {"$ref": "#/$defs/path"}, "admin": {"$ref": "#/$defs/path"}, "server": {"$ref": "#/$defs/path"}}
+    },
+    "permissions": {
+      "type": "array", "maxItems": 64, "uniqueItems": true,
+      "items": {"type": "object", "additionalProperties": false, "required": ["name", "purpose", "data_scope", "sensitive"],
+        "properties": {"name": {"type": "string", "pattern": "^[a-z][a-z0-9_.:-]{1,100}$"}, "purpose": {"type": "string", "minLength": 1, "maxLength": 500}, "data_scope": {"enum": ["own", "current-authorized-shared", "case-authorized"]}, "sensitive": {"type": "boolean"}}}
+    },
+    "dependencies": {"type": "array", "maxItems": 64, "items": {"type": "object", "additionalProperties": false, "required": ["id", "range"], "properties": {"id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$"}, "range": {"$ref": "#/$defs/range"}}}},
+    "conflicts": {"type": "array", "maxItems": 64, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 40}},
+    "configuration": {"$ref": "#/$defs/path"},
+    "migrations": {"type": "array", "maxItems": 100, "items": {"type": "object", "additionalProperties": false, "required": ["id", "path", "sha256", "from_schema", "to_schema", "reversible", "recovery_limits"], "properties": {"id": {"type": "string", "minLength": 1}, "path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/hash"}, "from_schema": {"type": "integer", "minimum": 0}, "to_schema": {"type": "integer", "minimum": 1}, "reversible": {"type": "boolean"}, "recovery_limits": {"type": "string", "minLength": 1, "maxLength": 2000}}}},
+    "data_lifecycle": {"type": "object", "additionalProperties": false, "required": ["declaration", "uninstall_default", "history_mode"], "properties": {"declaration": {"$ref": "#/$defs/path"}, "uninstall_default": {"const": "retain-original-deadlines"}, "history_mode": {"enum": ["authorized-projection", "unavailable-placeholder"]}, "history_projection": {"$ref": "#/$defs/path"}}},
+    "changes": {"type": "object", "additionalProperties": false, "required": ["configuration", "server_admin", "mobile_compatible", "native"], "properties": {"configuration": {"type": "boolean"}, "server_admin": {"type": "boolean"}, "mobile_compatible": {"type": "boolean"}, "native": {"type": "boolean"}}},
+    "files_manifest": {"const": "files.sha256"}
+  },
+  "$defs": {
+    "semver": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"},
+    "range": {"type": "string", "minLength": 1, "maxLength": 120},
+    "path": {"type": "string", "minLength": 1, "maxLength": 240, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[A-Za-z0-9_./-]+$"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

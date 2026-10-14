@@ -1,0 +1,53 @@
+# 发布、指定名单、兼容与证据 v1
+
+## 不可变发行与生产确认
+
+release manifest含`release_id,commit_sha,core/admin/share/mobile/plugin artifact digests,config_version,contract/sdk/ui/native_runtime/native_fingerprint,permission_delta,migration_digests,environment,cohort_version/members_digest,required_evidence_ids,validation_profile/check_set_hash,design_input_digests/baseline_approval_refs,tdd_cycle_refs,ai_review_refs,completion_record_ref,old_client_matrix,health_observation,rollback_limits`；hash整个规范化manifest为plan_digest。任何字段变化视新计划，不能换同标签包。
+
+阶段`prepared→cloud_verified→awaiting_confirmation→approved→deploying→canary_observing→awaiting_expansion_confirmation→expanded`，fail/interrupted/rollback_pending/recovered为独立事实。检查通过不等批准，安装不等启用，部署提交不等渠道完成。
+
+确认记录含plan_digest/scope_digest/approver/session/verified_aal2/stepup_id/理由/confirmed_at/expires_at；初始15分钟单次租约为工程参数。superadmin当前身份、近期动作绑定挑战、DEC-001、所有必需证据与具体作用范围再次核。首版任何生产部署/迁移/权限/版本生效均在匹配确认后；名单扩大新的scope摘要重新确认，旧确认不能复用。实际长期生产独立服务器，Actions不常驻托管。
+
+Actions OIDC部署broker验证issuer/audience、实际repository_id/owner_id/ref/workflow_sha/environment/run/attempt与允许workflow、发行摘要，交换短时动作限定能力；GitHub身份不等产品superadmin授权。审批摘要／角色／会话／MFA失效则拒，操作完成消耗租约并审计。禁止包脚本在验证阶段拿生产secret/迁移权。Environment protection为附加锁，私库套餐不支持reviewer或attest时仍保平台门禁，不默认采购套餐。
+
+## 更新和兼容
+
+| 类型 | 生效路径 | 安全条件 |
+| --- | --- | --- |
+| 现有runtime配置 | 完整bundle切换 | 已支持consumer/权限/预览/兼容，生产确认适用 |
+| backend/admin/schema | Actions测试/构建/受控部署迁移 | 同digest、expand-contract、当前权限、预先生产确认 |
+| 兼容移动更新 | 自托管Updates v1/签名，明确runtime | native指纹兼容，渠道许可、发行/名单资格，非任意JS插件热加载 |
+| native/不兼容 | Actions重建原生/签名/渠道发布 | 未兼容端不下发代码/动作，实际渠道状态可查 |
+
+混合变更按最高实际要求。服务端取client-release登记×已审插件×当前安装×明确cohort×用户资源权限，客户端自报字段无授权效力。名单是明确account IDs/hash版本，不能百分比rollout替换；名单外获取descriptor/新代码/能力均拒。旧版安全兼容功能继续，局部不兼容仅禁扩展并提供更新去向；核心无法安全兼容才全App强更，原因/有效更新/安全申诉指引保持可达。回滚新发行继续当前安全账本，不能复活已删/撤权或未审权限，不承诺无损down migration。
+
+## 同版证据格式
+
+index字段：`schema_version,release_id,plan_digest,commit_sha/checkout_sha/event_ref,run_id,run_attempt,workflow_sha,environment/config,runner_image/tool_versions,artifact_id,raw_artifact_sha256,archive_digest,component/runtime/plugin_versions,validation_profile,check_set_hash,required_case_set,cases[{id,requirements,applicability,applicability_reason,activation_node,mandatory,status,duration_ms,report_refs,screenshot_refs/diff_refs,interaction_refs,error}],tdd_cycle_refs,design_input_digests,baseline_candidate/approval_refs,ai_code_review_ref,ai_visual_review_ref,review_disposition_refs,completion_record_ref,started/finished_at,archive_location/expiry/access_policy`。
+
+status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown；mandatory只有真实passed且版本/产物/配置/环境一致才可聚合passed。if条件跳过必需用例仍不通过。attestation仅构建来源，不代测试/安全结论。无文件报告上传error，失败同样保报告；签名后的实际交付包另有digest与适用验收，不能仅测未签版本后无记录改包。
+
+`applicability`是清单适用性而非测试状态，required／not_yet_applicable／not_applicable必须附阶段和理由。bootstrap中未实现业务不算通过或抵扣首版；full-release所有首版适用必需项须实际passed。Red目标的原failed状态保留，预期失败确认只进入TDD链，不能充当发行Green。
+
+### 开发验证关联记录
+
+以下是私有工程证据格式，不新增产品界面／业务数据，不手填进原生handoff固定字段；原生桥接写入会重建字段，项目侧记录独立存储并由未来门禁核验。具体顺序与验收见[cloud-validation](cloud-validation.md)。
+
+| 记录 | 必需关联与语义 |
+| --- | --- |
+| ci_readiness | 初始化最终SHA、契约／清单／toolchain摘要、真实服务／网页／双端壳／采集／审查／拒绝探针报告及资源准入；未适用业务单列，不授feature完成 |
+| tdd_cycle | 目标行为／需求／case、S_R／S_G／final_sha、测试／夹具／oracle摘要、红运行／断言及缺行为原因确认、绿和回归报告；红先于实现 |
+| baseline_candidate／approval | 设计输入摘要、实际捕获SHA、各端页面状态／设备字体配置、截图／参考／差异／交互／AI报告；具体候选摘要的有权确认和范围，不自动批准 |
+| ai_review | 类型code／visual、current／base SHA、输入／图像／报告摘要、工具／模型精确ID、prompt／schema版本、request／run／attempt／用量、覆盖／findings／unknown；真实模型调用 |
+| review_disposition | finding与文件／页面／区域／需求／证据、处置人／理由、修复SHA、当前重审／回归或可核验独立反证；decision_required尚未处理阻塞 |
+| completion_record | feature／task／mode、当前SHA／contract_hash／check_set_hash、有效全部run／attempt／产物／报告摘要、read_by／read_at／summary／unresolved_items、门禁结论；新提交失效 |
+
+GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或完成报告；一个run成功、review已请求、checkbox齐全或模型自评均不足。AI缺凭据／空或截断／拒绝／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。
+
+正式证据分类归档于有权私有存储，测试90天、正式发行初始1年，敏感内容遵更短业务期限/脱敏；价格/存储Q-03/16准入。run URL和artifact默认保留不永久；不得把真实手机号/私信/草稿/AI完整原文写长存报告。引用合成fixture标识、必要授权日志/状态/截图即可。收到旧版结果必须重新验证实际发行，不手改index抹失败。
+
+## 验证条件
+
+Actions覆盖四类/混合变更、同包更换攻击、无超级管理员确认、DEC-001冷却、审批后权限/范围变更、名单内外、扩灰无确认、native不兼容、旧端核心安全/不安全、失败/中断/重试、迁移部分/不可逆、回滚复活攻击及证据缺失。任何未确认生产影响或名单外能力成功为缺陷；不在本轮执行这些操作。
+
+初始化／门禁另验证零用例、尚未存在的业务脚本、必需skip／neutral、前置失败导致聚合未执行、queued／超时／取消、只等一个run、旧SHA／PR merge误配／错误artifact、清单缩减、未读报告、Red环境错误／oracle换绿、AI假报告／漏图／秘密泄露、基准自批／自动重拍和直接旧脚本设complete等拒绝案例。full-release读取所有必需最终报告，不用bootstrap探针替业务验收。
