@@ -159,6 +159,7 @@ jobs:
         run: |
           node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" verify-output || true
           node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" review-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" private-receipts || true
           node --experimental-strip-types tools/ci/aggregate-cli.ts
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

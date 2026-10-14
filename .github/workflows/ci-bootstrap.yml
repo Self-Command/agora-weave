@@ -347,3 +347,47 @@ jobs:
       source_run_id: ${{ github.run_id }}
       source_sha: ${{ github.sha }}
     secrets: inherit
+  gate:
+    name: agoraweave/ci-gate
+    needs: [freeze, image-freeze, transport, collect-source, archive]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Authenticate the current shared executor and recompute every frozen requirement
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          set -eu
+          source=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$TARGET_SHA&per_page=100" --jq '[.workflow_runs[] | select(.path == ".github/workflows/verify-release.yml" and .event == "push")] | if length == 1 then .[0].id else empty end')
+          mkdir -p gate-output
+          if [ -z "$source" ]; then
+            printf '{"state":"blocked","reason_codes":["missing_or_ambiguous_current_shared_executor"],"target_sha":"%s","feature_complete":false}\n' "$TARGET_SHA" > gate-output/readiness.json
+            exit 1
+          fi
+          export SOURCE_RUN_ID="$source"
+          export SOURCE_SHA="$TARGET_SHA"
+          attempt=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source" --jq .run_attempt)
+          node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$source-$attempt" verify-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$source-$attempt" review-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$source-$attempt" private-receipts || true
+          node --experimental-strip-types tools/ci/aggregate-cli.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: gate-output/
+          if-no-files-found: error
+          retention-days: 7

@@ -4,7 +4,7 @@ import { collectEvidence } from './collect-evidence.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Source download requires GitHub-hosted Actions');
 const [name, destination] = process.argv.slice(2);
-if (!['verify-output', 'review-output'].includes(destination) || !/^(verify-executor-outcomes|codex-record-validation)-\d+-\d+$/.test(name)) throw new Error('Unregistered original source destination');
+if (!['verify-output', 'review-output', 'private-receipts'].includes(destination) || !/^(verify-executor-outcomes|codex-record-validation|private-source-receipts)-\d+-\d+$/.test(name)) throw new Error('Unregistered original source destination');
 const repository = process.env.GITHUB_REPOSITORY!;
 const runId = process.env.SOURCE_RUN_ID || process.env.GITHUB_RUN_ID!;
 const sha = process.env.SOURCE_SHA || process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA!;
