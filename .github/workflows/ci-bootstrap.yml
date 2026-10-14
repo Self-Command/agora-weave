@@ -352,6 +352,7 @@ jobs:
           const sources = [
             { id: '38593654084', sha: '1c81fb28cc9d5cf16394a476a400db2b71577df9' },
             { id: '38600654805', sha: 'e02159512f0d8411d15beea0d5725c3a1cee2a22' },
+            { id: '38607776284', sha: '0a45ec581e68fb1dc6a1fc16853f94ba6e78ce5a' },
             { id: process.env.GITHUB_RUN_ID, sha: process.env.TARGET_SHA },
           ];
           async function metadata(path) {
@@ -442,6 +443,31 @@ jobs:
                   reviewed_at: '2026-10-14T16:43:00Z', health: 'success',
                   conclusion: 'Read all 35 raw failures; imports/discovery healthy; prior 30 behaviors pass; target gate behavior absent' },
                 green_state: 'not_implemented', raw_failure_preserved: true,
+              };
+            }
+            if (source.id === '38607776284') {
+              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
+              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
+              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' ||
+                !tap.includes('# pass 65') || !tap.includes('# fail 12') || !tap.includes("actual: 'unknown'")) throw new Error('Observed collector Red source changed');
+              const paths = ['tests/integration/ci/source-collection.spec.ts', 'tests/fixtures/bootstrap/source.ts'];
+              const digests = {};
+              for (const path of paths) {
+                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
+                if (file.encoding !== 'base64') throw new Error('Cannot bind collector Red input');
+                digests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
+              }
+              record.red_observation = {
+                cycle_id: 'ci-source-003', state: 'red_observed', S_R: source.sha,
+                source_run: source.id, source_attempt: run.run_attempt,
+                behavior_ids: ['ci.source-authentication', 'ci.attempt-preservation', 'ci.raw-digest', 'ci.redirect-credential-boundary'],
+                requirements: ['QR-006', 'QR-007', 'QR-009'], case_ids: ['C01', 'C02', 'C03', 'C04', 'C05'],
+                test_fixture_digests: digests, assertion_failures: 12, existing_regressions_passed: 65,
+                actual_failure: 'Callable collector returns unknown; all 12 source acceptance/rejection assertions fail',
+                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
+                  reviewed_at: '2026-10-14T17:38:03Z', health: 'success',
+                  conclusion: 'Read raw failures and healthy transport; no import/discovery/credential failure; target source authentication absent' },
+                green_state: 'separate_current_evidence_required', raw_failure_preserved: true,
               };
             }
             writeFileSync(`${directory}/provenance.json`, JSON.stringify(record, null, 2) + '\n');
