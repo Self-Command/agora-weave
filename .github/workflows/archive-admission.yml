@@ -1,0 +1,63 @@
+name: Private archive write-once admission
+on:
+  push:
+    paths:
+      - '.github/workflows/archive-admission.yml'
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  immutable:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Verify first write readback and rejected overwrite with the actual restricted account
+        shell: bash
+        env:
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          umask 077
+          mkdir -p archive-admission
+          key="$RUNNER_TEMP/archive-admission-key"
+          hosts="$RUNNER_TEMP/archive-admission-hosts"
+          batch="$RUNNER_TEMP/archive-admission-batch"
+          cleanup() { rm -f "$key" "$hosts" "$batch"; }
+          trap cleanup EXIT
+          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
+          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
+          user=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
+          host=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
+          remote="/archive/ordinary/admission-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.txt"
+          printf 'original synthetic admission value\n' > "$RUNNER_TEMP/archive-admission-original.txt"
+          printf 'unauthorized replacement must be refused\n' > "$RUNNER_TEMP/archive-admission-replacement.txt"
+          printf 'put %s %s\nget %s %s\n' "$RUNNER_TEMP/archive-admission-original.txt" "$remote" "$remote" "$RUNNER_TEMP/archive-admission-readback.txt" > "$batch"
+          sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host" > "$RUNNER_TEMP/archive-admission-upload.log" 2>&1
+          cmp "$RUNNER_TEMP/archive-admission-original.txt" "$RUNNER_TEMP/archive-admission-readback.txt"
+          printf 'put %s %s\n' "$RUNNER_TEMP/archive-admission-replacement.txt" "$remote" > "$batch"
+          set +e
+          sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host" > "$RUNNER_TEMP/archive-admission-overwrite.log" 2>&1
+          overwrite_exit=$?
+          set -e
+          printf 'get %s %s\n' "$remote" "$RUNNER_TEMP/archive-admission-final.txt" > "$batch"
+          sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host" > "$RUNNER_TEMP/archive-admission-final.log" 2>&1
+          unchanged=false
+          if cmp -s "$RUNNER_TEMP/archive-admission-original.txt" "$RUNNER_TEMP/archive-admission-final.txt"; then unchanged=true; fi
+          cleanup
+          removed=false
+          if [ ! -e "$key" ] && [ ! -e "$hosts" ] && [ ! -e "$batch" ]; then removed=true; fi
+          printf '{"source":"github-actions","target_sha":"%s","run_id":"%s","attempt":%s,"first_write_readback":"passed","overwrite_exit":%s,"original_unchanged":%s,"temporary_credentials_removed":%s,"readiness":"not_evaluated","feature_complete":false}\n' \
+            "$GITHUB_SHA" "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$overwrite_exit" "$unchanged" "$removed" > archive-admission/result.json
+          test "$overwrite_exit" -ne 0
+          test "$unchanged" = true
+          test "$removed" = true
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: private-write-once-${{ github.run_id }}-${{ github.run_attempt }}
+          path: archive-admission/
+          if-no-files-found: error
+          retention-days: 7
