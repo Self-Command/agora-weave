@@ -68,6 +68,19 @@ jobs:
           compose=(docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env"
             -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json")
           "${compose[@]}" pull
+          # Resolve official runtime imports without service secrets before internal network startup.
+          edge_image=$(node -e 'const v=JSON.parse(require("fs").readFileSync("infra/ci/images.lock.json"));process.stdout.write(v.images.find(i=>i.reference.startsWith("supabase/edge-runtime:")).repo_digests[0])')
+          docker volume create "${COMPOSE_PROJECT_NAME}_deno-cache" > /dev/null
+          docker run -d --name agoraweave-import-cache \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions:/home/deno/functions:ro" \
+            -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
+            "$edge_image" start --main-service /home/deno/functions/main > /dev/null
+          for attempt in $(seq 1 60); do
+            if docker exec agoraweave-import-cache bash -c 'timeout 1 bash -c "</dev/tcp/127.0.0.1/9000"' 2>/dev/null; then break; fi
+            sleep 2
+          done
+          docker exec agoraweave-import-cache bash -c 'timeout 1 bash -c "</dev/tcp/127.0.0.1/9000"'
+          docker rm -f agoraweave-import-cache > /dev/null
           "${compose[@]}" up -d --wait --wait-timeout 300
           "${compose[@]}" exec -T db pg_isready -U postgres -h localhost > service-output/database-health.txt
           "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
@@ -109,6 +122,7 @@ jobs:
         shell: bash
         run: |
           set -eu
+          docker rm -f agoraweave-import-cache > /dev/null 2>&1 || true
           if [ -f "$RUNNER_TEMP/agoraweave-ci.env" ] && [ -f "$RUNNER_TEMP/agoraweave-images.json" ]; then
             docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env" \
               -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json" \
