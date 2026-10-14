@@ -2494,7 +2494,14 @@
       "files": [
         "tests/security/ci/bridge-scope.spec.ts"
       ]
+    },
+    {
+      "files": [
+        "tests/integration/ci/orchestration-source.spec.ts"
+      ],
+      "id": "ci.orchestration-source",
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 126
+  "engineering_case_count": 129
 }
