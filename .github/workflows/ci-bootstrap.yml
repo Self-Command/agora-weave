@@ -173,6 +173,31 @@ jobs:
               remote_directory: `/archive/ordinary/${source.sha}_${source.id}_${run.run_attempt}_${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_RUN_ATTEMPT}`,
               verified_at: new Date().toISOString(),
             };
+            if (source.id === '38593654084') {
+              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
+              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
+              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' || !tap.includes('# fail 30') || !tap.includes("actual: 'unknown'")) throw new Error('Observed Red source changed');
+              const testDigests = {};
+              for (const path of ['tests/contract/ci/evidence.spec.ts', 'tests/integration/ci/aggregate.spec.ts', 'tests/fixtures/bootstrap/evidence.ts']) {
+                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
+                if (file.encoding !== 'base64') throw new Error('Cannot bind original test input');
+                testDigests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
+              }
+              record.red_observation = {
+                cycle_id: 'ci-evidence-001', state: 'red_observed',
+                behavior_ids: ['ci.report-assessment', 'ci.required-check-aggregation'],
+                requirements: ['QR-001', 'QR-003', 'QR-004', 'QR-006', 'QR-007'],
+                oracle: 'Nonempty matching evidence can pass; missing, failed, mismatched or incomplete required evidence blocks',
+                case_ids: ['E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09', 'E10', 'E11', 'A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07'],
+                S_R: source.sha, source_run: source.id, source_attempt: run.run_attempt,
+                test_fixture_digests: testDigests, expected_assertion_failures: 30,
+                actual_failure: 'Callable implementation shell returns unknown instead of passed or blocked; 30 semantic assertions fail',
+                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
+                  reviewed_at: '2026-10-14T16:27:00Z', health: 'success',
+                  conclusion: 'Observed raw TAP and checkout health; failure is absent evidence/aggregate behavior, no import/compile/discovery/credential error' },
+                green_state: 'not_implemented', raw_failure_preserved: true,
+              };
+            }
             writeFileSync(`${directory}/provenance.json`, JSON.stringify(record, null, 2) + '\n');
           }
           NODE
