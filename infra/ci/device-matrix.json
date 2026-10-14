@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "decisions": ["ED-13"],
+  "runner_policy": "github-actions-github-hosted-only",
+  "devices": [
+    { "id": "ios-current-simulator", "runner": "macos-26", "xcode": "26.4.1", "state": "runtime_capture_observed", "source_run": "38603527452", "source_sha": "14df8c3b824e201f16f2be5fa6aa06302e161826", "limit": "Historical build/install/light-dark capture only; final XCTest and backend connectivity still required" },
+    { "id": "android-current-emulator", "runner": "ubuntu-24.04", "api": 36, "abi": "x86_64", "state": "not_evaluated", "limit": "Release build observed; actual UIAutomator execution remains required" },
+    { "id": "ios-minimum", "os": "16.4", "state": "unavailable", "reason": "Matching simulator runtime or cloud device channel has not been supplied or verified" },
+    { "id": "android-minimum", "os": "7.0", "api": 24, "state": "not_evaluated", "reason": "Compilation minSdk24 does not establish actual coverage" },
+    { "id": "ios-physical", "state": "unavailable", "required": ["VoiceOver", "keyboard", "media", "push"], "reason": "ED-13: user has no physical device service account" },
+    { "id": "android-physical", "state": "unavailable", "required": ["TalkBack", "keyboard", "media", "push", "battery-restrictions"], "reason": "ED-13: user has no physical device service account" }
+  ],
+  "native_backend_connectivity": { "state": "unavailable", "reason": "Ubuntu internal Compose cannot be directly reached from macOS runner; isolated dev/test HTTPS ingress not supplied", "server_role": "private-evidence-storage-only" },
+  "readiness": "not_evaluated",
+  "unavailable_required_resources_block_ci_ready": true
+}
