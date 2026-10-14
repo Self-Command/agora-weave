@@ -30,3 +30,5 @@ b5accf02的草稿PR1实际产生同SHA的push及pull_request工程run；共享ru
 
 e2908de7／共享run38636632772的报告与私有归档实际失败，原因是原始XCTest结果包的Data/data.0~…==文件名被归档路径字符白名单误拒绝；原iOS16.4 artifact11931165122及日志保留。393dbe25／run38641855492在健康传输上执行137项，136pass／1fail，XA01实际得到blocked而非archive_planned；当前Codex先读取该缺陷Red，再允许原始文件名中的~和=，仍拒绝绝对路径、盘符、反斜杠、空段、dot／dotdot、换行、分号、重复路径、秘密字段及未认证来源。后续用完整原失败run实际归档回读，并在新SHA重跑当前初始化；不删或改名原xcresult文件换绿。
 
+20c15f73／push run38643373417在原SR01 oracle不变的情况下138项全通过；PR工程job也在同SHA成功。push TDD run38643373340实际选择对应push源并认证既有18链，不能借PR的同SHA运行。XA01的137项Green为b5accf02／run38642142333；run38642142466对原失败共享run38636632772的13份完整原artifact实际上传、回读且移除临时密钥，保留原failure。目录追加XA01与SR01两链供Actions再次认证，coverage保持partial；不把追加记录本身称为认证通过。
+

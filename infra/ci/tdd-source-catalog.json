@@ -620,6 +620,52 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T21:08:26.774047Z",
       "cause_summary": "The original same-file semantic assertions failed on healthy GitHub-hosted transport before this implementation. Exact original titles, complete TAP, unchanged test and inline fixture, all attempts and Git ancestry remain available; full current engineering regression is required."
+    },
+    {
+      "cycle_id": "ci-original-xcresult-paths-001",
+      "behavior_id": "ci.original-xcresult-paths",
+      "case_titles": ["XA01: original XCTest data names retain their bytes and remain within the private archive boundary"],
+      "requirements": ["QR-003", "QR-006", "QR-007", "QR-009"],
+      "test_file": "tests/integration/ci/xcresult-archive.spec.ts",
+      "fixture_file": "tests/integration/ci/xcresult-archive.spec.ts",
+      "red": {
+        "sha": "393dbe25949a5f614d479c4f4245ea2c7e435fd6",
+        "run_id": "38641855492",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "b5accf026186a564b8261e2b6f6d0c12ca1bbfa5",
+        "run_id": "38642142333",
+        "attempt": 1
+      },
+      "implementation_sha": "b5accf026186a564b8261e2b6f6d0c12ca1bbfa5",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T21:40:24.786696Z",
+      "cause_summary": "Healthy transport produced 136 passed assertions and the unique XA01 failure: the original XCTest file name was blocked. The unchanged assertion passed after accepting the original tilde and equals characters; the full failed source archive was independently stored and read back."
+    },
+    {
+      "cycle_id": "ci-event-bound-source-001",
+      "behavior_id": "ci.event-bound-source",
+      "case_titles": ["SR01: push and pull request sources at one SHA bind their own event and branch without borrowing a different execution"],
+      "requirements": ["QR-003", "QR-006", "QR-007"],
+      "test_file": "tests/integration/ci/source-run-selection.spec.ts",
+      "fixture_file": "tests/integration/ci/source-run-selection.spec.ts",
+      "red": {
+        "sha": "dc6f82c35a025fe04d271690c02f9860fa60fa62",
+        "run_id": "38642938530",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "20c15f733f94366796ce9bdb7e4de8674000345a",
+        "run_id": "38643373417",
+        "attempt": 1
+      },
+      "implementation_sha": "20c15f733f94366796ce9bdb7e4de8674000345a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T21:49:27.118465Z",
+      "cause_summary": "Healthy transport produced 137 passed assertions and the unique SR01 failure with undefined selected run rather than the matching event source. The same test and inline fixture passed after exact SHA, event, branch, workflow and repository selection; the actual push journal also selected its own run in the presence of the matching PR run."
     }
   ]
 }
