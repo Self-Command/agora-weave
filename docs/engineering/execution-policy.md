@@ -12,6 +12,7 @@
 | `tools/ci/`、`tests/{contract,integration,security}/ci/`、`tests/fixtures/bootstrap/` | 工程门禁、采集、发现及拒绝探针；不包含社区业务 |
 | `tests/e2e/bootstrap/`、`tests/e2e/{ios,android}/BootstrapShell*` | 无业务壳的真实交互与隔离服务联通 |
 | `package.json`、`package-lock.json`、`apps/{mobile,admin,share}/` | 固定官方依赖与无业务客户端壳；不能因路径获准而加入业务 |
+| `.gitmodules` | 修复已有 `superpowers-v7` 固定 gitlink 缺失的原始来源元数据；不改版本或技能内容 |
 | `supabase/upstream/`、`infra/ci/` | 固定官方 Compose、工具锁、隔离初始化环境与资源准入 |
 | `docs/engineering/` | 执行、资源、证据、工具和已确认决定的工程记录 |
 | `.specify/extensions.yml`、`.specify/extensions/speckit-superpowers-bridge/` | T023 经云端 Red 后的项目门禁接入；不更改已有决策和规格 |
