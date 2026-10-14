@@ -2480,6 +2480,13 @@
         "tests/integration/ci/source-aggregate.spec.ts"
       ],
       "id": "ci.source-aggregate"
+    },
+    {
+      "id": "ci.mandatory-hooks",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/mandatory-hooks.spec.ts"
+      ]
     }
   ],
   "engineering_case_count": 121
