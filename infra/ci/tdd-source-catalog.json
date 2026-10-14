@@ -712,6 +712,29 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T19:04:58.513392Z",
       "cause_summary": "The original raw LB01 assertion showed that the legacy transition wrote complete while 285 canonical tasks remained pending. That failure was read before the bridge guard implementation. The original unchanged complete test and inline fixture now pass with all 139 activated assertions; the original failure and other failed assertions in its run remain preserved."
+    },
+    {
+      "cycle_id": "ci-original-web-report-handoff-001",
+      "behavior_id": "ci.original-web-report-handoff",
+      "case_titles": ["WR01: installed Playwright writes the approved discovery report inside the archived Web handoff"],
+      "requirements": ["QR-003", "QR-004", "QR-006", "QR-007"],
+      "test_file": "tests/integration/ci/web-report-handoff.spec.ts",
+      "fixture_file": "tests/e2e/bootstrap/web-shell.spec.ts",
+      "red": {
+        "sha": "33f7b2af4a83092ee1ac209661401584c4f0081e",
+        "run_id": "38647801188",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "fcbdb0fb31f87bbf3035558321c404e6793de36e",
+        "run_id": "38648045010",
+        "attempt": 1
+      },
+      "implementation_sha": "fcbdb0fb31f87bbf3035558321c404e6793de36e",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T22:29:44Z",
+      "cause_summary": "On healthy transport the actual installed Playwright CLI discovered all 16 approved cases but wrote no JSON at the archive handoff, producing the sole failure with 139 existing assertions passed. After that failure was read, only the reporter output path changed. All 140 unchanged assertions, type/lint and frozen image checks passed; the actual browser runtime also emitted the original JSON with 16 passed and zero unexpected, flaky or skipped cases. Discovery is not claimed as runtime acceptance."
     }
   ]
 }

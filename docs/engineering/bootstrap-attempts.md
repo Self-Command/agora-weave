@@ -36,3 +36,5 @@ e2908de7／共享run38636632772的报告与私有归档实际失败，原因是�
 
 TDD完整性审查仍有阻塞：archive的A01–A06、原始bootstrap的BR01–BR07及review-binding的RB01–RB07没有全部取得当前完整测试／fixture摘要下可认证的先行Red链。特别是17b3f3ee的归档Red虽真实失败，但修复与下载读取处于同一次工具调用，不能声称模型先观察Red后实现。原报告、提交及失败保持原样；不补造时间，不降低校验，不把当前Green或追加目录记录作为历史先行Red的替代。完整链认证前T017及ci-ready保持未完成。
 
+18c36eef／共享run38646401455的Web原作业实际16pass，当前Codex读取其16张原始全图；但JSON报告落在配置目录下，未进入上传的web-output，不能据此给原始报告准入通过。[固定Playwright1.64.1源码](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/reporters/base.ts)确认outputFile按configDir解析。33f7b2af／run38647801188以真实已安装CLI执行原16项发现，健康成功且WR01明确交接文件缺失，139pass／1fail；当前Codex读取后，于22:29:44Z记录因果，再只修正reporter目标路径。fcbdb0fb／run38648045010在原WR01与Web fixture不变时140项全通过，类型／lint／镜像冻结通过，实际浏览器原JSON进入归档目录且16pass、0unexpected／flaky／skipped。发现探针不替代浏览器运行；最终SHA仍重跑所有适用初始化节点，历史TDD缺口和物理／联通资源阻塞保留。
+
