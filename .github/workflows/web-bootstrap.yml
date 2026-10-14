@@ -22,6 +22,7 @@ jobs:
         run: |
           set -eu
           mkdir -p web-output
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts web-output
           npm run ci:install > web-output/install.log 2>&1
           npm run ci:build:web > web-output/build.log 2>&1
           npx --no-install playwright install --with-deps chromium > web-output/browser-install.log 2>&1

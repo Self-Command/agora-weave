@@ -121,6 +121,7 @@ jobs:
         run: |
           set -eu
           mkdir -p web-output
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts web-output
           npx --no-install playwright install --with-deps chromium > web-output/browser-install.log 2>&1
           npx --no-install playwright --version > web-output/playwright-version.txt
           export CHECKOUT_SHA=$(git rev-parse HEAD)

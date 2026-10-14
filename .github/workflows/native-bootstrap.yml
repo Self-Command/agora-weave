@@ -64,6 +64,7 @@ jobs:
       - name: Install frozen dependencies and generate no-business native shell
         shell: bash
         run: |
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts native-output
           npm ci --no-audit --no-fund
           cd apps/mobile
           CI=1 npm run ci:prebuild -- --platform ios
@@ -167,6 +168,7 @@ jobs:
       - name: Install frozen dependencies and build actual Android shell
         shell: bash
         run: |
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts native-output
           npm ci --no-audit --no-fund
           cd apps/mobile
           CI=1 npm run ci:prebuild -- --platform android
