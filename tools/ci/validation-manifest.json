@@ -2522,7 +2522,14 @@
       "files": [
         "tests/security/ci/review-schema.spec.ts"
       ]
+    },
+    {
+      "id": "ci.original-tdd-case-selection",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-cases.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 134
+  "engineering_case_count": 136
 }
