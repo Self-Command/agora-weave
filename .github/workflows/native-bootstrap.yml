@@ -98,7 +98,8 @@ jobs:
           sudo udevadm trigger --name-match=kvm
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'system-images;android-36;google_apis;x86_64' 'emulator' > native-output/sdk-install.log 2>&1
           cat "$ANDROID_HOME/system-images/android-36/google_apis/x86_64/source.properties" > native-output/system-image.properties
-          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt
+          test -x "$ANDROID_HOME/emulator/emulator"
+          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1 || true
       - name: Install frozen dependencies and build actual Android shell
         shell: bash
         run: |

@@ -96,6 +96,7 @@ jobs:
               try { logs = execFileSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
               catch (error) { logs = `${error.stdout || ''}\n${error.stderr || ''}`; }
               return { name: container.Name, state: container.State.Status, health: container.State.Health?.Status,
+                health_log: container.State.Health?.Log?.slice(-8).map(entry => sanitize(entry.Output || '')),
                 exit_code: container.State.ExitCode, logs: sanitize(logs) };
             });
             writeFileSync('service-output/container-diagnostics.json', JSON.stringify(records, null, 2) + '\n');
