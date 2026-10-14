@@ -2508,7 +2508,14 @@
       "files": [
         "tests/integration/ci/tdd-ancestry.spec.ts"
       ]
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/required-entries.spec.ts"
+      ],
+      "id": "ci.required-shared-entries"
     }
   ],
-  "engineering_case_count": 130
+  "engineering_case_count": 131
 }
