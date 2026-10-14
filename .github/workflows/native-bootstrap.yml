@@ -52,8 +52,17 @@ jobs:
           test -d /Applications/Xcode_26.4.1.app
           sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
           xcodebuild -version > native-output/xcode-version.txt
+          xcrun simctl list runtimes -j > native-output/ios-before-runtimes.json
           if [ "$IOS_VERSION" = '16.4' ]; then
-            xcodebuild -downloadPlatform iOS -buildVersion 16.4 > native-output/minimum-runtime-download.log 2>&1
+            downloaded=false
+            for attempt in 1 2 3; do
+              if xcodebuild -downloadPlatform iOS -buildVersion 16.4 > "native-output/minimum-runtime-download-$attempt.log" 2>&1; then
+                downloaded=true
+                break
+              fi
+              xcrun simctl list runtimes -j > "native-output/ios-runtime-health-$attempt.json"
+            done
+            test "$downloaded" = true
             xcrun simctl create agoraweave-ci-minimum com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-16-4 > native-output/minimum-device-udid.txt
           fi
           xcrun simctl list runtimes -j > native-output/ios-runtimes.json
