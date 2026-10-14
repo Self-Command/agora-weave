@@ -3,3 +3,16 @@
 {"timestamp":"2026-10-14T09:45:19.4272308Z","action":"guard","status":"allow","feature_directory":"","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
 {"timestamp":"2026-10-14T10:55:12.5666842Z","action":"guard","status":"allow","feature_directory":"","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
 {"timestamp":"2026-10-14T11:22:35.2054347Z","action":"guard","status":"allow","feature_directory":"","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
+{"timestamp":"2026-10-14T11:46:05.7991470Z","action":"guard","status":"allow","feature_directory":"","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.tasks"}
+{"timestamp":"2026-10-14T12:27:07.7347678Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"","snapshot_id":"20261014T1227076911837Z-ready"}
+{"timestamp":"2026-10-14T13:35:50.3088720Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
+{"timestamp":"2026-10-14T13:54:34.3889686Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.tasks"}
+{"timestamp":"2026-10-14T14:22:40.5024803Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261014T1422404680118Z-ready"}
+{"timestamp":"2026-10-14T14:46:06.0371521Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
+{"timestamp":"2026-10-14T15:00:02.1113091Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
+{"timestamp":"2026-10-14T15:17:12.5572406Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.tasks"}
+{"timestamp":"2026-10-14T15:31:38.1418604Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261014T1531381073348Z-ready"}
+{"timestamp":"2026-10-14T15:44:28.1881285Z","action":"handoff","status":"executing","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261014T1544281376218Z-executing"}
+
+{"timestamp":"2026-10-14T15:44:28.2841654Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
+

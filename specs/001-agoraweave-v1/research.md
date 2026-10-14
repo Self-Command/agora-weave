@@ -219,3 +219,19 @@ action／CLI支持这些参数只是工具能力依据，不证明安全组合�
 **Alternatives considered**：分享全部GET通行或所有受限404、只在网页加noindex而无作者状态、复用AI开关控制收录、用模板帮助／虚构条款或只要求用户提供文案均不采用。资料展示不等于用户同意，也不引入老用户登录或普通公开AI逐次强制同意；真实服务准入与来源资格继续独立。
 
 依据：本仓库PRD WEB-01–06／AI-04／08–10／ADM-01–07、spec FR-078／090–107、UI-SPEC §5设置与发布入口、[最新决定ED-08](reviews/planning-decisions-2026-10-14.md)及[独立发现](reviews/independent-plan-review-2026-10-14.md)。本节是依据既有材料的设计修订，不包含新外部技术选型或实际执行结论。
+
+## RD-15 — Analyze四项缺口的修订边界
+
+**Decision**：按既有FR／PRD／UI-SPEC恢复四项约束并把验证责任落到可派生任务：FR-065使用规范化无向账号pair的单一pending部分唯一约束和A→B／B→A并发断言；在共享核心Green前，ci-ready必须能真实调用business-increment验证作业，US14只扩充完整发行与受控部署；US2实现同时依赖US1与US3实现；FR-113拆为播放器、偏好设置和所有实际媒体消费入口，并在云端验证网络／视区／声音／预加载／省流量／减少动效行为。
+
+**Rationale**：FR-065原文“每对至多一个”与旧任务的“同方向／每向”不相容；只建立聚合门禁不能证明核心前已有可执行验证作业；DAG和前置表不一致会允许US2过早启动；FR-113的真实行为不能由编辑器或一般媒体截图覆盖。上述修订只澄清并恢复已批准行为，不增加用户范围或新产品选择。
+
+**Alternatives rejected**：保留有向pending、让US14首次创建增量工作流、只在文字前置表补US2而不改DAG、把播放器行为并入编辑器或最终通用视觉任务，均会留下同类跨产物缺口。
+
+**Verification mapping**：plan TD-07A／TD-07D／TD-07E；data-model与HTTP/configuration契约；quickstart V09／V19；下一次speckit-tasks需把模型、云端作业调用链、依赖图／前置表、播放器消费入口和Red／Green／回归断言一并派生。此处未修改既有tasks或交接状态。
+
+### 后续I3／I4核对
+
+I3不引入新方法选择，HTTP已有GET/PATCH为准，计划／HTTP／V19A补足部分更新／CAS／幂等及PUT拒绝；现有任务需同步。I4不能由“各端同语义”推导share-read可读取账号偏好，/config/effective非敏感平台投影也不授个人数据用途。曾呈现A默认／页面内操作与B最小本人只读投影待决，用户随后明确选择A，以下最新决定生效。
+
+**Decision（ED-10）**：匿名与登录分享均用合法平台默认＋当前页面操作，不读取／同步账号preferences，账号设置由App管理。保留现有share-read白名单，配置／SSR／hydration／缓存／认证响应不派生私人偏好投影，页面操作不写账号。**Rationale**：完整实现播放控件和默认策略即可满足本次明确选择，登录仅提升当前合法内容读取资格。**Alternative rejected**：B最小本人只读端点未获选择，更不能开放整个GET/PATCH preferences。**Verification**：quickstart V12B与V19A测试账号已有相反偏好、匿名／登录同默认来源、无私人读取及页面操作不写回，同时保持当前媒体gate；下一次tasks按真实来源同步实现、配置consumer和安全／浏览器回归。

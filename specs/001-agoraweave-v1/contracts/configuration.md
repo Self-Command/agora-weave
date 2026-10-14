@@ -22,6 +22,10 @@ bundle=`{version,schema_version,scope_values,compat_matrix,effective_at,preview_
 | 可见性/用途/收录/处罚/会话 | 当前事实即时核 | 权限收紧立即拒新访问，收录关闭立即noindex；配置恢复不能覆盖事实或作者选择 |
 | UI/排序/菜单 | 仅现有支持能力版本化生效 | 无运行能力/权限则不可用，不凭配置新增代码/native |
 
+FR-113播放消费者须显式登记：本人video_policy三值（初始wifi_only）、preload关闭能力、播放器与GIF组件、系统网络／省流量／减少动效适配、设置页，以及信息流／详情／主页／搜索／收藏／评论／私信和适用分享／后台／插件媒体入口。本人明确选择和当前系统条件分别输入，配置默认不能覆盖既有个人选择；主题仍本机。各端只消费实际支持且当前有权的媒体，投影／设置读写／状态切换与验证引用须完整，不能仅登记编辑器或上传器。行为与验收见[plan TD-07D](../plan.md#td-07d--媒体播放偏好与消费入口)。本轮不另设新的预加载默认值，不扩大可上传媒体种类。
+
+播放输入按audience登记真实来源：App本人账号选择经GET/PATCH /me/preferences取得；ED-10的分享端仅有固定合法平台默认＋当前页面操作，没有账号选择来源，匿名／登录一致。分享/config/effective不得附本人preferences或假装“非敏感”即获私人投影授权；T147等共享配置消费须按此分开，不推导分享读取个人DTO。分享页改变播放／预加载状态不持久化账号、不同步App，正常平台配置与个人设置不能互相代替。后台／插件也仅使用已有合法用途投影，不扩权。
+
 ## 首版注册集合和效力
 
 必须登记spec“已确认初始业务参数”“已确认数据分类期限”的全部项、ED-02文字上限、DEC-001清单及RD-10工程参数；此处不复制全文改变批准身份。namespace至少`auth,profile,social,content,comments,polls,drafts,deletion,media,dm,notifications,search,sharing,ranking,moderation,documents,ai,retention,ui,plugins,release,sandbox`，每个真实consumer关联key。

@@ -26,6 +26,8 @@ SK 的 spec／plan／后续 tasks 是唯一需求、设计与任务契约；SP �
 
 bootstrap-authoring先提供最小调度／安装／测试发现／原始日志上传配置和接口壳，让Actions能运行基础设施测试；工作流不存在或配置错误不能称行为Red。此后报告聚合、桥接门禁、审查适配等有行为的工程代码也按§4先提交目标测试并取得真实Red后实现Green，不能借bootstrap先写完整逻辑再补测试。正式业务须等待整体ci-ready；基础设施TDD在bootstrap-only范围内使用已启动的最小云端运行通道。
 
+**增量作业必须在核心前可运行**：ci-ready前除bootstrap壳外，至少真实调用一次可用于business-increment的可复用编排（可由`verify-release.yml`调用共享job），对已激活的初始化schema／seed／接口健康、静态契约、目标测试发现、报告上传／下载校验、三端壳交互和独立AI审查探针实际执行。初始化调用仍使用bootstrap清单及bootstrap-only范围，不宣称business准入，不等待尚未产生的ci-ready或业务代码；取得ci-ready后才以business-increment profile验证共享核心／故事行为。聚合job只能汇总这些作业的真实结果，不能用空矩阵、占位check或只创建工作流文件代替。该编排的Red／Green适配先在云端建立并读取，随后共享核心每个行为沿同一调用链取得S_R后实现S_G；US14的完整发行作业在此基础上扩充全首版集合和受控部署，不负责首次提供核心增量验证入口。
+
 初始化清单明确每个检查的 `applicability=required/not_yet_applicable/not_applicable`、理由、所属阶段、激活条件及后续必需节点。未实现业务场景在 bootstrap 列为 `not_yet_applicable`，不调度、不计 passed，也不作为初始化失败；bootstrap 必需环境／采集／审查探针缺失或失败则不能 ci-ready。正式业务涉及的检查激活后，不得用“尚未就绪”退回非必需。正式发行不能保留任何首版必需项的 `not_yet_applicable`。
 
 阶段和必需集合由受保护的清单／路径分类、canonical任务范围、当前产品文件及完成目标共同计算，调用者不能靠profile=bootstrap、缩清单或标deferred跳过已激活业务／完整首版。清单／门禁改动也须审查并云端验证拒绝案例；增量门禁只能批准该任务，完整feature完成必须full-release。
@@ -35,6 +37,19 @@ bootstrap-authoring先提供最小调度／安装／测试发现／原始日志�
 聚合不能依赖 `npm --if-present`、无测试默认为成功、`continue-on-error` 或 GitHub 的 skipped／neutral 作为业务通过。聚合在前置失败后仍尝试上传报告和给出拒绝结果（未来实现采用 `always()` 与显式读取 needs／报告）；整个运行取消而未产出聚合时，外部桥接检查按 missing／cancelled 拒绝。必需聚合不设会漏出结果的 paths-ignore；清单内部识别真正不适用的项。
 
 分支保护先登记实际已运行的 bootstrap 聚合 check，ci-ready 后由同一受审聚合执行业务阶段。首次无法 dispatch 时先通过批准的初始化提交／PR事件取得首个 run；手动 dispatch 要求工作流位于默认分支，不通过未存在工作流的命令制造“就绪”。既有保护不能随意关闭，必要仓库权限／套餐调整在相应资源节点确认。
+
+### 2.1 增量验证作业的前置产出及调用链（I1）
+
+| 时间点／旧任务定位 | 必须已经提供的未来实现产出 | Actions证明与拒绝条件 |
+| --- | --- | --- |
+| 最小bootstrap通道之后、ci-ready之前（旧T015／T024／T025所在范围） | `verify-release.yml`的增量事件／dispatch入口、目标SHA／profile校验、受审清单解析、真实可复用job调用；固定安装、真实Compose健康、已有壳schema／seed、非空测试发现、静态／接口／网页／双端壳采集、独立AI审查、报告归档和最终聚合 | 在同初始化SHA用bootstrap清单／bootstrap-only范围真实调度共享编排并读完整链路报告；不等待business准入、不伪称核心业务通过；无作业／空矩阵／缺脚本／零用例／版本错配不得ci-ready |
+| 共享核心每行为Red／Green之前、整体核心Green之前（旧T031至T048） | 以既有增量编排注册当前核心migrate／seed／contracts／service／security／concurrency／recovery及各端组件，真实npm入口、发现规则、健康前置和产物／报告交接；先目标Red因果确认，再实现Green | 当前S_R执行目标语义断言并保原失败；当前S_G运行同目标及全部已激活核心／端组件／审查／必要回归；job不能只是桥接／聚合，核心Green不得等待US14补脚本 |
+| 各故事业务增量 | 在进入该行为前激活并接入对应实际接口、端交互、外部集成、媒体／插件及必要回归；继承同清单／报告协议 | 未实现首版项保not_yet_applicable及后续激活点；已激活项不能回退、缺用例／报告不能假绿 |
+| US14与最终发行（旧T167及Final） | 扩充既有verify的full-release全集合、四类发行／恢复／最终同版产物及完整真实consumer验证；另建`controlled-deploy.yml`消费具体批准与broker租约 | 增量入口不再从零创建；full-release不留首版必需未适用；验证无生产凭据、实际生产动作仍单独确认 |
+
+未来调用链为`提交/PR或dispatch → target SHA及必需清单冻结 → 安装与真实隔离服务/迁移/fixture → 非空目标/已激活用例发现 → 独立服务与各端实际执行/采集 → 原报告上传及摘要核验 → 独立AI审查/必要基准确认 → 始终聚合 → 桥接下载读取后转换`。跨工作流调用同样绑定checkout SHA、check_set与artifact摘要；依赖失败仍尝试留报告，整个取消按缺失拒绝。job依赖显式表达，不能凭workflow名称或aggregator存在推测执行顺序。
+
+初始化作业编排本身的清单／发现／失败传播／调用／报告行为先走基础设施TDD。必须注入“聚合存在但真实服务／端作业缺失”“调用链缺边”“测试未发现”“必需作业跳过”和“核心脚本尚未提供”等，观察明确拒绝；绿路径须真实非空执行。以上只是任务再生成的设计约束，本轮未创建或运行任何工作流。
 
 ## 3. 桥接开始与完成的强制门禁
 

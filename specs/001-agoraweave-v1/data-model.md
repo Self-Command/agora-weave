@@ -26,8 +26,10 @@
 | follow | follower_id、followed_id、created_at、state | 有效有向pair唯一，无自己关注；移除/取消立即撤该关系资格 |
 | follow_request | sender/recipient、created_at、expires_at、state、ended_at、internal_reason、cooldown_until、config_version | 同pair至多pending；pending→accepted/rejected/deleted/cancelled/expired/blocked，终态不复活；发送者只见ended |
 | block | blocker/blocked、active、created_at、revoked_at | 任一方向有效均断双向关注/新联系；解除不恢复关系或请求 |
-| user_preferences | account_id、follow_approval、dm_policy、read_receipt、typing、push/notification_categories、video_policy、preload、local_theme | 个人设置只能收窄资格，平台参数不能强开私信/回执；主题本机选择不新增账号同步 |
+| user_preferences | account_id、follow_approval、dm_policy、read_receipt、typing、push/notification_categories、video_policy(always/wifi_only/never，初始wifi_only)、preload(boolean)、local_theme | 视频初始静音，蜂窝默认点击；preload=false关闭推测性媒体预取，不禁止本人主动播放所需缓冲；GIF再取当前可视区／省流量／减少动效条件；个人设置不授媒体读权，平台不能强开私信/回执；主题本机选择不新增账号同步 |
 | mute_rule | owner、kind(account/keyword/topic)、target、active | 默认流/通知/主动AI过滤；显式搜索show_muted仍须当前读取资格 |
+
+ED-10明确账号user_preferences由本人App管理，share-read无权读取或写入此模型的全部或部分字段。匿名／登录分享播放器的默认与页面内操作是页面状态，不新增账号持久化实体、账号同步或个人偏好投影；SSR／共享缓存／配置不得从该模型派生私人DTO给分享会话。
 
 ## 内容、草稿、评论、投票、互动（FR-018–060）
 
@@ -88,10 +90,12 @@ publication_state和review_state独立：保存成功不等于published；publis
 
 ## 私信、通知与可靠效果（FR-061–072、119–124）
 
+FR-065的“每对”指无向账号对。创建请求在同一pair事务内重核资格、原pending及时间／冷却，以数据库pending部分唯一约束兜底；A→B与B→A并发最多提交一条pending及一条初始消息／对应业务通知效果。竞争失败不替换、自动接受或追加原请求；同operation重试只复用原结果。过期按服务端时间在同锁内转终态后才可再判创建，不靠后台job或唯一索引自动计算时间。与接受／直接发送竞争仍遵守FR-067：当前合法正常消息可进入唯一会话，旧initial独立至显式接受；原终态／冷却、阅读状态及去重规则不变。关注请求是独立业务，不借本次私信修订改变其行为。
+
 | 实体 | 字段／关系 | 约束／状态 |
 | --- | --- | --- |
-| account_pair | lower_account_id、upper_account_id、lock_version | 规范化pair唯一，所有直接发送/请求接受使用一致pair锁顺序 |
-| dm_request | pair、sender/recipient、initial_message_id、created/expires、state、reason、cooldown_until | 同方向pair至多pending；独立请求域，只有显式合法accept可合入，结束不影响合法会话 |
+| account_pair | lower_account_id、upper_account_id、lock_version | lower<upper的无向账号pair唯一；请求创建／接受／到期／直接发送使用一致pair锁顺序，不以发送方向建第二pair |
+| dm_request | pair→account_pair、sender/recipient、initial_message_id、created/expires、state、reason、cooldown_until | 同一规范化无向pair至多一条pending，部分唯一约束只按pair不含方向；sender/recipient保留动作权限，只有显式合法accept可合入，结束不影响合法会话 |
 | conversation | pair_id、established_by、created_at、last_activity_at | pair唯一正常会话，取消关注不自动终止；当前发送资格逐次核 |
 | message | stable_id、sender、conversation_id或request_id、original_saved_at、sequence、body/type、operation_id | pending请求不可正常分页；接受原ID/时间，(saved_at,id)稳定排序；无为全员撤回功能 |
 | message_access | message_id、subject、readable、revoked_at、actual_read_at、delivered_at | (message,subject)唯一；本人删单条立即撤其资格，其他方独立；解除或会话重现不复活 |
