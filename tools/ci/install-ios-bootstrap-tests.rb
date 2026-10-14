@@ -12,6 +12,8 @@ target.source_build_phase.add_file_reference(source)
 target.build_configurations.each do |configuration|
   configuration.build_settings.merge!({
     'PRODUCT_BUNDLE_IDENTIFIER' => 'org.agoraweave.bootstrap.tests',
+    'PRODUCT_NAME' => 'BootstrapShellTests',
+    'PRODUCT_MODULE_NAME' => 'BootstrapShellTests',
     'SWIFT_VERSION' => '5.0',
     'GENERATE_INFOPLIST_FILE' => 'YES',
     'TEST_TARGET_NAME' => 'AgoraWeave',
