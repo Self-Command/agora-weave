@@ -18,6 +18,19 @@
   ],
   "bootstrap_checks": [
     {
+      "id": "bootstrap.tooling",
+      "task": "T024",
+      "entry": "tooling-bootstrap.yml",
+      "requirements": [
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "bootstrap_applicability": "required",
+      "activation": "bootstrap",
+      "actual_state": "not_executed"
+    },
+    {
       "id": "bootstrap.install",
       "task": "T005",
       "entry": "ci:install",
@@ -2543,7 +2556,14 @@
       "files": [
         "tests/integration/ci/source-run-selection.spec.ts"
       ]
+    },
+    {
+      "files": [
+        "tests/integration/ci/tooling-admission.spec.ts"
+      ],
+      "id": "ci.actual-tooling-admission",
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 138
+  "engineering_case_count": 139
 }
