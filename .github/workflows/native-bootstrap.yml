@@ -223,6 +223,13 @@ jobs:
           done
           test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1
           adb shell input keyevent 82
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+          for setting in window_animation_scale transition_animation_scale animator_duration_scale; do
+            printf '%s=' "$setting" >> native-output/android-animation-settings.txt
+            adb shell settings get global "$setting" >> native-output/android-animation-settings.txt
+          done
           adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           adb install apps/mobile/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
           capture_failure() {

@@ -50,6 +50,9 @@ class BootstrapShellTest {
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).depth(0)), 15000))
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("AgoraWeave")), 10000))
     assertEquals(targetPackage, device.currentPackageName)
+    device.waitForIdle(5000)
+    InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+    assertEquals(targetPackage, device.currentPackageName)
     val captureRoot = context.getExternalFilesDir(null)!!
     File(captureRoot, "bootstrap-theme.txt").writeText("$theme:${context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
     device.dumpWindowHierarchy(File(captureRoot, "bootstrap-ui.xml"))
