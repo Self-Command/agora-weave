@@ -6,6 +6,7 @@ on:
       - 'infra/ci/compose.yml'
       - 'infra/ci/images.lock.json'
       - 'infra/ci/network-policy.yml'
+      - 'infra/ci/bootstrap-probe.sql'
       - '.github/workflows/service-bootstrap.yml'
   pull_request:
     paths:
@@ -13,6 +14,7 @@ on:
       - 'infra/ci/compose.yml'
       - 'infra/ci/images.lock.json'
       - 'infra/ci/network-policy.yml'
+      - 'infra/ci/bootstrap-probe.sql'
       - '.github/workflows/service-bootstrap.yml'
   workflow_call:
 permissions:
@@ -98,6 +100,8 @@ jobs:
           "${compose[@]}" exec -T db pg_isready -U postgres -h localhost > service-output/database-health.txt
           "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
           "${compose[@]}" exec -T storage wget -q -O - http://storage:5000/status > service-output/storage-health.json
+          "${compose[@]}" exec -T db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < infra/ci/bootstrap-probe.sql > service-output/schema-seed-probe.txt
+          "${compose[@]}" exec -T db psql -U postgres -d postgres -v ON_ERROR_STOP=1 < infra/ci/bootstrap-probe.sql > service-output/schema-seed-probe-repeat.txt
           "${compose[@]}" ps --format json > service-output/service-health.json
       - name: Capture sanitized real container failure detail
         if: ${{ always() }}
