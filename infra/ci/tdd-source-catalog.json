@@ -355,6 +355,98 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T16:43:00Z",
       "cause_summary": "Original callable shell returned unknown with healthy transport. Whole test and fixture files are unchanged; complete target set and active regressions passed after implementation."
+    },
+    {
+      "cycle_id": "ci-original-collection-001",
+      "behavior_id": "ci.original-collection",
+      "case_titles": [
+        "C01: source authentication retains every attempt and original failed conclusion",
+        "C02: run_sha mismatch rejects an otherwise green source",
+        "C02: workflow mismatch rejects an otherwise green source",
+        "C02: repository mismatch rejects an otherwise green source",
+        "C02: attempt mismatch rejects an otherwise green source",
+        "C02: artifact_run mismatch rejects an otherwise green source",
+        "C02: artifact_sha mismatch rejects an otherwise green source",
+        "C02: expired mismatch rejects an otherwise green source",
+        "C02: digest mismatch rejects an otherwise green source",
+        "C03: a duplicate artifact on a later page cannot be hidden by a first match",
+        "C04: missing prior attempt is unavailable rather than silently replaced by the green retry",
+        "C05: GitHub authorization is absent from the signed artifact redirect request"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/source-collection.spec.ts",
+      "fixture_file": "tests/fixtures/bootstrap/source.ts",
+      "red": {
+        "run_id": "38607776284",
+        "attempt": 1,
+        "sha": "0a45ec581e68fb1dc6a1fc16853f94ba6e78ce5a"
+      },
+      "green": {
+        "run_id": "38608320569",
+        "attempt": 1,
+        "sha": "2b95fb42b7ba5c539468d278867653173c7d4fca"
+      },
+      "implementation_sha": "2b95fb42b7ba5c539468d278867653173c7d4fca",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T17:36:18.654647Z",
+      "cause_summary": "Raw source assertions failed with healthy transport before implementation; original complete target and activated regression reports are retained."
+    },
+    {
+      "cycle_id": "ci-original-checkset-001",
+      "behavior_id": "ci.original-checkset",
+      "case_titles": [
+        "D01: discovery returns a nonempty frozen executable target list",
+        "D02: empty cannot shrink or bypass approved discovery",
+        "D02: missing_script cannot shrink or bypass approved discovery",
+        "D02: missing_file cannot shrink or bypass approved discovery",
+        "D02: duplicate_id cannot shrink or bypass approved discovery",
+        "D02: extra_test cannot shrink or bypass approved discovery",
+        "D02: business_in_bootstrap cannot shrink or bypass approved discovery",
+        "N01: only complete nonempty raw successful execution can pass",
+        "N02: raw zero cannot become a passing report",
+        "N02: raw skip cannot become a passing report",
+        "N02: raw failure cannot become a passing report",
+        "N02: raw exit cannot become a passing report",
+        "N02: raw missing_summary cannot become a passing report",
+        "N02: raw wrong_count cannot become a passing report",
+        "D01: read semantic Red before implementation plus same-oracle Green and final regression can pass",
+        "D02: compile failure is not a behavior Red",
+        "D02: import failure is not a behavior Red",
+        "D02: network failure is not a behavior Red",
+        "D02: credential failure is not a behavior Red",
+        "D02: no_tests failure is not a behavior Red",
+        "D02: service_unavailable failure is not a behavior Red",
+        "D03: successful Red, unhealthy prerequisite, absent causal read or prior implementation blocks",
+        "D04: changed test/oracle/fixture cannot borrow the old Red",
+        "D05: reversed ancestry, failed regression, stale final or rewritten Red blocks"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/check-set.spec.ts",
+      "fixture_file": "tests/integration/ci/check-set.spec.ts",
+      "red": {
+        "run_id": "38613090309",
+        "attempt": 1,
+        "sha": "380e15fdb6fee7fb59313ac3fc6f5a975dcdbad1"
+      },
+      "green": {
+        "run_id": "38613901988",
+        "attempt": 1,
+        "sha": "4029b7eeea5d01aa95f57f83d9d727c1910704d6"
+      },
+      "implementation_sha": "192924966a93dd60dce8ef85c0092809f61ce493",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T18:14:58.182627Z",
+      "cause_summary": "Raw source assertions failed with healthy transport before implementation; original complete target and activated regression reports are retained."
     }
   ]
 }

@@ -78,7 +78,15 @@ jobs:
           cd apps/mobile
           CI=1 npm run ci:prebuild -- --platform ios
           cd ios
-          pod install > ../../../native-output/pod-install.log 2>&1
+          pods_ready=false
+          for attempt in 1 2 3; do
+            if pod install > "../../../native-output/pod-install-$attempt.log" 2>&1; then
+              pods_ready=true
+              cp "../../../native-output/pod-install-$attempt.log" ../../../native-output/pod-install.log
+              break
+            fi
+          done
+          test "$pods_ready" = true
           cd ../../..
           ruby tools/ci/install-ios-bootstrap-tests.rb > native-output/xctest-configuration.log
       - name: Build install and capture actual iOS shell

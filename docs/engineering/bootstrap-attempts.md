@@ -18,3 +18,7 @@
 
 原生 run `38631669393`／`3726c43d` 的 Android API24 暗色断言实际失败：设备配置符合 dark，但实际背景 RGB 为255,255,255。原始截图、仪器日志和像素记录均保留，不能把配置成功代替视觉成功。[Expo SDK57 SystemUI](https://github.com/expo/expo/blob/sdk-57/packages/expo-system-ui/android/src/main/java/expo/modules/systemui/singletons/SystemUI.kt) 在API<28以省电状态驱动 automatic；[Android7 PowerManager](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-7.0.0_r1/services/core/java/com/android/server/power/PowerManagerService.java) 要求断开充电并观察真实低功耗状态。修正的是 Actions 主题驱动前置，保留 Kotlin 配置／像素 oracle 与应用不变；该驱动前置更正不冒充产品缺陷的合格Red。后续仍须实际 light/dark截图和对应断言全部通过，最低iOS及真实服务联通另验。
 
+`9846f17a`／run38637166465 的134项工程断言全通过，含真实AJV2020-12 schema校验；相同oracle的RS01 Red为e48abb48／run38636744597，健康成功且唯一目标断言失败。`f148b864`／run38637918048 的136项全通过，TP01的原始Red为3cb8ab4e／run38637477965（135pass／1fail）。run38637917885实际认证10条原始TDD链、74项选中断言，coverage仍partial；追加源认证与非空发现历史链时继续认证原ZIP、全部attempt、完整测试和fixture摘要及真实祖先，不把前缀重名的其他用例借入。
+
+e2908de7／run38636632785 的iOS26.4作业在pod install下载固定ReactNative0.86.3发布包时curl56连接重置，尚未构建或执行XCTest，不算行为Red。后续pod依赖安装最多3次，每次原日志保留，失败仍使作业失败；应用和XCTest oracle不变。此前3726c43d的iOS16.4与26.4真实XCTest均明暗各1pass、无error／skip；当前Codex读取对应8张全图，壳标题可读、居中且无裁切，历史SHA不能替代最终SHA验证。
+
