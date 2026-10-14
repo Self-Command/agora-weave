@@ -84,7 +84,7 @@ jobs:
           "${compose[@]}" up -d --wait --wait-timeout 300
           "${compose[@]}" exec -T db pg_isready -U postgres -h localhost > service-output/database-health.txt
           "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
-          "${compose[@]}" exec -T storage wget -q -O - http://localhost:5000/status > service-output/storage-health.json
+          "${compose[@]}" exec -T storage wget -q -O - http://storage:5000/status > service-output/storage-health.json
           "${compose[@]}" ps --format json > service-output/service-health.json
       - name: Capture sanitized real container failure detail
         if: ${{ always() }}
@@ -107,9 +107,10 @@ jobs:
               const [container] = JSON.parse(execFileSync('docker', ['inspect', id], { encoding: 'utf8' }));
               const logProcess = spawnSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8' });
               const logs = `${logProcess.stdout || ''}\n${logProcess.stderr || ''}`;
+              // Public artifacts contain service state only. Runtime errors can encode secrets as byte arrays.
               return { name: container.Name, state: container.State.Status, health: container.State.Health?.Status,
-                health_log: container.State.Health?.Log?.slice(-8).map(entry => sanitize(entry.Output || '')),
-                exit_code: container.State.ExitCode, logs: sanitize(logs) };
+                health_exit_codes: container.State.Health?.Log?.slice(-8).map(entry => entry.ExitCode),
+                exit_code: container.State.ExitCode };
             });
             writeFileSync('service-output/container-diagnostics.json', JSON.stringify(records, null, 2) + '\n');
           } catch (error) {
