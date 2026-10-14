@@ -188,19 +188,22 @@ jobs:
           umask 077
           key="$RUNNER_TEMP/evidence-ssh-key"
           hosts="$RUNNER_TEMP/evidence-known-hosts"
-          trap 'rm -f "$key" "$hosts" "$RUNNER_TEMP/evidence-sftp-batch"' EXIT
+          trap 'rm -f "$key" "$key.pub" "$hosts" "$RUNNER_TEMP/evidence-sftp-batch"' EXIT
           test -n "$EVIDENCE_SSH_PRIVATE_KEY"
           test -n "$EVIDENCE_SSH_HOST"
           test -n "$EVIDENCE_SSH_USER"
           test -n "$EVIDENCE_SSH_KNOWN_HOSTS"
-          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" > "$key"
-          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" > "$hosts"
+          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
+          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
+          ssh-keygen -y -P '' -f "$key" > "$key.pub"
+          EVIDENCE_SSH_USER=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
+          EVIDENCE_SSH_HOST=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
           for directory in evidence-upload/*; do
             remote=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1])).remote_directory)' "$directory/provenance.json")
             mkdir -p "$directory/readback"
             printf 'mkdir %s\nput %s/source.zip %s/source.zip\nput %s/provenance.json %s/provenance.json\nget %s/source.zip %s/readback/source.zip\nget %s/provenance.json %s/readback/provenance.json\n' \
               "$remote" "$directory" "$remote" "$directory" "$remote" "$remote" "$directory" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
-            sftp -q -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
+            sftp -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
               -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
               "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
             cmp "$directory/source.zip" "$directory/readback/source.zip"
@@ -219,7 +222,7 @@ jobs:
           NODE
             printf 'put %s/receipt.json %s/receipt.json\nget %s/receipt.json %s/readback/receipt.json\n' \
               "$directory" "$remote" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
-            sftp -q -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
+            sftp -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
               -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
               "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
             cmp "$directory/receipt.json" "$directory/readback/receipt.json"
