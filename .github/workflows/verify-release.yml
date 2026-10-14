@@ -4,10 +4,16 @@ on:
     paths:
       - '.github/workflows/verify-release.yml'
       - '.github/workflows/verify-increment.yml'
+      - '.github/workflows/native-bootstrap.yml'
+      - 'tests/e2e/android/BootstrapShellTest.kt'
+      - 'tests/e2e/ios/BootstrapShellTests.swift'
   pull_request:
     paths:
       - '.github/workflows/verify-release.yml'
       - '.github/workflows/verify-increment.yml'
+      - '.github/workflows/native-bootstrap.yml'
+      - 'tests/e2e/android/BootstrapShellTest.kt'
+      - 'tests/e2e/ios/BootstrapShellTests.swift'
 permissions:
   contents: read
   actions: read
