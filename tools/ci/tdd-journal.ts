@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { collectEvidence } from './collect-evidence.ts';
 import { deriveTddCycle } from './tdd-cycle.ts';
 import { selectTddCases } from './tdd-cases.ts';
+import { selectEngineeringSource } from './source-run-selection.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('TDD journal requires GitHub-hosted Actions');
 const repository = process.env.GITHUB_REPOSITORY!;
@@ -19,10 +20,10 @@ async function metadata(suffix: string): Promise<Record<string, any>> {
   return await response.json();
 }
 const listing = await metadata(`/actions/runs?head_sha=${sha}&per_page=100`);
-const candidates = listing.workflow_runs.filter((run: Record<string, any>) => run.head_sha === sha &&
-  run.path === '.github/workflows/ci-bootstrap.yml' && run.head_repository.full_name === repository);
-if (candidates.length !== 1) throw new Error('Unique current engineering executor required');
-const finalSource = { sha, run_id: String(candidates[0].id), attempt: candidates[0].run_attempt };
+const selected = selectEngineeringSource({ target_sha: sha, repository, event: process.env.GITHUB_EVENT_NAME,
+  branch: process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME, runs: listing.workflow_runs });
+if (selected.state !== 'selected') throw new Error('Unique current event-bound engineering executor required');
+const finalSource = { sha, run_id: String(selected.run_id), attempt: Number(selected.attempt) };
 mkdirSync('tdd-output', { recursive: true });
 const records: Record<string, unknown>[] = [];
 for (const cycle of catalog.cycles) {

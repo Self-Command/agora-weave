@@ -26,6 +26,8 @@ concurrency:
   cancel-in-progress: false
 permissions:
   contents: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 jobs:
   ios:
     name: iOS shell ${{ matrix.ios }} exact toolchain (not ci-ready)

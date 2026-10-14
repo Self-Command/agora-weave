@@ -26,5 +26,7 @@ e2908de7／共享run38636632772的API36恢复截图实际是桌面，RGB109,138,
 
 bcc937cb／run38641395510已认证18条原始TDD链，全部记录通过，coverage仍为partial。后续增加的用例不能借用整个测试文件已改变的旧Red；完整覆盖未认证前不称T017完成。取消的重复初始化run保留cancelled，不算Green。
 
+b5accf02的草稿PR1实际产生同SHA的push及pull_request工程run；共享run38642142644的TDD job以Unique current engineering executor required失败。dc6f82c3／run38642938530在健康传输上138项137pass／1fail，SR01缺按事件／分支唯一选择的行为；当前Codex读取后接入按当前event、branch、SHA、repository及head_repository和固定workflow严格唯一选择，历史原run引用不变。PR原生run38642536672另因未传head SHA而把merge SHA作为目标拒绝，属于采集前置错误，修正传入实际PR head后仍保checkout断言，不算产品Red。
+
 e2908de7／共享run38636632772的报告与私有归档实际失败，原因是原始XCTest结果包的Data/data.0~…==文件名被归档路径字符白名单误拒绝；原iOS16.4 artifact11931165122及日志保留。393dbe25／run38641855492在健康传输上执行137项，136pass／1fail，XA01实际得到blocked而非archive_planned；当前Codex先读取该缺陷Red，再允许原始文件名中的~和=，仍拒绝绝对路径、盘符、反斜杠、空段、dot／dotdot、换行、分号、重复路径、秘密字段及未认证来源。后续用完整原失败run实际归档回读，并在新SHA重跑当前初始化；不删或改名原xcresult文件换绿。
 

@@ -7,6 +7,8 @@ on:
 permissions:
   contents: read
   actions: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   freeze:
@@ -385,7 +387,7 @@ jobs:
         shell: bash
         run: |
           set -eu
-          source=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$TARGET_SHA&per_page=100" --jq '[.workflow_runs[] | select(.path == ".github/workflows/verify-release.yml" and .event == "push")] | if length == 1 then .[0].id else empty end')
+          source=$(gh run list --repo "$GITHUB_REPOSITORY" --commit "$TARGET_SHA" --workflow verify-release.yml --event "$GITHUB_EVENT_NAME" --branch "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" --json databaseId --jq 'if length == 1 then .[0].databaseId else empty end')
           mkdir -p gate-output
           if [ -z "$source" ]; then
             printf '{"state":"blocked","reason_codes":["missing_or_ambiguous_current_shared_executor"],"target_sha":"%s","feature_complete":false}\n' "$TARGET_SHA" > gate-output/readiness.json

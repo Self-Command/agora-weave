@@ -27,7 +27,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
-          source=$(gh run list --repo "$GITHUB_REPOSITORY" --commit "${{ github.event.pull_request.head.sha || github.sha }}" --workflow ci-bootstrap.yml --json databaseId --jq '.[0].databaseId')
+          source=$(gh run list --repo "$GITHUB_REPOSITORY" --commit "${{ github.event.pull_request.head.sha || github.sha }}" --workflow ci-bootstrap.yml --event "$GITHUB_EVENT_NAME" --branch "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" --json databaseId --jq 'if length == 1 then .[0].databaseId else empty end')
           test -n "$source"
           for attempt in $(seq 1 30); do
             count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source/artifacts?per_page=100" --jq '[.artifacts[] | select(.name | startswith("bootstrap-transport-"))] | length')
