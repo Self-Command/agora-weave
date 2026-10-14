@@ -113,7 +113,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          node --experimental-strip-types tools/ci/collect-bootstrap.ts
+          git fetch --no-tags origin 665fffada2dd4fb908b53ad7ca16159ce5e263d8
+          npm run ci:evidence
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:

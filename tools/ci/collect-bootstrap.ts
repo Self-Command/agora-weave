@@ -38,6 +38,8 @@ const checkSetDigest = hash(manifestBytes);
 const toolchainDigest = hash(readFileSync('infra/ci/toolchain-lock.json'));
 const catalog = JSON.parse(readFileSync('archive-output/catalog.json', 'utf8')) as Record<string, any>[];
 const observed: Record<string, unknown>[] = [];
+const verifiedInputs: Record<string, string>[] = [];
+const images: string[] = [];
 const parse = (root: string, file: string) => JSON.parse(readFileSync(`${root}/${file}`, 'utf8'));
 const read = (root: string, file: string) => readFileSync(`${root}/${file}`, 'utf8');
 function allPng(root: string): string[] {
@@ -47,6 +49,13 @@ function allPng(root: string): string[] {
 for (const item of catalog) {
   const root = `${item.directory}/raw`;
   execFileSync('python3', ['tools/ci/index-archive.py', `${item.directory}/source.zip`, `${item.directory}/raw-files.json`, root]);
+  const rawFiles = parse(item.directory, 'raw-files.json') as Record<string, any>[];
+  for (const file of rawFiles) {
+    if (String(file.path).includes('.xcresult/') || !/\.(png|json|xml|tap|txt|log)$/.test(file.path)) continue;
+    const id = `artifact:${item.artifact_id}/${file.path}`;
+    verifiedInputs.push({ id, digest: file.sha256 });
+    if (String(file.path).endsWith('.png')) images.push(id);
+  }
   const name = String(item.artifact_name);
   let kind = '', ids: string[] = [], jobPattern = '', raw: Record<string, unknown> = {}, identity: Record<string, any>;
   try {
@@ -109,3 +118,28 @@ writeFileSync('verify-output/collected-checks.json', JSON.stringify({ source_aut
   run_id: runId, attempt: run.run_attempt, required_ids: requiredIds, observed,
   collection_complete: true, source_raw_archive_count: catalog.length, readiness: 'not_evaluated', feature_complete: false,
 }, null, 2) + '\n');
+const contractFiles = ['.specify/memory/constitution.md', 'specs/001-agoraweave-v1/spec.md',
+  'specs/001-agoraweave-v1/plan.md', 'specs/001-agoraweave-v1/tasks.md',
+  'specs/001-agoraweave-v1/contracts/cloud-validation.md', 'specs/001-agoraweave-v1/contracts/release-evidence.md',
+  'docs/design/UI-SPEC.md', 'docs/design/design-tokens.json', 'tools/ci/validation-manifest.json'];
+const contractInputs = contractFiles.map(file => ({ id: file, digest: hash(readFileSync(file)) }));
+const contractDigest = hash(JSON.stringify(contractInputs));
+const sourceDiff = execFileSync('git', ['diff', '--no-ext-diff', '665fffada2dd4fb908b53ad7ca16159ce5e263d8', sha, '--', '.',
+  ':(exclude)package-lock.json', ':(exclude).specify/bridge-snapshots/**', ':(exclude)supabase/upstream/**'], { maxBuffer: 16 * 1024 * 1024 });
+writeFileSync('verify-output/source.diff', sourceDiff);
+const shared = { source_authenticated: true, source: 'github-actions', runner_environment: 'github-hosted',
+  expected_sha: sha, contract_digest: contractDigest, verified_inputs: [...contractInputs,
+    { id: 'source.diff', digest: hash(sourceDiff) }, ...verifiedInputs], baseline: { required: false, state: 'not_created' } };
+const engineeringPassed = observed.some(item => item.id === 'bootstrap.engineering' && item.state === 'passed');
+const interactionIds = ['bootstrap.admin', 'bootstrap.share', 'bootstrap.ios', 'bootstrap.minimum-ios', 'bootstrap.android', 'bootstrap.minimum-android'];
+const interactionsPassed = interactionIds.every(id => observed.some(item => item.id === id && item.state === 'passed'));
+writeFileSync('verify-output/review-context.json', JSON.stringify({ target_sha: sha, source: 'github-actions', source_authenticated: true,
+  code: { ...shared, review_kind: 'code', required_images: [],
+    required_coverage: ['authorization', 'security', 'concurrency', 'provenance-and-recovery', 'plugin-boundaries', 'test-validity', 'production-content'],
+    actual_checks: { source: 'github-actions', state: engineeringPassed ? 'passed' : 'blocked', interactions_passed: false, accessibility_passed: false } },
+  visual: { ...shared, review_kind: 'visual', required_images: images,
+    required_coverage: ['admin:shell', 'share:shell', 'ios:current:launch-resume', 'ios:minimum:launch-resume',
+      'android:current:launch-resume', 'android:minimum:launch-resume', 'physical-accessibility-admission'],
+    actual_checks: { source: 'github-actions', state: interactionsPassed ? 'passed' : 'blocked',
+      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-13 physical VoiceOver/TalkBack evidence unavailable' } },
+  readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');

@@ -13,7 +13,10 @@
     "ci:install": "npm ci --no-audit --no-fund",
     "ci:discover": "node --experimental-strip-types tools/ci/discover-targets.ts",
     "ci:run": "node --experimental-strip-types tools/ci/test-harness.ts",
-    "ci:tdd": "node --experimental-strip-types tools/ci/tdd-journal.ts"
+    "ci:tdd": "node --experimental-strip-types tools/ci/tdd-journal.ts",
+    "ci:evidence": "node --experimental-strip-types tools/ci/collect-bootstrap.ts",
+    "ci:review": "node --experimental-strip-types tools/ci/review-cli.ts",
+    "ci:bridge": "node --experimental-strip-types tools/ci/bridge-gate.ts"
   },
   "devDependencies": { "@playwright/test": "1.64.1" }
 }
