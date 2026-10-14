@@ -1,0 +1,26 @@
+version: 1
+scope: bootstrap-services
+environments:
+  dev:
+    credentials_secret: CI_DEV_SUPABASE_ENV
+    database: separate-github-hosted-runner
+    storage: separate-checkout-and-docker-volumes
+  test:
+    credentials_secret: CI_TEST_SUPABASE_ENV
+    database: separate-github-hosted-runner
+    storage: separate-checkout-and-docker-volumes
+network:
+  driver: bridge
+  internal: true
+  published_ports: []
+  external_services: []
+  access: docker-exec-only-for-bootstrap-health
+side_effects:
+  signup: disabled
+  email: disabled
+  phone: disabled
+  production_credentials: forbidden
+cleanup:
+  always: true
+  docker_compose_down_volumes: true
+  runner_ephemeral: true

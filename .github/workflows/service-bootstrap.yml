@@ -1,0 +1,111 @@
+name: Isolated official services bootstrap
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  services:
+    name: Official Compose (${{ matrix.environment }}, not ci-ready)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, test]
+    env:
+      CI_ENVIRONMENT: ${{ matrix.environment }}
+      CI_SERVICE_ENV: ${{ matrix.environment == 'dev' && secrets.CI_DEV_SUPABASE_ENV || secrets.CI_TEST_SUPABASE_ENV }}
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+      - name: Prepare isolated configuration and locked image override
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          test -n "$CI_SERVICE_ENV"
+          mkdir -p service-output
+          printf '%s\n' "$CI_SERVICE_ENV" | tr -d '\r' > "$RUNNER_TEMP/agoraweave-ci.env"
+          export COMPOSE_PROJECT_NAME="agoraweave-${CI_ENVIRONMENT}-${GITHUB_RUN_ID}"
+          printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT_NAME" >> "$GITHUB_ENV"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const base = ['--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
+            '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml'];
+          const config = JSON.parse(execFileSync('docker', ['compose', ...base, 'config', '--format', 'json'], { encoding: 'utf8' }));
+          const lock = JSON.parse(readFileSync('infra/ci/images.lock.json', 'utf8'));
+          const services = {};
+          for (const [name, service] of Object.entries(config.services)) {
+            const image = lock.images.find(image => image.reference === service.image);
+            if (!image || image.os !== 'linux' || image.architecture !== 'amd64') throw new Error(`Unlocked service ${name}`);
+            if (service.ports?.length) throw new Error(`Published service port ${name}`);
+            services[name] = { image: image.repo_digests[0] };
+          }
+          if (config.networks.default.internal !== true) throw new Error('Service network is not internal');
+          writeFileSync(`${process.env.RUNNER_TEMP}/agoraweave-images.json`, JSON.stringify({ services }));
+          writeFileSync('service-output/configuration.json', JSON.stringify({
+            checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+            environment: process.env.CI_ENVIRONMENT, source: 'github-actions', runner_environment: 'github-hosted',
+            run_id: process.env.GITHUB_RUN_ID, attempt: process.env.GITHUB_RUN_ATTEMPT,
+            upstream_commit: lock.upstream_commit, published_ports: [], internal_network: true,
+            services: Object.keys(services), readiness: 'not_evaluated',
+          }, null, 2) + '\n');
+          NODE
+      - name: Start actual official services and inspect internal health
+        id: health
+        shell: bash
+        run: |
+          set -eu
+          compose=(docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env"
+            -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json")
+          "${compose[@]}" pull
+          "${compose[@]}" up -d --wait --wait-timeout 300
+          "${compose[@]}" exec -T db pg_isready -U postgres -h localhost > service-output/database-health.txt
+          "${compose[@]}" exec -T auth wget -q -O - http://localhost:9999/health > service-output/auth-health.json
+          "${compose[@]}" exec -T storage wget -q -O - http://localhost:5000/status > service-output/storage-health.json
+          "${compose[@]}" ps --format json > service-output/service-health.json
+      - name: Remove isolated service resources
+        id: cleanup
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -eu
+          if [ -f "$RUNNER_TEMP/agoraweave-ci.env" ] && [ -f "$RUNNER_TEMP/agoraweave-images.json" ]; then
+            docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env" \
+              -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json" \
+              down --volumes --remove-orphans
+          fi
+          rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json"
+      - name: Preserve truthful health and cleanup outcomes
+        if: ${{ always() }}
+        shell: bash
+        env:
+          HEALTH_OUTCOME: ${{ steps.health.outcome }}
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
+        run: |
+          mkdir -p service-output
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('service-output/outcome.json', JSON.stringify({
+            health: process.env.HEALTH_OUTCOME || 'missing', cleanup: process.env.CLEANUP_OUTCOME || 'missing',
+            environment: process.env.CI_ENVIRONMENT, readiness: 'not_evaluated',
+            scope: 'internal-official-services-only-no-business-or-native-connectivity',
+          }, null, 2) + '\n');
+          NODE
+      - name: Upload sanitized nonproduction service health
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-services-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: service-output/
+          if-no-files-found: error
+          retention-days: 7

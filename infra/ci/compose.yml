@@ -1,0 +1,18 @@
+# Overlay only: the complete official source remains under supabase/upstream/docker.
+services:
+  api-gw:
+    ports: !reset []
+  supavisor:
+    ports: !reset []
+  auth:
+    environment:
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'false'
+      GOTRUE_EXTERNAL_PHONE_ENABLED: 'false'
+      GOTRUE_SMS_AUTOCONFIRM: 'false'
+  studio:
+    environment:
+      OPENAI_API_KEY: ''
+networks:
+  default:
+    internal: true
