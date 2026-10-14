@@ -666,6 +666,52 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T21:49:27.118465Z",
       "cause_summary": "Healthy transport produced 137 passed assertions and the unique SR01 failure with undefined selected run rather than the matching event source. The same test and inline fixture passed after exact SHA, event, branch, workflow and repository selection; the actual push journal also selected its own run in the presence of the matching PR run."
+    },
+    {
+      "cycle_id": "ci-installed-tooling-admission-001",
+      "behavior_id": "ci.installed-tooling-admission",
+      "case_titles": ["TO01: installed native tooling maps every canonical task and retains the same-head completion refusal before admission"],
+      "requirements": ["QR-003", "QR-006", "QR-007", "QR-008"],
+      "test_file": "tests/integration/ci/tooling-admission.spec.ts",
+      "fixture_file": "tests/integration/ci/tooling-admission.spec.ts",
+      "red": {
+        "sha": "b01a27bcb37488ec39e50bbdc33d56e50d115368",
+        "run_id": "38645359626",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "28500c2201f99e0df2cbcca7d31d0b5ebed15350",
+        "run_id": "38645597031",
+        "attempt": 1
+      },
+      "implementation_sha": "28500c2201f99e0df2cbcca7d31d0b5ebed15350",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T22:08:30.858236Z",
+      "cause_summary": "Healthy transport produced 138 passed assertions and the unique TO01 failure: complete native tooling sources were blocked. After reading that raw failure, the tooling kind and collection were implemented. All 139 unchanged assertions, type checking, lint and frozen image checks passed; actual installed-tooling mapping and completion refusal both bind the implementation SHA."
+    },
+    {
+      "cycle_id": "ci-original-legacy-completion-001",
+      "behavior_id": "ci.original-legacy-completion",
+      "case_titles": ["LB01: direct legacy complete cannot change effective handoff without authenticated cloud completion"],
+      "requirements": ["QR-003", "QR-006", "QR-007", "QR-008"],
+      "test_file": "tests/security/ci/legacy-transition.spec.ts",
+      "fixture_file": "tests/security/ci/legacy-transition.spec.ts",
+      "red": {
+        "sha": "199a23b5fda9c27a3108c04db9c25a1b4e51b299",
+        "run_id": "38620384832",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "28500c2201f99e0df2cbcca7d31d0b5ebed15350",
+        "run_id": "38645597031",
+        "attempt": 1
+      },
+      "implementation_sha": "c9928f027308a6e27b68db61264ee6662f038bf3",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-14T19:04:58.513392Z",
+      "cause_summary": "The original raw LB01 assertion showed that the legacy transition wrote complete while 285 canonical tasks remained pending. That failure was read before the bridge guard implementation. The original unchanged complete test and inline fixture now pass with all 139 activated assertions; the original failure and other failed assertions in its run remain preserved."
     }
   ]
 }
