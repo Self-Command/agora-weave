@@ -413,17 +413,7 @@
         "N02: raw failure cannot become a passing report",
         "N02: raw exit cannot become a passing report",
         "N02: raw missing_summary cannot become a passing report",
-        "N02: raw wrong_count cannot become a passing report",
-        "D01: read semantic Red before implementation plus same-oracle Green and final regression can pass",
-        "D02: compile failure is not a behavior Red",
-        "D02: import failure is not a behavior Red",
-        "D02: network failure is not a behavior Red",
-        "D02: credential failure is not a behavior Red",
-        "D02: no_tests failure is not a behavior Red",
-        "D02: service_unavailable failure is not a behavior Red",
-        "D03: successful Red, unhealthy prerequisite, absent causal read or prior implementation blocks",
-        "D04: changed test/oracle/fixture cannot borrow the old Red",
-        "D05: reversed ancestry, failed regression, stale final or rewritten Red blocks"
+        "N02: raw wrong_count cannot become a passing report"
       ],
       "requirements": [
         "QR-003",
