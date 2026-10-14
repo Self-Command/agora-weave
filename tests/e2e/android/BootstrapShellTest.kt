@@ -1,6 +1,7 @@
 package org.agoraweave.bootstrap
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -15,6 +16,11 @@ class BootstrapShellTest {
   @Test
   fun launchAndBackgroundResume() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
+    val theme = InstrumentationRegistry.getArguments().getString("theme")
+    assertTrue("An explicit expected theme is required", theme == "light" || theme == "dark")
+    val expectedNight = if (theme == "dark") Configuration.UI_MODE_NIGHT_YES else Configuration.UI_MODE_NIGHT_NO
+    assertEquals("The actual device configuration must match the named capture theme", expectedNight,
+      context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     val targetPackage = "org.agoraweave.app"
     val launch = context.packageManager.getLaunchIntentForPackage(targetPackage)
@@ -32,6 +38,7 @@ class BootstrapShellTest {
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("AgoraWeave")), 10000))
     assertEquals(targetPackage, device.currentPackageName)
     val captureRoot = context.getExternalFilesDir(null)!!
+    File(captureRoot, "bootstrap-theme.txt").writeText("$theme:${context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
     device.dumpWindowHierarchy(File(captureRoot, "bootstrap-ui.xml"))
     assertTrue(device.takeScreenshot(File(captureRoot, "bootstrap-resume.png")))
   }

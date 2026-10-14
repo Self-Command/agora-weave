@@ -25,6 +25,7 @@ writeFileSync('check-output/execution.json', JSON.stringify({ ...assessment,
   checkout_sha: sha, target_sha: sha, run_id: process.env.GITHUB_RUN_ID,
   attempt: Number(process.env.GITHUB_RUN_ATTEMPT), source: 'github-actions',
   runner_environment: process.env.RUNNER_ENVIRONMENT, check_set_digest: checkSetDigest,
+  toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
   raw_report_sha256: createHash('sha256').update(raw).digest('hex'),
   scope: 'engineering-bootstrap-contracts', readiness: 'not_evaluated',
 }, null, 2) + '\n');

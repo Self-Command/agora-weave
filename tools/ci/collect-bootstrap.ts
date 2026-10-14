@@ -53,7 +53,6 @@ for (const item of catalog) {
     if (name.startsWith('verify-checkset-')) {
       kind = 'engineering'; ids = ['bootstrap.engineering', 'bootstrap.discovery']; jobPattern = ' / discover';
       identity = parse(root, 'execution.json'); raw = { tap: read(root, 'engineering.tap'), expected_count: manifest.engineering_case_count };
-      identity.toolchain_digest = toolchainDigest;
       if (parse(root, 'discovery.json').state !== 'discovered') throw new Error('Missing actual discovery');
     } else if (name.startsWith('bootstrap-services-')) {
       kind = 'service'; identity = parse(root, 'configuration.json'); ids = [`bootstrap.${identity.environment}-services`];
