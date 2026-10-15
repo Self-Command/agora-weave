@@ -1,9 +1,28 @@
+import { existsSync, readdirSync } from 'node:fs';
+
 export type DiscoveryInput = {
   profile: 'bootstrap' | 'business-increment' | 'full-release';
   approved: { id: string; command: string; files: string[] }[];
   scripts: Record<string, string>;
   available_files: string[];
 };
+
+/** Written Node suites are active inputs even before they have an approved executor. */
+export function inventoryNodeTestFiles(): string[] {
+  const files: string[] = [];
+  function visit(directory: string) {
+    if (!existsSync(directory)) return;
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const relative = `${directory}/${entry.name}`;
+      if (entry.isDirectory()) visit(relative);
+      else if (entry.isFile() && entry.name.endsWith('.spec.ts')) files.push(relative);
+    }
+  }
+  for (const directory of ['tests/contract', 'tests/integration', 'tests/security', 'tests/concurrency', 'tests/recovery']) {
+    visit(directory);
+  }
+  return files.sort();
+}
 
 /** Intent selects execution cost; original reports alone authorize readiness. */
 export function resolveValidationRequest(request: unknown, context: unknown): Record<string, any> {
