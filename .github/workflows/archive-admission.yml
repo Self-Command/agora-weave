@@ -55,7 +55,7 @@ jobs:
           for attempt in $(seq 1 15); do
             printf 'get %s.source.zip %s\n' "$expiry_prefix" "$RUNNER_TEMP/archive-expiry-readback.txt" > "$batch"
             if ! sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host" > "$RUNNER_TEMP/archive-expiry-read.log" 2>&1; then
-              if grep -q 'No such file' "$RUNNER_TEMP/archive-expiry-read.log"; then expiry_removed=true; break; fi
+              if grep -Fq "File \"$expiry_prefix.source.zip\" not found." "$RUNNER_TEMP/archive-expiry-read.log"; then expiry_removed=true; break; fi
             fi
             sleep 5
           done
