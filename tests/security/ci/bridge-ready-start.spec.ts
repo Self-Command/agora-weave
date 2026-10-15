@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtempSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -9,12 +9,25 @@ test('BR01: a ready handoff obtains bootstrap start admission before its executi
   assert.equal(process.env.RUNNER_ENVIRONMENT, 'github-hosted');
   const root = mkdtempSync(path.join(tmpdir(), 'agoraweave-ready-start-'));
   try {
-    execFileSync('git', ['worktree', 'add', '--detach', root, 'HEAD'], { stdio: 'pipe' });
+    const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
+    execFileSync('git', ['worktree', 'add', '--detach', root, scopeBase], { stdio: 'pipe' });
+    // Keep the current bridge implementation while isolating the bootstrap fixture from authored business files.
+    const fixturePaths = ['tools/ci', 'infra/ci', 'package.json', 'package-lock.json', '.gitignore',
+      '.specify/memory/constitution.md', '.specify/superpowers-handoff.json',
+      'specs/001-agoraweave-v1/spec.md', 'specs/001-agoraweave-v1/plan.md', 'specs/001-agoraweave-v1/tasks.md'];
+    const files = execFileSync('git', ['ls-tree', '-r', '--name-only', '-z', sourceSha, '--', ...fixturePaths],
+      { encoding: 'utf8' }).split('\0').filter(Boolean);
+    for (const file of files) {
+      const destination = path.join(root, file);
+      mkdirSync(path.dirname(destination), { recursive: true });
+      writeFileSync(destination, execFileSync('git', ['show', `${sourceSha}:${file}`]));
+    }
     const handoffPath = path.join(root, '.specify/superpowers-handoff.json');
     const handoff = JSON.parse(readFileSync(handoffPath, 'utf8'));
     handoff.status = 'ready';
     writeFileSync(handoffPath, JSON.stringify(handoff, null, 2) + '\n');
-    execFileSync('git', ['add', '.specify/superpowers-handoff.json'], { cwd: root });
+    execFileSync('git', ['add', '--all'], { cwd: root });
     execFileSync('git', ['-c', 'user.name=Cloud lifecycle probe', '-c', 'user.email=probe@example.invalid',
       'commit', '--allow-empty', '-m', 'Synthetic ready bootstrap start'], { cwd: root, stdio: 'pipe' });
     const sha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
