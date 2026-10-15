@@ -254,6 +254,21 @@ class BootstrapShellTest {
     }
     val statusBarContrast = (clockMaximum + 0.05) / (clockMinimum + 0.05)
     val statusBarBackground = systemBitmap.getPixel(0, clockBounds.centerY())
+    val backgroundLuminance = luminance(statusBarBackground)
+    var clockEdgePixels = 0
+    for (y in listOf(clockBounds.top, clockBounds.bottom - 1)) for (x in clockBounds.left until clockBounds.right) {
+      val value = luminance(systemBitmap.getPixel(x, y))
+      val difference = (kotlin.math.max(value, backgroundLuminance) + 0.05) / (kotlin.math.min(value, backgroundLuminance) + 0.05)
+      if (difference >= 1.5) clockEdgePixels++
+    }
+    val clockClipped = clockEdgePixels > 0
+    val systemResources = context.createPackageContext("com.android.systemui", 0).resources
+    val clockSizeId = systemResources.getIdentifier("status_bar_clock_size", "dimen", "com.android.systemui")
+    assertTrue("Actual SystemUI clock dimension must be available", clockSizeId != 0)
+    val clockExpectedTextPixels = systemResources.getDimension(clockSizeId).toDouble()
+    val clockLimitation = Build.VERSION.SDK_INT == 24 && context.resources.configuration.fontScale == 2.0f &&
+      clock.applicationPackage == "com.android.systemui" && clock.resourceName == "com.android.systemui:id/clock" &&
+      clockClipped && clockExpectedTextPixels > clockBounds.height()
     systemBitmap.recycle()
     val systemPowerSave = (context.getSystemService(Context.POWER_SERVICE) as PowerManager).isPowerSaveMode
     val systemWarningLimitation = Build.VERSION.SDK_INT == 24 && theme == "dark" && systemPowerSave &&
@@ -263,6 +278,7 @@ class BootstrapShellTest {
       .put("contrast_ratio", statusBarContrast).put("method", "rendered-system-clock").toString())
     assertTrue("Actual rendered system clock contrast must be readable or the measured ED-18 system warning; actual=$statusBarContrast",
       statusBarContrast >= 4.5 || systemWarningLimitation)
+    assertTrue("System clock clipping must be absent or the actual bounded ED-19 limitation", !clockClipped || clockLimitation)
     var minimumLuminance = 1.0
     var maximumLuminance = 0.0
     for (y in bounds.top until bounds.bottom) for (x in bounds.left until bounds.right) {
@@ -281,6 +297,10 @@ class BootstrapShellTest {
       .put("base_font_size_px", baseFontPixels.toDouble()).put("font_measurement_method", "metric-affecting-spans")
       .put("status_bar_contrast_ratio", statusBarContrast).put("status_bar_measurement_method", "rendered-system-clock")
       .put("status_bar_clock_bounds", rect(clockBounds))
+      .put("status_bar_clock_clipped", clockClipped).put("status_bar_clock_edge_pixels", clockEdgePixels)
+      .put("status_bar_clock_clip_method", "rendered-clock-edge-pixels")
+      .put("status_bar_clock_owner", clock.applicationPackage).put("status_bar_clock_resource", clock.resourceName)
+      .put("status_bar_clock_expected_text_px", clockExpectedTextPixels).put("status_bar_clock_size_source", "systemui-status-bar-clock-size")
       .put("status_bar_background_rgb", JSONArray(listOf(Color.red(statusBarBackground), Color.green(statusBarBackground), Color.blue(statusBarBackground))))
       .put("status_bar_power_save", systemPowerSave).put("status_bar_power_source", "android-power-manager")
       .put("home_package", homePackage).put("observed_home_package", observedHomePackage).put("home_resolution_source", "shell-package-manager")
@@ -290,6 +310,9 @@ class BootstrapShellTest {
     if (systemWarningLimitation) measurement.put("status_bar_limitation", JSONObject()
       .put("applicability", "not_applicable").put("decision_ref", "ED-18").put("behavior", "android7-system-warning-bar")
       .put("reason", "Android7 power saver forces the system warning color; measured contrast remains below4.5."))
+    if (clockLimitation) measurement.put("status_bar_clock_limitation", JSONObject()
+      .put("applicability", "not_applicable").put("decision_ref", "ED-19").put("behavior", "android7-large-system-clock-clipping")
+      .put("reason", "Actual API24 font_scale2 SystemUI clock is clipped by its fixed-height bar."))
     File(captureRoot, "bootstrap-accessibility.json").writeText(JSONObject().put("source", "native-android-accessibility")
       .put("measurement", measurement).toString())
     bitmap.recycle()

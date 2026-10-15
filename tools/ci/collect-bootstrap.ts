@@ -167,8 +167,9 @@ for (const item of catalog) {
           reason: kind === 'ios' ? 'Current locked iOS runtime has no supported VoiceOver UI service' : 'Locked Google APIs emulator image supplies semantic automation without a TalkBack navigation service' }] } });
       const details = assessBootstrapRaw({ ...bound, kind: 'native-measurement-details', raw: { measurements } });
       const chrome = kind === 'android' ? assessBootstrapRaw({ ...bound, kind: 'native-system-chrome', raw: { measurements } }) : { state: 'not_applicable' };
-      nativeAccessibilityChecks.push({ platform: identity.platform, ...accessibility, measurement_details: details, system_chrome: chrome,
-        state: actualBytesMatch && details.state === 'passed' && (kind !== 'android' || chrome.state === 'passed') ? accessibility.state : 'blocked', artifact_id: item.artifact_id });
+      const clipping = kind === 'android' ? assessBootstrapRaw({ ...bound, kind: 'native-clock-clipping', raw: { measurements } }) : { state: 'not_applicable' };
+      nativeAccessibilityChecks.push({ platform: identity.platform, ...accessibility, measurement_details: details, system_chrome: chrome, system_clock_clipping: clipping,
+        state: actualBytesMatch && details.state === 'passed' && (kind !== 'android' || chrome.state === 'passed' && clipping.state === 'passed') ? accessibility.state : 'blocked', artifact_id: item.artifact_id });
     }
     if (kind === 'service' && result.state === 'passed') {
       try {

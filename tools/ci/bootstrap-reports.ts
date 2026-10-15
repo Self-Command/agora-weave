@@ -18,6 +18,42 @@ export function assessBootstrapRaw(input: unknown): Document {
       identity.runner_environment !== 'github-hosted' || identity.run_id !== input.run_id ||
       !Number.isInteger(input.attempt) || Number(input.attempt) < 1 || Number(identity.attempt) !== input.attempt) return deny('executor_identity_mismatch');
   switch (input.kind) {
+    case 'native-clock-clipping': {
+      if (!/^android-api(24|36)$/.test(String(identity.platform)) || !Array.isArray(raw.measurements) ||
+          raw.measurements.length !== 4 || !raw.measurements.every(record)) return deny('system_clock_clipping_measurements_missing');
+      const exclusions: Document[] = [], required: string[] = [], combinations = new Set<string>();
+      for (const item of raw.measurements) {
+        const bounds = item.status_bar_clock_bounds;
+        const key = `${String(item.theme)}:${String(item.font_scale)}`;
+        const edges = item.status_bar_clock_edge_pixels;
+        if (!['light', 'dark'].includes(String(item.theme)) || ![1, 2].includes(Number(item.font_scale)) || combinations.has(key) ||
+            item.status_bar_clock_clip_method !== 'rendered-clock-edge-pixels' ||
+            item.status_bar_clock_owner !== 'com.android.systemui' || item.status_bar_clock_resource !== 'com.android.systemui:id/clock' ||
+            item.status_bar_clock_size_source !== 'systemui-status-bar-clock-size' ||
+            typeof item.status_bar_clock_expected_text_px !== 'number' || !Number.isFinite(item.status_bar_clock_expected_text_px) ||
+            item.status_bar_clock_expected_text_px <= 0 || typeof item.status_bar_clock_clipped !== 'boolean' ||
+            !Number.isInteger(edges) || Number(edges) < 0 || !record(bounds) ||
+            !['x', 'y', 'width', 'height'].every(field => typeof bounds[field] === 'number' && Number.isFinite(bounds[field])) ||
+            Number(bounds.x) < 0 || Number(bounds.y) < 0 || Number(bounds.width) <= 0 || Number(bounds.height) <= 0 ||
+            Number(edges) > 2 * Number(bounds.width) || item.status_bar_clock_clipped !== (Number(edges) > 0) ||
+            !digest(item.screenshot_sha256) || !digest(item.tree_sha256)) return deny('system_clock_clipping_measurement_invalid');
+        combinations.add(key);
+        const limitation = item.status_bar_clock_limitation;
+        if (item.status_bar_clock_clipped) {
+          if (identity.platform !== 'android-api24' || item.font_scale !== 2 || item.status_bar_clock_expected_text_px <= Number(bounds.height) ||
+              !record(limitation) || limitation.applicability !== 'not_applicable' || limitation.decision_ref !== 'ED-19' ||
+              limitation.behavior !== 'android7-large-system-clock-clipping' || !text(limitation.reason)) {
+            return deny('system_clock_clipping_outside_approved_scope');
+          }
+          exclusions.push({ theme: item.theme, font_scale: 2, applicability: 'not_applicable', decision_ref: 'ED-19',
+            behavior: 'android7-large-system-clock-clipping' });
+        } else {
+          if (limitation !== undefined) return deny('system_clock_clipping_exception_without_actual_clipping');
+          required.push(`native:system-clock-unclipped:${key}`);
+        }
+      }
+      return { ...accept(required), exclusions };
+    }
     case 'native-system-chrome': {
       if (!/^android-api(24|36)$/.test(String(identity.platform)) || !Array.isArray(raw.measurements) ||
           raw.measurements.length !== 4 || !raw.measurements.every(record)) return deny('system_chrome_measurements_missing');
