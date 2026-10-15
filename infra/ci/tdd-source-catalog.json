@@ -1509,20 +1509,37 @@
       "test_file": "tests/security/ci/bridge-ready-start.spec.ts",
       "fixture_file": "tests/security/ci/bridge-ready-start.spec.ts",
       "red": {
-        "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
-        "run_id": "38722158385",
+        "sha": "a27fe04d4c9548723793cd92ad39c96d1ee84b05",
+        "run_id": "38768401636",
         "attempt": 1
       },
       "green": {
-        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
-        "run_id": "38726340329",
+        "sha": "3c3d7021e562e3ac1f2827175d3bf1dd04d4110e",
+        "run_id": "38768723855",
         "attempt": 1
       },
-      "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+      "implementation_sha": "3c3d7021e562e3ac1f2827175d3bf1dd04d4110e",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T11:32:34.217261+00:00",
-      "cause_summary": "Healthy ready handoff could not obtain the prerequisite cloud start receipt before executing; dependency resolution uses NODE_PATH without dirtying the fixture. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+      "cause_read_at": "2026-10-15T16:24:15.349030Z",
+      "cause_summary": "The original preimplementation bridge again refused a ready handoff with ERR_ASSERTION after the bootstrap fixture was isolated from subsequently authored business files. The lifecycle oracle and all assertions are unchanged; historical original Red/implementation/Green remain in historical_sources. Current merge preserves the same test bytes and actual current bridge implementation; all227 engineering cases passed with no skips/cancels/todo. This is fixture requalification, not a claim that production behavior was first implemented after this new observation.",
+      "historical_sources": [
+        {
+          "red": {
+            "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
+            "run_id": "38722158385",
+            "attempt": 1
+          },
+          "green": {
+            "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+            "run_id": "38726340329",
+            "attempt": 1
+          },
+          "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+          "cause_read_at": "2026-10-15T11:32:34.217261+00:00",
+          "cause_summary": "Healthy ready handoff could not obtain the prerequisite cloud start receipt before executing; dependency resolution uses NODE_PATH without dirtying the fixture. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+        }
+      ]
     },
     {
       "cycle_id": "ci-validation-efficiency-001",
@@ -2143,6 +2160,36 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T15:55:20.070119Z",
       "cause_summary": "A verified flat write-once private archive was refused by the actual public receipt consumer; PB04 was the sole semantic failure among226 executed cases. The corrected consumer binds the new path to targetSHA/run/attempt and retains private document exclusion."
+    },
+    {
+      "cycle_id": "ci-core-runtime-freeze-001",
+      "behavior_id": "ci.core-runtime-freeze",
+      "case_ids": [
+        "CFZ01"
+      ],
+      "requirements": [
+        "QR-001",
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/core-runtime-freeze.spec.ts",
+      "fixture_file": "tests/integration/ci/core-runtime-freeze.spec.ts",
+      "red": {
+        "sha": "736f24dac870de59d3d24e4cbafa77311a1ccb7a",
+        "run_id": "38766679916",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "3c3d7021e562e3ac1f2827175d3bf1dd04d4110e",
+        "run_id": "38768723855",
+        "attempt": 1
+      },
+      "implementation_sha": "d6bdb85c9e526259b6c7135c636e715711cd844b",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T16:12:28.252224Z",
+      "cause_summary": "The actual cloud dependency authorization block rejected the exact pinned PostgreSQL and Unicode runtime scope. The healthy transport retained its target ERR_ASSERTION. Green preserved the oracle and passed all227 engineering cases; cloud resolution changed only root dependency declarations plus the two pinned lock entries."
     }
   ]
 }
