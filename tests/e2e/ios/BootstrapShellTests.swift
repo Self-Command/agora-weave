@@ -48,8 +48,17 @@ final class BootstrapShellTests: XCTestCase {
     diagnosticTree.name = "bootstrap-accessibility-before-assertions"
     diagnosticTree.lifetime = .keepAlways
     add(diagnosticTree)
-    let title = app.staticTexts["AgoraWeave"]
-    XCTAssertEqual(app.staticTexts.matching(identifier: "AgoraWeave").count, 1)
+    let snapshots = app.staticTexts.matching(identifier: "AgoraWeave").allElementsBoundByIndex
+    let leaves = snapshots.filter { $0.descendants(matching: .staticText).matching(identifier: "AgoraWeave").count == 0 }
+    XCTAssertEqual(leaves.count, 1)
+    let title = try XCTUnwrap(leaves.first)
+    for snapshot in snapshots {
+      XCTAssertEqual(snapshot.label, title.label)
+      XCTAssertEqual(snapshot.frame.minX, title.frame.minX, accuracy: 1)
+      XCTAssertEqual(snapshot.frame.minY, title.frame.minY, accuracy: 1)
+      XCTAssertEqual(snapshot.frame.width, title.frame.width, accuracy: 1)
+      XCTAssertEqual(snapshot.frame.height, title.frame.height, accuracy: 1)
+    }
     XCTAssertTrue(title.isEnabled)
     let window = app.windows.firstMatch.frame
     let top = max(window.minY + 24, app.statusBars.firstMatch.exists ? app.statusBars.firstMatch.frame.maxY : 0)
@@ -85,7 +94,8 @@ final class BootstrapShellTests: XCTestCase {
     func rect(_ value: CGRect) -> [String: CGFloat] { ["x": value.minX, "y": value.minY, "width": value.width, "height": value.height] }
     func hash(_ bytes: Data) -> String { SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined() }
     let measurement: [String: Any] = ["theme": light ? "light" : "dark", "font_scale": UIFontMetrics.default.scaledValue(for: 17) / 17,
-      "title": title.label, "role": "staticText", "enabled": title.isEnabled, "title_count": 1,
+      "title": title.label, "role": "staticText", "enabled": title.isEnabled, "title_count": leaves.count,
+      "title_snapshot_count": snapshots.count, "title_container_count": snapshots.count - leaves.count,
       "interactive_count": interactive, "editable_count": editable, "frame": rect(title.frame), "viewport": rect(viewport),
       "background_rgb": Array(rgba.prefix(3)), "audit": audit, "tree_sha256": hash(Data(tree.utf8)), "screenshot_sha256": hash(screenshot.pngRepresentation)]
     let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: ["source": "native-xctest", "measurement": measurement], options: [.sortedKeys]), uniformTypeIdentifier: "public.json")
