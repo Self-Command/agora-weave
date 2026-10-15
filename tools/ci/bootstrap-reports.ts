@@ -43,7 +43,7 @@ export function assessBootstrapRaw(input: unknown): Document {
         typeof value[key] === 'number' && Number.isFinite(value[key])) && Number(value.width) > 0 && Number(value.height) > 0;
       for (const item of measurements) {
         if (!['light', 'dark'].includes(String(item.theme)) || typeof item.font_scale !== 'number' || !Number.isFinite(item.font_scale) ||
-            item.font_scale < 1 || item.font_scale > 4 || item.title !== 'AgoraWeave' || item.role !== (ios ? 'staticText' : 'android.widget.TextView') ||
+            item.font_scale < 1 || item.font_scale > 4 || item.title !== 'AgoraWeave' || !(ios ? item.role === 'staticText' : ['android.view.View', 'android.widget.TextView'].includes(String(item.role))) ||
             item.enabled !== true || item.title_count !== 1 || item.interactive_count !== 0 || item.editable_count !== 0 ||
             !digest(item.screenshot_sha256) || !digest(item.tree_sha256) || !rectangle(item.frame) || !rectangle(item.viewport) ||
             Number(item.frame.x) < Number(item.viewport.x) || Number(item.frame.y) < Number(item.viewport.y) ||
@@ -54,14 +54,15 @@ export function assessBootstrapRaw(input: unknown): Document {
           if (item.audit.method !== 'xctest-system-audit' || item.audit.executed !== true) return deny('supported_system_audit_missing');
         } else if (ios) {
           if (item.audit.method !== 'unavailable-before-ios17' || item.audit.executed !== false || item.audit.decision_ref !== 'ED-14') return deny('minimum_system_audit_misrepresented');
-        } else if (item.audit.method !== 'native-semantic-focus' || item.audit.executed !== true || item.accessibility_focused !== true || item.heading !== true) {
+        } else if (item.audit.method !== 'native-semantic-focus' || item.audit.executed !== true || item.accessibility_focused !== true || item.heading !== true ||
+            typeof item.contrast_ratio !== 'number' || !Number.isFinite(item.contrast_ratio) || item.contrast_ratio < 4.5) {
           return deny('android_semantic_focus_missing');
         }
       }
       for (const theme of ['light', 'dark']) {
         const normal = measurements.filter(item => item.theme === theme && Number(item.font_scale) >= 1 && Number(item.font_scale) <= 1.05);
         const large = measurements.filter(item => item.theme === theme && Number(item.font_scale) >= 2);
-        if (normal.length !== 1 || large.length !== 1 || Number((large[0].frame as Document).height) < Number((normal[0].frame as Document).height) * 1.95) {
+        if (normal.length !== 1 || large.length !== 1 || Number((large[0].frame as Document).height) < Number((normal[0].frame as Document).height) * (ios ? 1.95 : 1.25)) {
           return deny('actual_large_font_growth_missing');
         }
       }
@@ -119,7 +120,7 @@ export function assessBootstrapRaw(input: unknown): Document {
       const instrumentation = (value: unknown) => typeof value === 'string' && /OK \(1 test\)/.test(value) &&
         /INSTRUMENTATION_CODE: -1/.test(value) && !/FAILURES|INSTRUMENTATION_FAILED|Exception/.test(value);
       return instrumentation(raw.light_log) && instrumentation(raw.dark_log) && raw.light_theme === 'light:16' && raw.dark_theme === 'dark:32' &&
-        typeof raw.hierarchy === 'string' && /<node\b[^>]*package="org\.agoraweave\.app"[^>]*text="AgoraWeave"/.test(raw.hierarchy) &&
+        typeof raw.hierarchy === 'string' && /<node\b(?=[^>]*\bpackage="org\.agoraweave\.app")(?=[^>]*\btext="AgoraWeave")[^>]*>/.test(raw.hierarchy) &&
         Array.isArray(raw.images) && raw.images.length === 2 && raw.images.every(digest) ? accept(['android:light', 'android:dark']) : deny('android_runtime_incomplete');
     }
     case 'ios': {

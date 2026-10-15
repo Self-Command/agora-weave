@@ -999,6 +999,71 @@
         "HD01",
         "HD02"
       ]
+    },
+    {
+      "red": {
+        "run_id": "38665201999",
+        "sha": "dbfbb45d19a03b57301796375a2fc9ac836f8973",
+        "attempt": 1
+      },
+      "test_file": "tests/integration/ci/native-admission.spec.ts",
+      "cause_read_by": "current-codex",
+      "implementation_sha": "b251ec4d4130ae7961de79dcccd668e5147f82f7",
+      "cause_summary": "Read the full five original assertion failure blocks before implementing native response and measured simulator accessibility admission. The original 152-case Green TAP has 152 pass, zero failed, cancelled, skipped or todo. Actual native execution remains separately required.",
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "cause_read_at": "2026-10-15T01:22:45Z",
+      "cycle_id": "ci-native-https-admission-001",
+      "green": {
+        "run_id": "38665781731",
+        "sha": "b251ec4d4130ae7961de79dcccd668e5147f82f7",
+        "attempt": 1
+      },
+      "cause": "missing_behavior",
+      "case_ids": [
+        "HN01",
+        "HN02"
+      ],
+      "behavior_id": "ci.native-https-admission",
+      "fixture_file": "tests/integration/ci/native-admission.spec.ts"
+    },
+    {
+      "red": {
+        "run_id": "38665201999",
+        "sha": "dbfbb45d19a03b57301796375a2fc9ac836f8973",
+        "attempt": 1
+      },
+      "test_file": "tests/integration/ci/native-admission.spec.ts",
+      "cause_read_by": "current-codex",
+      "implementation_sha": "b251ec4d4130ae7961de79dcccd668e5147f82f7",
+      "cause_summary": "Read the full five original assertion failure blocks before implementing native response and measured simulator accessibility admission. The original 152-case Green TAP has 152 pass, zero failed, cancelled, skipped or todo. Actual native execution remains separately required.",
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "cause_read_at": "2026-10-15T01:22:45Z",
+      "cycle_id": "ci-simulator-accessibility-admission-001",
+      "green": {
+        "run_id": "38665781731",
+        "sha": "b251ec4d4130ae7961de79dcccd668e5147f82f7",
+        "attempt": 1
+      },
+      "cause": "missing_behavior",
+      "case_ids": [
+        "NA01",
+        "NA02",
+        "NA03"
+      ],
+      "behavior_id": "ci.simulator-accessibility-admission",
+      "fixture_file": "tests/integration/ci/native-admission.spec.ts"
     }
   ]
 }

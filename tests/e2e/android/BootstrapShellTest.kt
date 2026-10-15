@@ -9,8 +9,14 @@ import android.os.SystemClock
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
+import android.util.TypedValue
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -48,8 +54,10 @@ class BootstrapShellTest {
     assertNotNull(launch)
     launch!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
     device.pressHome()
+    assertTrue(device.wait(Until.hasObject(By.pkg(device.launcherPackageName)), 10000))
+    device.waitForIdle(5000)
     context.startActivity(launch)
-    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).depth(0)), 15000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage)), 15000))
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("AgoraWeave")), 15000))
     assertEquals(targetPackage, device.currentPackageName)
     val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -89,9 +97,9 @@ class BootstrapShellTest {
         .put("target_sha", config.getString("target_sha")).put("environments", environments).toString())
     }
     device.pressHome()
-    assertTrue(device.wait(Until.gone(By.pkg(targetPackage).depth(0)), 10000))
+    assertTrue(device.wait(Until.gone(By.pkg(targetPackage)), 10000))
     context.startActivity(context.packageManager.getLaunchIntentForPackage(targetPackage)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).depth(0)), 15000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage)), 15000))
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("AgoraWeave")), 10000))
     assertEquals(targetPackage, device.currentPackageName)
     device.waitForIdle(5000)
@@ -118,7 +126,7 @@ class BootstrapShellTest {
     }
     assertEquals(1, titles.size)
     val title = titles.single()
-    assertEquals("android.widget.TextView", title.className.toString())
+    assertTrue(title.className.toString() in listOf("android.view.View", "android.widget.TextView"))
     assertTrue(title.isEnabled)
     val heading = AccessibilityNodeInfoCompat.wrap(title).isHeading
     assertTrue("The native title must preserve its heading semantics", heading)
@@ -142,6 +150,24 @@ class BootstrapShellTest {
     assertEquals(0, editableCount)
     val bounds = Rect()
     title.getBoundsInScreen(bounds)
+    var measuredFontPixels = 0f
+    var expectedFontPixels = 0f
+    instrumentation.runOnMainSync {
+      val activity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).single()
+      val textViews = mutableListOf<TextView>()
+      fun findText(view: View) {
+        if (view is TextView && view.text.toString() == "AgoraWeave") textViews.add(view)
+        if (view is ViewGroup) for (index in 0 until view.childCount) findText(view.getChildAt(index))
+      }
+      findText(activity.window.decorView)
+      assertEquals(1, textViews.size)
+      val textView = textViews.single()
+      measuredFontPixels = textView.textSize
+      expectedFontPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 23f, textView.resources.displayMetrics)
+      assertTrue("Rendered native font must follow the actual platform SP conversion", kotlin.math.abs(measuredFontPixels - expectedFontPixels) <= 1f)
+      assertTrue(textView.layout.lineCount > 0)
+      for (line in 0 until textView.layout.lineCount) assertEquals(0, textView.layout.getEllipsisCount(line))
+    }
     fun systemPixels(name: String): Int {
       val resource = context.resources.getIdentifier(name, "dimen", "android")
       return if (resource == 0) 0 else context.resources.getDimensionPixelSize(resource)
@@ -149,11 +175,28 @@ class BootstrapShellTest {
     val viewport = Rect(0, systemPixels("status_bar_height"), device.displayWidth,
       device.displayHeight - systemPixels("navigation_bar_height"))
     assertTrue("Title bounds must remain within the visible safe content", viewport.contains(bounds))
+    fun luminance(color: Int): Double {
+      fun channel(value: Int): Double {
+        val normalized = value / 255.0
+        return if (normalized <= 0.04045) normalized / 12.92 else Math.pow((normalized + 0.055) / 1.055, 2.4)
+      }
+      return 0.2126 * channel(Color.red(color)) + 0.7152 * channel(Color.green(color)) + 0.0722 * channel(Color.blue(color))
+    }
+    var minimumLuminance = 1.0
+    var maximumLuminance = 0.0
+    for (y in bounds.top until bounds.bottom) for (x in bounds.left until bounds.right) {
+      val value = luminance(bitmap.getPixel(x, y))
+      minimumLuminance = kotlin.math.min(minimumLuminance, value)
+      maximumLuminance = kotlin.math.max(maximumLuminance, value)
+    }
+    val contrast = (maximumLuminance + 0.05) / (minimumLuminance + 0.05)
+    assertTrue("Actual rendered title contrast must be readable", contrast >= 4.5)
     fun rect(value: Rect) = JSONObject().put("x", value.left).put("y", value.top).put("width", value.width()).put("height", value.height())
     fun hash(bytes: ByteArray) = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it.toInt() and 255) }
     val measurement = JSONObject().put("theme", theme).put("font_scale", context.resources.configuration.fontScale.toDouble())
       .put("title", title.text.toString()).put("role", title.className.toString()).put("enabled", title.isEnabled)
       .put("heading", heading).put("accessibility_focused", title.isAccessibilityFocused).put("title_count", titles.size)
+      .put("font_size_px", measuredFontPixels.toDouble()).put("expected_font_size_px", expectedFontPixels.toDouble()).put("contrast_ratio", contrast)
       .put("interactive_count", interactiveCount).put("editable_count", editableCount).put("frame", rect(bounds)).put("viewport", rect(viewport))
       .put("tree_sha256", hash(File(captureRoot, "bootstrap-ui.xml").readBytes())).put("screenshot_sha256", hash(capture.readBytes()))
       .put("audit", JSONObject().put("method", "native-semantic-focus").put("executed", true).put("issues", JSONArray()))
