@@ -18,6 +18,27 @@ export function assessBootstrapRaw(input: unknown): Document {
       identity.runner_environment !== 'github-hosted' || identity.run_id !== input.run_id ||
       !Number.isInteger(input.attempt) || Number(input.attempt) < 1 || Number(identity.attempt) !== input.attempt) return deny('executor_identity_mismatch');
   switch (input.kind) {
+    case 'native-measurement-details': {
+      const platform = String(identity.platform), ios = platform.startsWith('ios-');
+      if (!/^(ios-(16\.4|26\.4)|android-api(24|36))$/.test(platform) || !Array.isArray(raw.measurements) ||
+          raw.measurements.length !== 4 || !raw.measurements.every(record)) return deny('native_details_missing');
+      for (const item of raw.measurements) {
+        if (ios) {
+          if (item.title_count !== 1 || !Number.isInteger(item.title_snapshot_count) || !Number.isInteger(item.title_container_count) ||
+              Number(item.title_container_count) < 0 || Number(item.title_snapshot_count) !== 1 + Number(item.title_container_count)) {
+            return deny('ios_semantic_snapshot_incomplete');
+          }
+        } else if (item.font_measurement_method !== 'metric-affecting-spans' ||
+            ![item.font_size_px, item.expected_font_size_px, item.base_font_size_px].every(value => typeof value === 'number' && Number.isFinite(value) && value > 0) ||
+            Math.abs(Number(item.font_size_px) - Number(item.expected_font_size_px)) > 1 ||
+            item.home_resolution_source !== 'shell-package-manager' || !text(item.home_package) ||
+            !/^[a-zA-Z]\w*(?:\.\w+)+$/.test(item.home_package) || item.home_package === 'org.agoraweave.app' ||
+            item.home_package === 'com.android.settings' || item.observed_home_package !== item.home_package) {
+          return deny('android_rendered_metrics_or_home_unbound');
+        }
+      }
+      return accept(['native:measurement-details']);
+    }
     case 'native-https': {
       const report = raw.report, cleanup = raw.cleanup;
       const platform = String(identity.platform);

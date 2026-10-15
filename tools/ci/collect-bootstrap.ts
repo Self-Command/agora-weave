@@ -165,7 +165,9 @@ for (const item of catalog) {
       const accessibility = assessBootstrapRaw({ ...bound, kind: 'native-accessibility', raw: { source: kind === 'ios' ? 'native-xctest' : 'native-android-accessibility', measurements,
         exclusions: [{ behavior: kind === 'ios' ? 'voiceover-navigation' : 'talkback-navigation', applicability: 'not_applicable', decision_ref: 'ED-14',
           reason: kind === 'ios' ? 'Current locked iOS runtime has no supported VoiceOver UI service' : 'Locked Google APIs emulator image supplies semantic automation without a TalkBack navigation service' }] } });
-      nativeAccessibilityChecks.push({ platform: identity.platform, ...accessibility, state: actualBytesMatch ? accessibility.state : 'blocked', artifact_id: item.artifact_id });
+      const details = assessBootstrapRaw({ ...bound, kind: 'native-measurement-details', raw: { measurements } });
+      nativeAccessibilityChecks.push({ platform: identity.platform, ...accessibility, measurement_details: details,
+        state: actualBytesMatch && details.state === 'passed' ? accessibility.state : 'blocked', artifact_id: item.artifact_id });
     }
     if (kind === 'service' && result.state === 'passed') {
       try {

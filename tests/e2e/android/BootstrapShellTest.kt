@@ -13,6 +13,9 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.MetricAffectingSpan
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityManager
 import android.accessibilityservice.AccessibilityServiceInfo
@@ -29,6 +32,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.After
 import java.io.File
+import java.io.FileInputStream
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 import org.json.JSONObject
@@ -77,11 +81,20 @@ class BootstrapShellTest {
     val launch = context.packageManager.getLaunchIntentForPackage(targetPackage)
     assertNotNull(launch)
     launch!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    val homeResolution = FileInputStream(automation.executeShellCommand(
+      "cmd package resolve-activity --brief --user 0 -a android.intent.action.MAIN -c android.intent.category.HOME").fileDescriptor)
+      .bufferedReader().use { it.readText() }
+    val homePackage = Regex("(?m)^([A-Za-z][A-Za-z0-9_.]*)/[^\\s]+$").find(homeResolution.trim())?.groupValues?.get(1)
+    assertNotNull("The actual shell package manager must resolve a HOME component: $homeResolution", homePackage)
+    assertTrue(homePackage != targetPackage && homePackage != "com.android.settings")
     File(context.getExternalFilesDir(null)!!, "bootstrap-launcher-diagnostic.json").writeText(JSONObject()
       .put("instrumentation_package", InstrumentationRegistry.getInstrumentation().context.packageName)
-      .put("target_package", context.packageName).put("reported_launcher", device.launcherPackageName).toString())
+      .put("target_package", context.packageName).put("reported_launcher", device.launcherPackageName)
+      .put("shell_home_resolution", homeResolution).put("home_package", homePackage).toString())
     device.pressHome()
-    assertTrue(device.wait(Until.hasObject(By.pkg(device.launcherPackageName)), 10000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(homePackage!!)), 10000))
+    val observedHomePackage = device.currentPackageName
+    assertEquals(homePackage, observedHomePackage)
     device.waitForIdle(5000)
     context.startActivity(launch)
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage)), 15000))
@@ -179,6 +192,7 @@ class BootstrapShellTest {
     title.getBoundsInScreen(bounds)
     var measuredFontPixels = 0f
     var expectedFontPixels = 0f
+    var baseFontPixels = 0f
     instrumentation.runOnMainSync {
       val activity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).single()
       val textViews = mutableListOf<TextView>()
@@ -189,10 +203,21 @@ class BootstrapShellTest {
       findText(activity.window.decorView)
       assertEquals(1, textViews.size)
       val textView = textViews.single()
-      measuredFontPixels = textView.textSize
+      baseFontPixels = textView.textSize
+      val rendered = textView.text as? Spanned
+      assertNotNull("React Native title must expose its actual styled text", rendered)
+      val sizes = (0 until rendered!!.length).map { index ->
+        val paint = TextPaint(textView.paint)
+        rendered.getSpans(index, index + 1, MetricAffectingSpan::class.java).forEach { it.updateMeasureState(paint) }
+        paint.textSize
+      }
+      assertTrue(sizes.isNotEmpty())
+      measuredFontPixels = sizes.first()
+      assertTrue("Every title character must use the measured rendered size", sizes.all { kotlin.math.abs(it - measuredFontPixels) <= 0.01f })
       expectedFontPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 23f, textView.resources.displayMetrics)
       File(captureRoot, "bootstrap-font-diagnostic.json").writeText(JSONObject()
         .put("measured_px", measuredFontPixels.toDouble()).put("expected_px", expectedFontPixels.toDouble())
+        .put("base_px", baseFontPixels.toDouble()).put("method", "metric-affecting-spans")
         .put("font_scale", textView.resources.configuration.fontScale.toDouble())
         .put("context_font_scale", context.resources.configuration.fontScale.toDouble())
         .put("scaled_density", textView.resources.displayMetrics.scaledDensity.toDouble()).toString())
@@ -229,6 +254,8 @@ class BootstrapShellTest {
       .put("title", title.text.toString()).put("role", title.className.toString()).put("enabled", title.isEnabled)
       .put("heading", heading).put("accessibility_focused", title.isAccessibilityFocused).put("title_count", titles.size)
       .put("font_size_px", measuredFontPixels.toDouble()).put("expected_font_size_px", expectedFontPixels.toDouble()).put("contrast_ratio", contrast)
+      .put("base_font_size_px", baseFontPixels.toDouble()).put("font_measurement_method", "metric-affecting-spans")
+      .put("home_package", homePackage).put("observed_home_package", observedHomePackage).put("home_resolution_source", "shell-package-manager")
       .put("interactive_count", interactiveCount).put("editable_count", editableCount).put("frame", rect(bounds)).put("viewport", rect(viewport))
       .put("tree_sha256", hash(File(captureRoot, "bootstrap-ui.xml").readBytes())).put("screenshot_sha256", hash(capture.readBytes()))
       .put("audit", JSONObject().put("method", "native-semantic-focus").put("executed", true).put("issues", JSONArray()))
