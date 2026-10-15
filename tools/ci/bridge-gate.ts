@@ -81,7 +81,10 @@ const record: Record<string, any> = { ...input, ...result,
 let privateCopy: Record<string, any> | undefined;
 try {
   if (record.completion_record || initialization || completion || development) privateCopy = preservePrivateBridgeRecord(record);
-} catch {
+} catch (error) {
+  if (error instanceof Error && /^Private bridge transport: (key_format|host_key|authentication|remote_path|network|transfer)$/.test(error.message)) {
+    console.error(error.message);
+  }
   record.state = 'blocked';
   record.reason_codes = [...record.reason_codes, 'private_bridge_record_not_verified'];
 }
