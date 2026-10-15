@@ -9,8 +9,8 @@
 1. 在GitHub仓库先建立bootstrap入口、固定upstream Compose／工具SHA及无业务壳；首次云端解析lockfile／镜像digest，回传受审后在新提交immutable install。bootstrap聚合实际运行并登记后保护必需check，正式业务前取得ci-ready。未实现业务不阻断初始化，也不计为通过。云端取固定Expo/Kiranism/Supabase组合，单独lint；不得将Next build当lint。
 2. 使用独立开发／测试Compose/Storage/账号/密钥/日志/网络，合成数据和A/B插件；无生产凭据、无生产用户资料。Q-02/03/16提供真实云端实例/分钟/存储/设备/费用许可，不能凭指南认为已取得。
 3. 真实短信/推送/审核/AI测试先满足Q-04/16的测试通道、价格、数据区域、条款和批准，AI满足大陆推理/日志/存储/分包、不训练和告知。模拟可辅助，不代替必需真实集成；未满足时相应job是blocked/unavailable，整体验收不通过。
-4. iOS签名/渠道账号、Android渠道、最低OS和当前OS运行资源、物理VoiceOver/TalkBack/推送/播放必须就绪。iOS Simulator不能跑VoiceOver；XCTest审计不能取代读屏真实流程。Actions必须取得设备报告/交互和提交关联；无资源不得跳过后判通过。
-5. 固定实际runner image/toolchain，Linux支持Android硬件加速；macos-26选Xcode26.4.1。最低OS(iOS16.4/Android7)和当前OS为独立运行层，当前image缺旧runtime则云设备资源门禁阻塞。不得把deployment target等同已在旧OS运行。
+4. iOS签名/渠道账号、Android渠道、最低OS和当前OS运行资源、模拟器原生语义/焦点/键盘/媒体/推送支持范围必须就绪。设备范围按ED-14及 `contracts/simulator-validation.md`，不再要求物理设备；不支持的辅助技术/硬件操作明示排除且不记passed，必需模拟器项缺结果不通过。
+5. 固定实际runner image/toolchain，Linux支持Android硬件加速；macos-26选Xcode26.4.1。最低OS(iOS16.4/Android7)和当前OS为独立运行层，当前image缺旧runtime则须在Actions补齐对应模拟器运行时，缺结果仍阻塞。不得把deployment target等同已在旧OS运行。
 6. 公司治理／隐私／条款／告知／帮助功能与页面完整验证，合成内容用于CI；正式文案由用户管理。ED-06不新增硬性申诉截止，首响应／完成提醒3／7工作日为可配置流程目标，无第二合格复核者保持待复核、不自动结案，不编造实际运营承诺。
 7. Codex路线／工程核定模型和必要开发资料经核验境外处理已确认；用户供给API账户／凭据后工程核查模型／图像／结构输出及供应商策略，真实用户／生产资料禁发。不能以产品AI准入或桌面身份替代真实通道。缺AI通道不ci-ready；首个真实基准由用户本人届时确认，初始化壳截图不作产品基准。
 
@@ -68,7 +68,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 | web | `npm run ci:build:web`；`npm run ci:run:web`；`npm run ci:e2e:web` | 真Kiranism/分享/插件页，Playwright连接真实隔离服务，页面/角色/视觉/键盘 |
 | native-ios | `npm run ci:build:ios`；`npm run ci:e2e:ios` | Actions Xcode构建安装运行实际native，XCTest交互/截图/审计，连接隔离真实后端 |
 | native-android | `npm run ci:build:android`；`npm run ci:e2e:android` | Actions原生Gradle产物、emulator真实流程/媒体/视觉/无障碍检查 |
-| cloud-physical | `npm run ci:device` | Actions调度云端实际双端设备、读屏/键盘/媒体/推送，最小/当前OS，录证不是网页替代 |
+| simulator-accessibility-media | `npm run ci:device` | Actions双端最低/当前OS模拟器实际语义/焦点/键盘/媒体/支持的推送及辅助技术，能力/排除按ED-14，原报告绑定当前产物 |
 | plugins | `npm run ci:plugins`；`npm run ci:developer-journey` | 两插件实际隔离、生命周期、三端从零样例/SDK/CLI/文档闭环 |
 | ai-real | `npm run ci:ai:integration`；`npm run ci:ai:eval` | 合格真实模型/工具/来源/政策/限额/自动有标签评估；未准入不通过 |
 | measurement-recovery | `npm run ci:performance`；`npm run ci:recovery` | 固定负载/失败分布、陈旧备份安全重放/对象恢复和清理证据 |
@@ -122,11 +122,11 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 按ED-11，当前Codex分别记录代码和视觉审查：执行者／会话、目标SHA、代码／图像／报告摘要、覆盖、findings、处置与未知项。原图和运行报告从Actions取得并校验，记录存受控私有库，由Actions核绑定；不部署额外审查AI或要求API Key。缺图／漏文件／未处理缺陷／无法判断仍阻塞，修复后当前SHA重审与真实回归。静态图不能证明读屏或按钮已执行，代码阅读不能代测试。
 
-真正VoiceOver/TalkBack执行注册、发布、评论、私信、举报、处罚、申诉等流程；保焦点/朗读/操作报告与设备会话证据。自动audit、可访问性树、模拟器截图只辅助。视频/GIF检验播放/暂停/Wi-Fi蜂窝/静音/省流量/减少动效、文件真实格式，iOS/Android都必须通过；GIF picker不能静默降首帧。
+按ED-14在对应原生模拟器执行注册、发布、评论、私信、举报、处罚、申诉等流程，保语义标签/状态/顺序、焦点/键盘/操作及可用系统审计报告；可执行的辅助技术另保真实导航输出。当前runtime不支持的VoiceOver/硬件流程单列排除，不把树或截图称为已执行朗读。视频/GIF检验播放/暂停/Wi-Fi蜂窝/静音/省流量/减少动效、文件真实格式，iOS/Android都必须通过；GIF picker不能静默降首帧。
 
 ### V19A — FR-113播放器、设置与消费行为矩阵（G1）
 
-先在各行为缺失时由Actions执行真实用例并读有效Red，再实现播放器／设置／入口，Green和最终SHA重跑同oracle及已激活回归。策略单元／组件用例可辅助，iOS／Android原生产物与必要云端物理设备实际播放证据仍必需；适用分享／后台网页逐浏览器记录真实允许或点击回退。不能仅以上传、编辑器截图或一般无障碍检查映射FR-113。
+先在各行为缺失时由Actions执行真实用例并读有效Red，再实现播放器／设置／入口，Green和最终SHA重跑同oracle及已激活回归。策略单元／组件用例可辅助，iOS／Android原生产物的云端模拟器实际播放证据仍必需（网络/系统条件控制方式及硬件排除按ED-14）；适用分享／后台网页逐浏览器记录真实允许或点击回退。不能仅以上传、编辑器截图或一般无障碍检查映射FR-113。
 
 | 条件／操作 | 必须观察的行为断言 | 所需证据 |
 | --- | --- | --- |
@@ -140,7 +140,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 | 视频主动开声／静音、离开／换另一视频 | 默认自动播放始终静音，当前用户可明确开声和再静音；新列表项不无意继承上一条开声，控制可读屏操作 | 音频状态／实际设备会话、点击和读屏轨迹、对应视频引用 |
 | 播放／预加载期间撤权、退出／注销／网络断开 | 媒体后续GET／Range／缓存命中按当前资格拒绝，停止新的未获权读取；离线不恢复他人受限媒体，错误／不可用保真实反馈 | 与V06联动的网关原报告、失权UI及新请求拒绝；已交付字节单列 |
 
-逐入口覆盖登记：US3共享播放器与发布预览／正文详情，US2设置和主页，US6流／搜索／收藏，US4评论GIF，US7私信GIF，US9分享、US10后台预览、US12实际插件host媒体。仅实际支持的媒体类型适用，不给评论／私信新增视频；缺实际入口组件或偏好消费不算覆盖。US16汇总双端物理播放／可访问性／视觉，最终full-release检查全部入口和策略组合，FR-113追溯须同时指向实现责任、具体行为Red／Green及完整消费回归。
+逐入口覆盖登记：US3共享播放器与发布预览／正文详情，US2设置和主页，US6流／搜索／收藏，US4评论GIF，US7私信GIF，US9分享、US10后台预览、US12实际插件host媒体。仅实际支持的媒体类型适用，不给评论／私信新增视频；缺实际入口组件或偏好消费不算覆盖。US16汇总双端模拟器播放／可访问性／视觉，最终full-release检查全部入口和策略组合，FR-113追溯须同时指向实现责任、具体行为Red／Green及完整消费回归。
 
 各入口的播放输入先依audience核来源：分享仅ED-10默认／页面内操作，US9测试和实现不得再写“本人合法preferences”或假设个人DTO；T147配置consumer／T228浏览器用例／T233播放器／T235回归及US16／Final适用矩阵同步。登录改变资源资格但不授偏好读取，App设置变动只能影响App的合法消费者，分享保按本矩阵独立验证。
 
@@ -148,7 +148,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 ## 6. 失败修复、证据和生产边界
 
-每run生成[release evidence](contracts/release-evidence.md) index，绑定同提交/产物/配置/环境/工具/页面状态/AC-AS/报告/截图/差异/交互，并关联TDD链、基准确认、开发AI审查／处置和报告读取。必需check缺失、取消、超时、跳过、环境不可用、真模型/物理设备未执行或版本不同都不能通过；失败同样上传脱敏证据。聚合须显式识别必需项，GitHub绿图标／neutral不作产品通过。修复后重验受影响行为和必要回归，正式发行完成全必需集合。报告使用合成数据，秘密/私人原文不入长存档。
+每run生成[release evidence](contracts/release-evidence.md) index，绑定同提交/产物/配置/环境/工具/页面状态/AC-AS/报告/截图/差异/交互，并关联TDD链、基准确认、开发AI审查／处置和报告读取。必需check缺失、取消、超时、跳过、环境不可用、真模型/必需模拟器项未执行或版本不同都不能通过；失败同样上传脱敏证据。聚合须显式识别必需项，GitHub绿图标／neutral不作产品通过。修复后重验受影响行为和必要回归，正式发行完成全必需集合。报告使用合成数据，秘密/私人原文不入长存档。
 
 生产另经超级管理员当前MFA和DEC-001核验对准确版本/权限/迁移/环境/名单确认，观察后扩大再确认；Actions通过不自动部署。预览/验证工作流不能写生产配置或执行迁移。实际生产发布/采购/外部真实消息均非本轮授权内容。
 

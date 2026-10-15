@@ -125,9 +125,9 @@
 
 首版图片 JPEG／PNG、动态 GIF、视频 MP4 容器 H.264＋AAC 为受控输入清单；拒绝伪格式／不支持编码并保留输入，不扩复杂转码。HEIC 选择后可用 SDK 成熟转换到受支持静态格式并明确失败；未经双端云端验证不加到直接服务清单。上传入口／Storage 大小联动以支持 spec 的 200 MB 视频；官方默认约 50 MiB 不可照抄。所有媒体 GET／Range 仍走 RD-03。
 
-Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览器 Playwright／性能；macOS 跑固定 Xcode 的 iOS 原生产物与 XCTest；Android 云端 emulator 跑原生产物与 UIAutomator／Espresso。物理云端 iOS／Android 的播放、推送、VoiceOver／TalkBack、键盘和性能列必需设备层，Actions 调度有合格资源才执行。模拟器与自动 accessibility audit 不代替真实读屏流程。预览由 Actions 运行隔离环境、产出录像／截图／轨迹和受保护限时远程视图，不能要求本地启动。
+Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览器 Playwright／性能；macOS 跑固定 Xcode 的 iOS 原生产物与 XCTest；Android 云端 emulator 跑原生产物与 UIAutomator／Espresso。用户已按ED-14决定今后只有模拟器设备层，撤出旧物理设备验收前置，最低/当前OS均独立实际运行；原生语义／焦点／键盘／媒体／支持的推送及辅助技术仍须实际证据，不支持的硬件流程按[模拟器验收范围](contracts/simulator-validation.md)明示not_applicable及未验证风险，不能标记passed。预览由 Actions 运行隔离环境、产出录像／截图／轨迹和受保护限时远程视图，不能要求本地启动。
 
-**Rationale**：Apple 明确 VoiceOver 不能在 iOS Simulator 使用，自动审计也不保证所有可访问性。设备供给与预算是 Q-16／03 的真实条件，不能假说已选厂商或已有物理设备。
+**Rationale**：ED-14是用户对验收设备范围的明确变更，读屏适配本身仍要求实现。Apple既有辅助技术指南说明Simulator的VoiceOver限制；2026-10-15复核官方symbol metadata，新 `XCUIVoiceOverService` 的iOS可用性为27.0，不能据此声称已锁iOS16.4／26.4.1可执行；系统audit与语义/焦点流程分别记录，均不冒充真实VoiceOver用户验收。模拟器资源与预算仍为Q-16／03真实条件，不假设已有新runtime或API。
 
 **Alternatives considered**：仅网页截图、Expo Go 代实际 native build、仅模拟器 VoiceOver、仅静态 token 对照、本地 runner 后备均不选。
 
@@ -159,7 +159,7 @@ Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览�
 
 未发现要求修改获批范围、栈、严格撤权或验收标准的实质性冲突。官方默认能力的缺口已被明确的网关、隔离和交付设计承接；不可据此宣称实际成功。新冲突按宪法第九条仅暂停依赖工作、报告影响和选项等待用户决定，不自行改变条件。
 
-计划可以进入 Phase 1。以下仍是执行前条件：Q-02 实际大陆服务器／网络／备份；Q-03 预算／日期；Q-04 合格短信／审核／推送／AI 真实准入；Q-08 参数风险验证／性能／备份与 RPO-RTO；Q-11 域名／制度／处理告知／申诉合格责任人；Q-16 Actions 云端资源／物理设备／预览／真实外部测试许可。Q-10 新范围默认不启用。没有把任一条件记作通过，也没有重问已确认决定。
+计划可以进入 Phase 1。以下仍是执行前条件：Q-02 实际大陆服务器／网络／备份；Q-03 预算／日期；Q-04 合格短信／审核／推送／AI 真实准入；Q-08 参数风险验证／性能／备份与 RPO-RTO；Q-11 域名／制度／处理告知／申诉合格责任人；Q-16 Actions 云端模拟器资源／预览／真实外部测试许可（ED-14不再要求物理设备）。Q-10 新范围默认不启用。没有把任一条件记作通过，也没有重问已确认决定。
 
 ## RD-11 — 先验证CI基础设施，再开发业务
 

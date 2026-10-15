@@ -93,7 +93,7 @@ TDD 链记录 `cycle_id,behavior_id,S_R,S_G,final_sha,test/fixture/oracle_digest
 
 设计输入冻结 UI-SPEC／token／v6 prototype 的 Git SHA 与文件摘要，并关联最新业务规格。页面矩阵按 UI-SPEC §6，包括后台／分享网页和移动 iOS／Android、插件插槽及扩展；网页两个产品表面分别记录，不能以一个截图替整个 Web。每项列端、页面、角色、状态、主题、设备／视口、字号、字体、键盘／安全区、需求、交互序列与期望。已确认草稿只是参考，旧假系统栏／示例模型／旧权限不进入产品。
 
-Actions 运行实际当前产物，Playwright 采集网页；XCTest 和 Android UIAutomator／Espresso 采集对应原生。最低／当前 OS、窄屏、大字、加载／空／错误／提交未知／失权／删除／不兼容等适用维度见 quickstart；物理 VoiceOver／TalkBack、媒体和推送执行证据仍必需。全屏保留原图，必要局部裁图用于诊断；差异不能裁掉核心授权或错误状态。
+Actions 运行实际当前产物，Playwright 采集网页；XCTest 和 Android UIAutomator／Espresso 采集对应原生。最低／当前 OS、窄屏、大字、加载／空／错误／提交未知／失权／删除／不兼容等适用维度见 quickstart；按ED-14仅设双端原生模拟器设备层，实际语义／焦点／键盘／媒体及支持的辅助技术／推送证据仍必需；不支持的硬件操作按[模拟器验收范围](simulator-validation.md)登记not_applicable和未验证风险，不产生passed。全屏保留原图，必要局部裁图用于诊断；差异不能裁掉核心授权或错误状态。
 
 **首次基准采用两步批准**：
 
