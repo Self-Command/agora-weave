@@ -59,7 +59,7 @@ for (const environment of ['dev', 'test']) {
   for (const name of ['migrate-clean.json', 'migrate-incremental.json']) {
     const migration = parse(core.root, name);
     if (!identity(migration) || migration.state !== 'passed' || !Array.isArray(migration.migrations) ||
-        migration.migrations.length !== manifest.core_migrations?.length || migration.migrations.some((entry: Record<string, unknown>) =>
+        migration.migrations.length !== (manifest.core_migrations || []).length || migration.migrations.some((entry: Record<string, unknown>) =>
           !manifest.core_migrations.some((approved: Record<string, unknown>) => approved.file === entry.file) ||
           typeof entry.file !== 'string' || entry.sha256 !== hash(git(entry.file)))) throw new Error('Real migration evidence is incomplete');
   }
@@ -70,9 +70,9 @@ for (const environment of ['dev', 'test']) {
     const expected = selected.reduce((sum, target) => sum + target.case_count, 0);
     const normalized = normalizeExecution({ format: 'tap', raw, expected_count: expected, exit_code: report.exit_code });
     const reasons = normalized.reason_codes as string[];
-    const failures = [...raw.matchAll(/^not ok \d+ - .+\r?\n  ---\r?\n[\s\S]*?^  \.\.\./gm)];
+    const failures = [...raw.matchAll(/^not ok \d+ - .+\r?\n {2}---\r?\n[\s\S]*?^ {2}\.\.\./gm)];
     const semanticRed = Number(normalized.failed) > 0 && report.exit_code !== 0 && failures.length === normalized.failed &&
-      failures.every(failure => /^  code: 'ERR_ASSERTION'\r?$/m.test(failure[0]));
+      failures.every(failure => /^ {2}code: 'ERR_ASSERTION'\r?$/m.test(failure[0]));
     if (!identity(report) || report.command !== command || report.raw_report_sha256 !== hash(raw) ||
         JSON.stringify(report.executed_files) !== JSON.stringify(files.map(path => ({ path, sha256: hash(git(path)) }))) ||
         reasons.some(reason => reason !== 'execution_not_passed') || normalized.executed !== expected ||
