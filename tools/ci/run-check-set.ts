@@ -5,6 +5,11 @@ export type DiscoveryInput = {
   available_files: string[];
 };
 
+/** Interface shell for the validation-request contract; admission is not yet implemented. */
+export function resolveValidationRequest(_request: unknown, _context: unknown): Record<string, any> {
+  return { state: 'not_evaluated' };
+}
+
 export function discoverApprovedTargets(input: DiscoveryInput): Record<string, unknown> {
   const reasons = new Set<string>();
   if (!['bootstrap', 'business-increment', 'full-release'].includes(input.profile) ||
