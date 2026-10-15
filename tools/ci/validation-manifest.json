@@ -2396,13 +2396,55 @@
     }
   ],
   "engineering_targets": [
-    {"id":"ci.validation-intent","command":"ci:contracts","files":["tests/integration/ci/validation-intent.spec.ts"]},
-    {"id":"ci.evidence-polling","command":"ci:contracts","files":["tests/integration/ci/evidence-polling.spec.ts"]},
-    {"id":"ci.evidence-reuse","command":"ci:contracts","files":["tests/integration/ci/evidence-reuse.spec.ts"]},
-    {"id":"ci.ready-bootstrap-start","command":"ci:contracts","files":["tests/security/ci/bridge-ready-start.spec.ts"]},
-    {"id":"ci.validation-efficiency","command":"ci:contracts","files":["tests/integration/ci/validation-efficiency.spec.ts"]},
-    {"id":"ci.bridge-reader-path","command":"ci:contracts","files":["tests/integration/ci/bridge-reader-path.spec.ts"]},
-    {"id":"ci.validation-boundaries","command":"ci:contracts","files":["tests/integration/ci/validation-boundaries.spec.ts"]},
+    {
+      "id": "ci.validation-intent",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/validation-intent.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.evidence-polling",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/evidence-polling.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.evidence-reuse",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/evidence-reuse.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.ready-bootstrap-start",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/bridge-ready-start.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.validation-efficiency",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/validation-efficiency.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.bridge-reader-path",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/bridge-reader-path.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.validation-boundaries",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/validation-boundaries.spec.ts"
+      ]
+    },
     {
       "command": "ci:contracts",
       "id": "ci.evidence",
@@ -2630,40 +2672,75 @@
     {
       "id": "ci.pending-task-adapter",
       "command": "ci:contracts",
-      "files": ["tests/integration/ci/task-adapter.spec.ts"]
+      "files": [
+        "tests/integration/ci/task-adapter.spec.ts"
+      ]
     },
     {
       "id": "ci.wait-shared-execution",
       "command": "ci:contracts",
-      "files": ["tests/integration/ci/wait-shared-execution.spec.ts"]
+      "files": [
+        "tests/integration/ci/wait-shared-execution.spec.ts"
+      ]
     },
     {
       "id": "ci.bridge-source",
       "command": "ci:contracts",
-      "files": ["tests/security/ci/bridge-source.spec.ts"]
+      "files": [
+        "tests/security/ci/bridge-source.spec.ts"
+      ]
     },
     {
       "id": "ci.native-archive-capacity",
       "command": "ci:contracts",
-      "files": ["tests/integration/ci/native-archive-capacity.spec.ts"]
+      "files": [
+        "tests/integration/ci/native-archive-capacity.spec.ts"
+      ]
     },
     {
       "id": "ci.native-measurement-details",
       "command": "ci:contracts",
-      "files": ["tests/integration/ci/native-measurement-details.spec.ts"]
+      "files": [
+        "tests/integration/ci/native-measurement-details.spec.ts"
+      ]
     },
     {
       "id": "ci.native-system-chrome",
       "command": "ci:contracts",
-      "requirements": ["QR-004", "QR-005", "QR-007"],
-      "files": ["tests/integration/ci/native-system-chrome.spec.ts"]
+      "requirements": [
+        "QR-004",
+        "QR-005",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/native-system-chrome.spec.ts"
+      ]
     },
     {
       "id": "ci.android7-system-chrome",
       "command": "ci:contracts",
-      "requirements": ["QR-004", "QR-005", "QR-007"],
-      "files": ["tests/integration/ci/android7-system-chrome.spec.ts"]
+      "requirements": [
+        "QR-004",
+        "QR-005",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/android7-system-chrome.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.development-tiering",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "files": [
+        "tests/integration/ci/development-tiering.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 190
+  "engineering_case_count": 196
 }
