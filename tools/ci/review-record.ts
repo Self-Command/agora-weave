@@ -23,6 +23,13 @@ export function bindReviewRecord(record: unknown, context: unknown): Document {
   if (!sameRequired(read.map(input => input.id), original.map(input => input.id)) ||
       !sameRequired(record.required_inputs, original.map(input => input.id)) || original.some(input => !digest(input.digest)) ||
       read.some(input => !original.some(source => source.id === input.id && source.digest === input.digest))) return deny('review_input_differs_from_source');
+  if (context.review_kind === 'visual' && record.images !== undefined) {
+    if (!Array.isArray(record.images) || !record.images.every(isDocument) ||
+        !sameRequired(record.images.map(image => image.id), context.required_images) ||
+        record.images.some(image => !original.some(source => source.id === image.id && source.digest === image.sha256))) {
+      return deny('visual_image_inventory_differs_from_source');
+    }
+  }
   return assessReviewBaseline({ ...record, expected_sha: context.expected_sha, expected_contract_digest: context.contract_digest,
     actual_checks: context.actual_checks, baseline: context.baseline });
 }
