@@ -1,6 +1,6 @@
 # 验证效率：安全检查点与桥接执行说明
 
-日期：2026-10-15。当前计划基线为`72cb1a23ce0f921949f96f360e87048659376bec`、分支`codex/agoraweave-tdd-rebuild-clean`。用户本次授权CI调度、缓存、证据读取及工程资料优化，当前窗口按“调用sk-plan／sk-task后收尾并交新窗口”局部同步设计与现有任务，未实现优化、未产生优化后Green或提速结果。下一窗口在原任务内先完成此优化，再继续原DAG；本说明不授业务准入或任务完成。
+日期：2026-10-15。历史计划基线为`72cb1a23ce0f921949f96f360e87048659376bec`、分支`codex/agoraweave-tdd-rebuild-clean`。用户先批准CI调度、缓存和证据读取优化，随后明确批准[分层开发验证与宪法修订](validation-tiering-decision.md)，允许当前初始化阶段执行并以Draft PR工程移交。以宪法v3.1.0／cloud-validation v1.2及最新真实证据为准；本说明的历史基线和文档更新本身不授开发准入、任务完成或提速结论。
 
 必须读取根`AGENTS.md`、`.specify/memory/constitution.md`、`plan.md` TD-07A/B/C、`tasks.md`、`contracts/cloud-validation.md` §2.2及`release-evidence.md`。既有ED-11–18、最低／当前OS、全部真实云端TDD与同SHA验收保留；ED-14不等待真机，ED-18只限API24实际省电开启／深色截图的系统警示栏。所有项目安装、构建、测试、运行、截图、交互和门禁计算仍仅Actions，本地只编辑、Git／GitHub控制面及读取已验报告。
 
@@ -20,14 +20,27 @@
 
 已有`collect-evidence.ts`每次调用都列run／attempt／artifact并下载ZIP；`download-source.ts`写`authenticated-downloads/`，未据此直接证明同身份复用已实现。CI bootstrap与共享gate均调用相同类型的原报告下载，存在重复取证路径；实际请求次数、传输字节／时长、缓存命中率没有完整可比历史记录，记unavailable，不以交互工具总耗时冒充网络耗时。父窗口已核历史源ZIP `artifact_id=11948648942`，SHA256 `b4bf60dd8ef65a61c755c7d12e640206a73d1eee8cd88e0fd90e3bd90869a4f4`；原图和失败仍须保留，其他0字节或未完整下载不作为证据。
 
+## 本次已观测样本
+
+以下为当前窗口实际校验并读取的局部证据，不能代最终完整矩阵。SHA均为原报告目标，不能给后续提交授通过。
+
+| 来源 | 已读事实 | 结论限制 |
+| --- | --- | --- |
+| `396cdb3`，[shared run38724920329](https://github.com/Self-Command/agora-weave/actions/runs/38724920329)，attempt1，artifact `11968341356` | ZIP SHA-256已校验；`journal.json`读取43个cycle／129个phase；129份`source_reuse`均绑定来源身份、archive及raw索引；66次cache_hit，63次实际ZIP下载，共452005字节，累计`transfer_ms=9648.684376` | 计时仅ZIP网络传输，不含API、解析或整体等待；coverage=partial，缺本轮新循环，不算ci-ready |
+| `ccf9b30`，[checkset run38726340329](https://github.com/Self-Command/agora-weave/actions/runs/38726340329)，artifact `11968427824` | 已校验读取190／190真实工程用例，0 fail／skip／cancel／todo | 只证明该来源的工程集合，不证明原生／完整验收 |
+| lint artifact `11968142906` | 已校验读取98 files、0 error、0 warning | 不代功能／安全／图像或完整Green |
+| 旧`bb`功能变更的push＋PR与`cb`后PR样本 | 旧样本曾触发10个顶层runs；后者PR为3个顶层runs | 事件、SHA、集合和运行条件不等价，不能算完整矩阵提速比例 |
+
+原始更早基线的传输缺计时状态保持历史事实；新增样本仅补本次可核测量。最终仍需逐项读取当前目标的真实报告、失败及原图，保留剩余验收缺口。
+
 ## 在现有任务内执行
 
 1. 以T001／T002／T021登记当前run／job／check和实际事件、head／merge／checkout、profile／清单、HTTPS／环境／工具链／产物身份。先读取唯一Red和当前必需运行；给独立native、共享链、push／PR明确覆盖责任，只对等价输入合并。保真实保护check；没有保护配置也不因此删除既有真实门禁。
 2. 在T008–T012现有测试中先加入新增行为的语义断言，通过T013在Actions取得并实际读取合格Red；调度、分类、取消保护、缓存与artifact复用逐行为建链。已有行为只回归，不挖空实现制造Red。环境、导入或工具错误先修环境，不计Red。
 3. 在T014–T023原实现责任内最小修改：共享正式矩阵唯一调用、区分反馈／正式Green／完成意图、保护Red／必要验证／清理的旧run取消、锁／工具链／平台缓存、健康前置后独立job并行、按完整身份／archive及raw摘要复用证据字节与退避轮询。不要新造通用调度平台。未改且已认证的历史行为链按祖先与输入核验，受改行为取得新链。
-4. 正式S_G运行同Red oracle／fixture及当前激活适用集合和必要回归；反馈不授Green、task done或ci-ready。未知、任务验收、清单、门禁、依赖、测试及工程行为改动不按普通文档跳过。取消、失败、跳过、缺失、旧SHA均不能充passed。
+4. 正式开发S_G运行同Red oracle／fixture、受影响套件和必要回归，依据整个实际diff、依赖、任务／契约与风险冻结集合；未知影响用完整适用集合。反馈不授Green、task done或ci-ready，开发Green也不授正式验收。清单、门禁、依赖、测试及工程行为不按普通文档跳过；取消、失败、跳过、缺失、旧SHA不能充passed。
 5. T026前一次整理代码、测试、tasks和工程资料并冻结最终SHA／清单／契约／产物；通过唯一正式执行链取得初始化全部必需证据，保最低／当前OS、真实服务与HTTPS、网页、审查、归档／清理、负向探针。T027按冻结全集等终态并逐一读报告、失败明细及实际原图；已验artifact字节可复用，语义审查及完成判断仍绑定当前目标。
-6. 最终审查、completion／ci-readiness及测量写外部私有证据库。不要为补记通过再次提交；冻结后任何仓库输入变化都按新SHA重新验证。没有有效ci-ready仍停初始化，未完成任务不勾选。完成此优化后按原DAG继续。
+6. 最终审查、completion／ci-readiness及测量写外部私有证据库，不为补记通过再次提交；冻结后任何仓库输入变化按新SHA重新验证。业务TDD可在独立development-ready后按原DAG继续，不等待完整ci-ready；T027与未验任务保持未勾选。基础通道或目标验证受阻暂停依赖部分，其他完整CI缺口并行修复。合并／阶段验收／发行仍须同SHA完整适用证据；当前Draft PR工程移交须列清未决项。
 
 ## 实测交付要求
 

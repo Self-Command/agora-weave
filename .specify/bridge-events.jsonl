@@ -36,3 +36,9 @@
 
 {"timestamp":"2026-10-15T11:10:36.4125566Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
 
+{"timestamp":"2026-10-15T11:21:51.8917769Z","action":"handoff","status":"blocked","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"User-approved tiered validation and constitution amendment on 2026-10-15; contract revision in progress before execution resumes","actor":"codex","prior_actor":"codex","snapshot_id":"20261015T1121518578328Z-blocked"}
+
+{"timestamp":"2026-10-15T11:22:00.6476905Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.constitution"}
+
+{"timestamp":"2026-10-15T11:47:02.7810610Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"User-approved constitution3.1.0 and tiered development workflow synchronized; engineering handoff prepared, actual cloud Green/development evidence pending, no formal ci-ready or feature completion","actor":"codex","prior_actor":"codex","snapshot_id":"20261015T1147027475234Z-ready"}
+

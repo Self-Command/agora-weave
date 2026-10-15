@@ -28,4 +28,4 @@ const plan = resolveValidationRequest(request, { target_sha: event.pull_request?
 mkdirSync('validation-plan', { recursive: true });
 writeFileSync('validation-plan/plan.json', JSON.stringify(plan, null, 2) + '\n');
 if (plan.state !== 'resolved') throw new Error('Validation request refused');
-appendFileSync(process.env.GITHUB_OUTPUT!, `full_required=${plan.full_required}\nvalidation_intent=${plan.validation_intent}\n`);
+appendFileSync(process.env.GITHUB_OUTPUT!, `full_required=${plan.full_required}\ndevelopment_required=${plan.development_required}\nvalidation_intent=${plan.validation_intent}\n`);

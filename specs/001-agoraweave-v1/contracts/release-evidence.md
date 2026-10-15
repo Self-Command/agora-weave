@@ -31,6 +31,10 @@ status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown�
 
 验证效率修订沿[cloud-validation §2.2](cloud-validation.md)追加工程关联：`validation_intent=feedback/green/completion`、`canonical_execution_ref,event_name,pr_head_sha,pr_merge_sha,deduplication_inputs_digest,cancellation/superseded_refs,cache_key/input_digest/hit/validation,artifact_reuse_receipt_refs,measurement_refs`。去重／缓存只复用等价执行或已验字节，不转移批准与完成结论；feedback不能满足Green／ci-ready／complete。不同事件被测tree或HTTPS／配置不等价时不能共用，取消／失败／跳过／缺失／旧SHA仍保原状态并拒绝。
 
+按宪法v3.1.0及[分层验证批准](../../../docs/engineering/validation-tiering-decision.md)，独立`development_readiness`只证明基础构建／非空测试／所需隔离服务健康及目标原报告认证，允许业务TDD；不设置`ci_ready=true`，不能满足formal complete。
+开发Green记录实际变更范围、依赖／风险依据、`affected_check_set`与必要回归，使用同Red oracle／fixture；未知影响采用完整适用集合。
+开发中未执行的完整平台／采集／审查项保持原状态，不能写passed或改适用性；合并、阶段验收交付及发行仍执行同最终SHA全部适用集合和当前代码／实际图像审查。
+
 `artifact_reuse_receipt`至少含repository／run／attempt／artifact ID、target与checkout SHA、workflow／环境身份、期望及实测原archive摘要、逐文件raw索引摘要、取得／复核／读取时间及实际read_by。命中须重新校来源及当前可访问性／过期状态，重算字节摘要；缓存不是passed证据，不继承旧SHA语义审查。全部必需报告、失败明细和实际图像仍须读取，缺收据、损坏、跨attempt／SHA、漏图或不可读均阻塞。
 
 `validation_measurement`记录优化前后SHA／run／attempt／事件／意图／profile／check_set／平台环境／冷热条件、顶层run数与矩阵job数、job created／started／completed时间、依赖就绪时间、排队与执行时长、取消原因、下载请求／实际字节／传输时长及缓存命中。保存原API／报告引用；run updated_at只作快照，不冒充精确job或网络计时。集合／环境不同、取消样本及未终态不可当等价完整验收对比；缺历史传输计时记unavailable，不给推测提速比例。
@@ -41,6 +45,7 @@ status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown�
 
 | 记录 | 必需关联与语义 |
 | --- | --- |
+| development_readiness | 认证源run／attempt、源与目标SHA／checkout／事件、非空基础构建／测试／所需服务原报告、清单及稳定foundation摘要、祖先关系；工具／工作流／治理／冻结依赖／环境变化须重核，只准入business-increment开发 |
 | ci_readiness | 初始化最终SHA、契约／清单／toolchain摘要、真实服务／网页／双端壳／采集／审查／拒绝探针报告及资源准入；未适用业务单列，不授feature完成 |
 | tdd_cycle | 目标行为／需求／case、S_R／S_G／final_sha、测试／夹具／oracle摘要、红运行／断言及缺行为原因确认、绿和回归报告；红先于实现 |
 | baseline_candidate／approval | 设计输入摘要、实际捕获SHA、各端页面状态／设备字体配置、截图／参考／差异／交互／AI报告；具体候选摘要的有权确认和范围，不自动批准 |
@@ -48,7 +53,7 @@ status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown�
 | review_disposition | finding与文件／页面／区域／需求／证据、处置人／理由、修复SHA、当前重审／回归或可核验独立反证；decision_required尚未处理阻塞 |
 | completion_record | feature／task／mode、当前SHA／contract_hash／check_set_hash、有效全部run／attempt／产物／报告摘要、read_by／read_at／summary／unresolved_items、门禁结论；新提交失效 |
 
-GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或完成报告；一个run成功、review已请求、checkbox齐全或模型自评均不足。当前Codex审查记录缺失／空或截断／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。
+GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA对应任务／阶段的全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或验收完成报告；一个run成功、开发准入、review已请求、checkbox齐全或模型自评均不足。当前Codex审查记录缺失／空或截断／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。Draft PR或继续开发的工程移交可列真实开发证据与未决验收项，不能表述为正式通过、可合并或已发行。
 
 最终完整验证前一次整理实现、测试、canonical任务与工程文档并冻结受验SHA；最终completion record及读取／测量补记写外部私有证据库，不为记录通过再产生新提交。此后任何仓库改动，包括任务清单、依赖、门禁与相关工程条款，都按新SHA重新核必需验证，不因称作“文档”沿用旧SHA完成。任务勾选只表达已有证据支持的进度，尚待最终验收的任务保持未完成；外部completion record不得伪造勾选或扩大完成范围。
 

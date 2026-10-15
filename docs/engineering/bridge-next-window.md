@@ -1,6 +1,6 @@
-# 2026-10-15：验证效率优化及初始化续接
+# 2026-10-15：分层验证、工程移交与桥接续接
 
-本文件是工程交接，不是验证通过记录。用户要求本窗口由一个 agent 使用 `speckit-plan`、`speckit-tasks` 局部同步优化方案后收尾，下一窗口通过 `speckit-superpowers-bridge` 实施。优化实现、真实云端 Red→读取失败→Green、优化后测量与最终完整验收均留待执行，不因本次资料更新记为完成。
+本文件是继续开发的工程交接，不是阶段验收通过记录。用户已明确批准当前阶段按建议修改工作流程及宪法、执行后提交PR并保持工作区干净，再开新窗口执行`sk-sp-br`。依据宪法v3.1.0及[批准与迁移记录](validation-tiering-decision.md)，开发准入改为独立development-ready，T027完整ci-ready与正式合并／阶段验收仍保全部适用证据。实际本次开发证据／PR以最终交接消息和对应原报告为准，不能从本文推断已Green或已验收。
 
 ## 正确工作树与入口
 
@@ -8,13 +8,15 @@
 - 分支：`codex/agoraweave-tdd-rebuild-clean`；仓库：`Self-Command/agora-weave`。
 - 桌面主工作树仍在 `codex/agoraweave-phase1-handoff`，不能在该旧检查点实施或用它覆盖当前分支。
 - 先读取本工作树 `AGENTS.md`、`.specify/memory/constitution.md`、现有 plan/tasks、工程执行政策和验证效率说明；调用 `$speckit-superpowers-bridge`。不得改用 `speckit.implement` 或重新生成整份任务清单。
-- 本次 after_tasks hook 将交接状态刷新为 `ready`，仅表示资料交接。新窗口执行时遵循实际 before_implement 云端 receipt；`ready` 不授予 `ci-ready`、任务完成、feature complete 或生产权限。
+- 本次治理修订先通过真实桥接将executing置blocked，再通过constitution guard；最终桥接状态以实际文件及新快照为准。新窗口遵循实际before_implement认证receipt；`ready`只表示资料交接，不授development-ready、ci-ready、任务完成、feature complete或生产权限。
 
 ## 已有批准和边界
 
 保持 ED-11 当前 Codex 实际代码／图像审查；ED-14 最低／当前 OS 的 Actions 模拟器覆盖及明示硬件排除风险；ED-15 隔离分支真实 TDD 重建；ED-17 Actions 内临时 Cloudflare HTTPS 与一次性认证；ED-18 Android7 受限系统警示色例外。决定原文在 `specs/001-agoraweave-v1/reviews/execution-decisions-2026-10-15.md`，不得重新索要已有批准或扩大例外。
 
-现有 285 个 canonical 任务全部未勾选。当前仍为 bootstrap-only；T027 有效 `ci-ready` 前不开始业务。全部项目安装、构建、测试、回归、运行、图像／交互采集只在 GitHub Actions。本地仅编辑、Git、控制面、元数据与下载／阅读证据。
+现有285个canonical任务全部未勾选。真实基础构建、非空测试通道及所需隔离服务健康取得独立`development-ready`后，可沿原故事DAG做业务TDD；完整CI证据问题按依赖并行修复。基础／目标不可认证、安全未知则暂停依赖部分。T027只作为正式完整初始化验收，不假完成；全部项目安装、构建、测试、回归、运行、图像／交互采集及门禁计算只在Actions。本地仅编辑、Git、控制面、元数据与下载／阅读证据。
+
+开发准入记录绑定认证源run／attempt、SHA／checkout／事件、实际原报告、源与目标祖先及稳定foundation摘要；工作流、门禁／执行器、治理契约、冻结依赖／工具链或环境变化须重新核基础证据。普通业务变更仅在基础输入未漂移时沿用；development-ready永不冒充ci-ready或formal complete。
 
 ## 检查点和待读取证据
 
@@ -38,8 +40,8 @@
 ## 下一窗口顺序
 
 1. 在此分支最新干净检查点恢复 bridge，先读 `validation-efficiency.md` 和局部更新后的 TD-07A/B/C、cloud-validation、release-evidence、T026/T027。使用实际当前运行记录确定最小改动，保留任务 ID、依赖、追溯和完成状态。
-2. 在现有工程通道逐行为取得真实 Red，下载校验并读取完整失败后再实现。针对同目标重复执行、快速反馈／正式 S_G／最终验收分层、安全取消、按锁与工具链平台缓存、认证 artifact 复用与 SHA 冻结实施最小必要改动，不另造通用调度平台。
-3. 快速反馈不授予正式 Green 或完成；S_G 保持同 oracle、当前激活适用套件及必要回归。事件、head SHA、实际 checkout SHA、run／attempt 与真实 required check 绑定完整，未知或门禁／清单／测试／依赖变更走保守完整验证。
+2. 读取本次已取得的真实Red／Green及未决项，只对新增或改变的行为先取得云端语义Red、校验读取因果后再实现；已有正确行为只回归，不重造Red。仍需处理同目标重复执行、反馈／开发S_G／验收分层、安全取消、缓存、认证artifact复用与SHA冻结中的实际缺口，不另造调度平台。
+3. 快速反馈不授开发Green或完成；开发S_G保持同oracle／fixture、受影响套件及必要回归，记录整个diff、依赖和风险，未知影响完整适用验证。事件、head／checkout SHA、run／attempt与真实check准确绑定。工程门禁／清单／测试／依赖变更也先目标Red／Green，不能归普通文档免测。
 4. 最后一次性整理代码、测试、tasks、工程资料与桥接元数据，提交冻结目标 SHA，再取得最低／当前 iOS 与 Android、Web、官方服务、非空增量编排、认证 journal、归档清理和当前 Codex 代码／实际图像审查等全部必需证据。新提交使相应验收失效。
 5. 读取所有必需原报告、失败详情和实际图像，将最终完成记录写受控外部证据库。按真实前后数据说明消除的重复、运行数及排队／执行／传输时间；无可比数据就明确缺口，不承诺提速比例。
-6. 优化后继续原初始化任务，只有 T027 有效 ci-ready 后进入业务。285 项未全完成时不调用 feature complete；不得用 raw handoff 或 task-done exit0 冒充完成。
+6. 按原DAG继续：独立development-ready后可做核心／业务TDD，T026／T027完整ci-ready可并行闭合。合并、阶段验收交付及发行前必须同最终SHA完整适用验证，最低／当前OS、安全权限、真实交互与当前代码／实际图像审查齐全。Draft PR工程交接明确未决验收项，285项未全完成不调用feature complete，不以raw handoff或task-done exit0冒充完成。

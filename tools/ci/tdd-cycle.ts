@@ -1,4 +1,5 @@
 import { assessTddCycle } from './gates.ts';
+import { legacyTddBaseline } from './tdd-purpose.ts';
 
 type Fields = Record<string, unknown>;
 const fields = (value: unknown): value is Fields => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -16,8 +17,11 @@ export function deriveTddCycle(input: unknown): Record<string, unknown> {
   const ancestors = input.history.ancestors;
   const red = input.red;
   for (const record of [input.green, input.final]) {
+    const approvedLegacy = record === input.green && record.legacy_pre_intent_source === true &&
+      record.legacy_applicable_set_approved === true && record.legacy_intent_baseline === legacyTddBaseline &&
+      record.legacy_approval_basis === 'exact_approved_baseline_catalog_tuple';
     if ((record.validation_intent !== undefined && !['green', 'completion'].includes(String(record.validation_intent))) ||
-      (input.require_authenticated_purpose === true && (record.purpose_authenticated !== true || record.applicable_set_verified !== true ||
+      (input.require_authenticated_purpose === true && (record.purpose_authenticated !== true || (!approvedLegacy && record.applicable_set_verified !== true) ||
         !['green', 'completion'].includes(String(record.validation_intent))))) return deny('insufficient_authenticated_tdd_purpose');
   }
   const ancestor = (before: string, after: string) => before !== after &&

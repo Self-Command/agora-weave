@@ -6,7 +6,7 @@ import { deriveTddCycle } from './tdd-cycle.ts';
 import { selectTddCases } from './tdd-cases.ts';
 import { selectEngineeringSource } from './source-run-selection.ts';
 import { assessTddCoverage } from './tdd-coverage.ts';
-import { normalizeExecution } from './run-check-set.ts';
+import { resolveTddSourcePurpose } from './tdd-purpose.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('TDD journal requires GitHub-hosted Actions');
 const repository = process.env.GITHUB_REPOSITORY!;
@@ -50,24 +50,7 @@ for (const cycle of catalog.cycles) {
     const failed = selected.filter(item => item.failed).length;
     const test = execFileSync('git', ['show', `${source.sha}:${cycle.test_file}`]);
     const fixture = execFileSync('git', ['show', `${source.sha}:${cycle.fixture_file}`]);
-    const sourceManifest = execFileSync('git', ['show', `${source.sha}:tools/ci/validation-manifest.json`]);
-    const applicable = normalizeExecution({ format: 'tap', raw,
-      expected_count: JSON.parse(sourceManifest.toString()).engineering_case_count, exit_code: 0 }).state === 'passed';
-    let purpose: Record<string, unknown> = { purpose_authenticated: false };
-    try {
-      const bytes = execFileSync('git', ['show', `${source.sha}:infra/ci/validation-request.json`], { stdio: ['ignore', 'pipe', 'ignore'] });
-      const request = JSON.parse(bytes.toString());
-      purpose = { validation_intent: request.validation_intent,
-        purpose_authenticated: request.schema_version === 1 && ['feedback', 'green', 'completion'].includes(request.validation_intent),
-        intent_input_digest: hash(bytes), legacy_pre_intent_source: false };
-    } catch {
-      // Approved historical cycles predate explicit intent; only ancestors of the original input checkpoint qualify.
-      try {
-        execFileSync('git', ['merge-base', '--is-ancestor', source.sha, 'bb62b29'], { stdio: 'ignore' });
-        purpose = { validation_intent: 'green', purpose_authenticated: true, legacy_pre_intent_source: true,
-          legacy_intent_baseline: execFileSync('git', ['rev-parse', 'bb62b29'], { encoding: 'utf8' }).trim() };
-      } catch { /* New sources without a committed purpose cannot authorize formal Green. */ }
-    }
+    const purpose = resolveTddSourcePurpose({ source, cycle, label, raw });
     return { ...source, source_authenticated: true, source: 'github-actions', discovered: selected.length,
       executed: selected.length, failed, state: failed ? 'failed' : 'passed',
       health: outcome.outcome === 'success' ? 'passed' : 'failed',
@@ -76,7 +59,7 @@ for (const cycle of catalog.cycles) {
       original_conclusion: result.original_conclusion, archive_sha256: result.archive_sha256,
       artifact_id: result.artifact_id, selected_assertions: selected,
       raw_report_digest: hash(raw), original_attempts: result.attempts,
-      ...purpose, applicable_set_verified: applicable, applicable_set_digest: hash(sourceManifest),
+      ...purpose,
       source_reuse: { ...result.reuse_receipt, raw_index_digest: hash(readFileSync(`${root}/raw-files.json`)),
         raw_files_verified: true } };
   }

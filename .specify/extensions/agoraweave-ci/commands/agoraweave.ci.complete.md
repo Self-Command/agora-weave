@@ -1,1 +1,3 @@
 Read and execute the current agent's project skill `agoraweave-ci-complete`. Wait for the authenticated `tools/ci/bridge-transition.ps1 -Transition complete` result. Follow the active constitution and cloud-validation §3; refusal preserves the incomplete handoff.
+
+Development-ready and a scoped development Green cannot satisfy formal completion. Constitution v3.1.0 retains all applicable same-final-SHA validation before merge, stage acceptance or release, including minimum/current OS, permissions/security, actual interactions and current code/actual-image review. Draft PR engineering handoff may state real development evidence and outstanding acceptance work, without marking unverified canonical tasks or the feature complete.

@@ -5,6 +5,7 @@ import { createRequire } from 'node:module';
 import { deriveBridgeEvidence } from './bridge-source.ts';
 import { initializationDigests } from './bridge-inputs.ts';
 import { collectEvidence } from './collect-evidence.ts';
+import { readDevelopmentSource } from './development-source.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Bridge assessment requires GitHub-hosted Actions');
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
@@ -20,7 +21,7 @@ const constitution = readFileSync('.specify/memory/constitution.md', 'utf8');
 const mode = process.env.BRIDGE_MODE || 'bootstrap-only';
 const transition = process.env.BRIDGE_TRANSITION || 'start';
 const readyBootstrapStart = handoff.status === 'ready' && mode === 'bootstrap-only' && transition === 'start';
-if (!constitution.includes('3.0.1') || handoff.artifact_owner !== 'codex' ||
+if (constitution.match(/\*\*版本\*\*:\s*([\d.]+)/)?.[1] !== '3.1.0' || handoff.artifact_owner !== 'codex' ||
   (handoff.status !== 'executing' && !readyBootstrapStart)) throw new Error('Unapproved bootstrap ownership or lifecycle');
 const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
 const changedPaths = execFileSync('git', ['diff', '--name-only', scopeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
@@ -56,9 +57,17 @@ async function authenticatedReadiness(runId: string | undefined) {
 }
 const initialization = mode === 'bootstrap-only' ? undefined : await authenticatedReadiness(process.env.INITIALIZATION_RUN_ID);
 const completion = transition === 'complete' ? await authenticatedReadiness(process.env.COMPLETION_RUN_ID) : undefined;
+async function authenticatedDevelopment(runId: string | undefined) {
+  if (!runId || !/^[1-9]\d*$/.test(runId)) return undefined;
+  const source = await readDevelopmentSource({ repository: process.env.GITHUB_REPOSITORY!, token: process.env.GH_TOKEN!, run_id: runId });
+  let ancestor = false;
+  try { execFileSync('git', ['merge-base', '--is-ancestor', source.document.target_sha, sha]); ancestor = true; } catch { /* Unrelated development evidence remains refused. */ }
+  return { ...source, ancestor_verified: ancestor };
+}
+const development = mode === 'business-increment' && transition === 'start' ? await authenticatedDevelopment(process.env.DEVELOPMENT_RUN_ID) : undefined;
 const manifest = JSON.parse(readFileSync('tools/ci/validation-manifest.json', 'utf8'));
 const result = deriveBridgeEvidence({ context: input, initialization, completion,
-  current_initialization_digests: initializationDigests(),
+  development, current_foundation_digests: initializationDigests(), current_initialization_digests: initializationDigests(),
   required_ids: mode === 'bootstrap-only' ? manifest.bootstrap_checks.filter((check: Record<string, any>) => check.bootstrap_applicability === 'required').map((check: Record<string, any>) => check.id) :
     manifest.frozen_profiles?.[mode]?.required_ids || [],
   canonical_tasks_complete: !/^- \[ \] T\d+/m.test(readFileSync('specs/001-agoraweave-v1/tasks.md', 'utf8')) });
@@ -66,7 +75,7 @@ mkdirSync('bridge-output', { recursive: true });
 const record = { ...input, ...result,
   input_digests: inputDigests, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
   checkout_sha: sha, toolchain_digest: inputDigests['infra/ci/toolchain-lock.json'],
-  scope_base_sha: scopeBase, initialization_source: initialization, completion_source: completion };
+  scope_base_sha: scopeBase, initialization_source: initialization, completion_source: completion, development_source: development };
 writeFileSync('bridge-output/bridge-admission.json', JSON.stringify(record, null, 2) + '\n');
 if (result.state !== 'passed') throw new Error(`Cloud bridge transition refused: ${result.reason_codes.join(',')}`);
 const require = createRequire(import.meta.url);

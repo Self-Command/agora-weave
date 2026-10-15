@@ -15,6 +15,7 @@ jobs:
     timeout-minutes: 3
     outputs:
       full_required: ${{ steps.plan.outputs.full_required }}
+      development_required: ${{ steps.plan.outputs.development_required }}
       validation_intent: ${{ steps.plan.outputs.validation_intent }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -37,4 +38,9 @@ jobs:
     needs: plan
     if: ${{ needs.plan.outputs.full_required == 'true' }}
     uses: ./.github/workflows/verify-increment.yml
+    secrets: inherit
+  development:
+    needs: plan
+    if: ${{ needs.plan.outputs.development_required == 'true' }}
+    uses: ./.github/workflows/verify-development.yml
     secrets: inherit

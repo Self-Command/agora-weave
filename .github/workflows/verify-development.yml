@@ -1,0 +1,124 @@
+name: Development build, behavior and isolated service channel
+on:
+  workflow_call:
+permissions:
+  contents: read
+  actions: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Verify frozen dependencies and execute type and lint checks
+        run: |
+          set -eu
+          mkdir -p install-output lint-output
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const lock = JSON.parse(readFileSync('infra/ci/toolchain-lock.json', 'utf8'));
+          const actualLock = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
+          if (actualLock !== lock.lock_sha256 || process.version !== lock.node) throw new Error('Frozen toolchain differs');
+          const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (sha !== (process.env.GITHUB_HEAD_SHA || process.env.GITHUB_SHA)) throw new Error('Unexpected actual checkout');
+          writeFileSync('install-output/identity.json', JSON.stringify({ checkout_sha: sha,
+            source: 'github-actions', runner_environment: process.env.RUNNER_ENVIRONMENT,
+            run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
+            package_lock_sha256: actualLock, node: process.version, scope: 'development',
+            check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+            toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
+            readiness: 'not_evaluated' }, null, 2) + '\n');
+          NODE
+          npm run ci:install > install-output/install.log 2>&1
+          npm run ci:typecheck > install-output/typecheck.log 2>&1 || { cat install-output/typecheck.log; exit 1; }
+          npm run ci:lint
+          cp lint-output/report.json install-output/lint-report.json
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-install-${{ github.run_id }}-${{ github.run_attempt }}
+          path: install-output/
+          if-no-files-found: error
+          retention-days: 7
+  service:
+    needs: install
+    uses: ./.github/workflows/service-bootstrap.yml
+    secrets: inherit
+  discover:
+    needs: [install, service]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Execute the complete nonempty engineering regression suite
+        run: |
+          npm run ci:install
+          npm run ci:discover
+          npm run ci:run
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: verify-checkset-${{ github.run_id }}-${{ github.run_attempt }}
+          path: check-output/
+          if-no-files-found: error
+          retention-days: 7
+  web:
+    needs: discover
+    uses: ./.github/workflows/web-bootstrap.yml
+  development-readiness:
+    needs: [install, service, discover, web]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Authenticate and read every original foundational report
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --experimental-strip-types tools/ci/write-development-readiness.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: development-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: development-output/
+          if-no-files-found: error
+          retention-days: 7
+  archive:
+    needs: development-readiness
+    if: ${{ always() }}
+    uses: ./.github/workflows/archive-bootstrap.yml
+    with:
+      source_run_id: ${{ github.run_id }}
+      source_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+    secrets: inherit

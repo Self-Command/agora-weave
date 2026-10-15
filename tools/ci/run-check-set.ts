@@ -5,7 +5,7 @@ export type DiscoveryInput = {
   available_files: string[];
 };
 
-/** Intent never changes the bootstrap manifest or authorizes readiness. */
+/** Intent selects execution cost; original reports alone authorize readiness. */
 export function resolveValidationRequest(request: unknown, context: unknown): Record<string, any> {
   const object = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
   const sha = (value: unknown) => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
@@ -21,12 +21,20 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
   }
   const governingDocuments = new Set(['execution-policy.md', 'validation-efficiency.md', 'bridge-next-window.md',
     'superpowers-execution.md', 'resource-admission.md', 'development-ai-admission.md',
-    'android7-system-chrome-decision.md', 'nonprod-https-options.md', 'upstream-sources.md']);
+    'android7-system-chrome-decision.md', 'nonprod-https-options.md', 'upstream-sources.md',
+    'validation-tiering-decision.md', 'next-window-prompt.md']);
   const ordinaryFeedback = context.changed_paths.every((file: string) => /^docs\/engineering\/[^/]+\.md$/.test(file) &&
     !governingDocuments.has(file.slice('docs/engineering/'.length)));
+  const developmentPaths = new Set(['tools/ci/collect-evidence.ts', 'tools/ci/download-source.ts',
+    'tests/integration/ci/evidence-reuse.spec.ts', 'tests/integration/ci/source-collection.spec.ts',
+    'tests/integration/ci/evidence-polling.spec.ts']);
+  const developmentGreen = request.validation_intent === 'green' &&
+    context.changed_paths.every((file: string) => developmentPaths.has(file));
   return { ...context, state: 'resolved', reason_codes: [], profile: 'bootstrap', validation_intent: request.validation_intent,
-    full_required: request.validation_intent !== 'feedback' || !ordinaryFeedback,
-    classification: ordinaryFeedback ? 'known_feedback_scope' : 'conservative_complete_scope',
+    full_required: !developmentGreen && (request.validation_intent !== 'feedback' || !ordinaryFeedback),
+    development_required: developmentGreen,
+    validation_tier: developmentGreen ? 'development' : ordinaryFeedback && request.validation_intent === 'feedback' ? 'feedback' : 'full',
+    classification: developmentGreen ? 'mapped_engineering_development' : ordinaryFeedback ? 'known_feedback_scope' : 'conservative_complete_scope',
     readiness: 'not_evaluated', feature_complete: false };
 }
 

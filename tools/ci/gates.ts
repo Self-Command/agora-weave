@@ -107,7 +107,10 @@ export function assessBridgeGate(input: unknown): Result {
   if (input.mode === 'bootstrap-only') {
     if (!strings(input.changed_paths) || input.changed_paths.some(file => !bootstrapPath(file))) reasons.add('outside_bootstrap_scope');
   } else if (['business-increment', 'full-release'].includes(String(input.mode))) {
-    if (input.ci_ready !== true || input.initialization_inputs_unchanged !== true || input.initialization_ancestor_verified !== true) reasons.add('not_ci_ready');
+    const formalReady = input.ci_ready === true && input.initialization_inputs_unchanged === true && input.initialization_ancestor_verified === true;
+    const developmentReady = input.mode === 'business-increment' && input.transition === 'start' && input.development_ready === true &&
+      input.development_inputs_unchanged === true && input.development_ancestor_verified === true;
+    if (!formalReady && !developmentReady) reasons.add('not_ci_ready');
   } else reasons.add('invalid_mode');
   if (input.transition === 'complete') {
     for (const field of ['required_results_passed', 'reports_read', 'tdd_passed', 'reviews_passed', 'regressions_passed']) {

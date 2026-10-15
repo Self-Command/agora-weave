@@ -1372,17 +1372,251 @@
     {
       "cycle_id": "ci-android7-system-chrome-001",
       "behavior_id": "ci.android7-system-chrome",
-      "case_ids": ["SC02"],
-      "requirements": ["QR-004", "QR-005", "QR-006", "QR-007"],
+      "case_ids": [
+        "SC02"
+      ],
+      "requirements": [
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
       "test_file": "tests/integration/ci/android7-system-chrome.spec.ts",
       "fixture_file": "tests/integration/ci/android7-system-chrome.spec.ts",
-      "red": {"sha": "c943e2606681e5ce4e29198f71c38fcb7af0eee9", "run_id": "38690425924", "attempt": 1},
-      "green": {"sha": "18947afc6ba6254425c2285d9aae0d1c2f6a7623", "run_id": "38690805835", "attempt": 1},
+      "red": {
+        "sha": "c943e2606681e5ce4e29198f71c38fcb7af0eee9",
+        "run_id": "38690425924",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "18947afc6ba6254425c2285d9aae0d1c2f6a7623",
+        "run_id": "38690805835",
+        "attempt": 1
+      },
       "implementation_sha": "18947afc6ba6254425c2285d9aae0d1c2f6a7623",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T06:07:36Z",
       "cause_summary": "After explicit ED-18 approval, read the complete original SC02 semantic failure in healthy174-case transport before implementing the narrowly scoped measured platform exclusion. Original API24 contrast failure stays preserved. The unchanged SC02 oracle now passes with all174 assertions and zero failed, cancelled, skipped or todo; SC01/API36 remains unchanged. Final native runtime, actual power status, images, full regression and current semantic reviews are independently required."
+    },
+    {
+      "cycle_id": "ci-evidence-backoff-001",
+      "behavior_id": "ci.evidence-backoff",
+      "case_ids": [
+        "EP01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/evidence-polling.spec.ts",
+      "fixture_file": "tests/integration/ci/evidence-polling.spec.ts",
+      "red": {
+        "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
+        "run_id": "38722158385",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.131421+00:00",
+      "cause_summary": "Unchanged pending status polled at10ms repeatedly instead of bounded10,20,40,40 backoff. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-evidence-byte-reuse-001",
+      "behavior_id": "ci.evidence-byte-reuse",
+      "case_ids": [
+        "EC01",
+        "EC02",
+        "EC03"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/evidence-reuse.spec.ts",
+      "fixture_file": "tests/integration/ci/evidence-reuse.spec.ts",
+      "red": {
+        "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
+        "run_id": "38722158385",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.160495+00:00",
+      "cause_summary": "Repeated and simultaneous reads transferred the same authenticated ZIP twice; negative metadata refusals already passed and remain regressions. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-validation-intent-001",
+      "behavior_id": "ci.validation-intent",
+      "case_ids": [
+        "EI01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/validation-intent.spec.ts",
+      "fixture_file": "tests/integration/ci/validation-intent.spec.ts",
+      "red": {
+        "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
+        "run_id": "38722158385",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.189133+00:00",
+      "cause_summary": "Explicit feedback evidence incorrectly authorized formal Green/completion. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-ready-bootstrap-start-001",
+      "behavior_id": "ci.ready-bootstrap-start",
+      "case_ids": [
+        "BR01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/security/ci/bridge-ready-start.spec.ts",
+      "fixture_file": "tests/security/ci/bridge-ready-start.spec.ts",
+      "red": {
+        "sha": "e8706533e133bef2d73524be246c207a8ae545bb",
+        "run_id": "38722158385",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "d618133a38bd4296ef73e6f76db28b1b6a98414a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.217261+00:00",
+      "cause_summary": "Healthy ready handoff could not obtain the prerequisite cloud start receipt before executing; dependency resolution uses NODE_PATH without dirtying the fixture. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-validation-efficiency-001",
+      "behavior_id": "ci.validation-efficiency",
+      "case_ids": [
+        "EV01",
+        "EV02",
+        "EV03",
+        "VI01",
+        "VI02"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/validation-efficiency.spec.ts",
+      "fixture_file": "tests/integration/ci/validation-efficiency.spec.ts",
+      "red": {
+        "sha": "947f2ce41c3f4a81e040d2bb18aa00cebea7e142",
+        "run_id": "38725920378",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.247762+00:00",
+      "cause_summary": "Four automatic native owners, cross-target pending eviction and missing immutable npm download caches violated the unchanged scheduling assertions; intent/refusal cases remained regressions. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-bridge-reader-path-001",
+      "behavior_id": "ci.bridge-reader-path",
+      "case_ids": [
+        "BP01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/bridge-reader-path.spec.ts",
+      "fixture_file": "tests/integration/ci/bridge-reader-path.spec.ts",
+      "red": {
+        "sha": "2888fb237b354679601ad41da6b7faf664404034",
+        "run_id": "38724453169",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "396cdb3ba152661d8a18dac78b46b666ddb57481",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.278078+00:00",
+      "cause_summary": "Actual PowerShell receipt reader authenticated the ZIP then rejected an equivalent canonical Git root; escaping receipt paths must remain refused. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-validation-boundaries-001",
+      "behavior_id": "ci.validation-boundaries",
+      "case_ids": [
+        "VI03",
+        "VI04",
+        "TI01",
+        "AR01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/validation-boundaries.spec.ts",
+      "fixture_file": "tests/integration/ci/validation-boundaries.spec.ts",
+      "red": {
+        "sha": "947f2ce41c3f4a81e040d2bb18aa00cebea7e142",
+        "run_id": "38725920378",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+        "run_id": "38726340329",
+        "attempt": 1
+      },
+      "implementation_sha": "ccf9b30b3969439b55e37021969635206e219f7e",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T11:32:34.310046+00:00",
+      "cause_summary": "Read all four complete semantic failures: executable inputs misclassified, multi-commit earlier inputs hidden, feedback entered formal TDD and reuse receipt disappeared from persisted private index. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
     }
   ]
 }

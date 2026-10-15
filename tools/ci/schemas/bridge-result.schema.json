@@ -22,6 +22,13 @@
     "attempt": { "type": "integer", "minimum": 1 },
     "record_kind": { "enum": ["bootstrap_start_only", "business_start", "bootstrap_completion", "increment_completion"] },
     "ci_ready": { "type": "boolean" },
+    "development_ready": { "type": "boolean" },
+    "development_source_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "development_source": { "type": "object", "required": ["authenticated", "ancestor_verified", "document", "run_id", "attempt", "archive_digest"], "properties": {
+      "authenticated": { "type": "boolean" }, "ancestor_verified": { "type": "boolean" }, "document": { "type": "object" },
+      "run_id": { "type": "string", "pattern": "^[1-9][0-9]*$" }, "attempt": { "type": "integer", "minimum": 1 },
+      "archive_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    } },
     "feature_complete": { "type": "boolean" },
     "completion_record": { "type": "object", "required": ["target_sha", "mode", "actor", "feature", "contract_digest", "check_set_digest", "read_by", "read_at", "report_digests", "summary", "unresolved_items"], "properties": {
       "target_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },

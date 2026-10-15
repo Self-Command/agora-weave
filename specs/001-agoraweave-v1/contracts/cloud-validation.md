@@ -1,8 +1,12 @@
-# 云端开发、桥接与审查契约 v1.1
+# 云端开发、桥接与审查契约 v1.2
 
 日期：2026-10-14。本契约补齐用户本次六项规划要求，承接宪法一至九、PRD CI-01–08／UX-01–08、QR-002–010、AC-35／48–55及全部业务验收。它是**拟实施的工程协议**，没有创建命令、钩子、工作流或运行记录。规范依据仍为获批 PRD／spec／UI-SPEC；工具候选和资源条件不等于用户批准。与[发行证据契约](release-evidence.md)共同生效。
 
 最新18项答复见[决定登记](../reviews/planning-decisions-2026-10-14.md)：用户已确认公开仓库／Codex路线、工程核定模型、开发资料经核验境外处理、本人基准确认；预算设备渠道及部署运营用户负责，工程只在实际需用时索取。下文未就绪状态指真实资源／验证条件，不再要求用户重做已答选择。
+
+2026-10-15 用户进一步批准当前初始化阶段采用[分层验证决定](../../../docs/engineering/validation-tiering-decision.md)，
+依据宪法 v3.1.0 区分 development-ready 与 T027 正式 ci-ready。本修订取代下文历史规划中“完整 ci-ready 先于任何业务实现”的含义；
+全部正式验收集合、原失败和 ED-11–18 保留，文档修订本身不构成真实就绪或通过证据。
 
 ## 1. 执行地点与职责
 
@@ -10,41 +14,44 @@ SP 在本地阅读、编写和修改代码／测试／工程资料，进行 Git 
 
 SK 的 spec／plan／tasks 是唯一需求、设计与任务契约；SP 只执行由其派生的临时适配。按用户已确认 ED-11，当前 Codex 阅读代码与 Actions 实际图像／报告完成语义审查；全部项目执行、测试和采集及门禁计算仍只在 Actions。审查分别存证，不能把阅读结论冒充云端实际调用，不能用 lint 或像素相近替代必需语义审查。
 
-## 2. CI 先就绪，再进入业务开发
+## 2. 基础开发准入与完整 CI 验收
 
 工程选择：保留一个始终出结果的 `agoraweave/ci-gate` 聚合 check，按受审的验证清单选择阶段；拟用 `ci-bootstrap.yml`、`tdd-cycle.yml`、`verify-release.yml` 分别承载初始化、红绿迭代及验证。文件名是本计划建议，不是已安装接口。发布仍独立受控。正常提交／PR事件产生可供分支保护使用的 check，dispatch 辅助指定运行；不能仅靠 dispatch 假设满足 PR 必需 check。
 
 | 阶段 | 允许的工作 | 必需的真实 Actions 证据 | 不能宣称 |
 | --- | --- | --- | --- |
 | bootstrap-authoring | 仅编写工作流、锁定工具、无业务壳、验证／报告／审查适配和桥接门禁 | 此时尚无就绪结果；入口只确认批准的范围、路径分类与计划 | CI 已就绪、业务通过或功能完成 |
-| bootstrap-pipeline-verified | 云端初始化和修复基础设施，不进入正式业务 | 固定工具安装与 lock／digest；官方 Compose 启动；真实网页、iOS、Android 无业务壳构建安装运行并联通；测试发现、报告上传／下载校验、差异和交互采集、清理探针 | 壳运行代替业务 AC，未执行检查通过 |
-| ci-ready | 才可进入正式业务 TDD | 上行证据加当前 Codex 代码／实际图像审查记录与绑定拒绝探针、必需设备与隔离资源准入、桥接开始／完成拒绝探针，全部归属同一初始化提交与清单 | 后续业务、首个产品截图基准或生产批准已完成 |
-| business-increment | 按任务实现当前行为，红绿迭代及必要回归 | 当前清单内的真实功能／安全／集成／受影响各端检查、AI 审查及既有适用回归 | 增量通过代表完整首版通过 |
+| bootstrap-pipeline-verified | 云端初始化和修复基础设施，核基础准入 | 固定工具安装与 lock／digest、实际构建、非空测试发现执行、所需官方隔离服务健康及原报告认证；继续补完整三端壳与采集链 | 壳运行代替业务 AC，未执行检查通过 |
+| development-ready | 可沿原任务 DAG 进入 business-increment TDD，同时修复不影响该行为的 CI 证据缺口 | 前行基础证据及独立开发准入记录；匹配源 run／attempt、SHA／checkout／事件、清单和稳定 foundation 摘要，目标原测试通道可运行 | T027 ci-ready、完整矩阵、任务或阶段验收通过 |
+| ci-ready | 确认 T026／T027 完整初始化验收 | 全部初始化必需证据加当前 Codex 代码／实际图像审查记录与绑定拒绝探针、最低／当前设备与隔离资源准入、桥接开始／完成拒绝探针，全部归属同一最终初始化提交与清单 | 后续业务、首个产品截图基准或生产批准已完成 |
+| business-increment | 按任务实现当前行为，红绿迭代及必要回归 | 同 Red oracle／fixture 的真实目标、受影响功能／安全／集成／端检查及必要回归；冻结范围与影响依据 | 增量 Green 代表完整矩阵、任务验收或完整首版通过 |
 | full-release | 完整首版／正式发行候选 | 全部 AC／AS／SC、所有端及适用状态、真实外部集成／设备／性能／恢复／开发者旅程／AI 审查 | 验证通过自动授权生产 |
 
 第一次只创建能够独立运行的 bootstrap 入口，不引用尚未存在的业务脚本。云端冻结阶段可首次解析 lock／镜像 digest；回传文件经审阅后形成新提交，再用该提交的 immutable install 重跑初始化，不能拿旧提交证明新锁文件就绪。无业务壳移除模板假身份／演示业务，探针只证明环境和采集链路，不形成产品截图基准。
 
-bootstrap-authoring先提供最小调度／安装／测试发现／原始日志上传配置和接口壳，让Actions能运行基础设施测试；工作流不存在或配置错误不能称行为Red。此后报告聚合、桥接门禁、审查适配等有行为的工程代码也按§4先提交目标测试并取得真实Red后实现Green，不能借bootstrap先写完整逻辑再补测试。正式业务须等待整体ci-ready；基础设施TDD在bootstrap-only范围内使用已启动的最小云端运行通道。
+bootstrap-authoring先提供最小调度／安装／测试发现／原始日志上传配置和接口壳，让Actions能运行基础设施测试；工作流不存在或配置错误不能称行为Red。此后报告聚合、桥接门禁、审查适配等有行为的工程代码也按§4先提交目标测试并取得真实Red后实现Green，不能借bootstrap先写完整逻辑再补测试。业务开发须取得真实 development-ready；完整 ci-ready 不再作为所有业务编写的无条件前置。基础通道故障、目标 Red／Green 不可认证或安全未知阻塞依赖工作，其他 CI 证据完备性问题并行修复。
 
-**增量作业必须在核心前可运行**：ci-ready前除bootstrap壳外，至少真实调用一次可用于business-increment的可复用编排（可由`verify-release.yml`调用共享job），对已激活的初始化schema／seed／接口健康、静态契约、目标测试发现、报告上传／下载校验、三端壳交互和审查记录绑定探针实际执行，并由当前Codex读取实际代码及图像出具审查记录。初始化调用仍使用bootstrap清单及bootstrap-only范围，不宣称business准入，不等待尚未产生的ci-ready或业务代码；取得ci-ready后才以business-increment profile验证共享核心／故事行为。聚合job只能汇总这些作业的真实结果，不能用空矩阵、占位check或只创建工作流文件代替。该编排的Red／Green适配先在云端建立并读取，随后共享核心每个行为沿同一调用链取得S_R后实现S_G；US14的完整发行作业在此基础上扩充全首版集合和受控部署，不负责首次提供核心增量验证入口。
+开发准入与完整清单分开存证。development_readiness 绑定真实基础源提交、认证报告、源与目标祖先关系，以及工作流、门禁／执行器、治理契约、冻结依赖／工具链及环境的稳定 foundation 摘要；普通业务变化仅在基础输入未漂移时沿用。基础输入改变须重新核验，不借旧源绕过新行为接线、服务或安全前置。完整 ci-ready／completion 不接受 development-ready 代替。
+
+**增量作业必须在核心前可运行**：核心行为 Red 前，至少真实调用一次可用于business-increment的非空目标编排，验证实际安装／构建、所需服务健康、目标发现执行及报告认证；完整三端壳交互、审查绑定、归档和拒绝探针继续由 T026／T027 闭合。初始化调用使用bootstrap清单及bootstrap-only范围；取得独立 development-ready 后可用business-increment profile验证共享核心／故事，无需等待完整ci-ready。聚合不能用空矩阵、占位check或工作流文件存在代替真实执行。编排适配本身先按云端 Red→Green，随后共享核心每行为沿该链取得 S_R 后实现 S_G；US14仅扩充全首版发行与受控部署。
 
 初始化清单明确每个检查的 `applicability=required/not_yet_applicable/not_applicable`、理由、所属阶段、激活条件及后续必需节点。未实现业务场景在 bootstrap 列为 `not_yet_applicable`，不调度、不计 passed，也不作为初始化失败；bootstrap 必需环境／采集／审查探针缺失或失败则不能 ci-ready。正式业务涉及的检查激活后，不得用“尚未就绪”退回非必需。正式发行不能保留任何首版必需项的 `not_yet_applicable`。
 
-阶段和必需集合由受保护的清单／路径分类、canonical任务范围、当前产品文件及完成目标共同计算，调用者不能靠profile=bootstrap、缩清单或标deferred跳过已激活业务／完整首版。清单／门禁改动也须审查并云端验证拒绝案例；增量门禁只能批准该任务，完整feature完成必须full-release。
+阶段和必需集合由受保护的清单／路径分类、canonical任务范围、当前产品文件及完成目标共同计算，调用者不能靠profile=bootstrap、缩清单或标deferred跳过当前行为必需验证／正式验收。开发 Green 可按受审影响范围选受影响套件与必要回归，未运行的完整验收项保留原状态，不回退适用性。清单／门禁改动也须审查并云端验证拒绝案例；开发 Green 不能批准任务验收，任务与阶段完整验收仍按各自合同，完整feature完成必须full-release。
 
-初始化须实际证明：正常探针产生有效报告；故意断言失败、零用例、缺 artifact、错误 SHA、必需 skip／取消／超时、AI 空输出／缺图像、未确认基准及绕过门禁均被判拒。故障探针记录为“预期拒绝被观察到”，不把产品失败用例改写为 passed。探针在隔离合成环境执行；首次配置缺真实资源可完成 authoring／部分初始化，但保留未就绪状态，禁止开始业务。
+初始化须实际证明：正常探针产生有效报告；故意断言失败、零用例、缺 artifact、错误 SHA、必需 skip／取消／超时、AI 空输出／缺图像、未确认基准及绕过门禁均被判拒。故障探针记录为“预期拒绝被观察到”，不把产品失败用例改写为 passed。探针在隔离合成环境执行；缺资源保留对应未就绪状态，只暂停依赖部分；未取得真实 development-ready 不开始业务。
 
 聚合不能依赖 `npm --if-present`、无测试默认为成功、`continue-on-error` 或 GitHub 的 skipped／neutral 作为业务通过。聚合在前置失败后仍尝试上传报告和给出拒绝结果（未来实现采用 `always()` 与显式读取 needs／报告）；整个运行取消而未产出聚合时，外部桥接检查按 missing／cancelled 拒绝。必需聚合不设会漏出结果的 paths-ignore；清单内部识别真正不适用的项。
 
-分支保护先登记实际已运行的 bootstrap 聚合 check，ci-ready 后由同一受审聚合执行业务阶段。首次无法 dispatch 时先通过批准的初始化提交／PR事件取得首个 run；手动 dispatch 要求工作流位于默认分支，不通过未存在工作流的命令制造“就绪”。既有保护不能随意关闭，必要仓库权限／套餐调整在相应资源节点确认。
+分支保护先登记实际已运行的bootstrap聚合check；development-ready后按开发范围运行真实业务check，完整ci-ready及合并／阶段验收仍由受审聚合核完整集合。首次无法dispatch时先通过批准的初始化提交／PR事件取得首个run；手动dispatch要求工作流位于默认分支，不用不存在工作流的命令制造就绪。既有保护不随意关闭，必要权限／套餐调整在资源节点确认。
 
 ### 2.1 增量验证作业的前置产出及调用链（I1）
 
 | 时间点／旧任务定位 | 必须已经提供的未来实现产出 | Actions证明与拒绝条件 |
 | --- | --- | --- |
 | 最小bootstrap通道之后、ci-ready之前（旧T015／T024／T025所在范围） | `verify-release.yml`的增量事件／dispatch入口、目标SHA／profile校验、受审清单解析、真实可复用job调用；固定安装、真实Compose健康、已有壳schema／seed、非空测试发现、静态／接口／网页／双端壳采集、当前Codex审查记录、报告归档和最终聚合 | 在同初始化SHA用bootstrap清单／bootstrap-only范围真实调度共享编排并读完整链路报告；不等待business准入、不伪称核心业务通过；无作业／空矩阵／缺脚本／零用例／版本错配不得ci-ready |
-| 共享核心每行为Red／Green之前、整体核心Green之前（旧T031至T048） | 以既有增量编排注册当前核心migrate／seed／contracts／service／security／concurrency／recovery及各端组件，真实npm入口、发现规则、健康前置和产物／报告交接；先目标Red因果确认，再实现Green | 当前S_R执行目标语义断言并保原失败；当前S_G运行同目标及全部已激活核心／端组件／审查／必要回归；job不能只是桥接／聚合，核心Green不得等待US14补脚本 |
-| 各故事业务增量 | 在进入该行为前激活并接入对应实际接口、端交互、外部集成、媒体／插件及必要回归；继承同清单／报告协议 | 未实现首版项保not_yet_applicable及后续激活点；已激活项不能回退、缺用例／报告不能假绿 |
+| 共享核心每行为Red／Green之前、整体核心验收之前（旧T031至T048） | 取得 development-ready 后以既有增量编排注册当前目标migrate／seed／contracts／service／security／concurrency／recovery及端组件，真实入口、非空发现、健康和报告；先读Red再实现 | 当前S_G执行同目标及受影响套件／必要回归；整体核心验收再执行完整当前适用集合；不能等US14补首条执行链 |
+| 各故事业务增量 | 进入行为前接入对应真实接口／端交互／外部集成／媒体／插件及必要回归，按影响冻结开发集合，继承报告协议 | 未实现首版项保not_yet_applicable及激活点；已激活不回退，不跑的完整验收项保原状态，目标集合缺报告不记开发Green |
 | US14与最终发行（旧T167及Final） | 扩充既有verify的full-release全集合、四类发行／恢复／最终同版产物及完整真实consumer验证；另建`controlled-deploy.yml`消费具体批准与broker租约 | 增量入口不再从零创建；full-release不留首版必需未适用；验证无生产凭据、实际生产动作仍单独确认 |
 
 未来调用链为`提交/PR或dispatch → target SHA及必需清单冻结 → 安装与真实隔离服务/迁移/fixture → 非空目标/已激活用例发现 → 独立服务与各端实际执行/采集 → 原报告上传及摘要核验 → 当前Codex审查记录/必要基准确认 → 始终聚合 → 桥接下载读取后转换`。跨工作流调用同样绑定checkout SHA、check_set与artifact摘要；依赖失败仍尝试留报告，整个取消按缺失拒绝。job依赖显式表达，不能凭workflow名称或aggregator存在推测执行顺序。
@@ -53,15 +60,15 @@ bootstrap-authoring先提供最小调度／安装／测试发现／原始日志�
 
 ### 2.2 验证效率修订：调度、缓存与取证
 
-2026-10-15用户授权在安全检查点局部优化CI，不改变产品范围、宪法、真实云端TDD、最低／当前系统覆盖、最终同SHA验收或ED-11–18。此次仅同步设计与现有任务，工程实现／云端验收在后续桥接执行；[真实运行基线与实施说明](../../../docs/engineering/validation-efficiency.md)不构成通过或提速结论。
+2026-10-15用户先授权安全检查点局部优化CI，随后明确批准本契约 v1.2 与宪法 v3.1.0 的分层开发验证；最新批准见[决定记录](../../../docs/engineering/validation-tiering-decision.md)。产品范围、真实云端TDD、最低／当前系统覆盖、最终同SHA验收及ED-11–18不变；[真实运行基线与实施说明](../../../docs/engineering/validation-efficiency.md)不构成通过或提速结论。
 
 | 调度意图 | 执行与结果语义 |
 | --- | --- |
 | 中间开发反馈 | 按当前目标和受影响范围反馈，可不启动完整矩阵；记录`validation_intent=feedback`、实际集合与`readiness=not_evaluated`。即便用例passed也不能作为正式S_G、任务完成、ci-ready或feature完成 |
-| 正式S_G | 记录`validation_intent=green`、TDD链及冻结的当前已激活适用集合，执行同Red oracle／fixture、适用套件和必要回归；不能用feedback或缓存命中升级为Green |
+| 正式开发S_G | 记录`validation_intent=green`、TDD链、实际diff／依赖／风险和冻结的受影响集合，执行同Red oracle／fixture、受影响套件和必要回归；不无条件启动完整平台矩阵，不用feedback或缓存命中升级为Green |
 | 阶段／发行完成 | 记录`validation_intent=completion`，T026／T027执行全部初始化必需项，后续阶段按其冻结清单执行，full-release保全部首版集合；所有证据属于最终目标SHA并已读取，外部completion record才可确认 |
 
-`validation_intent`只区分调度与证据用途，不新增可缩减必需集合的profile；bootstrap／business-increment／full-release及其激活／准入规则不变。代码、工作流、工具、清单、门禁、依赖锁、测试、任务验收条款及未知范围不能按普通文档跳过。受保护分类器同时读取实际diff、契约／清单摘要、canonical任务范围和完成意图；未知或混合变更采用完整适用集合，受审文件不能自行声明豁免。
+`validation_intent`区分调度与证据用途，development-ready 另作基础准入；bootstrap／business-increment／full-release 的正式验收集合不缩减。代码、工作流、工具、清单、门禁、依赖锁、测试和任务验收条款不能按普通文档跳过；工程行为也须目标Red／Green与必要回归。受保护分类器同时读取整个实际变更范围、依赖、契约／清单、canonical任务和完成意图，记录开发范围理由；未知影响采用完整适用集合，混合变更按各类影响并集，受审文件不能自报豁免。合并或阶段／发行验收的completion总是完整当前适用集合。
 
 **最小去重边界**：先列出目标SHA实际触发的顶层事件与共享job、实际保护所需check，记录`repository_id,target_sha,checkout_sha,event_name,event_ref,pr_head_sha,pr_merge_sha,workflow_sha,validation_intent,validation_profile,check_set_hash,environment/config/toolchain/artifact_digests`。只有执行输入等价且覆盖满足同一完成目标才合并，优先让共享编排作为唯一正式矩阵调用者；独立原生入口保留必要Red／诊断用途，避免与共享完整链同次重复运行。当前独立原生`https_required=false`与共享`true`尚不等价，统一或分配覆盖责任后才能消除其重复启动，不直接借用另一环境结果。push／PR的head与merge结果明确分开；相同head若复用执行，仍须在真实事件上产生准确绑定的必需check，校被测tree／产物与目标一致。不得以占位、skip／neutral、假成功、关闭保护或默认dispatch满足PR保护。
 
@@ -71,7 +78,7 @@ bootstrap-authoring先提供最小调度／安装／测试发现／原始日志�
 
 **证据字节复用**：受控缓存键绑定repository、run、attempt、artifact ID、目标与checkout SHA、workflow和环境、原archive摘要；解包索引另逐文件校raw摘要。命中只免重复字节传输，不跳过当前run／attempt／过期／权限／摘要校验，不复用其他SHA的passed或过时审查结论；新attempt、来源变化、摘要冲突或缺收据拒绝并重新下载／取证。对相同身份下载合并在途请求，终态前有界退避轮询，完成后停止重复轮询；无变化只读索引，最终必须枚举所有必需结果并实际读完报告、失败明细和各端原图。失败、取消和唯一Red证据同样保留归档期限及访问控制。
 
-新增／修改的调度、分类、去重、取消保护、缓存键／校验和证据复用行为均先在Actions取得语义Red、读取因果后实现Green。T008–T012应覆盖：双事件／独立与共享重复、错误head／merge映射、feedback冒充Green／完成、未知变更误分类、误取消唯一未读Red／必要验收／清理、错锁／工具链／平台缓存、跨attempt／SHA或损坏artifact命中及漏读报告／图像。Green仍执行当前已激活套件和必要回归，T026／T027最后同SHA完整验证；已有正确行为只回归，不删实现制造Red。
+新增／修改的调度、分类、去重、取消保护、缓存键／校验和证据复用行为均先在Actions取得语义Red、读取因果后实现Green。T008–T012应覆盖：双事件／独立与共享重复、错误head／merge映射、feedback冒充Green／完成、未知变更误分类、误取消唯一未读Red／必要验收／清理、错锁／工具链／平台缓存、跨attempt／SHA或损坏artifact命中及漏读报告／图像，以及development-ready冒充ci-ready或formal complete。开发Green执行受影响套件和必要回归，T026／T027最后同SHA完整验证；已有正确行为只回归，不删实现制造Red。
 
 最终完整验证前一次整理代码、测试、tasks和工程资料，冻结SHA／check_set／契约／工具链与产物；审查及最终completion record保存在外部私有证据库。冻结后输入改变即新SHA并重验，不为补写通过记录循环提交。按真实run/job的排队、执行、取消、缓存命中及artifact下载次数／字节／传输时长对比，并保存冷热、平台、集合和事件条件；无法比较或缺计时明确记缺失，不把任务依赖等待算runner排队、不承诺提速比例。
 
@@ -86,11 +93,11 @@ bootstrap-authoring先提供最小调度／安装／测试发现／原始日志�
 | 门禁 | 必须检查 | 拒绝与恢复 |
 | --- | --- | --- |
 | start：bootstrap-only | 宪法／已批准输入／计划有效；未来 tasks 与临时适配映射一致；现有 ownership guard；修改范围只含初始化基础设施 | 缺契约／路径含业务即拒；不要求尚不存在的 ci-ready，仍不允许业务 |
-| start：business | 上项＋当前契约的 ci-ready 真实证据、清单和资源；当前基线 SHA 及与初始化结果的可解释关系；必需 hook 已实际运行 | 初始化／资源／审查通道不就绪阻止业务；只允许修复初始化范围 |
-| complete：初始化 | 当前最终 SHA 的全部 bootstrap 必需 run／job／报告／探针完整，通道准入；没有业务变更或虚构通过 | 只可声明 CI 初始化就绪，任务／feature 完成范围不能扩大 |
+| start：business | 当前契约及任务映射有效、真实 development-ready 认证文档与非空基础报告、清单和所需资源；核源／目标祖先与稳定 foundation 摘要，必需 hook 已实际运行 | 基础通道／目标报告不可认证、所需资源不健康或安全未知时暂停依赖工作；完整CI证据缺口保持未完成并行修复 |
+| complete：初始化 | 当前最终SHA全部bootstrap必需run／job／报告／探针完整，通道准入；若已有业务，按已激活集合另行验真，不能借初始化集合声称业务通过 | 只可声明CI初始化就绪，任务／feature完成范围不能扩大 |
 | complete：增量／首版 | 当前最终 SHA 的冻结必需集合全部完成、产物／环境一致、报告已读；TDD 红绿链、AI代码／视觉结论、基准确认、所有适用回归、任务契约满足 | 失败修复；queued／running 等待；缺失／不可读／版本不同／决策未定保持未完成并报告 |
 
-business 开始允许基于经过验证的初始化祖先，但须核清单、工具链、门禁和基础设施输入未发生未验证变化；这些发生变化先在新 SHA 重新验证 ci-ready。完成时**所有本次必需结果必须属于当前最终提交**，不能沿用祖先／别的分支的业务通过。PR 合并提交、PR head 与正式候选 SHA 分开记录；被实际测试的 tree／产物必须匹配对应完成目标，默认不猜它们相同。
+business开始允许基于真实development-ready基础源祖先，须核清单、工具链、门禁／执行器、治理契约和环境等foundation输入未发生未验证变化；变化须在新SHA重新取得相应基础准入，不要求先取得完整ci-ready。正式完成时**所有本次必需结果属于当前最终提交**，不能沿用祖先／别分支业务通过。PR merge、head和正式候选SHA分别记录，被测tree／产物匹配完成目标，不默认相同。
 
 complete 检查顺序：冻结当前 SHA／清单 → 枚举该 SHA 的全部必需 workflow、run attempt、job／check 和 artifact → 等待全部终态 → 核对实际 checkout SHA、工具／配置／环境／产物摘要 → 下载并校验／读取原始报告、失败和审查处置记录 → 生成关联报告摘要的 completion record → 再允许任务勾选、handoff complete 和用户完成报告。任一步缺失均拒绝；只看一个 `gh run watch` 返回值或 PR 绿色图标不足。
 
@@ -108,7 +115,7 @@ SP 必须阅读测试／集成／安全／原生／视觉／AI审查／回归报
 
 1. **Red**：本地只写测试与必要可运行壳／夹具，提交测试先行 SHA `S_R`；禁止先写该行为实现。Actions 发现并实际执行目标用例，保存断言、调用路径、前置健康和报告。SP 阅读证据，确认失败因目标行为缺失或真实缺陷，登记 `red_observed` 后才开始实现。
 2. 编译错误、导入／依赖缺失、未发现测试、服务未启动、缺凭据、网络故障或 unrelated failure 都不是合格 red。先修复夹具／环境并云端重跑；必要接口壳只用于让行为可调用，不偷带实现或以抛错替代行为断言。测试立即通过表示它没有证明缺失行为，需要核既有实现和期望，不制造无关失败。
-3. **Green**：实现后提交 `S_G`，Actions 执行同一目标用例及当前项目已存在的适用套件／必要回归。测试文件／oracle／fixture 摘要与 Red 关联；若实质修改测试期望，重新建立先于对应实现的有效 Red，不能删断言换绿。记录真实全部通过结果；其他已激活用例失败如实报告，不能只跑目标。
+3. **Green**：实现后提交 `S_G`，Actions 执行同一目标用例、受影响套件及必要回归；范围依据整个实际diff、依赖、任务／契约及风险冻结，未知影响用完整适用集合。测试／oracle／fixture摘要与Red关联；实质改期望须重建实现前有效Red，不能删断言换绿。当前集合全部真实通过才记该行为Green；其他已知失败如实列出，不影响该行为的完整CI缺口可并行修复，不能宣称任务或阶段验收通过。
 4. **Refactor／修复**：任何后续改动在最终 SHA 重跑目标及受影响回归；首版完成另执行 full-release 全集合。历史 `S_R` 可以作为测试先行来源，`S_G` 与最终 SHA 的 Green 结果必须清楚区分；最终验收不能用历史 Green。
 
 TDD 链记录 `cycle_id,behavior_id,S_R,S_G,final_sha,test/fixture/oracle_digests,red_run/attempt,expected_assertion,actual_failure,red_cause_review,green_run/attempt,regression_refs`，检查提交先后与目标实现差异。Red 原测试结果保持 failed，外层只可判“预期失败已经真实观察并确认”，不得归入业务 passed／正式发行通过率。Red 运行不触发生产或自动合并，不因它符合预期而跳过 Green。

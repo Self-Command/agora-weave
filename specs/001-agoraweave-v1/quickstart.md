@@ -6,7 +6,7 @@
 
 最新责任分工见[决定登记](reviews/planning-decisions-2026-10-14.md)。用户处理预算、服务器、设备、签名渠道、外部测试及真实运营内容；以下是实际验证时所需条件，不是要求用户现在重复决策。工程在具体需用节点说明用途和最小权限并索取，缺供给保留未完成。
 
-1. 在GitHub仓库先建立bootstrap入口、固定upstream Compose／工具SHA及无业务壳；首次云端解析lockfile／镜像digest，回传受审后在新提交immutable install。bootstrap聚合实际运行并登记后保护必需check，正式业务前取得ci-ready。未实现业务不阻断初始化，也不计为通过。云端取固定Expo/Kiranism/Supabase组合，单独lint；不得将Next build当lint。
+1. 在GitHub仓库先建立bootstrap入口、固定upstream Compose／工具SHA及无业务壳；首次云端解析lockfile／镜像digest，回传受审后在新提交immutable install。bootstrap聚合实际运行并登记后保护必需check，业务TDD前取得独立development-ready；T027完整ci-ready在正式验收前取得。未实现业务不阻断初始化，也不计为通过。云端取固定Expo/Kiranism/Supabase组合，单独lint；不得将Next build当lint。
 2. 使用独立开发／测试Compose/Storage/账号/密钥/日志/网络，合成数据和A/B插件；无生产凭据、无生产用户资料。Q-02/03/16提供真实云端实例/分钟/存储/设备/费用许可，不能凭指南认为已取得。
 3. 真实短信/推送/审核/AI测试先满足Q-04/16的测试通道、价格、数据区域、条款和批准，AI满足大陆推理/日志/存储/分包、不训练和告知。模拟可辅助，不代替必需真实集成；未满足时相应job是blocked/unavailable，整体验收不通过。
 4. iOS签名/渠道账号、Android渠道、最低OS和当前OS运行资源、模拟器原生语义/焦点/键盘/媒体/推送支持范围必须就绪。设备范围按ED-14及 `contracts/simulator-validation.md`，不再要求物理设备；不支持的辅助技术/硬件操作明示排除且不记passed，必需模拟器项缺结果不通过。
@@ -20,11 +20,11 @@
 
 最先只提供可调度的最小配置／接口壳／日志通道；它能运行后，报告聚合、桥接门禁和审查适配等工程行为也用该Actions通道先测试Red再实现Green，不以初始化为理由先实现全部逻辑。项目门禁脚本只在Actions计算与验证，本地SP只读取匹配结果／报告及桥接元数据，不运行项目工具。
 
-全部初始化必需项有同SHA的真实结果且已读取后才声明ci-ready，并切换业务阶段清单；不宣称任一业务AC通过。尚无workflow时先通过获授权初始化提交／PR事件建立入口；不得预设缺失工作流可以dispatch。正式业务资源／AI审查通道缺失则停在初始化／未就绪，继续已获授权的无依赖编辑，不改本地验收。
+全部初始化必需项有同SHA的真实结果且已读取后才声明ci-ready；业务阶段可先凭独立development-ready及健康非空执行链准入；不宣称任一业务AC通过。尚无workflow时先通过获授权初始化提交／PR事件建立入口；不得预设缺失工作流可以dispatch。资源缺失只暂停依赖部分；不影响目标行为的完整CI证据／审查完备性问题可并行修复，基础构建／目标测试／所需服务不可认证或安全未知则不准入依赖业务，不改本地验收。
 
 **I1实际入口核验**：ci-ready前还须经`verify-release.yml`的business-increment编排真实调用已有初始化适用作业（可复用bootstrap job），保存从目标SHA／清单到安装／真实服务／非空发现／端采集／审查／聚合的报告链；核心前逐行为接入真实核心脚本和套件，在核心Green前全部已激活项实际运行。注入“只有聚合但缺服务／端job”“空矩阵／零用例”“缺核心脚本”和“调用依赖缺边”，必须拒绝。US14只扩充既有入口的全量发行与部署，不是首次让核心验证可运行；阶段产出见cloud-validation §2.1。
 
-初始化调用共享增量编排时仍使用bootstrap清单及bootstrap-only范围，只证明执行通道，不以business-start等待尚未产生的ci-ready；ci-ready取得后才切business-increment profile验证实际核心／故事。
+初始化调用共享增量编排时仍使用bootstrap清单及bootstrap-only范围，只证明执行通道，不以business-start等待尚未产生的ci-ready；独立development-ready取得后可切business-increment profile验证核心／故事；完整ci-ready另行验收。
 
 ## 2. 调度接口（未来工作流）
 
@@ -76,7 +76,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 | visual-review-record | 当前Codex实际读取全图／裁图、UI-SPEC／基准／页面矩阵／差异／交互报告；Actions校图像摘要绑定 | 各端适用状态语义审查及处置完整，缺实际图片／漏范围拒绝 |
 | aggregate | `npm run ci:evidence` | 同发行必需check全passed才输出通过；任何缺证据/版本不匹配拒绝 |
 
-上述job按阶段接入：ci-ready前真实安装／Compose／壳与采集／审查调用链可运行；核心Green前当前已激活schema／fixtures／service／security／concurrency／recovery与各端组件job及对应脚本均已实现；各故事进入行为前接入自己的实际套件；US14扩充full-release及受控部署。表中完整作业集合不是允许将核心必需执行拖到US14的理由。
+上述job按阶段接入：业务TDD前真实基础构建／非空测试／所需Compose健康及报告认证可用；T027 ci-ready前完整壳／采集／审查调用链可运行；核心Green前当前已激活schema／fixtures／service／security／concurrency／recovery与各端组件job及对应脚本均已实现；各故事进入行为前接入自己的实际套件；US14扩充full-release及受控部署。表中完整作业集合不是允许将核心必需执行拖到US14的理由。
 
 云端服务测试与macOS/Android测试通过有TLS/访问范围/短期凭据的同一隔离场景环境联通，不能各端偷偷换mock。作业结束撤sandbox/凭据、回收临时服务，保留按类证据；Actions不长期托管生产。镜像拉取/启动失败是环境不可用，不算产品通过。
 

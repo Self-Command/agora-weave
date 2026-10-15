@@ -4,4 +4,4 @@
 
 `.github/workflows/tooling-bootstrap.yml` 仅在 GitHub-hosted Actions 验证固定 gitlink、全部任务提取、Expected／接口／整体回归字段和真实 `task-done` 调用。原生 ledger 的 complete 行保留为原始工具结果；它不能替代有效证据，也不勾选 canonical 任务。`28500c22` 的 run38645599873 已实际保留完整285项映射、首末brief、原ledger／command与同SHA有效完成拒绝；新版本仍须重跑。后续已完成任务退出adapter后，剩余任务使用连续原生序号，canonical ID保持不变。文档本身不授予兼容或完成状态。
 
-实际项目验证命令须调度并读取 Actions，按同 SHA 的必需集合核验。历史测试成功、原生 exit 0、raw handoff complete 与静态元数据都不授予有效 complete。临时 adapter 在云端探针退出时清理；设备范围按ED-14及 `specs/001-agoraweave-v1/contracts/simulator-validation.md`，物理通道不再必需；最低/当前OS模拟器、实际语义焦点/媒体/适用辅助技术缺必需证据继续阻塞初始化准入。
+实际项目验证命令须调度并读取 Actions，按同 SHA 的必需集合核验。历史测试成功、原生 exit 0、raw handoff complete 与静态元数据都不授予有效 complete。临时 adapter 在云端探针退出时清理；设备范围按ED-14及 `specs/001-agoraweave-v1/contracts/simulator-validation.md`，物理通道不再必需；最低/当前OS模拟器、实际语义焦点/媒体/适用辅助技术缺必需证据继续阻塞完整ci-ready与正式验收；独立development-ready可在基础构建、非空测试和所需服务健康后准入业务TDD，按宪法v3.1.0及分层验证决定执行。

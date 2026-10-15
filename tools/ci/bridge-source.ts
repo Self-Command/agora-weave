@@ -1,4 +1,5 @@
 import { assessBridgeGate } from './gates.ts';
+import { validDevelopmentReadiness } from './development-readiness.ts';
 
 const object = (value: any) => value && typeof value === 'object' && !Array.isArray(value);
 const hash = (value: any, length = 64) => typeof value === 'string' && new RegExp(`^[a-f0-9]{${length}}$`).test(value);
@@ -14,6 +15,8 @@ export function deriveBridgeEvidence(input: Record<string, any>): Record<string,
     initial.state === 'passed' && initial.ci_ready === true && initial.scope === 'bootstrap-only' &&
     initial.feature_complete === false && hash(initial.target_sha, 40) && initial.check_set_digest === context.expected_check_set_digest &&
     sameDigests(initial.initialization_digests, input.current_initialization_digests);
+  const developmentReady = validDevelopmentReadiness(input.development,
+    input.current_foundation_digests, context.expected_check_set_digest);
   const document = input.completion?.document;
   const ids = input.required_ids;
   const observed = document?.observed;
@@ -29,7 +32,9 @@ export function deriveBridgeEvidence(input: Record<string, any>): Record<string,
     typeof document.read_at === 'string' && Number.isFinite(Date.parse(document.read_at)) &&
     Array.isArray(document.unresolved_items) && document.unresolved_items.length === 0 && document.regressions_passed === true;
   const passed = (suffix: string) => reportsValid && observed.some((item: any) => item.id.endsWith(suffix) && item.state === 'passed');
-  const derived = { ...context, ci_ready: ready, initialization_inputs_unchanged: ready,
+  const derived = { ...context, ci_ready: ready, development_ready: developmentReady,
+    development_inputs_unchanged: developmentReady, development_ancestor_verified: developmentReady,
+    initialization_inputs_unchanged: ready,
     initialization_ancestor_verified: ready, required_results_passed: reportsValid, reports_read: reportsValid,
     tdd_passed: passed('.tdd'), reviews_passed: passed('.codex-code-review') && passed('.codex-visual-review'),
     regressions_passed: reportsValid, baseline_required: document?.baseline_required === true,
@@ -44,6 +49,7 @@ export function deriveBridgeEvidence(input: Record<string, any>): Record<string,
     record_kind: context.transition === 'complete' ? context.mode === 'bootstrap-only' ? 'bootstrap_completion' : 'increment_completion' :
       context.mode === 'bootstrap-only' ? 'bootstrap_start_only' : 'business_start',
     initialization_source_sha: ready ? initial.target_sha : undefined,
+    development_source_sha: developmentReady ? input.development.document.target_sha : undefined,
     completion_record: context.transition === 'complete' && result.state === 'passed' ? {
       target_sha: context.expected_sha, mode: context.mode, actor: context.actor, feature: context.feature,
       contract_digest: context.expected_contract_digest, check_set_digest: context.expected_check_set_digest,

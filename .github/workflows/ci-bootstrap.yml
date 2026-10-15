@@ -377,8 +377,8 @@ jobs:
       source_sha: ${{ github.sha }}
     secrets: inherit
   gate:
-    name: agoraweave/ci-gate
-    needs: [freeze, image-freeze, transport, collect-source, archive]
+    name: agoraweave/development-channel
+    needs: [freeze, transport]
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 95
@@ -412,13 +412,7 @@ jobs:
             exit 1
           fi
           export SOURCE_RUN_ID="$source"
-          export SOURCE_SHA="$TARGET_SHA"
-          node --experimental-strip-types tools/ci/wait-shared-cli.ts
-          attempt=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source" --jq .run_attempt)
-          node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$source-$attempt" verify-output || true
-          node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$source-$attempt" review-output || true
-          node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$source-$attempt" private-receipts || true
-          node --experimental-strip-types tools/ci/aggregate-cli.ts
+          node --experimental-strip-types tools/ci/forward-readiness.ts
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
