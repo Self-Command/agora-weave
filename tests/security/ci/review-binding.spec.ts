@@ -50,6 +50,7 @@ test('RB06: unauthenticated, local, stale target and empty required input contex
     assert.equal(bindReviewRecord(record, { ...context, ...patch }).state, 'blocked');
   }
 });
+<<<<<<< HEAD
 
 test('RB07: code record validation binds actual contracts independently of physical accessibility admission', () => {
   const { record, context } = fixture();
@@ -57,3 +58,5 @@ test('RB07: code record validation binds actual contracts independently of physi
   record.actual_checks = context.actual_checks = { ...context.actual_checks, interactions_passed: false, accessibility_passed: false };
   assert.equal(bindReviewRecord(record, context).state, 'passed');
 });
+=======
+>>>>>>> 7a517c6 (test(ci): bind reviews to actual source inputs rather than self-declared coverage)

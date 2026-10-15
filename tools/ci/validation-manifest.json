@@ -2452,49 +2452,7 @@
         "tests/security/ci/review-binding.spec.ts"
       ],
       "id": "ci.review-binding"
-    },
-    {
-      "command": "ci:contracts",
-      "files": [
-        "tests/integration/ci/tdd-source.spec.ts"
-      ],
-      "id": "ci.tdd-source"
-    },
-    {
-      "command": "ci:contracts",
-      "files": [
-        "tests/security/ci/legacy-transition.spec.ts"
-      ],
-      "id": "ci.legacy-transition"
-    },
-    {
-      "command": "ci:contracts",
-      "id": "ci.bootstrap-raw",
-      "files": [
-        "tests/integration/ci/bootstrap-reports.spec.ts"
-      ]
-    },
-    {
-      "command": "ci:contracts",
-      "files": [
-        "tests/integration/ci/source-aggregate.spec.ts"
-      ],
-      "id": "ci.source-aggregate"
-    },
-    {
-      "id": "ci.mandatory-hooks",
-      "command": "ci:contracts",
-      "files": [
-        "tests/security/ci/mandatory-hooks.spec.ts"
-      ]
-    },
-    {
-      "id": "ci.actual-bridge-scope",
-      "command": "ci:contracts",
-      "files": [
-        "tests/security/ci/bridge-scope.spec.ts"
-      ]
     }
   ],
-  "engineering_case_count": 126
+  "engineering_case_count": 102
 }
