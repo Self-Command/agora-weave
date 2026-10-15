@@ -207,21 +207,31 @@ spec所有初值/ED-02及RD-10均注册。媒体MB工程口径为十进制1,000,
 
 拟采用bootstrap／TDD／verify工作流及始终产出结果的`agoraweave/ci-gate`，清单和阶段决定必需集合。bootstrap-only入口只允许无业务工程基础设施；固定安装／真实Compose／网页及双端原生壳／报告采集归档／审查与拒绝探针实际执行后形成ci-ready，再准入正式业务。未实现业务在初始化是not_yet_applicable，不计通过；进入相关业务后激活，首版全量验收不允许未适用掩盖未完成。首次冻结lock回传形成新SHA后重跑，不用旧结果证明新输入。
 
+**2026-10-15验证效率局部修订**：在当前安全检查点先完成调度、缓存及证据读取的工程行为TDD，再沿现有任务继续；不新增通用调度平台、不重排任务ID／依赖或缩减产品验收。真实运行基线及实施顺序见[验证效率执行说明](../../docs/engineering/validation-efficiency.md)。同一目标提交按事件／实际checkout／profile／check_set／环境／产物身份确定唯一必需执行链，优先消除独立原生流水线与共享完整流水线重复启动、push与PR双事件；不同HTTPS输入等实际环境不得直接互代。保留真实分支保护check与准确PR head／merge绑定，不能通过关闭保护、skip或空check省算力。
+
+中间开发反馈、正式S_G与阶段完成分开调度；中间反馈可只跑当前目标及受影响检查，明确`readiness=not_evaluated`，不能充当正式Green、任务完成或ci-ready。正式S_G仍同oracle／fixture并执行当前已激活适用套件及必要回归；T026／T027及最终发行的最低／当前OS、服务、网页、审查、归档清理和拒绝探针全部保留。清单、门禁、依赖、测试、工程行为或未知范围不能归普通文档而跳过；不确定时执行完整适用集合。
+
+确认被替代或重复且不承担唯一未读Red／当前必要验证的旧运行才可取消，保留原状态、日志及取消依据，保护归档清理。依赖按lock／工具链／平台缓存，构建输入另含源码／配置摘要，命中仍校验并真实执行；独立job在已证明前置满足后并行，保留真实安装／健康／发现及报告依赖。详细身份、取消保护、缓存拒绝与实测口径见cloud-validation §2.2。
+
 **I1前置调用链**：ci-ready必须同时证明`verify-release.yml`的business-increment编排已可调用，真实执行初始化已适用的安装／健康／非空目标发现／静态与壳交互探针、报告归档和当前Codex审查记录，再由聚合读取原报告。可复用`ci-bootstrap.yml`或独立可复用作业，必须有实际调用与同SHA证据；不能只创建check／转发空结果。共享核心编写阶段先将当前迁移／seed／接口／安全／并发／恢复／各端组件与必要审查逐一接入同一已存在的增量调用链，取得每行为Red后实现；执行核心Green（旧T048）前所有已激活入口／脚本／发现规则均已实现且在Actions可运行，不依赖US14。US14的旧T167只能在此基础上扩充已实现业务的全量发行覆盖、最终产物冻结及独立受控部署。各阶段具体产出／拒绝探针见cloud-validation §2.1；聚合始终运行不能代替这些作业。
 
 初始化先以bootstrap清单／bootstrap-only范围调用上述共享编排，证明执行器可运行；不要求尚未产生的ci-ready或调用business-start。ci-ready实际取得后才用business-increment profile接入核心与故事，避免为验证入口自身引入新的就绪循环。
 
 ### TD-07B — 桥接强制检查与云端TDD
 
-当前guard只管职责，handoff快照／checkbox不能校Actions，after_implement尚未注册。拟新增项目验证适配与单一状态转换入口，start区分bootstrap-only和business，complete冻结当前SHA／清单，枚举、等待全部必需云端结果，下载校摘要并读取报告后才可勾任务／设complete。未来before／after_implement项目mandatory钩子使用非bridge自身命名空间，并在转换处再次强制执行；只打印／过滤钩子或直接旧脚本不能绕开。桥接6.4.2描述与安装SP7的实际兼容由初始化云端探针核验，本轮不改技能或脚本。
+当前guard只管职责，handoff快照／checkbox不能校Actions；before／after_implement已注册非bridge命名空间mandatory的agoraweave.ci.start／complete。项目验证适配与单一状态转换入口仍须真实云端receipt：start区分bootstrap-only和business，complete冻结当前SHA／清单，枚举、等待全部必需云端结果，下载校摘要并读取报告后才可勾任务／设complete，并在转换处再次强制核验；已注册不等已经通过，只打印／过滤钩子或直接旧脚本不能绕开。桥接6.4.2描述与安装SP7的实际兼容由初始化云端探针核验，本轮不改技能或脚本。
 
 TDD先提交只含目标测试的S_R，Actions实际失败且读取报告确认原因是缺行为／真实缺陷后才写实现；环境／编译／缺凭据不算red。S_G执行相同测试及已激活套件／必要回归，最终SHA再取得新Green。数量由真实需求、边界、异常和风险决定，测试／oracle实质变化重新建立red链。Red的原failed状态保留，不算业务passed。
+
+上述调度／去重／取消保护／缓存／证据复用也是新增或修改的工程行为，先按T008–T013取得合格云端Red并读因果，再修改T014–T023对应实现。final完整验证前一次整理代码、测试、canonical任务与工程资料并冻结目标SHA、契约和必需集合；所有最终必需结果、审查绑定和读取记录仍指向该SHA，外部私有证据库接收completion record，不为补写通过记录再提交。冻结后任何仓库输入改动均产生新SHA并重新执行必需验收，不能借文档分类继承旧通过。
 
 ### TD-07C — 视觉基准与当前 Codex 审查
 
 Actions分别运行后台／分享网页、iOS、Android和插件，按UI-SPEC页面状态／主题／字号／键盘／设备矩阵保全图、差异与交互证据。首个baseline-candidate按已确认原型／视觉规范和最新业务审查，附AI视觉／交互报告，由用户或其明确授权的设计验收人确认具体摘要；尚未发生的确认不能记已批准。后续差异必须修复或按设计变更审查批准新候选，保留旧图／失败，不自动接受差异或重拍基准。
 
 按用户明确确认的 ED-11，由当前 Codex 审查当前 SHA 的代码／测试／契约／真实报告和各端实际图像／基准／设计／交互报告，分别保存有输入摘要、覆盖、findings、处置和未知项的代码及视觉记录；取消额外独立云端 AI 作业与专用 API 凭据。所有静态检查、构建、测试、运行、图像／差异／交互采集及自动门禁计算仍只在 Actions。审查不能代替真实测试，未读图／漏范围／未处置缺陷／无法判断不通过，首基准仍由用户确认。详见 cloud-validation §6 与最新执行决定。
+
+同一artifact仅在repository／run／attempt／artifact ID／目标与checkout SHA／workflow／环境身份及raw archive、解包文件摘要全部校验相同时复用已下载字节，减少传输和重复轮询；新attempt、内容变化或身份不符重新取证，缓存不是passed证据。每次最终判断仍枚举最新必需终态，当前Codex实际读取全部必需报告、失败明细和原图，审查记录重新核当前SHA／覆盖／处置。ED-14模拟器范围与ED-18 Android7系统警示栏的受限例外原样保留，不扩大not_applicable。
 
 ### TD-07D — 媒体播放偏好与消费入口
 

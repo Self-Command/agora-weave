@@ -51,9 +51,33 @@ bootstrap-authoring先提供最小调度／安装／测试发现／原始日志�
 
 初始化作业编排本身的清单／发现／失败传播／调用／报告行为先走基础设施TDD。必须注入“聚合存在但真实服务／端作业缺失”“调用链缺边”“测试未发现”“必需作业跳过”和“核心脚本尚未提供”等，观察明确拒绝；绿路径须真实非空执行。以上只是任务再生成的设计约束，本轮未创建或运行任何工作流。
 
+### 2.2 验证效率修订：调度、缓存与取证
+
+2026-10-15用户授权在安全检查点局部优化CI，不改变产品范围、宪法、真实云端TDD、最低／当前系统覆盖、最终同SHA验收或ED-11–18。此次仅同步设计与现有任务，工程实现／云端验收在后续桥接执行；[真实运行基线与实施说明](../../../docs/engineering/validation-efficiency.md)不构成通过或提速结论。
+
+| 调度意图 | 执行与结果语义 |
+| --- | --- |
+| 中间开发反馈 | 按当前目标和受影响范围反馈，可不启动完整矩阵；记录`validation_intent=feedback`、实际集合与`readiness=not_evaluated`。即便用例passed也不能作为正式S_G、任务完成、ci-ready或feature完成 |
+| 正式S_G | 记录`validation_intent=green`、TDD链及冻结的当前已激活适用集合，执行同Red oracle／fixture、适用套件和必要回归；不能用feedback或缓存命中升级为Green |
+| 阶段／发行完成 | 记录`validation_intent=completion`，T026／T027执行全部初始化必需项，后续阶段按其冻结清单执行，full-release保全部首版集合；所有证据属于最终目标SHA并已读取，外部completion record才可确认 |
+
+`validation_intent`只区分调度与证据用途，不新增可缩减必需集合的profile；bootstrap／business-increment／full-release及其激活／准入规则不变。代码、工作流、工具、清单、门禁、依赖锁、测试、任务验收条款及未知范围不能按普通文档跳过。受保护分类器同时读取实际diff、契约／清单摘要、canonical任务范围和完成意图；未知或混合变更采用完整适用集合，受审文件不能自行声明豁免。
+
+**最小去重边界**：先列出目标SHA实际触发的顶层事件与共享job、实际保护所需check，记录`repository_id,target_sha,checkout_sha,event_name,event_ref,pr_head_sha,pr_merge_sha,workflow_sha,validation_intent,validation_profile,check_set_hash,environment/config/toolchain/artifact_digests`。只有执行输入等价且覆盖满足同一完成目标才合并，优先让共享编排作为唯一正式矩阵调用者；独立原生入口保留必要Red／诊断用途，避免与共享完整链同次重复运行。当前独立原生`https_required=false`与共享`true`尚不等价，统一或分配覆盖责任后才能消除其重复启动，不直接借用另一环境结果。push／PR的head与merge结果明确分开；相同head若复用执行，仍须在真实事件上产生准确绑定的必需check，校被测tree／产物与目标一致。不得以占位、skip／neutral、假成功、关闭保护或默认dispatch满足PR保护。
+
+**取消与队列**：先读取原run／attempt、目标行为和取证状态，只有确认重复或被新目标替代、且不承担唯一未读Red、当前正式Green／完成验证或不可中断归档清理时，才取消旧运行。记录取消人／时间／原因／替代run；原cancelled、failed、日志及已产出artifact不删除、不改写为passed。已取消的必需项继续阻塞，须由目标SHA的真实新证据补齐。不能对所有push一律`cancel-in-progress`；并发组须区分反馈、受保护Red、正式验收和归档，清理独立保底。仅凭“旧SHA”不能判唯一Red冗余。
+
+**缓存与并行**：优先复用现有Actions缓存和共享job，不造通用调度平台。依赖键至少包含lock摘要、包管理器／Node及对应工具链、OS／架构；原生构建缓存另含源码、配置、生成输入、Expo/RN／SDK／Xcode或JDK／Gradle／Android工具与目标平台摘要，镜像按固定digest。错误平台、锁或配置命中不得直接消费；宽restore-key候选必须校验，仍immutable install及真实构建／测试。不能共享授权凭据、可变数据库或模拟器运行状态，缓存不得成为测试passed或产物身份的依据。独立服务／端作业可在其健康、fixture和身份前置满足后并行，依赖边保留；冷热两类都实测，不宣称缓存命中必然提速。
+
+**证据字节复用**：受控缓存键绑定repository、run、attempt、artifact ID、目标与checkout SHA、workflow和环境、原archive摘要；解包索引另逐文件校raw摘要。命中只免重复字节传输，不跳过当前run／attempt／过期／权限／摘要校验，不复用其他SHA的passed或过时审查结论；新attempt、来源变化、摘要冲突或缺收据拒绝并重新下载／取证。对相同身份下载合并在途请求，终态前有界退避轮询，完成后停止重复轮询；无变化只读索引，最终必须枚举所有必需结果并实际读完报告、失败明细和各端原图。失败、取消和唯一Red证据同样保留归档期限及访问控制。
+
+新增／修改的调度、分类、去重、取消保护、缓存键／校验和证据复用行为均先在Actions取得语义Red、读取因果后实现Green。T008–T012应覆盖：双事件／独立与共享重复、错误head／merge映射、feedback冒充Green／完成、未知变更误分类、误取消唯一未读Red／必要验收／清理、错锁／工具链／平台缓存、跨attempt／SHA或损坏artifact命中及漏读报告／图像。Green仍执行当前已激活套件和必要回归，T026／T027最后同SHA完整验证；已有正确行为只回归，不删实现制造Red。
+
+最终完整验证前一次整理代码、测试、tasks和工程资料，冻结SHA／check_set／契约／工具链与产物；审查及最终completion record保存在外部私有证据库。冻结后输入改变即新SHA并重验，不为补写通过记录循环提交。按真实run/job的排队、执行、取消、缓存命中及artifact下载次数／字节／传输时长对比，并保存冷热、平台、集合和事件条件；无法比较或缺计时明确记缺失，不把任务依赖等待算runner排队、不承诺提速比例。
+
 ## 3. 桥接开始与完成的强制门禁
 
-现有 `guard-command.ps1` 检查职责边界，`update-handoff` 维护契约／状态；它们不查询 Actions 全部结果、读取报告或验证 TDD／基准。当前 `.specify/extensions.yml` 没有 `after_implement` 项。仅按已有脚本退出码或 handoff 的 complete 状态不能证明本契约落实。
+现有 `guard-command.ps1` 检查职责边界，`update-handoff` 维护契约／状态；它们本身不查询 Actions 全部结果、读取报告或验证 TDD／基准。当前 `.specify/extensions.yml` 已注册无condition的mandatory `agoraweave.ci.start`／`agoraweave.ci.complete` before／after_implement项；实际开始／完成仍须匹配当前SHA／契约／清单的真实云端receipt及原报告读取。仅按原生状态脚本退出码或 handoff 的 complete 状态不能证明本契约落实，已注册hook也不等于已经取得有效完成结果。
 
 工程方案：后续新增项目验证适配层，拟以 `tools/ci/bridge-gate` 提供 `start` 和 `complete` 检查，并通过**单一状态转换入口**调用现有桥接。该工具的验证计算、运行和拒绝探针均在Actions；本地SP仅用标准Git／GitHub控制面读取报告与匹配的门禁结果，再由桥接元数据流程转换状态，不本地调用这个项目脚本或npm检查。没有工作流时bootstrap-only仅通过已有职责guard与文件阅读限定初始化编写，业务准入及完成须有云端门禁。门禁凭据／结果与 actor、feature、mode、SHA、contract_hash、check_set_hash 绑定；未满足条件不得更新任务完成或 handoff complete。
 
