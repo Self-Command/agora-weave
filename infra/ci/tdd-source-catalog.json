@@ -1812,6 +1812,100 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T12:36:13.116124Z",
       "cause_summary": "Read all three semantic failures in healthy Actions transport: canonical non-CI suites disappeared from inventory, an unrelated script returned the expected passing count without executing the approved target, and substituted discovery was accepted. The initial CW02 fixture inherited the outer Node test context; it was isolated before the qualified Red, without changing the target oracle. Qualified Red executed208of208 with205passed and3target assertion failures; Green used the unchanged test/fixture file and executed208of208 with zero failed, skipped, cancelled or todo. This engineering wiring subset does not complete T033 or authorize business execution or formal acceptance."
+    },
+    {
+      "cycle_id": "ci-final-gate-private-boundary-001",
+      "behavior_id": "ci.final-gate-private-boundary",
+      "case_ids": [
+        "FG01",
+        "FG02",
+        "FG03",
+        "FG04"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/final-gate-boundary.spec.ts",
+      "fixture_file": "tests/integration/ci/final-gate-boundary.spec.ts",
+      "red": {
+        "sha": "0f0ec879f011ac8c9e0a9f870b8566a0a91ddf5f",
+        "run_id": "38741605073",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "c3ebf1f54d209435e72665d3485fd0e835e5d179",
+        "run_id": "38743253637",
+        "attempt": 1
+      },
+      "implementation_sha": "530087c1ce3e61f6f2ac31caaec3e2f69249c6d1",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T13:22Z",
+      "cause_summary": "Read all four target semantic assertion failures in the authenticated healthy 212-case cloud transport before implementation: public uploads included the entire completion tree, failed planning had no top-level final gate, the forwarding upload leaked the same tree, and the bridge writer published full private source/completion documents. Qualified Red preserved 208 passing cases and four target failures. The initial FG04 fixture was corrected to defer an absent module until its semantic assertion before the qualified Red. Green reused the unchanged test/fixture and executed213of213 with zero failed, skipped, cancelled or todo. Formal acceptance still requires its final current-SHA chain."
+    },
+    {
+      "cycle_id": "ci-public-bridge-consumer-001",
+      "behavior_id": "ci.public-bridge-consumer",
+      "case_ids": [
+        "PB01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/public-bridge-consumer.spec.ts",
+      "fixture_file": "tests/integration/ci/public-bridge-consumer.spec.ts",
+      "red": {
+        "sha": "eb47d0e153091e44430086b7c95f17ce450af03e",
+        "run_id": "38742817582",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "c3ebf1f54d209435e72665d3485fd0e835e5d179",
+        "run_id": "38743253637",
+        "attempt": 1
+      },
+      "implementation_sha": "c3ebf1f54d209435e72665d3485fd0e835e5d179",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T13:29Z",
+      "cause_summary": "Read PB01 actual producer-to-public-projection-to-consumer semantic refusal and the existing BS01 missing changed_paths regression in authenticated healthy cloud transport before the fix. Qualified Red executed213 cases:211 passed and these two failures. The fix retains only technical context required for independent consumer revalidation, with the full private source/completion documents excluded. Unchanged PB01 oracle/fixture passed in Green213of213 with zero failed, skipped, cancelled or todo."
+    },
+    {
+      "cycle_id": "ci-android7-clock-clipping-001",
+      "behavior_id": "ci.android7-clock-clipping",
+      "case_ids": [
+        "CL01",
+        "CL02"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/android7-clock-clipping.spec.ts",
+      "fixture_file": "tests/integration/ci/android7-clock-clipping.spec.ts",
+      "red": {
+        "sha": "875036c8087c1dc070facdc063dea824652eadd3",
+        "run_id": "38743896065",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "348ee4571b97bbd1aa7b42e59b3f1c4e7f304880",
+        "run_id": "38744632580",
+        "attempt": 1
+      },
+      "implementation_sha": "348ee4571b97bbd1aa7b42e59b3f1c4e7f304880",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T13:37Z",
+      "cause_summary": "Read both target semantic assertion failures from authenticated healthy cloud transport before implementation: the approved bounded clock exclusion and mandatory complete measurements were unavailable. Qualified Red executed215 cases with213 passed and2 target failures. Green used the unchanged test/fixture and executed215of215 with zero failed, skipped, cancelled or todo; typecheck passed. ED19 is limited to the actual API24 SystemUI Clock at font_scale2 with measured clipping and an oversized actual system font, and exclusions do not count as passed. Native runtime and final current-SHA acceptance remain independently required."
     }
   ]
 }
