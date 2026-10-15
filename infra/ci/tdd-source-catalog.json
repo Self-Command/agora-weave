@@ -801,7 +801,7 @@
       "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     },
     {
@@ -839,7 +839,7 @@
       "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     },
     {
@@ -874,7 +874,7 @@
       "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     },
     {
@@ -903,7 +903,7 @@
       "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     },
     {
@@ -932,7 +932,7 @@
       "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     }
   ]
