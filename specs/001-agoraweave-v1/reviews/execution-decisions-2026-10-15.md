@@ -61,3 +61,7 @@
 当前Codex读取909ce9b/run38736933035的API24全幅原图后，发现font_scale=2时系统自身Clock下部被固定状态栏截断；应用标题与API36正常。ED-18未覆盖此问题，已按宪法九单独询问。用户明确答复：“批准此受限系统例外，继续验收”。
 
 仅API24、实际font_scale=2、系统自身Clock及真实像素边缘／系统字号与边界／原图和语义树绑定所证实的截断可记not_applicable，不计passed。浅深两组均保留原证据和风险；其他系统／缩放、应用内容、系统栏对比度原规则和业务大字要求保持。不得隐藏系统栏、降低全局字体、修改模拟器SystemUI或扩大ED-18／ED-14。独立云端Red→读因果→Green后，最终SHA完整重验。具体证据与边界见[ED-19说明](../../../docs/engineering/android7-large-clock-decision.md)。
+
+## ED-20：阶段一按 Android 可开发条件收口，iOS 验证后置
+
+用户明确要求“先把第一阶段快点搞定 然后task给我完成。我要进行正式开发。 当前可以开发就不要太严格浪费我token了。 ios以后不做验证测试，先把安卓做出来，后续再进行跨平台。”按该决定，当前Phase1完成口径改为真实development-ready及已实现工程能力可供Android业务开发；T026/T027不再等待全平台正式验收。iOS原生构建/测试/图像审查当前停止，完整跨平台验收在后续跨平台阶段执行。保留既有技术栈、全业务任务DAG、云端执行、真实Red/Green和安全边界；正式产品验收/合并/发行不由development-ready替代。原未执行/失败/取消的结果不改写为通过。具体范围与证据见[Android优先决定](../../../docs/engineering/android-first-development-decision.md)。

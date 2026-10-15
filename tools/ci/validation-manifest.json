@@ -2840,7 +2840,14 @@
       "files": [
         "tests/integration/ci/android7-clock-clipping.spec.ts"
       ]
+    },
+    {
+      "id": "ci.android-development-scope",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/android-development-scope.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 215
+  "engineering_case_count": 217
 }

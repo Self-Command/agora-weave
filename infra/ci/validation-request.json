@@ -1,4 +1,5 @@
 {
   "schema_version": 1,
-  "validation_intent": "invalid-rejection-probe"
+  "validation_intent": "green",
+  "development_platform": "android"
 }
