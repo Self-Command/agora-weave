@@ -17,10 +17,11 @@ export function preservePrivateBridgeRecord(record: Record<string, any>): Record
   const remote = `/archive/ordinary/bridge-admission/${sha}-${run}-${attempt}.json`;
   const bytes = Buffer.from(JSON.stringify(record, null, 2) + '\n');
   try {
-    writeFileSync(key, process.env.EVIDENCE_SSH_PRIVATE_KEY!.replaceAll('\r', ''), { mode: 0o600 });
+    writeFileSync(key, process.env.EVIDENCE_SSH_PRIVATE_KEY!.replaceAll('\r', '').trimEnd() + '\n', { mode: 0o600 });
     writeFileSync(hosts, process.env.EVIDENCE_SSH_KNOWN_HOSTS!.replaceAll('\r', ''), { mode: 0o600 });
     writeFileSync(source, bytes, { mode: 0o600 });
     writeFileSync(batch, `-mkdir /archive/ordinary/bridge-admission\nput ${source} ${remote}\nget ${remote} ${readback}\n`, { mode: 0o600 });
+    let transportFailure: string | undefined;
     try {
       execFileSync('sftp', ['-b', batch, '-i', key, '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes',
         '-o', 'StrictHostKeyChecking=yes', '-o', `UserKnownHostsFile=${hosts}`, '-o', 'ConnectTimeout=15',
@@ -33,8 +34,9 @@ export function preservePrivateBridgeRecord(record: Record<string, any>): Record
         /Permission denied \(publickey/i.test(stderr) ? 'authentication' :
         /No such file|Permission denied|Failure/i.test(stderr) ? 'remote_path' :
         /timed out|refused|Could not resolve/i.test(stderr) ? 'network' : 'transfer';
-      throw new Error(`Private bridge transport: ${category}`, { cause: category });
+      transportFailure = category;
     }
+    if (transportFailure) throw new Error(`Private bridge transport: ${transportFailure}`);
     if (!bytes.equals(readFileSync(readback))) throw new Error('Private bridge readback differs');
   } finally { rmSync(folder, { recursive: true, force: true }); }
   if (existsSync(folder)) throw new Error('Temporary bridge storage credentials remain');

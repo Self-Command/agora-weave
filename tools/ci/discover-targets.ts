@@ -10,10 +10,12 @@ const manifestBytes = readFileSync('tools/ci/validation-manifest.json');
 const manifest = JSON.parse(manifestBytes.toString());
 const root = JSON.parse(readFileSync('package.json', 'utf8'));
 const files = inventoryNodeTestFiles();
-const result = discoverApprovedTargets({ profile: 'bootstrap', approved: manifest.engineering_targets,
+const coreTargets = manifest.core_targets || [];
+const profile = coreTargets.length ? 'business-increment' : 'bootstrap';
+const result = discoverApprovedTargets({ profile, approved: [...manifest.engineering_targets, ...coreTargets],
   scripts: root.scripts, available_files: files });
 mkdirSync('check-output', { recursive: true });
-writeFileSync('check-output/discovery.json', JSON.stringify({ ...result,
+writeFileSync('check-output/discovery.json', JSON.stringify({ ...result, profile,
   checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
   run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
   check_set_digest: createHash('sha256').update(manifestBytes).digest('hex'),
