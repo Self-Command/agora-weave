@@ -17,11 +17,13 @@ const inputDigests = Object.fromEntries(required.map(file => [file, createHash('
 const contractDigest = createHash('sha256').update(JSON.stringify(inputDigests)).digest('hex');
 const handoff = JSON.parse(readFileSync('.specify/superpowers-handoff.json', 'utf8'));
 const constitution = readFileSync('.specify/memory/constitution.md', 'utf8');
-if (!constitution.includes('3.0.1') || handoff.artifact_owner !== 'codex' || handoff.status !== 'executing') throw new Error('Unapproved bootstrap ownership or lifecycle');
-const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
-const changedPaths = execFileSync('git', ['diff', '--name-only', scopeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
 const mode = process.env.BRIDGE_MODE || 'bootstrap-only';
 const transition = process.env.BRIDGE_TRANSITION || 'start';
+const readyBootstrapStart = handoff.status === 'ready' && mode === 'bootstrap-only' && transition === 'start';
+if (!constitution.includes('3.0.1') || handoff.artifact_owner !== 'codex' ||
+  (handoff.status !== 'executing' && !readyBootstrapStart)) throw new Error('Unapproved bootstrap ownership or lifecycle');
+const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
+const changedPaths = execFileSync('git', ['diff', '--name-only', scopeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
 const input = { actor: 'codex', expected_actor: 'codex', feature: 'specs/001-agoraweave-v1', expected_feature: 'specs/001-agoraweave-v1',
   expected_sha: sha, target_sha: sha, expected_contract_digest: contractDigest, contract_digest: contractDigest,
   expected_check_set_digest: inputDigests['tools/ci/validation-manifest.json'], check_set_digest: inputDigests['tools/ci/validation-manifest.json'],
