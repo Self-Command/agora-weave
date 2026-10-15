@@ -2564,7 +2564,14 @@
       "files": [
         "tests/security/ci/https-ingress.spec.ts"
       ]
+    },
+    {
+      "id": "ci.https-descriptor",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/https-descriptor.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 145
+  "engineering_case_count": 147
 }
