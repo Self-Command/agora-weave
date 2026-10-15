@@ -2804,7 +2804,19 @@
       "files": [
         "tests/integration/ci/core-target-wiring.spec.ts"
       ]
+    },
+    {
+      "id": "ci.final-gate-boundary",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-006",
+        "QR-007",
+        "QR-009"
+      ],
+      "files": [
+        "tests/integration/ci/final-gate-boundary.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 208
+  "engineering_case_count": 210
 }
