@@ -1,5 +1,7 @@
 # 验证效率：安全检查点与桥接执行说明
 
+**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+
 日期：2026-10-15。历史计划基线为`72cb1a23ce0f921949f96f360e87048659376bec`、分支`codex/agoraweave-tdd-rebuild-clean`。用户先批准CI调度、缓存和证据读取优化，随后明确批准[分层开发验证与宪法修订](validation-tiering-decision.md)，允许当前初始化阶段执行并以Draft PR工程移交。以宪法v3.1.0／cloud-validation v1.2及最新真实证据为准；本说明的历史基线和文档更新本身不授开发准入、任务完成或提速结论。
 
 必须读取根`AGENTS.md`、`.specify/memory/constitution.md`、`plan.md` TD-07A/B/C、`tasks.md`、`contracts/cloud-validation.md` §2.2及`release-evidence.md`。既有ED-11–18、最低／当前OS、全部真实云端TDD与同SHA验收保留；ED-14不等待真机，ED-18只限API24实际省电开启／深色截图的系统警示栏。所有项目安装、构建、测试、运行、截图、交互和门禁计算仍仅Actions，本地只编辑、Git／GitHub控制面及读取已验报告。

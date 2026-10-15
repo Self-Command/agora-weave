@@ -8,6 +8,12 @@
 依据宪法 v3.1.0 区分 development-ready 与 T027 正式 ci-ready。本修订取代下文历史规划中“完整 ci-ready 先于任何业务实现”的含义；
 全部正式验收集合、原失败和 ED-11–18 保留，文档修订本身不构成真实就绪或通过证据。
 
+## ED-20 当前 Phase1 与 Android 开发范围
+
+2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+
+显式Android开发请求仅复用现有基础通道；未知输入与iOS目标拒绝该开发范围，completion仍保原完整正式链。Phase1工程任务收口不调用raw feature complete，handoff保留后续未完成任务；不伪造完整ci-readiness或全平台完成记录。
+
 ## 1. 执行地点与职责
 
 SP 在本地阅读、编写和修改代码／测试／工程资料，进行 Git 操作，推送已获授权的提交，并调度、等待和读取 Actions。本地阅读代码或报告可以辅助修复；编译、静态检查、测试、代码复检、UI 交互检查、视觉复检、回归及项目实际运行必须由 GitHub Actions 云端执行并存证。不得运行本地 lint／typecheck／项目脚本／模拟器／产品，也不得把本地电脑接为 runner。

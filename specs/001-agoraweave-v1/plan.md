@@ -18,6 +18,8 @@
 
 **后续I3／I4状态**：I3按现有HTTP契约补全GET/PATCH部分更新／CAS／幂等及错误PUT拒绝。I4用户明确选A：匿名和登录分享页均使用默认播放策略及页面内操作，不读取或同步账号偏好；账号设置由App管理。TD-07D与HTTP／授权／配置／验证同步该决定。旧tasks的T192／T198及T228／T233等受影响任务和ready快照仍待下一轮同步，跨产物analyze尚未重跑。
 
+**ED-20 当前执行更新**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+
 ## Summary
 
 完整交付通用社交、只读AI、只读分享、真实治理后台、统一配置、可运行三端插件、正式开发者工具及隔离云端开发验证。移动采用Expo/RN/Expo UI原生，后台固定Kiranism/Next/shadcn，服务端Supabase官方Compose自托管。核心统一身份、当前授权、配置、审计、插件生命周期和数据义务；官方业务全部默认启用且可受控停用。

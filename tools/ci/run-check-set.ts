@@ -29,6 +29,7 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
   const object = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
   const sha = (value: unknown) => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
   if (!object(request) || request.schema_version !== 1 || !['feedback', 'green', 'completion'].includes(request.validation_intent) ||
+    (request.development_platform !== undefined && request.development_platform !== 'android') ||
     !object(context) || context.repository !== 'Self-Command/agora-weave' || !sha(context.target_sha) ||
     context.checkout_sha !== context.target_sha || !sha(context.event_sha) ||
     !['push', 'pull_request', 'workflow_dispatch'].includes(context.event) ||
@@ -47,14 +48,23 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
   const developmentPaths = new Set(['tools/ci/collect-evidence.ts', 'tools/ci/download-source.ts',
     'tests/integration/ci/evidence-reuse.spec.ts', 'tests/integration/ci/source-collection.spec.ts',
     'tests/integration/ci/evidence-polling.spec.ts']);
-  const developmentGreen = request.validation_intent === 'green' &&
+  const androidPaths = context.changed_paths.every((file: string) =>
+    /^(apps\/(mobile|admin|share)\/|packages\/|services\/|supabase\/(functions|migrations|upstream)\/|tests\/|tools\/ci\/|infra\/ci\/|\.github\/(workflows|actions)\/|docs\/engineering\/|specs\/001-agoraweave-v1\/|\.specify\/|\.agents\/skills\/agoraweave-ci-|\.claude\/skills\/agoraweave-ci-)/.test(file) &&
+      !/^(tests\/e2e\/ios\/|apps\/mobile\/ios\/)/.test(file) ||
+    ['package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', '.npmrc', '.node-version', '.nvmrc'].includes(file));
+  const androidDevelopment = request.development_platform === 'android' && request.validation_intent === 'green' && androidPaths;
+  if (request.development_platform === 'android' && request.validation_intent !== 'completion' && !androidDevelopment) {
+    return { state: 'blocked', reason_codes: ['outside_android_development_scope'], readiness: 'not_evaluated', ci_ready: false };
+  }
+  const developmentGreen = androidDevelopment || request.validation_intent === 'green' &&
     context.changed_paths.every((file: string) => developmentPaths.has(file));
   return { ...context, state: 'resolved', reason_codes: [], profile: 'bootstrap', validation_intent: request.validation_intent,
     full_required: !developmentGreen && (request.validation_intent !== 'feedback' || !ordinaryFeedback),
     development_required: developmentGreen,
     validation_tier: developmentGreen ? 'development' : ordinaryFeedback && request.validation_intent === 'feedback' ? 'feedback' : 'full',
-    classification: developmentGreen ? 'mapped_engineering_development' : ordinaryFeedback ? 'known_feedback_scope' : 'conservative_complete_scope',
-    readiness: 'not_evaluated', feature_complete: false };
+    classification: androidDevelopment ? 'approved_android_development' : developmentGreen ? 'mapped_engineering_development' : ordinaryFeedback ? 'known_feedback_scope' : 'conservative_complete_scope',
+    development_platform: androidDevelopment ? 'android' : undefined,
+    readiness: 'not_evaluated', ci_ready: false, feature_complete: false };
 }
 
 export function discoverApprovedTargets(input: DiscoveryInput): Record<string, unknown> {

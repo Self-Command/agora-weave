@@ -1,5 +1,7 @@
 # 执行边界
 
+**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+
 依据：根 `AGENTS.md`、宪法 v3.1.0、`specs/001-agoraweave-v1/{spec,plan,tasks}.md`、`contracts/cloud-validation.md`、[分层验证批准](validation-tiering-decision.md)和已确认的 ED-05–18（后续决定取代相应历史范围）。任务清单是唯一完成契约，现有全部 285 项仍未完成。ED-14仅使用Actions云端模拟器，保留最低／当前OS及适用能力矩阵，排除项以`contracts/simulator-validation.md`为准；ED-18仅对API24实际省电开启／深色捕获的系统自有警示栏给出受限not_applicable，不改变应用可读性、主题策略或其他平台验收。
 
 ## 初始化范围

@@ -1,5 +1,11 @@
 # 发布、指定名单、兼容与证据 v1
 
+## ED-20 工程初始化收口
+
+2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+
+此后正文中完整发行/正式ci-readiness的同版证据规则保持；当前Phase1完成另记 `android-development-preparation`，以当前真实development-ready原报告为依据，不写成全平台ci-ready或formal product completion。iOS验证在当前开发阶段后置，既有未执行/失败/取消状态保留。
+
 ## 不可变发行与生产确认
 
 release manifest含`release_id,commit_sha,core/admin/share/mobile/plugin artifact digests,config_version,contract/sdk/ui/native_runtime/native_fingerprint,permission_delta,migration_digests,environment,cohort_version/members_digest,required_evidence_ids,validation_profile/check_set_hash,design_input_digests/baseline_approval_refs,tdd_cycle_refs,ai_review_refs,completion_record_ref,old_client_matrix,health_observation,rollback_limits`；hash整个规范化manifest为plan_digest。任何字段变化视新计划，不能换同标签包。

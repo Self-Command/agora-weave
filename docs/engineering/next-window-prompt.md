@@ -1,5 +1,7 @@
 # 新窗口续接提示词
 
+**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+
 在 `C:\Users\by970\.codex\worktrees\tdd-rebuild\my-project` 继续 `codex/agoraweave-tdd-rebuild-clean`，PR 为 https://github.com/Self-Command/agora-weave/pull/2 。先核对 Git HEAD、分支和工作区；不要在桌面主工作树的旧分支继续，也不要覆盖当前检查点。
 
 调用本工作树的 `$speckit-superpowers-bridge`（sk-sp-br），先读取并遵守 `AGENTS.md`、`.specify/memory/constitution.md` v3.1.0、现有 spec/plan/tasks、`docs/engineering/validation-tiering-decision.md`、`execution-policy.md`、`bridge-next-window.md`、`validation-efficiency.md` 和 cloud-validation/release-evidence 契约。必要时直接读取本工作树 `.agents/skills/speckit-superpowers-bridge/SKILL.md`，不要让桌面旧检查点的技能文案覆盖本分支的新宪法和已批准决定。

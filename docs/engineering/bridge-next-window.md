@@ -1,5 +1,7 @@
 # 2026-10-15：分层验证、工程移交与桥接续接
 
+**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+
 本文件是继续开发的工程交接，不是阶段验收通过记录。用户已明确批准当前阶段按建议修改工作流程及宪法、执行后提交PR并保持工作区干净，再开新窗口执行`sk-sp-br`。依据宪法v3.1.0及[批准与迁移记录](validation-tiering-decision.md)，开发准入改为独立development-ready，T027完整ci-ready与正式合并／阶段验收仍保全部适用证据。实际本次开发证据／PR以最终交接消息和对应原报告为准，不能从本文推断已Green或已验收。
 
 ## 正确工作树与入口

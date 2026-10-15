@@ -4,6 +4,8 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 # Tasks: AgoraWeave v1 — 完整首版
 
+**当前执行口径**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+
 **日期**：2026-10-14。**仓库根**：`C:/Users/by970/Desktop/my-project`。**读取时 HEAD**：`665fffada2dd4fb908b53ad7ca16159ce5e263d8`。
 
 **Input / Prerequisites**：已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v3.1.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
@@ -18,15 +20,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **最新执行决定**：按[ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)同步当前Codex代码和真实云端图像审查、用户服务器私有存储；285个任务ID、真实Actions执行／TDD／基准确认要求不变。
 
-**本轮边界**：按最新规划重新生成本清单并刷新必需`ready`桥接交接，全部任务均未勾选。下列代码／工作流／测试／证据路径是未来拟实施目标，尚未建立或运行。`ready`只说明交接资料齐全，不是`ci-ready`、业务验收、有效`complete`或生产授权。
+**历史生成边界**：初始生成本清单时全部任务未勾选，路径均为拟实施目标。当前进度按真实证据及最新ED-20维护；`ready`仅表示交接资料齐全，任务勾选范围以所在阶段现行条款为准，不表示未实现业务、全平台正式验收或生产批准。
 
 **2026-10-15局部效率修订**：按用户授权仅补充现有编排、缓存、取证、审查及T026／T027的执行要求；不重生成清单，285个ID、依赖DAG／表、故事／需求追溯与勾选状态均保留。实现顺序、真实基线与无可比数据限制见[验证效率执行说明](../../docs/engineering/validation-efficiency.md)，合同见cloud-validation §2.2；本文修改不是优化实现或云验收已通过。
 
-**2026-10-15分层验证批准**：依据[用户决定与迁移记录](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，基础构建／非空测试通道／所需隔离服务健康取得独立development-ready后，可按原故事DAG做业务TDD；不影响该行为的完整CI证据问题并行修复。开发S_G用同oracle／fixture、受影响套件及必要回归，未知影响用完整适用集合；T026／T027正式ci-ready、任务验收、合并／阶段验收／发行同最终SHA完整适用验证仍强制。以下任务的验收责任及全部285个ID／未勾选状态不变；工程移交或Draft PR不表示Setup、T027或阶段已验收。
+**2026-10-15分层验证批准**：依据[用户决定与迁移记录](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，基础构建／非空测试通道／所需隔离服务健康取得独立development-ready后，可按原故事DAG做业务TDD；不影响该行为的完整CI证据问题并行修复。开发S_G用同oracle／fixture、受影响套件及必要回归，未知影响用完整适用集合；T026／T027正式ci-ready、任务验收、合并／阶段验收／发行同最终SHA完整适用验证仍强制。全部285个任务ID保留；最新ED-20已进一步调整本轮Phase1收口口径。历史工程移交未冒称Setup或T027完成，当前勾选另须实际development-ready证据。
 
 ## Format: `[ID] [P?] [Story] Description`
 
-- 每任务严格为`- [ ] Tnnn [P?] [USn?] 动作＋具体路径`；Setup/Foundational/Final无US标签，故事任务必有。
+- 每任务格式为`- [ ] Tnnn [P?] [USn?] 动作＋具体路径`，已完成用`[x]`；Setup/Foundational/Final无US标签，故事任务必有。
 - `[P]`只表示同一波前置全部满足后的不同文件任务可并行；不能跨Red／Green并行，也不要求自动委派。
 - 本地仅编辑／阅读文件、Git及调度／等待／下载读取Actions。项目静态检查、编译构建测试运行和验收全部Actions；“通过工作流”是未来云端调度任务，不在本地执行npm／工具脚本。
 - 一个汇总Red任务须为每个实现行为分别记录红链，不代表阶段内任意实现可以共用无关Red。每个行为的开发S_G须同oracle／fixture、受影响套件及必要回归；实现任务勾选前另须该任务当前适用必需集合、报告读取与审查，不能最后才补TDD或以开发Green代验收。
@@ -49,9 +51,9 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 ## Phase 1: Setup — CI 先行与初始化就绪
 
-**Goal / Purpose**：在bootstrap-only建立真实Actions基础通道及不可绕过的验证计算；独立development-ready准入业务TDD，完整初始化验收在同一最终SHA取得T027 ci-ready。未满足验收的Setup任务保持未完成。
+**Goal / Purpose（ED-20现行）**：建立可供Android业务开发的真实Actions基础通道及工程能力，在当前foundation与原报告绑定的development-ready后收口本阶段；完整跨平台ci-ready与产品正式验收后置。未满足本阶段现行必需条件的任务保持未完成。
 
-**Independent Test**：固定依赖安装、官方 Compose、后台／分享网页和 iOS／Android 无业务壳真实运行联通；报告／差异／交互／归档／清理、两类开发 AI 和桥接拒绝探针均有同 SHA 证据。未实现业务记 not_yet_applicable，不计 passed。
+**Independent Test（ED-20现行）**：固定依赖实际安装/构建、非空工程测试与必要回归、隔离dev/test官方Compose、Web基础交互及当前foundation摘要真实通过；既有Android壳证据保留，受后续行为影响时执行其Android目标测试。工程审查/归档/拒绝能力已实现并有目标测试；完整跨平台正式链、iOS实际运行与全图审查当前后置，不计passed。未实现业务记not_yet_applicable。
 
 ### 初始化边界与最小可运行通道
 
@@ -85,11 +87,11 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T022 实现仅Actions执行的 `tools/ci/bridge-gate.ts` 与结果schema，绑定actor/feature/mode/current SHA/contract/check_set；start核独立development-ready原报告、源与目标祖先及稳定foundation摘要；完整ci-ready不可由开发准入代替，complete冻结当前SHA等待全集合并校下载报告／TDD／AI／基准／回归／read_by/read_at后生成私有 `completion-records/`，新提交或受审输入变化失效；冻结前一次整理代码／测试／tasks／工程资料，完成记录只写外部私库；枚举最新终态并读取全部必需报告／失败／原图，缓存或feedback不授完成，新仓库提交仍重新验真（QR-006,QR-007,QR-008）。
 - [ ] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
 - [ ] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
-- [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 核准当前／最低iOS16.4和Android7、模拟器语义／焦点／适用辅助技术、键盘／媒体／推送通道及最小临时服务凭据；实际需用按ED-07索取，Actions真实最小采集／归档／撤租约探针，按ED-14只验模拟器；能力和排除项按 `contracts/simulator-validation.md`，可执行必需项缺失继续阻塞（QR-004,QR-005,QR-008）。
+- [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 保留Android7/API24与当前API36模拟器准入和实际壳运行证据、辅助能力及最小临时服务凭据；按ED-20当前Android优先，iOS资源/构建/测试/图像审查后置到跨平台阶段，不再阻塞本轮工程开发准备；硬件能力与ED-14/18/19边界仍见 `contracts/simulator-validation.md`，业务激活时执行适用Android目标测试（QR-004,QR-005,QR-008）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T026 通过 `.github/workflows/ci-bootstrap.yml` 与T021共享编排的唯一正式执行链重跑当前冻结依赖的 S_G与所有已激活初始化套件／当前Codex代码与实际图像审查记录／三端壳／清理／拒绝探针；保存原负向状态与预期拒绝观察，处理findings后同SHA重审，核不同事件及实际保护所需check，不随意关闭既有保护；该链须从事件／dispatch真实调用T021共享编排，在bootstrap清单及bootstrap-only范围取得非空安装／健康／目标发现／三端壳／报告归档／当前Codex代码／视觉审查记录的完整同SHA链，全部拒绝探针可核，不等待业务准入；对上述调度／缓存／复用行为先读有效Red再实现，在冻结的最终SHA只沿一条等价正式链取得全部已激活同oracle Green及必要回归，保最低／当前OS、ED-14／18和所有必需探针；按validation-efficiency基线记录真实run／矩阵job数、冷热排队／执行／下载数据及剩余阻塞，无可比数据不承诺比例（QR-001,QR-003,QR-007）。
-- [ ] T027 依据 `tools/ci/validation-manifest.json` 等待最终初始化SHA全必需结果，逐一下载校验读取并写私有 `ci/readiness/`；门禁仅确认ci-ready及初始化任务，不设feature complete、不批准产品基准；依赖／清单／门禁变化须新SHA重新核基础准入；Phase2可在development-ready后开始，正式ci-ready仍完整验收；ci-ready必须包含T021增量执行器的真实调用与原报告读取，非空发现及job依赖链齐全；初始化不可因business-start反向依赖ci-ready形成循环；完整验证前一次冻结代码／测试／tasks／工程资料的目标SHA和清单；已验artifact按身份摘要复用但最终逐一实际读取所有必需报告／失败／原图，最终ci-ready／completion和测量写外部私库，避免为补写通过反复提交；优化完成后沿原DAG继续，未取得完整证据保持未完成（QR-006,QR-007）。
+- [ ] T026 按ED-20通过 `.github/workflows/ci-bootstrap.yml` 与T021共享的 `verify-development.yml` 在当前目标SHA执行固定依赖/类型/lint、非空工程测试及必要回归、隔离dev/test服务与Web基础交互，读取实际原报告并核当前foundation；工程拒绝探针保原失败与观察事实。当前开发请求显式 `development_platform=android`，不启动iOS或全平台原生验收矩阵；已实现的完整审查/归档/门禁能力保留，原完整跨平台验收链后置，未执行项不计passed（QR-001,QR-003,QR-007）。
+- [ ] T027 依据ED-20等待当前Android开发准备必需结果，下载校验读取原报告，核对同目标SHA/attempt/清单/当前foundation及真实 `development-ready`，将完成依据写外部私有工程记录，维护T001–T027勾选和干净工作区/交接；本轮Phase1完成只准入Phase2与Android业务TDD，不设置全平台ci-ready、feature complete或生产批准。iOS验证与完整跨平台正式验收后置；新增业务仍沿原DAG执行目标Red/Green、必要回归及正式Android产品验收（QR-006,QR-007）。
 
 **Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
