@@ -14,7 +14,18 @@ network:
   internal: true
   published_ports: []
   external_services: []
-  access: docker-exec-only-for-bootstrap-health
+  access: docker-exec-for-internal-health-and-ed17-authenticated-health-gateway
+  temporary_https_gateway:
+    decision: ED-17
+    runner: github-hosted
+    route: /auth/v1/health
+    source: docker-exec-to-isolated-auth-service
+    authorization: per-run-attempt-sha-and-environment
+    other_routes: refused
+    other_environment_credentials: refused
+    provider: pinned-cloudflare-temporary-tunnel
+    data: synthetic-non-production-only
+    cleanup: tunnel-gateway-and-temporary-credentials-on-exit
 side_effects:
   signup: disabled
   email: disabled

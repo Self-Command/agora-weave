@@ -1338,6 +1338,36 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T03:18:54Z",
       "cause_summary": "Read all three complete semantic NM failures in the healthy original172-case transport before implementation. Registered Green ran172of172 with zero failed, skipped, cancelled or todo, typecheck and lint passed. Actual native snapshot counts, styled font metrics and observed HOME are separately mandatory; the earlier unmapped discovery refusal remains preserved."
+    },
+    {
+      "cycle_id": "ci-native-system-chrome-001",
+      "behavior_id": "ci.native-system-chrome",
+      "case_ids": [
+        "SC01"
+      ],
+      "requirements": [
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/native-system-chrome.spec.ts",
+      "fixture_file": "tests/integration/ci/native-system-chrome.spec.ts",
+      "red": {
+        "sha": "471ab76d5fb2ccf5cc8da004e2b4add5433ca8e9",
+        "run_id": "38680562688",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "d7641169917e49ea887061fcd7c9bffc4fda84ea",
+        "run_id": "38680757750",
+        "attempt": 1
+      },
+      "implementation_sha": "d7641169917e49ea887061fcd7c9bffc4fda84ea",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T04:17:39Z",
+      "cause_summary": "Read the complete original SC01 semantic failure in healthy transport before implementation: the mandatory native-system-chrome report kind was unsupported. The unchanged oracle accepts a measured rendered clock and refuses missing, unreadable, nonfinite, assumed or incomplete measurements. Actual Green executed173of173 with zero failed, skipped, cancelled or todo; typecheck and lint passed. Native pixel regression and app repair remain separate required evidence; the cancelled shared executor does not count as a passing matrix."
     }
   ]
 }
