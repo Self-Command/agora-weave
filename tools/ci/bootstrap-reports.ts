@@ -18,6 +18,21 @@ export function assessBootstrapRaw(input: unknown): Document {
       identity.runner_environment !== 'github-hosted' || identity.run_id !== input.run_id ||
       !Number.isInteger(input.attempt) || Number(input.attempt) < 1 || Number(identity.attempt) !== input.attempt) return deny('executor_identity_mismatch');
   switch (input.kind) {
+    case 'native-system-chrome': {
+      if (!/^android-api(24|36)$/.test(String(identity.platform)) || !Array.isArray(raw.measurements) ||
+          raw.measurements.length !== 4 || !raw.measurements.every(record)) return deny('system_chrome_measurements_missing');
+      for (const item of raw.measurements) {
+        const bounds = item.status_bar_clock_bounds;
+        if (item.status_bar_measurement_method !== 'rendered-system-clock' ||
+            typeof item.status_bar_contrast_ratio !== 'number' || !Number.isFinite(item.status_bar_contrast_ratio) ||
+            item.status_bar_contrast_ratio < 4.5 || !record(bounds) ||
+            !['x', 'y', 'width', 'height'].every(key => typeof bounds[key] === 'number' && Number.isFinite(bounds[key])) ||
+            Number(bounds.x) < 0 || Number(bounds.y) < 0 || Number(bounds.width) <= 0 || Number(bounds.height) <= 0) {
+          return deny('system_clock_unreadable_or_unmeasured');
+        }
+      }
+      return accept(['native:system-clock-contrast']);
+    }
     case 'native-measurement-details': {
       const platform = String(identity.platform), ios = platform.startsWith('ios-');
       if (!/^(ios-(16\.4|26\.4)|android-api(24|36))$/.test(platform) || !Array.isArray(raw.measurements) ||

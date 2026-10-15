@@ -2647,9 +2647,10 @@
     },
     {
       "id": "ci.native-system-chrome",
+      "command": "ci:contracts",
       "requirements": ["QR-004", "QR-005", "QR-007"],
       "files": ["tests/integration/ci/native-system-chrome.spec.ts"]
     }
   ],
-  "engineering_case_count": 172
+  "engineering_case_count": 173
 }
