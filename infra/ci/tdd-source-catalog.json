@@ -64,9 +64,6 @@
       }
     },
     {
-      "case_ids": [
-        "BS01"
-      ],
       "green": {
         "run_id": "38626126984",
         "sha": "f954f9028c71c0e21a65c762052469392aad195d",
@@ -89,7 +86,10 @@
         "run_id": "38625565628",
         "sha": "331bf8dec0980ce4765fe076d9ef6f8f82c17162",
         "attempt": 1
-      }
+      },
+      "case_titles": [
+        "BS01: actual cloud bridge scope refuses an unregistered mobile business implementation"
+      ]
     },
     {
       "case_ids": [
