@@ -2740,7 +2740,19 @@
       "files": [
         "tests/integration/ci/development-tiering.spec.ts"
       ]
+    },
+    {
+      "id": "ci.tdd-purpose-history",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/tdd-purpose-history.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 196
+  "engineering_case_count": 199
 }
