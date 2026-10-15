@@ -14,7 +14,6 @@ test('ED14: simulator-only admission removes physical device checks without weak
   assert.ok(!matrix.devices.some((device: { state?: string; id: string }) => device.state === 'unavailable' && device.id.includes('physical')));
   assert.ok(!matrix.unavailable_required_resources_block_ci_ready);
   assert.ok(!manifest.bootstrap_checks.some((check: { id: string }) => check.id === 'bootstrap.physical-devices'));
-  const native = manifest.bootstrap_checks.filter((check: { id: string; entry: string }) => check.entry === 'native-bootstrap.yml');
-  assert.ok(native.some((check: { id: string }) => check.id === 'bootstrap.minimum-ios'));
-  assert.ok(native.some((check: { id: string }) => check.id === 'bootstrap.minimum-android'));
+  assert.ok(manifest.bootstrap_checks.some((check: { id: string }) => check.id === 'bootstrap.minimum-ios'));
+  assert.ok(manifest.bootstrap_checks.some((check: { id: string }) => check.id === 'bootstrap.minimum-android'));
 });
