@@ -18,7 +18,17 @@
 
 开发准入记录绑定认证源run／attempt、SHA／checkout／事件、实际原报告、源与目标祖先及稳定foundation摘要；工作流、门禁／执行器、治理契约、冻结依赖／工具链或环境变化须重新核基础证据。普通业务变更仅在基础输入未漂移时沿用；development-ready永不冒充ci-ready或formal complete。
 
-## 检查点和待读取证据
+## 本轮 T033 工程接线批次
+
+本批从 `d0fb6a9d3117545156a6b9bfe52e628e93227f53` 继续，仅修复测试发现与实际执行绑定；不包含业务执行器、核心迁移、seed 或核心业务实现，也不完成 T033。发现器扫描 canonical 的 contract／integration／security／concurrency／recovery 五类 Node 套件；未登记套件保失败。执行器重新核当前发现清单、SHA、manifest 和文件库存，直接执行获准文件集合，报告保留执行文件摘要及发现报告摘要。
+
+- 合格 Red：`f78c3a69f20240f4332bb89b3462fccf50a3e29b`，[run38735498157/1](https://github.com/Self-Command/agora-weave/actions/runs/38735498157)，原 transport artifact `11974220431`、checkset `11973920419` 已核 ZIP 摘要并读取。健康执行208项，205通过、CW01–03三项语义失败，0 skip／cancel／todo。首次 `57c5409` 的 CW02 夹具继承父 Node 测试上下文，原状态保留；先隔离该上下文后重新取 Red，未以夹具故障充目标缺陷。
+- 实现 Green：`09fe5bd0beb8328d443acb4c57f1dc59b26077a8`，[run38736021015/1](https://github.com/Self-Command/agora-weave/actions/runs/38736021015)，原 checkset `11973581633`、transport `11974655654` 已核 ZIP 摘要并读取208/208，0 fail／skip／cancel／todo；CW文件与合格Red一致。该来源的开发基础、完整矩阵及正式gate分别按实际原报告核对，工程Green不能授这些结论。
+- 只读工程代码审查未发现可操作缺陷；审查未判定业务执行器、完整 T033、T027、原生原图或合并验收通过。真实链已登记 `infra/ci/tdd-source-catalog.json`；最终检查点的 journal、基础准入及正式gate仍须读取当次原报告。
+
+本批整理源索引与工程交接会形成新提交，前述Green只证明其原SHA。从PR实际HEAD重新查询工程回归和foundation；按真实当前证据恢复bridge。全部285项canonical任务仍未验收勾选，Draft保持；未提交 formal complete 或阶段验收结论。
+
+## 历史检查点和待读取证据
 
 本次计划更新前代码检查点为 `72cb1a23ce0f921949f96f360e87048659376bec`。其工程、journal 和 bridge 传输结果不能替代最终完整矩阵与当前审查。下列链接是交接时的运行入口；下一窗口应重新查询实际状态和所有 attempt，不能把本文件快照当结果。
 

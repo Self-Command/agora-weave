@@ -8,7 +8,7 @@
 
 本次为工程交接和 Draft PR，完整 T027 ci-ready、阶段验收、可合并或 feature complete 不能从开发准入推导。合并、阶段验收或发行前仍须同一最终 SHA 的全部适用验证，含最低／当前 iOS 与 Android、权限安全、真实交互、当前代码及实际原图审查。保留 ED-11–18，API24 例外不得扩大；285 个 canonical 任务仍未验收勾选，不重新生成任务或改原故事依赖，不补造历史证据。
 
-1. 从 PR 当前 HEAD 的 Actions 查询并下载校验最新原报告，分别确认工程 Green、五项基础 development-readiness、bridge admission 和完整正式 gate 的实际状态。不要用旧 SHA 的全绿图标、caller flags 或 ready 元数据代替准入。已有原失败／未完成项保持原状；不重造已正确行为的 Red。
+1. 从 PR 当前 HEAD 的 Actions 查询并下载校验最新原报告，分别确认工程 Green、五项基础 development-readiness、bridge admission 和完整正式 gate 的实际状态。最近T033工程接线链为Red `f78c3a6`／run38735498157（208执行、205通过、CW01–03三项语义失败）→Green `09fe5bd`／run38736021015（同文件208/208）；已登记source catalog。最终HEAD的回归／journal和基础准入另核，不把该子集当完整T033。不要用旧 SHA 的全绿图标、caller flags 或 ready 元数据代替准入。已有原失败／未完成项保持原状；不重造已正确行为的 Red。
 2. 核对开发源 run/attempt、事件、checkout、原报告、源与目标祖先及完整 foundation 摘要。工作流、门禁、治理契约、依赖／工具链、官方服务、工作区构建配置或 submodule 输入漂移时重新核基础证据。按真实 before_implement receipt 恢复桥接生命周期；business start 使用确切模式、转换及 development 源，不绕过 mandatory reader。
 3. 按原 tasks 的依赖推进 T028–T033 等共享核心准备；目标接口／迁移／夹具和真实非空套件接入后才做 T034 等业务 Red。完整初始化采集、TDD journal、审查／归档缺口可并行闭合，但不虚报或勾选未验任务。
 4. 全部项目安装、构建、测试、运行、截图和交互采集仅通过 GitHub Actions；本地只编辑、Git、控制面、元数据以及下载／阅读已验报告。保留唯一未读 Red、当前必需验证及清理归档，不自动取消这些运行。

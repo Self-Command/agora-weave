@@ -1780,6 +1780,38 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
       "cause_summary": "Read DG01 semantic failure: approved tiering and migration documents entered ordinary documentation feedback routing instead of complete governing-input validation. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
+    },
+    {
+      "cycle_id": "ci-core-target-wiring-001",
+      "behavior_id": "ci.core-target-wiring",
+      "case_ids": [
+        "CW01",
+        "CW02",
+        "CW03"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/core-target-wiring.spec.ts",
+      "fixture_file": "tests/integration/ci/core-target-wiring.spec.ts",
+      "red": {
+        "sha": "f78c3a69f20240f4332bb89b3462fccf50a3e29b",
+        "run_id": "38735498157",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "09fe5bd0beb8328d443acb4c57f1dc59b26077a8",
+        "run_id": "38736021015",
+        "attempt": 1
+      },
+      "implementation_sha": "09fe5bd0beb8328d443acb4c57f1dc59b26077a8",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:36:13.116124Z",
+      "cause_summary": "Read all three semantic failures in healthy Actions transport: canonical non-CI suites disappeared from inventory, an unrelated script returned the expected passing count without executing the approved target, and substituted discovery was accepted. The initial CW02 fixture inherited the outer Node test context; it was isolated before the qualified Red, without changing the target oracle. Qualified Red executed208of208 with205passed and3target assertion failures; Green used the unchanged test/fixture file and executed208of208 with zero failed, skipped, cancelled or todo. This engineering wiring subset does not complete T033 or authorize business execution or formal acceptance."
     }
   ]
 }
