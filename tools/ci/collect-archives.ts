@@ -60,6 +60,8 @@ for (const artifact of artifacts) {
   if (plan.state !== 'archive_planned') throw new Error(`Private index rejected: ${JSON.stringify(plan.reason_codes)}`);
   const remote = `${plan.remote_directory}_${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_RUN_ATTEMPT}`;
   const index = { ...plan, remote_directory: remote, artifact_name: artifact.name,
+    source_reuse: { ...result.reuse_receipt, raw_index_digest: createHash('sha256').update(readFileSync(`${directory}/raw-files.json`)).digest('hex'),
+      raw_files_verified: true },
     source_run_metadata: result.source_run, original_attempts: result.attempts,
     archive_execution: { run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
       checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), source: 'github-actions' },

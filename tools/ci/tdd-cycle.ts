@@ -15,6 +15,11 @@ export function deriveTddCycle(input: unknown): Record<string, unknown> {
     input.green.failed !== 0 || input.final.failed !== 0) return deny('invalid_authenticated_tdd_source');
   const ancestors = input.history.ancestors;
   const red = input.red;
+  for (const record of [input.green, input.final]) {
+    if ((record.validation_intent !== undefined && !['green', 'completion'].includes(String(record.validation_intent))) ||
+      (input.require_authenticated_purpose === true && (record.purpose_authenticated !== true || record.applicable_set_verified !== true ||
+        !['green', 'completion'].includes(String(record.validation_intent))))) return deny('insufficient_authenticated_tdd_purpose');
+  }
   const ancestor = (before: string, after: string) => before !== after &&
     Array.isArray(ancestors[after]) && (ancestors[after] as unknown[]).every(sha) && (ancestors[after] as string[]).includes(before);
   if (input.implementation_sha !== input.green.sha && !ancestor(input.implementation_sha, input.green.sha)) {

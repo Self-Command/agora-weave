@@ -7,13 +7,22 @@ if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH!, 'utf8'));
 let paths = ['unknown'];
-try { paths = execFileSync('git', ['diff', '--name-only', `${sha}^`, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean); } catch { /* Initial or unavailable history requires the complete chain. */ }
+let rangeBase: string | undefined;
+try {
+  const before = process.env.GITHUB_EVENT_NAME === 'pull_request' ? event.pull_request?.base?.sha : event.before;
+  if (typeof before !== 'string' || !/^[a-f0-9]{40}$/.test(before) || /^0+$/.test(before) ||
+    (process.env.GITHUB_EVENT_NAME === 'push' && event.after !== sha)) throw new Error('Unbound event change range');
+  rangeBase = process.env.GITHUB_EVENT_NAME === 'pull_request' ?
+    execFileSync('git', ['merge-base', before, sha], { encoding: 'utf8' }).trim() : before;
+  paths = execFileSync('git', ['diff', '--name-only', rangeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  if (!paths.length) paths = ['unknown'];
+} catch { /* Missing, initial or unavailable event history requires the complete chain. */ }
 const request = existsSync('infra/ci/validation-request.json') ? JSON.parse(readFileSync('infra/ci/validation-request.json', 'utf8')) :
   { schema_version: 1, validation_intent: 'completion' };
 const plan = resolveValidationRequest(request, { target_sha: event.pull_request?.head.sha || process.env.GITHUB_SHA,
   checkout_sha: sha, event: process.env.GITHUB_EVENT_NAME, event_sha: process.env.GITHUB_SHA,
   pr_head_sha: event.pull_request?.head.sha, pr_merge_sha: event.pull_request ? process.env.GITHUB_SHA : undefined,
-  repository: process.env.GITHUB_REPOSITORY, changed_paths: paths,
+  repository: process.env.GITHUB_REPOSITORY, changed_paths: paths, change_range_base: rangeBase,
   check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
   run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT) });
 mkdirSync('validation-plan', { recursive: true });
