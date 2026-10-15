@@ -2639,6 +2639,11 @@
       "id": "ci.native-archive-capacity",
       "command": "ci:contracts",
       "files": ["tests/integration/ci/native-archive-capacity.spec.ts"]
+    },
+    {
+      "id": "ci.native-measurement-details",
+      "command": "ci:contracts",
+      "files": ["tests/integration/ci/native-measurement-details.spec.ts"]
     }
   ],
   "engineering_case_count": 172
