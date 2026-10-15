@@ -368,7 +368,7 @@ jobs:
     needs: [freeze, image-freeze, transport, collect-source, archive]
     if: ${{ always() }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 95
     permissions:
       contents: read
       actions: read
@@ -396,6 +396,7 @@ jobs:
           fi
           export SOURCE_RUN_ID="$source"
           export SOURCE_SHA="$TARGET_SHA"
+          node --experimental-strip-types tools/ci/wait-shared-cli.ts
           attempt=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source" --jq .run_attempt)
           node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$source-$attempt" verify-output || true
           node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$source-$attempt" review-output || true

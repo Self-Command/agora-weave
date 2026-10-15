@@ -114,7 +114,10 @@ const completion = deriveBridgeEvidence({ context: {
   expected_sha: sha, target_sha: sha, expected_contract_digest: context.code.contract_digest, contract_digest: context.code.contract_digest,
   expected_check_set_digest: digest, check_set_digest: digest, source: 'github-actions', runner_environment: 'github-hosted',
   mode: 'bootstrap-only', transition: 'complete', ownership_guard_passed: needs.bridge.result === 'success',
-  required_hooks_ran: needs.bridge.result === 'success', working_tree_clean: true,
+  required_hooks_ran: needs.bridge.result === 'success',
+  working_tree_clean: !execFileSync('git', ['diff', 'HEAD', '--name-only'], { encoding: 'utf8' }).trim() &&
+    execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean)
+      .every(file => ['gate-output/', 'verify-output/', 'review-output/', 'private-receipts/', 'authenticated-downloads/'].some(prefix => file.startsWith(prefix))),
   changed_paths: execFileSync('git', ['diff', '--name-only', '665fffada2dd4fb908b53ad7ca16159ce5e263d8', sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean),
   read_by: readiness.read_by, read_at: readiness.read_at },
   required_ids: manifest.bootstrap_checks.filter((check: Record<string, any>) => check.bootstrap_applicability === 'required').map((check: Record<string, any>) => check.id),
