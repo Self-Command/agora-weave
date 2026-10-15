@@ -56,7 +56,8 @@ shutil.copyfile(put[1], get[2])
 `, { mode: 0o700 });
     process.env.PATH = `${directory}:${saved.PATH}`;
     const record = { target_sha: 'a'.repeat(40), run_id: '123', attempt: 1, state: 'passed' };
-    const result = preservePrivateBridgeRecord(record);
+    let result: Record<string, any> = {};
+    assert.doesNotThrow(() => { result = preservePrivateBridgeRecord(record); }, 'A valid trimmed SSH secret must remain usable');
     assert.equal(result.state, 'archived_and_readback_verified');
     assert.equal(result.sha256, createHash('sha256').update(JSON.stringify(record, null, 2) + '\n').digest('hex'));
     assert.equal(result.temporary_key_files_removed, true);
