@@ -1,5 +1,6 @@
 installed:
 - speckit-superpowers-bridge
+- agoraweave-ci
 settings:
   auto_execute_hooks: true
 hooks:
@@ -34,6 +35,13 @@ hooks:
       is executing
     condition: null
   before_implement:
+  - extension: agoraweave-ci
+    command: agoraweave.ci.start
+    enabled: true
+    optional: false
+    priority: 5
+    description: Authenticate the exact cloud bootstrap or business start admission
+    condition: null
   - extension: speckit-superpowers-bridge
     command: speckit.speckit-superpowers-bridge.guard
     enabled: true
@@ -41,6 +49,14 @@ hooks:
     priority: 10
     prompt: Execute speckit.speckit-superpowers-bridge.guard?
     description: Block speckit.implement for features handed off to Superpowers
+    condition: null
+  after_implement:
+  - extension: agoraweave-ci
+    command: agoraweave.ci.complete
+    enabled: true
+    optional: false
+    priority: 5
+    description: Authenticate full-release evidence before effective feature completion
     condition: null
   after_tasks:
   - extension: speckit-superpowers-bridge

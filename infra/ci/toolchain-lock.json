@@ -2,19 +2,19 @@
   "schema_version": 1,
   "scope": "bootstrap-initial-resolution",
   "readiness": "not_evaluated",
-  "checkout_sha": "7c4f740516919d4002f20763694eb4827dade865",
-  "run_id": "38606477103",
+  "checkout_sha": "20a513c244e3f443146de8daf125139666d026f4",
+  "run_id": "38635654333",
   "attempt": "1",
   "node": "v22.23.3",
   "npm": "10.9.9",
-  "runner_image": "20261004.327.1",
+  "runner_image": "20261012.334.1",
   "runner_os": "Linux",
   "lockfile_version": 3,
-  "lock_sha256": "dd97ae49cd831171de62f21d1a681f69621a1f9ea8d449ed9da3159530391b45",
+  "lock_sha256": "8cb3ebedea518954777aee8e24ea04ed7fcdb7ec68399094f9005c048e89651c",
   "workflow_actions": {
     "checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "setup_node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
     "upload_artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
   },
-  "created_at": "2026-10-14T17:25:38.154Z"
+  "created_at": "2026-10-14T20:52:30.799Z"
 }

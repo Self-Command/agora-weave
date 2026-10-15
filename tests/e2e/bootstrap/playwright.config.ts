@@ -10,7 +10,7 @@ export default defineConfig({
   retries: 0,
   workers: 2,
   outputDir: '../../../web-output/results',
-  reporter: [['list'], ['json', { outputFile: 'web-output/playwright-report.json' }]],
+  reporter: [['list'], ['json', { outputFile: fileURLToPath(new URL('../../../web-output/playwright-report.json', import.meta.url)) }]],
   use: { browserName: 'chromium', trace: 'on', screenshot: 'on', video: 'on' },
   webServer: [
     { command: 'npm run start --workspace apps/admin -- --port 3100 --hostname 127.0.0.1',

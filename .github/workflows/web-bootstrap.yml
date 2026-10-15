@@ -3,6 +3,8 @@ on:
   workflow_call:
 permissions:
   contents: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 jobs:
   web:
     runs-on: ubuntu-24.04
@@ -22,11 +24,12 @@ jobs:
         run: |
           set -eu
           mkdir -p web-output
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts web-output
           npm run ci:install > web-output/install.log 2>&1
           npm run ci:build:web > web-output/build.log 2>&1
           npx --no-install playwright install --with-deps chromium > web-output/browser-install.log 2>&1
           export CHECKOUT_SHA=$(git rev-parse HEAD)
-          npm run ci:e2e:web > web-output/web-test.log 2>&1 || { cat web-output/web-test.log; exit 1; }
+          npm run ci:e2e > web-output/web-test.log 2>&1 || { cat web-output/web-test.log; exit 1; }
       - name: Preserve original captures and traces
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

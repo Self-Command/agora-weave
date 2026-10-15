@@ -18,6 +18,19 @@
   ],
   "bootstrap_checks": [
     {
+      "id": "bootstrap.tooling",
+      "task": "T024",
+      "entry": "tooling-bootstrap.yml",
+      "requirements": [
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "bootstrap_applicability": "required",
+      "activation": "bootstrap",
+      "actual_state": "not_executed"
+    },
+    {
       "id": "bootstrap.install",
       "task": "T005",
       "entry": "ci:install",
@@ -238,19 +251,6 @@
     },
     {
       "id": "bootstrap.minimum-android",
-      "task": "T025",
-      "entry": "device-matrix.json",
-      "requirements": [
-        "QR-004",
-        "QR-005",
-        "QR-008"
-      ],
-      "bootstrap_applicability": "required",
-      "activation": "bootstrap",
-      "actual_state": "not_executed"
-    },
-    {
-      "id": "bootstrap.physical-devices",
       "task": "T025",
       "entry": "device-matrix.json",
       "requirements": [
@@ -2445,7 +2445,119 @@
         "tests/integration/ci/archive.spec.ts"
       ],
       "id": "ci.archive"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/review-binding.spec.ts"
+      ],
+      "id": "ci.review-binding"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-source.spec.ts"
+      ],
+      "id": "ci.tdd-source"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/legacy-transition.spec.ts"
+      ],
+      "id": "ci.legacy-transition"
+    },
+    {
+      "command": "ci:contracts",
+      "id": "ci.bootstrap-raw",
+      "files": [
+        "tests/integration/ci/bootstrap-reports.spec.ts"
+      ]
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/source-aggregate.spec.ts"
+      ],
+      "id": "ci.source-aggregate"
+    },
+    {
+      "id": "ci.mandatory-hooks",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/mandatory-hooks.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.actual-bridge-scope",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/bridge-scope.spec.ts"
+      ]
+    },
+    {
+      "files": [
+        "tests/integration/ci/orchestration-source.spec.ts"
+      ],
+      "id": "ci.orchestration-source",
+      "command": "ci:contracts"
+    },
+    {
+      "id": "ci.tdd-implementation-order",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-ancestry.spec.ts"
+      ]
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/required-entries.spec.ts"
+      ],
+      "id": "ci.required-shared-entries"
+    },
+    {
+      "id": "ci.review-json-schema",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/review-schema.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.original-tdd-case-selection",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-cases.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.original-xctest-archive",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/xcresult-archive.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.event-bound-source-selection",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/source-run-selection.spec.ts"
+      ]
+    },
+    {
+      "files": [
+        "tests/integration/ci/tooling-admission.spec.ts"
+      ],
+      "id": "ci.actual-tooling-admission",
+      "command": "ci:contracts"
+    },
+    {
+      "files": [
+        "tests/integration/ci/web-report-handoff.spec.ts"
+      ],
+      "id": "ci.actual-web-report-handoff",
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 96
+  "engineering_case_count": 140
 }

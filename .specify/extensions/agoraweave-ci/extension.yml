@@ -1,0 +1,28 @@
+schema_version: "1.0"
+extension:
+  id: agoraweave-ci
+  name: AgoraWeave cloud admission
+  version: "0.1.0"
+  description: Mandatory project bridge admission and completion readers
+  author: AgoraWeave
+  category: process
+  effect: read-only
+requires:
+  speckit_version: ">=1.0.12"
+provides:
+  commands:
+    - name: agoraweave.ci.start
+      file: commands/agoraweave.ci.start.md
+      description: Read the exact current cloud start admission
+    - name: agoraweave.ci.complete
+      file: commands/agoraweave.ci.complete.md
+      description: Read full-release admission before feature completion
+hooks:
+  before_implement:
+    command: agoraweave.ci.start
+    optional: false
+    description: Authenticate current start admission
+  after_implement:
+    command: agoraweave.ci.complete
+    optional: false
+    description: Authenticate current full-release completion

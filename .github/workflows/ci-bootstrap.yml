@@ -6,6 +6,9 @@ on:
 
 permissions:
   contents: read
+  actions: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
 jobs:
   freeze:
@@ -17,6 +20,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - name: Install fixed Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -54,8 +58,10 @@ jobs:
           const request = JSON.parse(readFileSync('infra/ci/dependency-freeze-request.json', 'utf8'));
           const root = JSON.parse(readFileSync('package.json', 'utf8'));
           const previous = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
+          const allowed = { eslint: '10.12.0', '@eslint/js': '10.0.1', 'typescript-eslint': '8.71.2', ajv: '8.20.0', 'ajv-formats': '3.0.1' };
           if (request.scope !== 'bootstrap-test-tool-extension' || request.previous_lock_sha256 !== previous ||
-            request.package !== '@playwright/test' || root.devDependencies?.[request.package] !== request.version) {
+            !request.packages || Object.keys(request.packages).length !== Object.keys(allowed).length ||
+            Object.entries(allowed).some(([name, version]) => request.packages[name] !== version || root.devDependencies?.[name] !== version)) {
             throw new Error('Unmatched cloud dependency freeze request');
           }
           NODE
@@ -99,6 +105,17 @@ jobs:
         run: |
           npm run ci:discover
           npm run ci:run
+      - name: Run the actual independent linter
+        run: |
+          mkdir -p lint-output
+          npm run ci:lint
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-lint-${{ github.run_id }}-${{ github.run_attempt }}
+          path: lint-output/
+          if-no-files-found: error
+          retention-days: 7
       - name: Preserve discovery and original execution report
         if: ${{ always() && hashFiles('tools/ci/validation-manifest.json') != '' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -121,6 +138,7 @@ jobs:
         run: |
           set -eu
           mkdir -p web-output
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts web-output
           npx --no-install playwright install --with-deps chromium > web-output/browser-install.log 2>&1
           npx --no-install playwright --version > web-output/playwright-version.txt
           export CHECKOUT_SHA=$(git rev-parse HEAD)
@@ -206,7 +224,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
-          fetch-depth: 1
+          fetch-depth: 0
       - name: Install fixed Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -247,6 +265,7 @@ jobs:
         id: assertions
         shell: bash
         run: |
+          npm run ci:install
           set +e
           node --experimental-strip-types --test --test-reporter=tap \
             tests/contract/ci/*.spec.ts tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts \
@@ -335,207 +354,56 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  archive-transport:
-    name: Private raw transport archive (not ci-ready)
-    needs: transport
+  archive:
+    name: Private complete bootstrap archive
+    needs: [freeze, image-freeze, transport, collect-source]
     if: ${{ always() && github.event_name == 'push' && github.repository == 'Self-Command/agora-weave' }}
+    uses: ./.github/workflows/archive-bootstrap.yml
+    with:
+      source_run_id: ${{ github.run_id }}
+      source_sha: ${{ github.sha }}
+    secrets: inherit
+  gate:
+    name: agoraweave/ci-gate
+    needs: [freeze, image-freeze, transport, collect-source, archive]
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 6
     permissions:
       contents: read
       actions: read
-    env:
-      TARGET_SHA: ${{ github.sha }}
     steps:
-      - name: Install fixed archive Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
-      - name: Download and verify original raw archives
-        shell: bash
+      - name: Authenticate the current shared executor and recompute every frozen requirement
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          node --input-type=module <<'NODE'
-          import { createHash } from 'node:crypto';
-          import { mkdirSync, writeFileSync } from 'node:fs';
-          import { execFileSync } from 'node:child_process';
-          const root = 'https://api.github.com/repos/Self-Command/agora-weave';
-          const headers = { Authorization: `Bearer ${process.env.GH_TOKEN}`,
-            Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
-          const sources = [
-            { id: '38593654084', sha: '1c81fb28cc9d5cf16394a476a400db2b71577df9' },
-            { id: '38600654805', sha: 'e02159512f0d8411d15beea0d5725c3a1cee2a22' },
-            { id: '38607776284', sha: '0a45ec581e68fb1dc6a1fc16853f94ba6e78ce5a' },
-            { id: process.env.GITHUB_RUN_ID, sha: process.env.TARGET_SHA },
-          ];
-          async function metadata(path) {
-            const response = await fetch(root + path, { headers });
-            if (!response.ok) throw new Error(`Metadata HTTP ${response.status}`);
-            return await response.json();
-          }
-          mkdirSync('evidence-upload', { recursive: true });
-          for (const source of sources) {
-            const run = await metadata(`/actions/runs/${source.id}`);
-            if (run.head_sha !== source.sha || run.event !== 'push' || run.name !== 'CI bootstrap') throw new Error('Source run mismatch');
-            const jobs = await metadata(`/actions/runs/${source.id}/attempts/${run.run_attempt}/jobs?per_page=100`);
-            const transport = jobs.jobs.filter(job => job.name === 'Bootstrap transport (not ci-ready)');
-            if (transport.length !== 1 || transport[0].status !== 'completed') throw new Error('Source transport is not complete');
-            const listing = await metadata(`/actions/runs/${source.id}/artifacts?per_page=100`);
-            const matches = listing.artifacts.filter(a => !a.expired && a.name === `bootstrap-transport-${source.id}-${run.run_attempt}`);
-            if (matches.length !== 1) throw new Error('Missing or ambiguous raw archive');
-            const artifact = matches[0];
-            const response = await fetch(`${root}/actions/artifacts/${artifact.id}/zip`, { headers });
-            if (!response.ok) throw new Error(`Artifact HTTP ${response.status}`);
-            const bytes = Buffer.from(await response.arrayBuffer());
-            const digest = createHash('sha256').update(bytes).digest('hex');
-            if (`sha256:${digest}` !== artifact.digest) throw new Error('Raw archive digest mismatch');
-            const directory = `evidence-upload/${source.id}`;
-            mkdirSync(directory, { recursive: true });
-            const archivePath = `${directory}/source.zip`;
-            writeFileSync(archivePath, bytes);
-            const health = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'transport.json'], { encoding: 'utf8' }));
-            if (health.target_sha !== source.sha || health.checkout_sha !== source.sha || health.run_id !== source.id) throw new Error('Raw checkout identity mismatch');
-            const record = {
-              schema_version: 1, state: 'downloaded_and_verified', readiness: 'not_evaluated',
-              repository: 'Self-Command/agora-weave', source_run: source.id,
-              source_attempt: run.run_attempt, source_sha: source.sha,
-              source_workflow_conclusion: run.conclusion,
-              source_job_conclusion: transport[0].conclusion,
-              artifact_id: artifact.id, archive_sha256: digest, archive_bytes: bytes.length,
-              contract_digests: health.contract_digests,
-              archive_run: process.env.GITHUB_RUN_ID, archive_attempt: process.env.GITHUB_RUN_ATTEMPT,
-              retention_class: 'ordinary', retention_days: 90,
-              remote_directory: `/archive/ordinary/${source.sha}_${source.id}_${run.run_attempt}_${process.env.GITHUB_RUN_ID}_${process.env.GITHUB_RUN_ATTEMPT}`,
-              verified_at: new Date().toISOString(),
-            };
-            if (source.id === '38593654084') {
-              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
-              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
-              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' || !tap.includes('# fail 30') || !tap.includes("actual: 'unknown'")) throw new Error('Observed Red source changed');
-              const testDigests = {};
-              for (const path of ['tests/contract/ci/evidence.spec.ts', 'tests/integration/ci/aggregate.spec.ts', 'tests/fixtures/bootstrap/evidence.ts']) {
-                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
-                if (file.encoding !== 'base64') throw new Error('Cannot bind original test input');
-                testDigests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
-              }
-              record.red_observation = {
-                cycle_id: 'ci-evidence-001', state: 'red_observed',
-                behavior_ids: ['ci.report-assessment', 'ci.required-check-aggregation'],
-                requirements: ['QR-001', 'QR-003', 'QR-004', 'QR-006', 'QR-007'],
-                oracle: 'Nonempty matching evidence can pass; missing, failed, mismatched or incomplete required evidence blocks',
-                case_ids: ['E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09', 'E10', 'E11', 'A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07'],
-                S_R: source.sha, source_run: source.id, source_attempt: run.run_attempt,
-                test_fixture_digests: testDigests, expected_assertion_failures: 30,
-                actual_failure: 'Callable implementation shell returns unknown instead of passed or blocked; 30 semantic assertions fail',
-                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
-                  reviewed_at: '2026-10-14T16:27:00Z', health: 'success',
-                  conclusion: 'Observed raw TAP and checkout health; failure is absent evidence/aggregate behavior, no import/compile/discovery/credential error' },
-                green_state: 'not_implemented', raw_failure_preserved: true,
-              };
-            }
-            if (source.id === '38600654805') {
-              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
-              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
-              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' || !tap.includes('# pass 30') || !tap.includes('# fail 35')) throw new Error('Observed gate Red source changed');
-              const paths = ['tests/integration/ci/verify-orchestration.spec.ts', 'tests/integration/ci/tdd-cycle.spec.ts',
-                'tests/security/ci/bridge-gate.spec.ts', 'tests/security/ci/review-baseline.spec.ts', 'tests/fixtures/bootstrap/gates.ts'];
-              const digests = {};
-              for (const path of paths) {
-                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
-                if (file.encoding !== 'base64') throw new Error('Cannot bind gate Red input');
-                digests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
-              }
-              record.red_observation = {
-                cycle_id: 'ci-gates-002', state: 'red_observed', S_R: source.sha,
-                source_run: source.id, source_attempt: run.run_attempt,
-                behavior_ids: ['ci.orchestration-graph', 'ci.tdd-cycle', 'ci.bridge-gate', 'ci.codex-review-baseline'],
-                requirements: ['QR-003', 'QR-005', 'QR-007', 'QR-008', 'QR-009', 'QR-010'],
-                test_fixture_digests: digests, assertion_failures: 35, existing_regressions_passed: 30,
-                actual_failure: 'Four callable gate shells return unknown; semantic acceptance/rejection assertions fail',
-                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
-                  reviewed_at: '2026-10-14T16:43:00Z', health: 'success',
-                  conclusion: 'Read all 35 raw failures; imports/discovery healthy; prior 30 behaviors pass; target gate behavior absent' },
-                green_state: 'not_implemented', raw_failure_preserved: true,
-              };
-            }
-            if (source.id === '38607776284') {
-              const tap = execFileSync('unzip', ['-p', archivePath, 'engineering.tap'], { encoding: 'utf8' });
-              const outcome = JSON.parse(execFileSync('unzip', ['-p', archivePath, 'outcome.json'], { encoding: 'utf8' }));
-              if (outcome.outcome !== 'success' || outcome.assertions_outcome !== 'failure' ||
-                !tap.includes('# pass 65') || !tap.includes('# fail 12') || !tap.includes("actual: 'unknown'")) throw new Error('Observed collector Red source changed');
-              const paths = ['tests/integration/ci/source-collection.spec.ts', 'tests/fixtures/bootstrap/source.ts'];
-              const digests = {};
-              for (const path of paths) {
-                const file = await metadata(`/contents/${path}?ref=${source.sha}`);
-                if (file.encoding !== 'base64') throw new Error('Cannot bind collector Red input');
-                digests[path] = createHash('sha256').update(Buffer.from(file.content, 'base64')).digest('hex');
-              }
-              record.red_observation = {
-                cycle_id: 'ci-source-003', state: 'red_observed', S_R: source.sha,
-                source_run: source.id, source_attempt: run.run_attempt,
-                behavior_ids: ['ci.source-authentication', 'ci.attempt-preservation', 'ci.raw-digest', 'ci.redirect-credential-boundary'],
-                requirements: ['QR-006', 'QR-007', 'QR-009'], case_ids: ['C01', 'C02', 'C03', 'C04', 'C05'],
-                test_fixture_digests: digests, assertion_failures: 12, existing_regressions_passed: 65,
-                actual_failure: 'Callable collector returns unknown; all 12 source acceptance/rejection assertions fail',
-                red_cause_review: { reviewer: 'current-codex', session_ref: 'agoraweave-ci-bootstrap',
-                  reviewed_at: '2026-10-14T17:38:03Z', health: 'success',
-                  conclusion: 'Read raw failures and healthy transport; no import/discovery/credential failure; target source authentication absent' },
-                green_state: 'separate_current_evidence_required', raw_failure_preserved: true,
-              };
-            }
-            writeFileSync(`${directory}/provenance.json`, JSON.stringify(record, null, 2) + '\n');
-          }
-          NODE
-      - name: Transfer to dedicated SFTP storage and verify readback
+          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         shell: bash
-        env:
-          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
-          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
-          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
-          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
         run: |
           set -eu
-          umask 077
-          key="$RUNNER_TEMP/evidence-ssh-key"
-          hosts="$RUNNER_TEMP/evidence-known-hosts"
-          trap 'rm -f "$key" "$key.pub" "$hosts" "$RUNNER_TEMP/evidence-sftp-batch"' EXIT
-          test -n "$EVIDENCE_SSH_PRIVATE_KEY"
-          test -n "$EVIDENCE_SSH_HOST"
-          test -n "$EVIDENCE_SSH_USER"
-          test -n "$EVIDENCE_SSH_KNOWN_HOSTS"
-          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
-          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
-          ssh-keygen -y -P '' -f "$key" > "$key.pub"
-          EVIDENCE_SSH_USER=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
-          EVIDENCE_SSH_HOST=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
-          for directory in evidence-upload/*; do
-            remote=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1])).remote_directory)' "$directory/provenance.json")
-            mkdir -p "$directory/readback"
-            printf 'mkdir %s\nput %s/source.zip %s/source.zip\nput %s/provenance.json %s/provenance.json\nget %s/source.zip %s/readback/source.zip\nget %s/provenance.json %s/readback/provenance.json\n' \
-              "$remote" "$directory" "$remote" "$directory" "$remote" "$remote" "$directory" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
-            sftp -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
-              -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
-              "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
-            cmp "$directory/source.zip" "$directory/readback/source.zip"
-            cmp "$directory/provenance.json" "$directory/readback/provenance.json"
-            node --input-type=module - "$directory" <<'NODE'
-          import { readFileSync, writeFileSync } from 'node:fs';
-          import { createHash } from 'node:crypto';
-          const directory = process.argv[2];
-          const provenance = JSON.parse(readFileSync(`${directory}/provenance.json`, 'utf8'));
-          const actual = createHash('sha256').update(readFileSync(`${directory}/readback/source.zip`)).digest('hex');
-          if (actual !== provenance.archive_sha256) throw new Error('Remote readback digest mismatch');
-          writeFileSync(`${directory}/receipt.json`, JSON.stringify({ ...provenance,
-            state: 'archived_raw_and_readback_verified', archived_at: new Date().toISOString(),
-            meaning: 'Raw transport only; source failure remains failure; not ci-ready',
-          }, null, 2) + '\n');
-          NODE
-            printf 'put %s/receipt.json %s/receipt.json\nget %s/receipt.json %s/readback/receipt.json\n' \
-              "$directory" "$remote" "$remote" "$directory" > "$RUNNER_TEMP/evidence-sftp-batch"
-            sftp -b "$RUNNER_TEMP/evidence-sftp-batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes \
-              -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 \
-              "$EVIDENCE_SSH_USER@$EVIDENCE_SSH_HOST"
-            cmp "$directory/receipt.json" "$directory/readback/receipt.json"
-          done
-          printf 'Original source results archived and readback verified; readiness not evaluated\n' >> "$GITHUB_STEP_SUMMARY"
+          source=$(gh run list --repo "$GITHUB_REPOSITORY" --commit "$TARGET_SHA" --workflow verify-release.yml --event "$GITHUB_EVENT_NAME" --branch "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" --json databaseId --jq 'if length == 1 then .[0].databaseId else empty end')
+          mkdir -p gate-output
+          if [ -z "$source" ]; then
+            printf '{"state":"blocked","reason_codes":["missing_or_ambiguous_current_shared_executor"],"target_sha":"%s","feature_complete":false}\n' "$TARGET_SHA" > gate-output/readiness.json
+            exit 1
+          fi
+          export SOURCE_RUN_ID="$source"
+          export SOURCE_SHA="$TARGET_SHA"
+          attempt=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source" --jq .run_attempt)
+          node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$source-$attempt" verify-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$source-$attempt" review-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$source-$attempt" private-receipts || true
+          node --experimental-strip-types tools/ci/aggregate-cli.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: gate-output/
+          if-no-files-found: error
+          retention-days: 7
