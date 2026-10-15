@@ -69,7 +69,7 @@ export async function collectEvidence(request: CollectionRequest, fetcher: typeo
     const matches = artifacts.filter(artifact => artifact.name === request.artifact_name);
     if (matches.length !== 1) fail('ambiguous_or_missing_artifact');
     const artifact = matches[0];
-    const maxBytes = 64 * 1024 * 1024;
+    const maxBytes = 128 * 1024 * 1024;
     if (!Number.isSafeInteger(artifact.id) || Number(artifact.id) < 1 || artifact.expired !== false ||
       !Number.isSafeInteger(artifact.size_in_bytes) || Number(artifact.size_in_bytes) < 1 || Number(artifact.size_in_bytes) > maxBytes ||
       !fields(artifact.workflow_run) || String(artifact.workflow_run.id) !== request.run_id ||

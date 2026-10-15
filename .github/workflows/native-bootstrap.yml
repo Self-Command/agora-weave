@@ -158,6 +158,17 @@ jobs:
           done
           xcrun simctl ui "$device" content_size large
           xcrun simctl shutdown "$device"
+      - name: Export diagnostic attachments from every completed iOS result bundle
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -eu
+          for bundle in native-output/ios-tests-*.xcresult; do
+            if [ ! -d "$bundle" ]; then continue; fi
+            name=$(basename "$bundle" .xcresult)
+            xcrun xcresulttool get test-results summary --path "$bundle" > "native-output/$name.json"
+            xcrun xcresulttool export attachments --path "$bundle" --output-path "native-output/$name-diagnostics"
+          done
       - name: Remove temporary iOS HTTPS configuration
         if: ${{ always() }}
         shell: bash
