@@ -73,7 +73,7 @@ const document = { state: 'passed', readiness_kind: 'development-ready', develop
   check_set_digest: checkSetDigest, foundation_digests: foundation, required_ids: developmentRequiredIds, observed,
   reports_read: true, read_by: 'actions-original-report-reader', read_at: new Date().toISOString(),
   regressions_passed: observed.some(check => check.id === 'development.engineering' && check.state === 'passed'), feature_complete: false,
-  limitation: 'Foundational development channel only; full current-SHA acceptance and current Codex reviews remain required before merge or stage completion.' };
+  limitation: 'Foundational development channel only; ED-20 permits Phase1 engineering preparation closure; full current-SHA product acceptance and current Codex reviews remain required before merge or release.' };
 const ready = purpose.schema_version === 1 && validDevelopmentReadiness({ authenticated: true, ancestor_verified: true, document }, foundation, checkSetDigest);
 const result = { ...document, state: ready ? 'passed' : 'blocked', development_ready: ready,
   reason_codes: ready ? [] : ['incomplete_original_development_evidence'] };

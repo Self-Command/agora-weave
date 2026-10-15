@@ -1906,6 +1906,67 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T13:37Z",
       "cause_summary": "Read both target semantic assertion failures from authenticated healthy cloud transport before implementation: the approved bounded clock exclusion and mandatory complete measurements were unavailable. Qualified Red executed215 cases with213 passed and2 target failures. Green used the unchanged test/fixture and executed215of215 with zero failed, skipped, cancelled or todo; typecheck passed. ED19 is limited to the actual API24 SystemUI Clock at font_scale2 with measured clipping and an oversized actual system font, and exclusions do not count as passed. Native runtime and final current-SHA acceptance remain independently required."
+    },
+    {
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "green": {
+        "sha": "eb9daaa6ac81295d242a32ba34c1d57fd527f28c",
+        "run_id": "38749332023",
+        "attempt": 1
+      },
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cycle_id": "ci-android-development-scope-001",
+      "behavior_id": "ci.android-development-scope",
+      "case_ids": [
+        "AD01",
+        "AD02"
+      ],
+      "test_file": "tests/integration/ci/android-development-scope.spec.ts",
+      "fixture_file": "tests/integration/ci/android-development-scope.spec.ts",
+      "red": {
+        "sha": "6a34d486ce3d16dfca8eef01cf39e9e9523325af",
+        "run_id": "38747329749",
+        "attempt": 1
+      },
+      "implementation_sha": "cb5ef5319cea58a4f395aec33625c5741bbc7f3c",
+      "cause_read_at": "2026-10-15T14:01:12.0505861Z",
+      "cause_summary": "Read two target semantic failures from healthy Actions: approved Android development demanded the full matrix, and invalid development platform values were admitted. Qualified Red executed217:215pass,2targetfail,0skip/cancel/todo; original ZIP11979986787 and freeze11978813111 verified and read before implementation. Unchanged AD01/AD02 oracle passed in Green218of218, no failures/skips/cancels/todo; original Green transport11980665950 and freeze11980666130 verified and read. This authorizes only the ED20 development scope, not formal ci-ready."
+    },
+    {
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "green": {
+        "sha": "eb9daaa6ac81295d242a32ba34c1d57fd527f28c",
+        "run_id": "38749332023",
+        "attempt": 1
+      },
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cycle_id": "ci-android-development-pr-range-001",
+      "behavior_id": "ci.android-development-pr-range",
+      "case_ids": [
+        "AD03"
+      ],
+      "test_file": "tests/integration/ci/android-development-pr-range.spec.ts",
+      "fixture_file": "tests/integration/ci/android-development-pr-range.spec.ts",
+      "red": {
+        "sha": "068f4462be2492692f170346bafd425276625718",
+        "run_id": "38748722926",
+        "attempt": 1
+      },
+      "implementation_sha": "eb9daaa6ac81295d242a32ba34c1d57fd527f28c",
+      "cause_read_at": "2026-10-15T14:12Z",
+      "cause_summary": "Read the AD03 target semantic failure before eb9daaa: the cumulative PR retained two known initialization inputs and incorrectly resolved blocked rather than development. Qualified Red executed218:217pass,1targetfail,0skip/cancel/todo; ZIP11978694939 and freeze11979193876 verified and read. Fix permits only the exact existing iOS shell probe path and pinned tooling gitlink; iOS business/native/unknown inputs remain rejected. Unchanged oracle passed Green218of218 with zero failures/skips/cancels/todo; transport11980665950 and freeze11980666130 verified and read. No iOS execution or formal completion is authorized."
     }
   ]
 }

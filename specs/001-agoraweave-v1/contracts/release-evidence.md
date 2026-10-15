@@ -51,7 +51,7 @@ status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown�
 
 | 记录 | 必需关联与语义 |
 | --- | --- |
-| development_readiness | 认证源run／attempt、源与目标SHA／checkout／事件、非空基础构建／测试／所需服务原报告、清单及稳定foundation摘要、祖先关系；工具／工作流／治理／冻结依赖／环境变化须重核，只准入business-increment开发 |
+| development_readiness | 认证源run／attempt、源与目标SHA／checkout／事件、非空基础构建／测试／所需服务原报告、清单及稳定foundation摘要、祖先关系；工具／工作流／治理／冻结依赖／环境变化须重核，用于准入business-increment开发，并作为ED-20 Phase1工程收口依据，不授产品完整验收 |
 | ci_readiness | 初始化最终SHA、契约／清单／toolchain摘要、真实服务／网页／双端壳／采集／审查／拒绝探针报告及资源准入；未适用业务单列，不授feature完成 |
 | tdd_cycle | 目标行为／需求／case、S_R／S_G／final_sha、测试／夹具／oracle摘要、红运行／断言及缺行为原因确认、绿和回归报告；红先于实现 |
 | baseline_candidate／approval | 设计输入摘要、实际捕获SHA、各端页面状态／设备字体配置、截图／参考／差异／交互／AI报告；具体候选摘要的有权确认和范围，不自动批准 |

@@ -4,15 +4,17 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 # Tasks: AgoraWeave v1 — 完整首版
 
-**当前执行口径**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+**当前执行口径**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
 
-**日期**：2026-10-14。**仓库根**：`C:/Users/by970/Desktop/my-project`。**读取时 HEAD**：`665fffada2dd4fb908b53ad7ca16159ce5e263d8`。
+**更新日期**：2026-10-15。当前工程工作树为`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`，分支`codex/agoraweave-tdd-rebuild-clean`。历史规划起点为`665fffada2dd4fb908b53ad7ca16159ce5e263d8`。
 
 **Input / Prerequisites**：已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v3.1.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
 
 **Contracts**：[HTTP](contracts/http-api.md)、[授权／事件](contracts/authorization-events.md)、[AI](contracts/ai-tools.md)、[配置](contracts/configuration.md)、[SDK](contracts/plugin-sdk.md)、[manifest schema](contracts/plugin-manifest.schema.json)、[发行证据](contracts/release-evidence.md)、[云端验证](contracts/cloud-validation.md) 与 [目录](contracts/README.md)。
 
-**本次 I3/I4**：App本人偏好统一`GET/PATCH /me/preferences`，PATCH部分更新保未列字段及CAS／幂等，错误PUT拒绝。ED-10明确匿名／登录分享仅取合法平台默认与当前页面操作，账号设置仍由App管理；不新增账号偏好投影、读取或同步路径。现有285个任务ID和全部故事／首版范围保留，以下为未来Actions实现和验证责任，不是运行通过。
+**阶段一进度**：T001–T027按ED-20现行要求完成；其余258项保持未勾选。本次勾选依据工程实现及目标Red/Green、`eb9daaa`的真实五项development-ready原报告（run38749332496/1，已核ZIP并读取）。本检查点提交后对其最终SHA再核同集合，最终外部记录以该SHA为准，未取得时不宣称最终核验通过。详细边界见[交接](../../docs/engineering/bridge-next-window.md)。
+
+**本次 I3/I4**：App本人偏好统一`GET/PATCH /me/preferences`，PATCH部分更新保未列字段及CAS／幂等，错误PUT拒绝。ED-10明确匿名／登录分享仅取合法平台默认与当前页面操作，账号设置仍由App管理；不新增账号偏好投影、读取或同步路径。现有285个任务ID和全部故事／首版范围保留，T001–T027按ED-20工程口径更新；其余为后续Actions实现/验证责任，未实现业务不计通过。
 
 **Tests**：用户明确要求CI先行与Actions云端TDD。功能、契约、授权安全、并发、集成、真实端到端、视觉／原生／读屏、回归、恢复及测量均按适用范围强制执行。每行为先测试，S_R云端真实缺行为／缺陷断言失败并读因果后才实现；开发S_G同oracle/fixture、受影响套件及必要回归，正式验收最终SHA再执行完整适用集合。编译、导入、环境、网络、凭据失败不算Red；不能删断言或改oracle换绿。
 
@@ -22,9 +24,9 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **历史生成边界**：初始生成本清单时全部任务未勾选，路径均为拟实施目标。当前进度按真实证据及最新ED-20维护；`ready`仅表示交接资料齐全，任务勾选范围以所在阶段现行条款为准，不表示未实现业务、全平台正式验收或生产批准。
 
-**2026-10-15局部效率修订**：按用户授权仅补充现有编排、缓存、取证、审查及T026／T027的执行要求；不重生成清单，285个ID、依赖DAG／表、故事／需求追溯与勾选状态均保留。实现顺序、真实基线与无可比数据限制见[验证效率执行说明](../../docs/engineering/validation-efficiency.md)，合同见cloud-validation §2.2；本文修改不是优化实现或云验收已通过。
+**2026-10-15早期局部效率修订（历史）**：按用户授权仅补充现有编排、缓存、取证、审查及T026／T027的执行要求；不重生成清单，285个ID、依赖DAG／表、故事／需求追溯与勾选状态均保留。实现顺序、真实基线与无可比数据限制见[验证效率执行说明](../../docs/engineering/validation-efficiency.md)，合同见cloud-validation §2.2；本文修改不是优化实现或云验收已通过。
 
-**2026-10-15分层验证批准**：依据[用户决定与迁移记录](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，基础构建／非空测试通道／所需隔离服务健康取得独立development-ready后，可按原故事DAG做业务TDD；不影响该行为的完整CI证据问题并行修复。开发S_G用同oracle／fixture、受影响套件及必要回归，未知影响用完整适用集合；T026／T027正式ci-ready、任务验收、合并／阶段验收／发行同最终SHA完整适用验证仍强制。全部285个任务ID保留；最新ED-20已进一步调整本轮Phase1收口口径。历史工程移交未冒称Setup或T027完成，当前勾选另须实际development-ready证据。
+**2026-10-15分层验证批准**：依据[用户决定与迁移记录](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，基础构建／非空测试通道／所需隔离服务健康取得独立development-ready后，可按原故事DAG做业务TDD；不影响该行为的完整CI证据问题并行修复。开发S_G用同oracle／fixture、受影响套件及必要回归，未知影响用完整适用集合；后续完整正式ci-ready、任务验收、合并／阶段验收／发行同最终SHA完整适用验证仍强制。全部285个任务ID保留；最新ED-20已进一步调整本轮Phase1收口口径。历史工程移交未冒称Setup或T027完成，当前勾选另须实际development-ready证据。
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -57,43 +59,43 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 ### 初始化边界与最小可运行通道
 
-- [ ] T001 编写 bootstrap-only 路径白名单、资源请求台账和执行边界于 `docs/engineering/execution-policy.md`、`docs/engineering/resource-admission.md`；读取根 AGENTS／宪法，锁定本 tasks 与完整规划输入；沿 ED-07 只在实际需用时向用户索取最小资源，禁止业务混入初始化（QR-002,QR-008,QR-009）。
-- [ ] T002 创建独立可运行的最小 `.github/workflows/ci-bootstrap.yml`，以 push／pull_request 建首个 run，已有默认分支入口后才允许 workflow_dispatch；校 target_sha／实际 checkout／事件身份，采集健康、日志与原始退出状态，不调用尚不存在的业务脚本；按cloud-validation §2.2登记push／PR实际head与merge、checkout和保护check，和T021共享执行链去重；只合并等价输入，保持真实必需check而非skip／占位（QR-002,QR-006）。
-- [ ] T003 [P] 在 `package.json`、`apps/mobile/package.json`、`apps/mobile/app/_layout.tsx`、`apps/admin/package.json`、`apps/share/package.json` 建 npm workspaces 和无业务原生／Web 壳；按 plan 固定 Node22.23.3、Expo57关联组及 Kiranism commit，移除 Clerk 假身份／演示业务；公共包不依赖跨端 React；所有拟npm ci:*入口在首次使用前明确登记，缺脚本保失败；环境壳初始不引入业务（QR-001）。
-- [ ] T004 [P] 取得固定官方 Supabase self-hosted/v0.8.2 commit 于 `supabase/upstream/docker/docker-compose.yml`，在 `infra/ci/compose.yml`、`infra/ci/network-policy.yml` 定义独立 dev/test DB／Storage／账号／网络／秘密／日志；底层服务仅内网，凭据用 Actions secrets，保官方差异说明（QR-001,FR-170,FR-172）。
-- [ ] T005 扩充 `.github/workflows/ci-bootstrap.yml` 的首次云端冻结步骤并产出 `package-lock.json`、`infra/ci/toolchain-lock.json`、`infra/ci/images.lock.json`；用 research 固定来源，首次核官方工具／action SHA与 digest，回传受审形成新提交后 immutable install 重跑；移动与后台 React 补丁分别锁定；依赖缓存键含lock、Node／包管理器／工具链、OS／架构；原生构建另含源码／配置及SDK／Xcode／Gradle／目标平台输入，错误命中拒绝，仍immutable install及真实测试（QR-001,QR-006）。
-- [ ] T006 在 `tools/ci/test-harness.ts`、`tests/fixtures/bootstrap/health.json` 只建立目标发现／可调用接口壳／健康与报告通道，云端安装选定测试工具并记录版本；零用例、导入／编译／缺凭据等故障单列，不用 --if-present 或总成功壳掩盖缺行为（QR-003,QR-004,QR-007）。
-- [ ] T007 在 `.github/workflows/ci-bootstrap.yml`、`tests/e2e/bootstrap/web-shell.spec.ts`、`tests/e2e/ios/BootstrapShellTests.swift`、`tests/e2e/android/BootstrapShellTest.kt` 增加后台与分享各自真实页面、macos-26/Xcode26.4.1 iOS 和加速 Android 壳安装运行／隔离服务联通／交互采集探针；最低OS覆盖单独登记，无业务截图不作基准（QR-001,QR-004,QR-005）。
+- [x] T001 编写 bootstrap-only 路径白名单、资源请求台账和执行边界于 `docs/engineering/execution-policy.md`、`docs/engineering/resource-admission.md`；读取根 AGENTS／宪法，锁定本 tasks 与完整规划输入；沿 ED-07 只在实际需用时向用户索取最小资源，禁止业务混入初始化（QR-002,QR-008,QR-009）。
+- [x] T002 创建独立可运行的最小 `.github/workflows/ci-bootstrap.yml`，以 push／pull_request 建首个 run，已有默认分支入口后才允许 workflow_dispatch；校 target_sha／实际 checkout／事件身份，采集健康、日志与原始退出状态，不调用尚不存在的业务脚本；按cloud-validation §2.2登记push／PR实际head与merge、checkout和保护check，和T021共享执行链去重；只合并等价输入，保持真实必需check而非skip／占位（QR-002,QR-006）。
+- [x] T003 [P] 在 `package.json`、`apps/mobile/package.json`、`apps/mobile/app/_layout.tsx`、`apps/admin/package.json`、`apps/share/package.json` 建 npm workspaces 和无业务原生／Web 壳；按 plan 固定 Node22.23.3、Expo57关联组及 Kiranism commit，移除 Clerk 假身份／演示业务；公共包不依赖跨端 React；所有拟npm ci:*入口在首次使用前明确登记，缺脚本保失败；环境壳初始不引入业务（QR-001）。
+- [x] T004 [P] 取得固定官方 Supabase self-hosted/v0.8.2 commit 于 `supabase/upstream/docker/docker-compose.yml`，在 `infra/ci/compose.yml`、`infra/ci/network-policy.yml` 定义独立 dev/test DB／Storage／账号／网络／秘密／日志；底层服务仅内网，凭据用 Actions secrets，保官方差异说明（QR-001,FR-170,FR-172）。
+- [x] T005 扩充 `.github/workflows/ci-bootstrap.yml` 的首次云端冻结步骤并产出 `package-lock.json`、`infra/ci/toolchain-lock.json`、`infra/ci/images.lock.json`；用 research 固定来源，首次核官方工具／action SHA与 digest，回传受审形成新提交后 immutable install 重跑；移动与后台 React 补丁分别锁定；依赖缓存键含lock、Node／包管理器／工具链、OS／架构；原生构建另含源码／配置及SDK／Xcode／Gradle／目标平台输入，错误命中拒绝，仍immutable install及真实测试（QR-001,QR-006）。
+- [x] T006 在 `tools/ci/test-harness.ts`、`tests/fixtures/bootstrap/health.json` 只建立目标发现／可调用接口壳／健康与报告通道，云端安装选定测试工具并记录版本；零用例、导入／编译／缺凭据等故障单列，不用 --if-present 或总成功壳掩盖缺行为（QR-003,QR-004,QR-007）。
+- [x] T007 在 `.github/workflows/ci-bootstrap.yml`、`tests/e2e/bootstrap/web-shell.spec.ts`、`tests/e2e/ios/BootstrapShellTests.swift`、`tests/e2e/android/BootstrapShellTest.kt` 建立后台与分享真实页面及加速Android壳安装／运行／服务联通／交互探针，保留已有实际壳证据；iOS探针实现保留、当前不再执行，后续跨平台验证；最低OS后续产品验收仍独立覆盖，无业务截图不作基准（QR-001,QR-004,QR-005）。
 ### Tests — 先写目标断言
 
-- [ ] T008 [P] 编写 `tests/contract/ci/evidence.spec.ts`、`tests/integration/ci/aggregate.spec.ts`，先断言证据状态／摘要／全必需集合／全部attempt与始终聚合；覆盖缺脚本、零用例、skip／neutral、前置失败、错误 SHA／artifact、只等一个 run、清单缩减和取消／超时；额外断言冻结Node/Expo关联组/平台React隔离/官方Compose及action-image-tool摘要一致、三端真实壳与服务健康，错误或缺真实运行报告拒绝；新增错锁／工具链／平台构建缓存、跨run／attempt／SHA artifact复用、损坏archive或raw索引及缺收据的语义拒绝断言；缓存不能产生passed（QR-006,QR-007,QR-001,QR-004）。
-- [ ] T009 [P] 编写 `tests/integration/ci/verify-orchestration.spec.ts`，断言实际verify事件／dispatch与共享job的SHA/profile/check_set、安装→真实服务→非空发现→各端执行→原报告→当前Codex代码／视觉审查记录→始终聚合调用边；注入聚合存在而服务/端job缺失、调用依赖缺边、空矩阵、缺npm脚本、零用例、报告缺失和核心激活未接线均拒绝，绿路径必须真实非空运行；按cloud-validation §2.2断言独立原生与共享链、push／PR同目标去重及不同HTTPS／head／merge不可混用；覆盖feedback冒充正式Green／完成、未知或清单／门禁／依赖／测试改动误分类、并行缺健康前置和受保护Red／必要验收／归档被误取消（QR-002–007,QR-010）。
-- [ ] T010 [P] 编写 `tests/integration/ci/tdd-cycle.spec.ts`，断言 S_R 先于实现、真实缺行为断言失败／报告读取、S_G同 oracle 和适用回归、final新Green；环境故障假Red、删断言换绿和oracle实质变化未重建链均拒绝；断言中间feedback即使通过也不可记S_G、task done或ci-ready，正式S_G仍同oracle及当前全部适用激活套件／必要回归，取消／缺失／旧SHA不得晋级（QR-003,QR-007）。
-- [ ] T011 [P] 编写 `tests/security/ci/bridge-gate.spec.ts`，覆盖 bootstrap-only含业务、缺真实development-ready开始业务、开发准入冒充ci-ready／formal complete及foundation漂移、hook未执行／被过滤、旧SHA／未读报告／未提交修改／直接旧脚本complete／task-done exit0假完成；检查 raw桥接状态不能充有效完成证据；拒绝本地项目执行／本地runner代验标记和未获准的业务执行，云端调度身份与实际environment来源一致；新增取消前身份／替代关系／取证状态核验、唯一未读Red及归档清理保护和取消仍阻塞的拒绝探针，禁止按所有push无条件自动取消（QR-007,QR-008,QR-002）。
-- [ ] T012 [P] 编写 `tests/security/ci/review-baseline.spec.ts`，断言当前Codex审查记录与实际代码／图像／报告摘要、当前SHA、覆盖／处置绑定，拒绝假报告、截断、漏图、秘密外发、未确认首基准／自批／自动更新基准及低像素差异掩盖交互错误；全部执行和采集仍只在Actions，审查只用必要工程／合成截图，无生产用户或秘密；断言命中已下载图像仅复用校验字节，不继承旧SHA审查结论；最终漏读必需报告／失败明细／原图继续拒绝，ED-14与ED-18边界不扩大（QR-005,QR-007,QR-010,QR-009）。
+- [x] T008 [P] 编写 `tests/contract/ci/evidence.spec.ts`、`tests/integration/ci/aggregate.spec.ts`，先断言证据状态／摘要／全必需集合／全部attempt与始终聚合；覆盖缺脚本、零用例、skip／neutral、前置失败、错误 SHA／artifact、只等一个 run、清单缩减和取消／超时；额外断言冻结Node/Expo关联组/平台React隔离/官方Compose及action-image-tool摘要一致，当前开发基础集合与完整正式三端集合分层，错误或缺其适用真实运行报告拒绝；新增错锁／工具链／平台构建缓存、跨run／attempt／SHA artifact复用、损坏archive或raw索引及缺收据的语义拒绝断言；缓存不能产生passed（QR-006,QR-007,QR-001,QR-004）。
+- [x] T009 [P] 编写 `tests/integration/ci/verify-orchestration.spec.ts`，断言实际verify事件／dispatch与共享job的SHA/profile/check_set、安装→真实服务→非空发现→各端执行→原报告→当前Codex代码／视觉审查记录→始终聚合调用边；注入聚合存在而服务/端job缺失、调用依赖缺边、空矩阵、缺npm脚本、零用例、报告缺失和核心激活未接线均拒绝，绿路径必须真实非空运行；按cloud-validation §2.2断言独立原生与共享链、push／PR同目标去重及不同HTTPS／head／merge不可混用；覆盖feedback冒充正式Green／完成、未知或清单／门禁／依赖／测试改动误分类、并行缺健康前置和受保护Red／必要验收／归档被误取消（QR-002–007,QR-010）。
+- [x] T010 [P] 编写 `tests/integration/ci/tdd-cycle.spec.ts`，断言 S_R 先于实现、真实缺行为断言失败／报告读取、S_G同 oracle 和适用回归、final新Green；环境故障假Red、删断言换绿和oracle实质变化未重建链均拒绝；断言中间feedback即使通过也不可记S_G、task done或ci-ready，正式S_G仍同oracle及当前全部适用激活套件／必要回归，取消／缺失／旧SHA不得晋级（QR-003,QR-007）。
+- [x] T011 [P] 编写 `tests/security/ci/bridge-gate.spec.ts`，覆盖 bootstrap-only含业务、缺真实development-ready开始业务、开发准入冒充ci-ready／formal complete及foundation漂移、hook未执行／被过滤、旧SHA／未读报告／未提交修改／直接旧脚本complete／task-done exit0假完成；检查 raw桥接状态不能充有效完成证据；拒绝本地项目执行／本地runner代验标记和未获准的业务执行，云端调度身份与实际environment来源一致；新增取消前身份／替代关系／取证状态核验、唯一未读Red及归档清理保护和取消仍阻塞的拒绝探针，禁止按所有push无条件自动取消（QR-007,QR-008,QR-002）。
+- [x] T012 [P] 编写 `tests/security/ci/review-baseline.spec.ts`，断言当前Codex审查记录与实际代码／图像／报告摘要、当前SHA、覆盖／处置绑定，拒绝假报告、截断、漏图、秘密外发、未确认首基准／自批／自动更新基准及低像素差异掩盖交互错误；全部执行和采集仍只在Actions，审查只用必要工程／合成截图，无生产用户或秘密；断言命中已下载图像仅复用校验字节，不继承旧SHA审查结论；最终漏读必需报告／失败明细／原图继续拒绝，ED-14与ED-18边界不扩大（QR-005,QR-007,QR-010,QR-009）。
 ### Actions Red — 读取真实失败后才实现
 
-- [ ] T013 通过 `.github/workflows/ci-bootstrap.yml` 将以上工程行为逐项只提交目标测试 S_R，在 Actions 实际执行并读取缺行为断言与前置健康；按 `contracts/cloud-validation.md` §4 将 red_observed 及完整红链登记到受控证据库 `ci/tdd-cycles/`，每个对应实现前均须有合格Red（QR-003,QR-006）。
+- [x] T013 通过 `.github/workflows/ci-bootstrap.yml` 将以上工程行为逐项只提交目标测试 S_R，在 Actions 实际执行并读取缺行为断言与前置健康；按 `contracts/cloud-validation.md` §4 将 red_observed 及完整红链登记到受控证据库 `ci/tdd-cycles/`，每个对应实现前均须有合格Red（QR-003,QR-006）。
 ### Implementation — 服务、接口与真实客户端
 
-- [ ] T014 在 `tools/ci/validation-manifest.json`、`tools/ci/schemas/evidence.schema.json` 维护 bootstrap／business-increment／full-release 的受审必需集合、激活节点、原55AC全文用例及AS-01–04／FR／QR／SC映射；阶段适用性与实际状态分开，full-release禁止用未适用缩范围；模型 `evidence_index`：必要字段原文「release、SHA/checkout、run/attempt、artifact ID/digests、config/env/toolchain、profile/check_set、required_cases/applicability/actual_states、reports、TDD/基准/AI审查/完成记录refs」；约束原文「不可改成功；缺失/失败/跳过/超时/取消阻止通过；未适用不计通过；工程记录独立私有存储，原证据脱敏/分类到期」（QR-003,QR-006,QR-007）。
-- [ ] T015 实现 `tools/ci/collect-evidence.ts`、`tools/ci/archive-evidence.ts`：失败也上传，按 artifact_id经官方REST下载校 raw与archive不同摘要，存 run/attempt/checkout/config/runtime/tools；私有档案普通90天、正式初始1年、敏感服从短期限，撤临时凭据与sandbox并记录清理失败；相同repository／run／attempt／artifact／SHA／workflow／环境身份及archive／raw索引摘要复用已验字节，重校来源／过期／权限及本地摘要；合并同身份在途下载、有界退避轮询，存复用收据、下载次数／字节／耗时，最终仍读全部报告／原图（QR-006,QR-009）。
-- [ ] T016 实现 `tools/ci/aggregate.ts` 并在 `.github/workflows/ci-bootstrap.yml`、`.github/workflows/verify-release.yml` 始终运行 `agoraweave/ci-gate`；枚举冻结集合及全部attempt／原报告，最终指定有效attempt须真实通过，未解决 failed/skipped/cancelled/timed_out/missing/unavailable/unknown 或摘要／版本错配均拒绝；预期Red／拒绝探针原failed保留，只记观察事实不计业务passed，不能择绿隐藏失败或只看GitHub图标；实际verify业务job与调用链由T021建立，聚合读取各job原报告，聚合存在不证明执行器已可运行；先接bootstrap的真实聚合，verify聚合在T021建立实际job时接入；不可提前调用未建立的工作流；按canonical execution与反馈／正式Green／完成意图核事件／SHA及冻结集合，feedback不满足门禁；旧取消／失败不隐藏，重复顶层check不得各自启动完整矩阵，真正必需check保留（QR-003,QR-007）。
-- [ ] T017 实现 `.github/workflows/tdd-cycle.yml`、`tools/ci/tdd-cycle.ts` 和 `package.json` 的 ci:tdd：记录 behavior/cases/oracle/fixture/test摘要、S_R/S_G/final、红失败因果和回归；预期Red保原failed只确认观察，不计业务passed，不触发合并／生产；同T021的真实发现／执行／报告接口接线，工程Red从最小bootstrap入口执行，业务Red/Green复用已就绪增量job；每个尚未实现的npm入口在实际使用前建立，不允许仅登记名字；T021前工程迭代使用已可运行bootstrap/harness接口，T021建立后再接其发现/执行器；不为创建共享编排自身形成T017↔T021就绪循环；记录validation_intent并分开中间反馈、正式S_G与完成证据，调度变化本身先取得合格云端Red再实现；不以快速反馈代替受影响套件及必要回归，不以开发Green代正式验收（QR-003,QR-006,QR-007）。
-- [ ] T018 在 `docs/engineering/development-ai-admission.md`、`infra/ci/review-policy.json` 登记ED-11当前Codex代码／图像审查、覆盖与证据绑定协议；取消额外审查API账号与独立云端模型，记录必要工程／合成输入、排除真实用户／生产／秘密，缺实际输入或审查仍不ci-ready（QR-008,QR-009,QR-010）。
-- [ ] T019 创建 `tools/ci/review/code-review.md`、`tools/ci/schemas/ai-code-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex读取final diff／必要上下文／契约／实际报告，私有保存执行者／会话／SHA／输入摘要／覆盖／findings／处置／未判断；Actions校记录绑定，不伪造独立模型调用，不执行不可信受审脚本或给审查生产权限；按身份和摘要复用已验原报告字节，实际审阅当前必需内容并重新核当前SHA／输入／覆盖／处置，审查及测量记录写外部私库避免补记提交（QR-007,QR-010）。
-- [ ] T020 创建 `tools/ci/review/visual-review.md`、`tools/ci/schemas/ai-visual-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex实际读取各端全图／必要裁图、设计／基准／页面矩阵／差异／交互报告，按图像摘要与当前SHA逐状态记录，漏范围／截断／unknown拒绝，不可编辑基准或批准发行；相同artifact按完整收据复用原图传输，仍实际读取全部必需端／状态图像和失败明细；ED-14能力范围及ED-18系统警示栏受限例外不得扩大（QR-005,QR-007,QR-010）。
-- [ ] T021 实现 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`tools/ci/discover-targets.ts`、`tools/ci/run-check-set.ts` 及 `package.json` 的实际ci:install/health/discover/contracts/lint/typecheck/run/e2e/evidence入口；在最小bootstrap通道与T013逐行为有效工程Red之后调用已有T003–T020真实安装、Compose健康、初始化schema/seed探针、静态契约、网页/双端壳交互、报告采集归档和当前Codex代码／视觉审查记录，显式job依赖与始终聚合；初始化同SHA使用bootstrap清单及bootstrap-only范围，不等待ci-ready/business-start，不实现业务、不把壳当业务通过；受审激活清单接business-increment，未实现项保后续激活点，缺脚本／发现为空／缺job／调用缺边真实拒绝，禁止只转发聚合check；按cloud-validation §2.2以共享编排为唯一正式矩阵调用链，局部消除独立native及push／PR同目标重复；区分feedback／green／completion并保准确事件保护check，未知／工程行为变更不按普通文档跳过；仅确认冗余／替代后取消且保护未读唯一Red／必要验收／清理，锁与平台正确缓存、独立job在前置满足后并行，不另造调度平台（QR-001–010）。
-- [ ] T022 实现仅Actions执行的 `tools/ci/bridge-gate.ts` 与结果schema，绑定actor/feature/mode/current SHA/contract/check_set；start核独立development-ready原报告、源与目标祖先及稳定foundation摘要；完整ci-ready不可由开发准入代替，complete冻结当前SHA等待全集合并校下载报告／TDD／AI／基准／回归／read_by/read_at后生成私有 `completion-records/`，新提交或受审输入变化失效；冻结前一次整理代码／测试／tasks／工程资料，完成记录只写外部私库；枚举最新终态并读取全部必需报告／失败／原图，缓存或feedback不授完成，新仓库提交仍重新验真（QR-006,QR-007,QR-008）。
-- [ ] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
-- [ ] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
-- [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 保留Android7/API24与当前API36模拟器准入和实际壳运行证据、辅助能力及最小临时服务凭据；按ED-20当前Android优先，iOS资源/构建/测试/图像审查后置到跨平台阶段，不再阻塞本轮工程开发准备；硬件能力与ED-14/18/19边界仍见 `contracts/simulator-validation.md`，业务激活时执行适用Android目标测试（QR-004,QR-005,QR-008）。
+- [x] T014 在 `tools/ci/validation-manifest.json`、`tools/ci/schemas/evidence.schema.json` 维护 bootstrap／business-increment／full-release 的受审必需集合、激活节点、原55AC全文用例及AS-01–04／FR／QR／SC映射；阶段适用性与实际状态分开，full-release禁止用未适用缩范围；模型 `evidence_index`：必要字段原文「release、SHA/checkout、run/attempt、artifact ID/digests、config/env/toolchain、profile/check_set、required_cases/applicability/actual_states、reports、TDD/基准/AI审查/完成记录refs」；约束原文「不可改成功；缺失/失败/跳过/超时/取消阻止通过；未适用不计通过；工程记录独立私有存储，原证据脱敏/分类到期」（QR-003,QR-006,QR-007）。
+- [x] T015 实现 `tools/ci/collect-evidence.ts`、`tools/ci/archive-evidence.ts`：失败也上传，按 artifact_id经官方REST下载校 raw与archive不同摘要，存 run/attempt/checkout/config/runtime/tools；私有档案普通90天、正式初始1年、敏感服从短期限，撤临时凭据与sandbox并记录清理失败；相同repository／run／attempt／artifact／SHA／workflow／环境身份及archive／raw索引摘要复用已验字节，重校来源／过期／权限及本地摘要；合并同身份在途下载、有界退避轮询，存复用收据、下载次数／字节／耗时，最终仍读全部报告／原图（QR-006,QR-009）。
+- [x] T016 实现 `tools/ci/aggregate.ts` 并在 `.github/workflows/ci-bootstrap.yml`、`.github/workflows/verify-release.yml` 始终运行 `agoraweave/ci-gate`；枚举冻结集合及全部attempt／原报告，最终指定有效attempt须真实通过，未解决 failed/skipped/cancelled/timed_out/missing/unavailable/unknown 或摘要／版本错配均拒绝；预期Red／拒绝探针原failed保留，只记观察事实不计业务passed，不能择绿隐藏失败或只看GitHub图标；实际verify业务job与调用链由T021建立，聚合读取各job原报告，聚合存在不证明执行器已可运行；先接bootstrap的真实聚合，verify聚合在T021建立实际job时接入；不可提前调用未建立的工作流；按canonical execution与反馈／正式Green／完成意图核事件／SHA及冻结集合，feedback不满足门禁；旧取消／失败不隐藏，重复顶层check不得各自启动完整矩阵，真正必需check保留（QR-003,QR-007）。
+- [x] T017 实现 `.github/workflows/tdd-cycle.yml`、`tools/ci/tdd-cycle.ts` 和 `package.json` 的 ci:tdd：记录 behavior/cases/oracle/fixture/test摘要、S_R/S_G/final、红失败因果和回归；预期Red保原failed只确认观察，不计业务passed，不触发合并／生产；同T021的真实发现／执行／报告接口接线，工程Red从最小bootstrap入口执行，业务Red/Green复用已就绪增量job；每个尚未实现的npm入口在实际使用前建立，不允许仅登记名字；T021前工程迭代使用已可运行bootstrap/harness接口，T021建立后再接其发现/执行器；不为创建共享编排自身形成T017↔T021就绪循环；记录validation_intent并分开中间反馈、正式S_G与完成证据，调度变化本身先取得合格云端Red再实现；不以快速反馈代替受影响套件及必要回归，不以开发Green代正式验收（QR-003,QR-006,QR-007）。
+- [x] T018 在 `docs/engineering/development-ai-admission.md`、`infra/ci/review-policy.json` 登记ED-11当前Codex代码／图像审查、覆盖与证据绑定协议；取消额外审查API账号与独立云端模型，记录必要工程／合成输入、排除真实用户／生产／秘密，缺实际输入或审查仍不ci-ready（QR-008,QR-009,QR-010）。
+- [x] T019 创建 `tools/ci/review/code-review.md`、`tools/ci/schemas/ai-code-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex读取final diff／必要上下文／契约／实际报告，私有保存执行者／会话／SHA／输入摘要／覆盖／findings／处置／未判断；Actions校记录绑定，不伪造独立模型调用，不执行不可信受审脚本或给审查生产权限；按身份和摘要复用已验原报告字节，实际审阅当前必需内容并重新核当前SHA／输入／覆盖／处置，审查及测量记录写外部私库避免补记提交（QR-007,QR-010）。
+- [x] T020 创建 `tools/ci/review/visual-review.md`、`tools/ci/schemas/ai-visual-review.schema.json` 和仅Actions执行的记录验证接口；当前Codex实际读取各端全图／必要裁图、设计／基准／页面矩阵／差异／交互报告，按图像摘要与当前SHA逐状态记录，漏范围／截断／unknown拒绝，不可编辑基准或批准发行；相同artifact按完整收据复用原图传输，仍实际读取全部必需端／状态图像和失败明细；ED-14能力范围及ED-18系统警示栏受限例外不得扩大（QR-005,QR-007,QR-010）。
+- [x] T021 实现 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`tools/ci/discover-targets.ts`、`tools/ci/run-check-set.ts` 及 `package.json` 的实际ci:install/health/discover/contracts/lint/typecheck/run/e2e/evidence入口；在最小bootstrap通道与T013逐行为有效工程Red之后调用已有T003–T020真实安装、Compose健康、初始化schema/seed探针、静态契约、网页交互及报告认证；保留双端壳、完整采集归档和代码／视觉审查能力，其完整正式执行后置，显式job依赖与始终聚合；初始化同SHA使用bootstrap清单及bootstrap-only范围，不等待ci-ready/business-start，不实现业务、不把壳当业务通过；受审激活清单接business-increment，未实现项保后续激活点，缺脚本／发现为空／缺job／调用缺边真实拒绝，禁止只转发聚合check；按cloud-validation §2.2以共享编排为唯一正式矩阵调用链，局部消除独立native及push／PR同目标重复；区分feedback／green／completion并保准确事件保护check，未知／工程行为变更不按普通文档跳过；仅确认冗余／替代后取消且保护未读唯一Red／必要验收／清理，锁与平台正确缓存、独立job在前置满足后并行，不另造调度平台（QR-001–010）。
+- [x] T022 实现仅Actions执行的 `tools/ci/bridge-gate.ts` 与结果schema，绑定actor/feature/mode/current SHA/contract/check_set；start核独立development-ready原报告、源与目标祖先及稳定foundation摘要；完整ci-ready不可由开发准入代替，complete冻结当前SHA等待全集合并校下载报告／TDD／AI／基准／回归／read_by/read_at后生成私有 `completion-records/`，新提交或受审输入变化失效；冻结前一次整理代码／测试／tasks／工程资料，完成记录只写外部私库；枚举最新终态并读取全部必需报告／失败／原图，缓存或feedback不授完成，新仓库提交仍重新验真（QR-006,QR-007,QR-008）。
+- [x] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
+- [x] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
+- [x] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 保留Android7/API24与当前API36模拟器准入和实际壳运行证据、辅助能力及最小临时服务凭据；按ED-20当前Android优先，iOS资源/构建/测试/图像审查后置到跨平台阶段，不再阻塞本轮工程开发准备；硬件能力与ED-14/18/19边界仍见 `contracts/simulator-validation.md`，业务激活时执行适用Android目标测试（QR-004,QR-005,QR-008）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T026 按ED-20通过 `.github/workflows/ci-bootstrap.yml` 与T021共享的 `verify-development.yml` 在当前目标SHA执行固定依赖/类型/lint、非空工程测试及必要回归、隔离dev/test服务与Web基础交互，读取实际原报告并核当前foundation；工程拒绝探针保原失败与观察事实。当前开发请求显式 `development_platform=android`，不启动iOS或全平台原生验收矩阵；已实现的完整审查/归档/门禁能力保留，原完整跨平台验收链后置，未执行项不计passed（QR-001,QR-003,QR-007）。
-- [ ] T027 依据ED-20等待当前Android开发准备必需结果，下载校验读取原报告，核对同目标SHA/attempt/清单/当前foundation及真实 `development-ready`，将完成依据写外部私有工程记录，维护T001–T027勾选和干净工作区/交接；本轮Phase1完成只准入Phase2与Android业务TDD，不设置全平台ci-ready、feature complete或生产批准。iOS验证与完整跨平台正式验收后置；新增业务仍沿原DAG执行目标Red/Green、必要回归及正式Android产品验收（QR-006,QR-007）。
+- [x] T026 按ED-20通过 `.github/workflows/ci-bootstrap.yml` 与T021共享的 `verify-development.yml` 在当前目标SHA执行固定依赖/类型/lint、非空工程测试及必要回归、隔离dev/test服务与Web基础交互，读取实际原报告并核当前foundation；工程拒绝探针保原失败与观察事实。当前开发请求显式 `development_platform=android`，不启动iOS或全平台原生验收矩阵；已实现的完整审查/归档/门禁能力保留，原完整跨平台验收链后置，未执行项不计passed（QR-001,QR-003,QR-007）。
+- [x] T027 依据ED-20等待当前Android开发准备必需结果，下载校验读取原报告，核对同目标SHA/attempt/清单/当前foundation及真实 `development-ready`，将完成依据写外部私有工程记录，维护T001–T027勾选和干净工作区/交接；本轮Phase1完成只准入Phase2与Android业务TDD，不设置全平台ci-ready、feature complete或生产批准。iOS验证与完整跨平台正式验收后置；新增业务仍沿原DAG执行目标Red/Green、必要回归及正式Android产品验收（QR-006,QR-007）。
 
-**Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
+**Checkpoint（ED-20）**：T001–T027只在当前SHA的固定安装/类型/lint、非空工程回归、dev/test隔离服务、Web基础交互及foundation认证全部通过并读原报告后收口。已有工程能力按实现及目标Red/Green核对；完整全平台正式链另列后续，不计已执行。
 
 ## Phase 2: Foundational — 持续有效核心
 
@@ -101,7 +103,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **Independent Test**：真实 Compose 中以合成账号／资源检验主库资格、RLS、旧JWT与字节／实时输出、耐久拒绝事实和同版配置。基础完备只允许故事开始，不替任何尚未实施页面的验收。
 
-**CRITICAL**：本阶段开始须真实development-ready及目标所需服务／执行器健康，不再要求先完成T027完整ci-ready；T051及下表原故事实现依赖保留。合并或阶段验收前仍须完整当前适用证据，T027不能假勾选。
+**CRITICAL**：本阶段开始须真实development-ready及目标所需服务／执行器健康，不要求先完成完整正式ci-ready；T051及下表原故事实现依赖暂保留，局部拆分提案见[下一批Android交接](../../docs/engineering/android-next-batch.md)，本轮不执行。后续产品完整验收、合并仍须当时全部适用证据；T027仅按ED-20工程收口勾选。
 
 ### Tests — 先写目标断言
 
@@ -749,12 +751,12 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 ### Phase Dependencies 与实现 DAG
 
-Setup先取得最小push/PR入口与无业务壳，对工程门禁及T021增量编排逐行为云端Red→Green。实际构建／非空目标执行／所需服务健康和原报告认证取得独立development-ready后准入T033／T034核心行为；T027继续确认同最终SHA完整ci-ready，可与开发并行但不假完成。开发Green执行目标、受影响套件及必要回归，T051和故事完整验收保持其当前适用全部证据。各故事进入行为前接入真实套件，US14的T173只扩充full-release与受控部署。未实现业务在bootstrap登记not_yet_applicable及激活点，不计passed；full-release不留未适用。
+Setup先取得最小push/PR入口与无业务壳，对工程门禁及T021增量编排逐行为云端Red→Green。实际构建／非空目标执行／所需服务健康和原报告认证取得独立development-ready后准入T033／T034核心行为；T027按ED-20确认当前SHA的Android development-ready工程收口；完整正式ci-ready责任单独后置。开发Green执行目标、受影响套件及必要回归，T051和故事完整验收保持其当前适用全部证据。各故事进入行为前接入真实套件，US14的T173只扩充full-release与受控部署。未实现业务在bootstrap登记not_yet_applicable及激活点，不计passed；full-release不留未适用。
 
 ```mermaid
 flowchart TD
   Setup["Setup 基础通道 / development-ready"] --> F["Foundational T028–T051"]
-  Setup --> CI["T026–T027 / 完整ci-ready验收"]
+  Setup --> CI["T026–T027 / Android开发准备收口"]
   F --> US1
   F --> US2
   US1 --> US2
@@ -876,11 +878,11 @@ flowchart TD
 
 ### MVP First — 仅工程验证里程碑
 
-首个增量建议T001–T051和US1（T052–T064）：准入／账号／会话／换号／恢复／即时注销，在Actions及合成数据中独立验证。US17前不宣称注销物理清理通过；实际页面候选需本人具体基准确认。此MVP只调整顺序，不删完整首版、不对外上线、不豁免17故事/55AC。
+阶段一收口后的首个Android用户增量建议US1的加入／登录／会话撤销；其最小基础依赖与T051局部拆分提案见[下一批Android交接](../../docs/engineering/android-next-batch.md)。原完整US1（T052–T064）责任保留：准入／账号／会话／换号／恢复／即时注销，在Actions及合成数据中独立验证。US17前不宣称注销物理清理通过；实际页面候选需本人具体基准确认。此MVP只调整顺序，不删完整首版、不对外上线、不豁免17故事/55AC。
 
 ### Incremental Delivery
 
-1. bootstrap-only最小通道→T021真实非空编排／所需服务健康→独立development-ready→T033核心目标接入及逐行为Red/Green；完整T026／T027 ci-ready并行闭合，每个工程行为也按云端TDD。
+1. bootstrap-only最小通道→T021真实非空编排／所需服务健康→独立development-ready→T033核心目标接入及逐行为Red/Green；完整T026／正式 ci-ready并行闭合，每个工程行为也按云端TDD。
 2. 核心后优先US1/3/5/11，US2必须等US1和US3当前实现Green，按真实依赖穿插US2/4/6支撑P1 AI；US7/10治理和正式资料按就绪契约推进。
 3. US13核心隔离/生命周期和US14隔离发行确认就绪后推进US12正式SDK；US9分享、US15通知、US17清理恢复纳入真实消费者。US16采集/公共语义及逐页候选贯穿，完整矩阵最后。
 4. consumer齐全后各故事重跑完整Green，再Final全量同版验证/真实代码与图像AI复检/本人基准确认/测量/归档读取。失败修复后新SHA重跑影响行为及必要回归，缺项不完成。
@@ -1205,7 +1207,7 @@ I3沿用HTTP契约，App本人GET只读、PATCH仅列字段部分更新，base_v
 
 本轮before_tasks mandatory guard已实际执行且allow；生成清单后重新解析extensions.yml并实际执行after_tasks mandatory handoff，保ready快照及事件。未来T022–T024强制门禁尚未实施，现有桥接guard/checkbox不能验证Actions，本次ready不作准入或完成证据。
 
-未来入口 `$speckit-superpowers-bridge` 先读取AGENTS／宪法v3.1.0／源快照及本清单，bootstrap-only后取得独立真实development-ready可实施业务TDD；T027完整ci-ready仍待正式验收，不用开发准入代任务完成。不得独立brainstorming/writing-plans改写确认源；适配不改canonical语义，兼容问题按T024及宪法九处理。
+未来入口 `$speckit-superpowers-bridge` 先读取AGENTS／宪法v3.1.0／源快照及本清单，bootstrap-only后取得独立真实development-ready可实施业务TDD；后续完整ci-ready仍待正式验收，不用开发准入代任务完成。不得独立brainstorming/writing-plans改写确认源；适配不改canonical语义，兼容问题按T024及宪法九处理。
 
 **统计**：20阶段、17故事、285任务、94个条件式并行候选；Setup27、Foundational24、故事223、Final11。所有任务未勾选；本轮无代码/CI/测试运行结果或真实基准批准。
 

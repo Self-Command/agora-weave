@@ -4,9 +4,9 @@
 
 **Input**: `specs/001-agoraweave-v1/spec.md`；获批[PRD v0.10](../../docs/product/PRD.md)、[UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[追溯表](traceability.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[宪法 v3.1.0](../../.specify/memory/constitution.md)。读取Git HEAD `739e4068947e7e54b9ded691763e2885959e93c7`；输入文件hash与traceability及独立复检一致。名称及换号限制以spec最新明确决定为准。
 
-**Status**: Phase0研究和Phase1技术设计已形成，现按analyze的C1／I1／I2／G1更新规划；可供重新生成并分析任务清单。仓库已有上一轮tasks和ready交接，本轮不修改它们，不将其视为已同步本修订。没有产品代码、迁移、工作流实现或构建／测试／运行／验收及生产操作。全部17故事、173 FR、10 QR、18 SC、55原AC及AS-01–04保留，优先级不授权延期首版。
+**Status**: 工程实现与云端基础验证已建立；当前按ED-20收口Phase1，仅在真实Android development-ready证据满足后更新现有tasks，不重生成清单。下一批业务尚未实现，本轮工程交接后暂停。全部17故事、173 FR、10 QR、18 SC、55原AC及AS-01–04保留，优先级不授权延期首版。
 
-**本次补充依据**：2026-10-14六项开发验证规划保留；2026-10-15用户明确批准[分层验证决定](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，取代“完整ci-ready先于任何业务开发”：真实基础通道development-ready后可做业务TDD，CI证据问题按依赖并行修复；T027完整初始化验收、合并／阶段验收／发行同SHA完整适用验证继续强制。具体合同见[cloud-validation.md](contracts/cloud-validation.md)。既有产品／设计输入、追溯、285任务ID与未完成状态保留，不冒称实际通过。
+**本次补充依据**：2026-10-14六项开发验证规划保留；2026-10-15用户明确批准[分层验证决定](../../docs/engineering/validation-tiering-decision.md)及宪法v3.1.0，取代“完整ci-ready先于任何业务开发”：真实基础通道development-ready后可做业务TDD，CI证据问题按依赖并行修复；Phase1按ED-20开发准备要求收口；后续产品验收、合并／发行同SHA完整适用验证继续强制。具体合同见[cloud-validation.md](contracts/cloud-validation.md)。既有产品／设计输入、追溯、285任务ID与未完成状态保留，不冒称实际通过。
 
 **最新决定**：用户已对18项问题明确答复，见[规划决定登记](reviews/planning-decisions-2026-10-14.md)。公开仓库、当前Codex审查方式（ED-11取代旧路线）、必要开发资料经核验境外处理、用户本人基准确认、阿里云短信已确认。预算／资源／设计确认／部署上线运营由用户处理，工程仅在实际需要时索取；恢复和申诉参数由工程授权细化。该记录更新候选／待决状态，不表述资源已供给或验证已通过。
 
@@ -18,7 +18,7 @@
 
 **后续I3／I4状态**：I3按现有HTTP契约补全GET/PATCH部分更新／CAS／幂等及错误PUT拒绝。I4用户明确选A：匿名和登录分享页均使用默认播放策略及页面内操作，不读取或同步账号偏好；账号设置由App管理。TD-07D与HTTP／授权／配置／验证同步该决定。旧tasks的T192／T198及T228／T233等受影响任务和ready快照仍待下一轮同步，跨产物analyze尚未重跑。
 
-**ED-20 当前执行更新**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+**ED-20 当前执行更新**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
 
 ## Summary
 
@@ -34,7 +34,7 @@
 
 **Storage**: 官方Postgres17.6.1.136、私有Storage对象；PG全文/trigram、关系与依赖索引、事务outbox、配置bundle、审计／独立安全恢复账本。不预置独立搜索／队列集群。主库判授权，DB与对象分别备份。
 
-**Testing**: SP本地编写代码／测试，全部编译、静态检查、测试、UI交互、图像／差异／无障碍采集及回归在GitHub Actions云端；当前 Codex 读取真实证据完成代码与视觉语义审查。独立类型/lint/schema、Node原生与组件检查、真实PG/Compose/Auth/RLS/Storage/Realtime/Edge接口、并发／安全／生命周期／恢复、Playwright网页、XCTest iOS、UIAutomator/Espresso Android、k6性能、合格真实产品AI及自动评估。保存当前 Codex 代码／图像审查记录、Actions实际红绿TDD链和当前提交聚合门禁。工具精确版本在云端冻结前查官方并锁定。按ED-14仅使用Actions云端模拟器，必需能力及硬件排除范围见 `contracts/simulator-validation.md`；原生语义／焦点／键盘／媒体／推送在支持范围内实际执行，缺必需证据仍阻塞。基础development-ready真实核验后准入业务TDD，T027完整ci-ready及正式验收仍须全部适用证据。
+**Testing**: SP本地编写代码／测试，全部编译、静态检查、测试、UI交互、图像／差异／无障碍采集及回归在GitHub Actions云端；当前 Codex 读取真实证据完成代码与视觉语义审查。独立类型/lint/schema、Node原生与组件检查、真实PG/Compose/Auth/RLS/Storage/Realtime/Edge接口、并发／安全／生命周期／恢复、Playwright网页、XCTest iOS、UIAutomator/Espresso Android、k6性能、合格真实产品AI及自动评估。保存当前 Codex 代码／图像审查记录、Actions实际红绿TDD链和当前提交聚合门禁。工具精确版本在云端冻结前查官方并锁定。按ED-14仅使用Actions云端模拟器，必需能力及硬件排除范围见 `contracts/simulator-validation.md`；原生语义／焦点／键盘／媒体／推送在支持范围内实际执行，缺必需证据仍阻塞。基础development-ready真实核验后完成Phase1工程准备并准入业务TDD；后续产品正式验收仍须全部适用证据。
 
 **Target Platform**: iOS≥16.4、Android≥7、compile/target SDK36；macos-26选择Xcode26.4.1，Linux运行Android emulator/Compose/browser。最低OS与当前OS模拟器资源须Q-16准入，不把编译下限当实际覆盖。中国大陆独立服务器生产，实际环境Q-02核验。
 
@@ -207,17 +207,17 @@ spec所有初值/ED-02及RD-10均注册。媒体MB工程口径为十进制1,000,
 
 ### TD-07A — 初始化与业务衔接
 
-采用bootstrap／TDD／verify工作流及真实聚合check，清单、影响和完成目标决定必需集合。bootstrap-only仍只编写无业务基础设施；固定安装／构建、非空测试通道及所需真实隔离服务健康并取得独立development-ready后，可沿原DAG做业务TDD。不影响目标行为的完整CI证据问题并行修复；基础通道、目标结果或安全前置缺失暂停依赖工作。T026／T027仍闭合完整网页／最低及当前双端壳／采集归档／审查与拒绝探针，同最终SHA形成正式ci-ready。未实现业务在初始化not_yet_applicable，不计通过；首版全量验收不留未适用。基础准入绑定源与目标祖先关系及稳定foundation输入，锁／工具／门禁／契约漂移重新核验。
+采用bootstrap／TDD／verify工作流及真实聚合check，清单、影响和完成目标决定必需集合。bootstrap-only仍只编写无业务基础设施；固定安装／构建、非空测试通道及所需真实隔离服务健康并取得独立development-ready后，可沿原DAG做业务TDD。不影响目标行为的完整CI证据问题并行修复；基础通道、目标结果或安全前置缺失暂停依赖工作。T026／T027以当前真实development-ready收口Android工程准备；最低／当前双端壳、完整采集归档与全图审查的正式ci-ready责任登记后续，不再阻塞Phase1。未实现业务在初始化not_yet_applicable，不计通过；首版全量验收不留未适用。基础准入绑定源与目标祖先关系及稳定foundation输入，锁／工具／门禁／契约漂移重新核验。
 
 **2026-10-15验证效率局部修订**：在当前安全检查点先完成调度、缓存及证据读取的工程行为TDD，再沿现有任务继续；不新增通用调度平台、不重排任务ID／依赖或缩减产品验收。真实运行基线及实施顺序见[验证效率执行说明](../../docs/engineering/validation-efficiency.md)。同一目标提交按事件／实际checkout／profile／check_set／环境／产物身份确定唯一必需执行链，优先消除独立原生流水线与共享完整流水线重复启动、push与PR双事件；不同HTTPS输入等实际环境不得直接互代。保留真实分支保护check与准确PR head／merge绑定，不能通过关闭保护、skip或空check省算力。
 
-中间反馈、正式开发S_G与完成验收分开调度；反馈明确`readiness=not_evaluated`，不能充Green、任务验收或ci-ready。开发S_G使用同oracle／fixture、受影响套件及必要回归，不每提交无条件启动完整平台矩阵；以整个实际diff、依赖、任务／契约和风险冻结范围，未知影响用完整适用集合。工程门禁、调度、缓存和取证也先真实云端Red→Green。T026／T027及合并、阶段验收、最终发行仍同最终SHA执行完整适用OS／服务／网页／安全交互／审查／归档清理／拒绝探针；不能借分类删正式集合。
+中间反馈、正式开发S_G与完成验收分开调度；反馈明确`readiness=not_evaluated`，不能充Green、任务验收或ci-ready。开发S_G使用同oracle／fixture、受影响套件及必要回归，不每提交无条件启动完整平台矩阵；以整个实际diff、依赖、任务／契约和风险冻结范围，未知影响用完整适用集合。工程门禁、调度、缓存和取证也先真实云端Red→Green。Phase1 T026／T027执行ED-20五项基础集合；后续产品验收、合并与发行仍同最终SHA执行其完整适用OS／服务／网页／安全交互／审查／归档清理／拒绝探针；不能借分类删正式集合。
 
 确认被替代或重复且不承担唯一未读Red／当前必要验证的旧运行才可取消，保留原状态、日志及取消依据，保护归档清理。依赖按lock／工具链／平台缓存，构建输入另含源码／配置摘要，命中仍校验并真实执行；独立job在已证明前置满足后并行，保留真实安装／健康／发现及报告依赖。详细身份、取消保护、缓存拒绝与实测口径见cloud-validation §2.2。
 
 **I1前置调用链**：ci-ready必须同时证明`verify-release.yml`的business-increment编排已可调用，真实执行初始化已适用的安装／健康／非空目标发现／静态与壳交互探针、报告归档和当前Codex审查记录，再由聚合读取原报告。可复用`ci-bootstrap.yml`或独立可复用作业，必须有实际调用与同SHA证据；不能只创建check／转发空结果。共享核心编写阶段先将当前迁移／seed／接口／安全／并发／恢复／各端组件与必要审查逐一接入同一已存在的增量调用链，取得每行为Red后实现；执行核心Green（旧T048）前所有已激活入口／脚本／发现规则均已实现且在Actions可运行，不依赖US14。US14的旧T167只能在此基础上扩充已实现业务的全量发行覆盖、最终产物冻结及独立受控部署。各阶段具体产出／拒绝探针见cloud-validation §2.1；聚合始终运行不能代替这些作业。
 
-初始化先以bootstrap清单／bootstrap-only范围调用共享编排，证明实际构建／所需服务健康／非空目标执行及报告认证；不等待尚未产生的完整ci-ready。独立development-ready认证后可用business-increment接入核心和故事；完整初始化证据随后在T026／T027闭合，避免执行入口与正式验收循环。
+初始化先以bootstrap清单／bootstrap-only范围调用共享编排，证明实际构建／所需服务健康／非空目标执行及报告认证；不等待尚未产生的完整ci-ready。独立development-ready认证后可用business-increment接入核心和故事；当前基础集合由T026／T027闭合；完整跨平台正式证据后置，避免执行入口与正式验收循环。
 
 ### TD-07B — 桥接强制检查与云端TDD
 
@@ -255,7 +255,7 @@ US3负责共享视频／GIF播放能力及发布预览接入，US2负责App个�
 flowchart TD
   B[最小bootstrap云端通道] --> R[可运行verify增量作业与探针]
   R --> C[development-ready 基础准入]
-  R --> CI[T026/T027 完整ci-ready验收]
+  R --> CI[T026/T027 Android开发准备收口]
   C --> F[共享核心接入与当前Green]
   F --> US1[US1实现]
   US1 --> US3[US3实现]
@@ -271,7 +271,7 @@ flowchart TD
 
 | 节点 | 必需前置／产出 | 完整验收边界 |
 | --- | --- | --- |
-| 初始化／核心Green | 核心行为前真实非空增量执行链与development-ready；当前核心目标及受影响回归在Green前接入执行 | T026/T027完整初始化验收保留；不能等US14建立首链，探针不代业务AC |
+| 初始化／核心Green | 核心行为前真实非空增量执行链与development-ready；当前核心目标及受影响回归在Green前接入执行 | 后续完整正式验收责任保留；不能等US14建立首链，探针不代业务AC |
 | US2实现 | 共享核心、US1-implementation、US3-implementation；身份和通过内容实际接口已验证 | US5及后续真实关系消费者／通知仍需完整回归，不以fixture代消费者 |
 | US14实现 | 共享核心及US1／US11／US13实现；消费既有增量验证链 | 扩充所有已激活发行检查和生产拒绝／同版产物验证；完整AC待全部consumer，不阻塞早期核心验证 |
 | FR-113 | US3共享播放器、US2偏好、各故事真实消费接入均明确实现／测试责任 | US16及最终门禁汇总各实际端和入口的行为／网络／读屏／视觉证据 |

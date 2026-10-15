@@ -1,59 +1,27 @@
-# 2026-10-15：分层验证、工程移交与桥接续接
+# 阶段一工程交接（ED-20）
 
-**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+当前分支：`codex/agoraweave-tdd-rebuild-clean`。工程工作树：`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`。以该分支最新干净HEAD为检查点，勿在旧Desktop根的过时副本继续。
 
-本文件是继续开发的工程交接，不是阶段验收通过记录。用户已明确批准当前阶段按建议修改工作流程及宪法、执行后提交PR并保持工作区干净，再开新窗口执行`sk-sp-br`。依据宪法v3.1.0及[批准与迁移记录](validation-tiering-decision.md)，开发准入改为独立development-ready，T027完整ci-ready与正式合并／阶段验收仍保全部适用证据。实际本次开发证据／PR以最终交接消息和对应原报告为准，不能从本文推断已Green或已验收。
+## 结果与暂停边界
 
-## 正确工作树与入口
+T001–T027按ED-20的Android开发准备要求完成，T028–T285共258项保持未完成。本轮交接后暂停，不实现下一批业务、不继续扩展CI。handoff保持ready而非feature complete；Draft PR不授合并或生产许可。
 
-- 工作树：`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`。
-- 分支：`codex/agoraweave-tdd-rebuild-clean`；仓库：`Self-Command/agora-weave`。
-- 桌面主工作树仍在 `codex/agoraweave-phase1-handoff`，不能在该旧检查点实施或用它覆盖当前分支。
-- 先读取本工作树 `AGENTS.md`、`.specify/memory/constitution.md`、现有 plan/tasks、工程执行政策和验证效率说明；调用 `$speckit-superpowers-bridge`。不得改用 `speckit.implement` 或重新生成整份任务清单。
-- 本次治理修订先通过真实桥接将executing置blocked，再通过constitution guard；最终桥接状态以实际文件及新快照为准。新窗口遵循实际before_implement认证receipt；`ready`只表示资料交接，不授development-ready、ci-ready、任务完成、feature complete或生产权限。
+Plan、tasks、cloud-validation、release-evidence与execution-policy已逐条同步：当前Phase1退出读取真实development-readiness，五项必需基础集合通过并绑定当前SHA/check_set/foundation。iOS与完整全平台正式链后置，不计已执行；现有正式ci-gate对非completion仍拒绝，不能把workflow总failure误作五项开发通道失败或冒称正式通过。
 
-## 已有批准和边界
+## 已读证据与最终SHA核验
 
-保持 ED-11 当前 Codex 实际代码／图像审查；ED-14 最低／当前 OS 的 Actions 模拟器覆盖及明示硬件排除风险；ED-15 隔离分支真实 TDD 重建；ED-17 Actions 内临时 Cloudflare HTTPS 与一次性认证；ED-18 Android7 受限系统警示色例外。决定原文在 `specs/001-agoraweave-v1/reviews/execution-decisions-2026-10-15.md`，不得重新索要已有批准或扩大例外。
+工程范围新增AD01–03按真实云端Red→读因果→实现→同oracle Green完成，原失败保留。AD01/02 Red：6a34d48，run38747329749/1；AD03 Red：068f446，run38748722926/1。共同Green：eb9daaa，CIbootstrap38749332023/1，218/218通过、0失败/跳过/取消/todo，类型检查通过。原transport11980665950、freeze11980666130 ZIP已核并读取。
 
-现有285个canonical任务全部未勾选。真实基础构建、非空测试通道及所需隔离服务健康取得独立`development-ready`后，可沿原故事DAG做业务TDD；完整CI证据问题按依赖并行修复。基础／目标不可认证、安全未知则暂停依赖部分。T027只作为正式完整初始化验收，不假完成；全部项目安装、构建、测试、回归、运行、图像／交互采集及门禁计算只在Actions。本地仅编辑、Git、控制面、元数据与下载／阅读证据。
+`eb9daaa`真实development-ready：共享run38749332496/1，原readiness11979359473、固定安装11980359076、工程11981455046、dev11979104931、test11980384511、Web11981670175均核ZIP并读取；218/218工程、Web16/16、两套官方服务各11项healthy、无公开底层端口，schema/seed及清理均成功。plan11981060369明确full_required=false/development_required=true，未启动iOS。私有归档源收据11981076258已核；正式gate11980034407仍ci_ready=false/feature_complete=false。
 
-开发准入记录绑定认证源run／attempt、SHA／checkout／事件、实际原报告、源与目标祖先及稳定foundation摘要；工作流、门禁／执行器、治理契约、冻结依赖／工具链或环境变化须重新核基础证据。普通业务变更仅在基础输入未漂移时沿用；development-ready永不冒充ci-ready或formal complete。
+上述来源证明其原SHA。本次同步plan/contracts、TDD索引与任务记录后，必须读取最终HEAD的同集合新报告；最终`android-development-preparation`记录只写受控外部库，绑定最终SHA与真实来源，不为补记通过再提交。查询入口为[Draft PR #2](https://github.com/Self-Command/agora-weave/pull/2)及其HEAD对应Approved initialization verification。私有完成记录逻辑路径：`completion-records/android-development-preparation-<finalSHA>.json`。
 
-## 本轮 T033 工程接线批次
+现有工程与AD03只读审查无Critical/Important发现；该结论不是业务或原生图像验收。旧全平台run38744633820及38736933035已取消，其失败/取消保留，不作为本轮通过来源。没有执行iOS新验证，ED19新原生测量也未完成。
 
-本批从 `d0fb6a9d3117545156a6b9bfe52e628e93227f53` 继续，仅修复测试发现与实际执行绑定；不包含业务执行器、核心迁移、seed 或核心业务实现，也不完成 T033。发现器扫描 canonical 的 contract／integration／security／concurrency／recovery 五类 Node 套件；未登记套件保失败。执行器重新核当前发现清单、SHA、manifest 和文件库存，直接执行获准文件集合，报告保留执行文件摘要及发现报告摘要。
+## 下一轮入口
 
-- 合格 Red：`f78c3a69f20240f4332bb89b3462fccf50a3e29b`，[run38735498157/1](https://github.com/Self-Command/agora-weave/actions/runs/38735498157)，原 transport artifact `11974220431`、checkset `11973920419` 已核 ZIP 摘要并读取。健康执行208项，205通过、CW01–03三项语义失败，0 skip／cancel／todo。首次 `57c5409` 的 CW02 夹具继承父 Node 测试上下文，原状态保留；先隔离该上下文后重新取 Red，未以夹具故障充目标缺陷。
-- 实现 Green：`09fe5bd0beb8328d443acb4c57f1dc59b26077a8`，[run38736021015/1](https://github.com/Self-Command/agora-weave/actions/runs/38736021015)，原 checkset `11973581633`、transport `11974655654` 已核 ZIP 摘要并读取208/208，0 fail／skip／cancel／todo；CW文件与合格Red一致。该来源的开发基础、完整矩阵及正式gate分别按实际原报告核对，工程Green不能授这些结论。
-- 只读工程代码审查未发现可操作缺陷；审查未判定业务执行器、完整 T033、T027、原生原图或合并验收通过。真实链已登记 `infra/ci/tdd-source-catalog.json`；最终检查点的 journal、基础准入及正式gate仍须读取当次原报告。
+先读本工作树AGENTS与宪法、当前tasks，再读[下一批Android功能/真实基础依赖/T051局部拆分提案](android-next-batch.md)。建议从邀请码＋手机号OTP＋条款/年龄明确动作、注册/登录及会话撤销的Android纵向切片开始。身份、当前授权、RLS、环境隔离、最小审计和耐久撤销等依赖保留；其他共享核心按消费者激活，T051完整验收责任保留。该提案本轮不实施、不擅改原DAG。
 
-本批整理源索引与工程交接会形成新提交，前述Green只证明其原SHA。从PR实际HEAD重新查询工程回归和foundation；按真实当前证据恢复bridge。全部285项canonical任务仍未验收勾选，Draft保持；未提交 formal complete 或阶段验收结论。
+T033完整业务目标接线仍未完成。下一轮只接当前行为的迁移/fixture/真实目标执行与报告，取得其云端Red后实现；不能把初始化218项工程测试当业务Green。若handoff ready需恢复执行，先由既有bootstrap start云端收据与metadata reader转executing，再使用与当前foundation匹配的development源申请business-increment；不手填complete或绕过真实准入。阶段一交接不需要提前启动业务。
 
-## 历史检查点和待读取证据
-
-本次计划更新前代码检查点为 `72cb1a23ce0f921949f96f360e87048659376bec`。其工程、journal 和 bridge 传输结果不能替代最终完整矩阵与当前审查。下列链接是交接时的运行入口；下一窗口应重新查询实际状态和所有 attempt，不能把本文件快照当结果。
-
-- [工程与聚合 run38691309464](https://github.com/Self-Command/agora-weave/actions/runs/38691309464)：工程节点已成功，聚合仍等待完整执行器。
-- [完整共享 run38691309718](https://github.com/Self-Command/agora-weave/actions/runs/38691309718)：交接调查时四个原生 job、临时入口仍运行。先读取其实际产物、原失败和清理结果，再判定保留或被新 SHA 取代；不得粗暴取消唯一证据或归档清理。
-- [journal run38691309315](https://github.com/Self-Command/agora-weave/actions/runs/38691309315)：workflow 成功；仍须读取完整认证报告，不能只据绿图标宣称最终覆盖。
-- [ED-18 工程 Green 来源 run38690805835](https://github.com/Self-Command/agora-weave/actions/runs/38690805835)：实际 174 项工程断言及 typecheck/lint 成功；顶层 run 最终 failure，不能称整体成功。SC02 原始 Red 是 `c943e260` 的 [run38690425924](https://github.com/Self-Command/agora-weave/actions/runs/38690425924)，原状态保留。
-- [旧独立原生 run38690805779](https://github.com/Self-Command/agora-weave/actions/runs/38690805779)：与旧共享矩阵有重复构建，但独立模式不要求 HTTPS，不能把它的成功替代完整 HTTPS 验收。取消前逐项确认是否冗余、已读以及清理安全。
-- [旧完整 run38681620881](https://github.com/Self-Command/agora-weave/actions/runs/38681620881)，目标 `348e1ac817a369547a531f37c349883d472b39e7`：API24 系统警示栏原失败及 ED-18 决定详见 `android7-system-chrome-decision.md`。iOS26.4 dark 原失败也必须保留，不能因其他端成功而跳过。
-
-### 已核验的 iOS26.4 原失败
-
-`38681620881` 的原 artifact `11948648942`，名称 `bootstrap-ios-26.4-38681620881-1`，原 ZIP 51,887,331 字节，SHA-256 `b4bf60dd8ef65a61c755c7d12e640206a73d1eee8cd88e0fd90e3bd90869a4f4`。已下载私有归档的原 ZIP、核对 GitHub 元数据摘要并解包。light 为 1pass／0fail；dark 为 0pass／1fail，实际失败在 `BootstrapShellTests.swift:34`：后台状态等待 5 秒所得 `XCTWaiterResult(rawValue: 2)` 不等于 completed（1）。dark 原日志 8018 行记录该断言，不能误称主题对比度失败，也不能通过扩大超时或删断言直接换绿。下一窗口先读取完整失败上下文、原 xcresult 与实际图像，区分前置、测试驱动和产品行为；需改工程行为时取得相应真实云端 Red。
-
-已校验本机缓存目录：`C:/Users/by970/AppData/Local/Temp/agoraweave-shared-current-348e1ac/11948648942/`，可信原 ZIP 是 `source-private.zip`，内容在 `raw/`，身份记录为 `github-artifact.json`。同目录其他 `source*.zip` 包含失败或不完整传输，不能复用；每次使用核对完整身份、字节数和摘要。缓存不授予通过。专用连接信息及密钥只在既有私有配置，不能写公开资料。
-
-原 ZIP 校验完成后，本窗口停止了两个仍挂起的相同 artifact 只读 `gh` 下载进程；保留不完整文件和原始记录，没有取消 Actions 运行或改变测试结果。未记录精确传输耗时，不能据此量化提速。
-
-## 下一窗口顺序
-
-1. 在此分支最新干净检查点恢复 bridge，先读 `validation-efficiency.md` 和局部更新后的 TD-07A/B/C、cloud-validation、release-evidence、T026/T027。使用实际当前运行记录确定最小改动，保留任务 ID、依赖、追溯和完成状态。
-2. 读取本次已取得的真实Red／Green及未决项，只对新增或改变的行为先取得云端语义Red、校验读取因果后再实现；已有正确行为只回归，不重造Red。仍需处理同目标重复执行、反馈／开发S_G／验收分层、安全取消、缓存、认证artifact复用与SHA冻结中的实际缺口，不另造调度平台。
-3. 快速反馈不授开发Green或完成；开发S_G保持同oracle／fixture、受影响套件及必要回归，记录整个diff、依赖和风险，未知影响完整适用验证。事件、head／checkout SHA、run／attempt与真实check准确绑定。工程门禁／清单／测试／依赖变更也先目标Red／Green，不能归普通文档免测。
-4. 最后一次性整理代码、测试、tasks、工程资料与桥接元数据，提交冻结目标 SHA，再取得最低／当前 iOS 与 Android、Web、官方服务、非空增量编排、认证 journal、归档清理和当前 Codex 代码／实际图像审查等全部必需证据。新提交使相应验收失效。
-5. 读取所有必需原报告、失败详情和实际图像，将最终完成记录写受控外部证据库。按真实前后数据说明消除的重复、运行数及排队／执行／传输时间；无可比数据就明确缺口，不承诺提速比例。
-6. 按原DAG继续：独立development-ready后可做核心／业务TDD，T026／T027完整ci-ready可并行闭合。合并、阶段验收交付及发行前必须同最终SHA完整适用验证，最低／当前OS、安全权限、真实交互与当前代码／实际图像审查齐全。Draft PR工程交接明确未决验收项，285项未全完成不调用feature complete，不以raw handoff或task-done exit0冒充完成。
+[非阻塞后续工程事项](phase1-follow-ups.md)单列保留，按实际消费者或正式验收节点处理。本轮没有全平台ci-ready、产品基准确认、可合并、已发行或生产批准结论。
