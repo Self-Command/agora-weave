@@ -248,19 +248,6 @@
       "bootstrap_applicability": "required",
       "activation": "bootstrap",
       "actual_state": "not_executed"
-    },
-    {
-      "id": "bootstrap.physical-devices",
-      "task": "T025",
-      "entry": "device-matrix.json",
-      "requirements": [
-        "QR-004",
-        "QR-005",
-        "QR-008"
-      ],
-      "bootstrap_applicability": "required",
-      "activation": "bootstrap",
-      "actual_state": "not_executed"
     }
   ],
   "product_cases": [
