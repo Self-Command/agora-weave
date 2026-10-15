@@ -1,10 +1,5 @@
 name: Authenticated TDD cycle journal
 on:
-  push:
-    paths:
-      - '.github/workflows/tdd-cycle.yml'
-      - 'tools/ci/tdd-journal.ts'
-      - 'infra/ci/tdd-source-catalog.json'
   workflow_call:
 permissions:
   contents: read

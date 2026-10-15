@@ -19,7 +19,7 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
     (context.event === 'pull_request' && (context.pr_head_sha !== context.target_sha || context.pr_merge_sha !== context.event_sha))) {
     return { state: 'blocked', reason_codes: ['invalid_validation_request'], readiness: 'not_evaluated' };
   }
-  const ordinaryFeedback = context.changed_paths.every((file: string) => /^docs\/engineering\/.test(file) ||
+  const ordinaryFeedback = context.changed_paths.every((file: string) => file.startsWith('docs/engineering/') ||
     /^tools\/ci\//.test(file) && !/(validation-manifest|gates|aggregate|bridge|run-check-set|test-harness|discover-targets)/.test(file));
   return { ...context, state: 'resolved', reason_codes: [], profile: 'bootstrap', validation_intent: request.validation_intent,
     full_required: request.validation_intent !== 'feedback' || !ordinaryFeedback,
