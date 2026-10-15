@@ -2571,7 +2571,14 @@
       "files": [
         "tests/security/ci/https-descriptor.spec.ts"
       ]
+    },
+    {
+      "id": "ci.native-admission",
+      "files": [
+        "tests/integration/ci/native-admission.spec.ts"
+      ],
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 147
+  "engineering_case_count": 152
 }
