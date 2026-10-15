@@ -14,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityManager
+import android.accessibilityservice.AccessibilityServiceInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
@@ -25,6 +27,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.After
 import java.io.File
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
@@ -33,6 +36,18 @@ import org.json.JSONArray
 import java.security.MessageDigest
 
 class BootstrapShellTest {
+  private var originalAccessibilityFlags: Int? = null
+
+  @After
+  fun restoreAccessibilityService() {
+    originalAccessibilityFlags?.let { flags ->
+      val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+      val service = automation.serviceInfo
+      service.flags = flags
+      automation.serviceInfo = service
+    }
+  }
+
   @Test
   fun launchAndBackgroundResume() {
     val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -49,6 +64,15 @@ class BootstrapShellTest {
     assertEquals("The actual device configuration must match the named capture theme", expectedNight,
       context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
     val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    val automation = InstrumentationRegistry.getInstrumentation().uiAutomation
+    val service = automation.serviceInfo
+    originalAccessibilityFlags = service.flags
+    service.flags = service.flags or AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE
+    automation.serviceInfo = service
+    val accessibility = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val explorationDeadline = SystemClock.uptimeMillis() + 15000
+    while (!accessibility.isTouchExplorationEnabled && SystemClock.uptimeMillis() < explorationDeadline) SystemClock.sleep(100)
+    assertTrue("Native focus requires actual enabled touch exploration", accessibility.isTouchExplorationEnabled)
     val targetPackage = "org.agoraweave.app"
     val launch = context.packageManager.getLaunchIntentForPackage(targetPackage)
     assertNotNull(launch)

@@ -10,6 +10,7 @@ on:
       - 'tests/e2e/android/**'
       - 'tools/ci/install-ios-bootstrap-tests.rb'
       - 'infra/ci/android-bootstrap-tests.gradle'
+      - 'infra/ci/android-bootstrap-AndroidManifest.xml'
   pull_request:
     paths:
       - 'apps/mobile/**'
@@ -20,6 +21,7 @@ on:
       - 'tests/e2e/android/**'
       - 'tools/ci/install-ios-bootstrap-tests.rb'
       - 'infra/ci/android-bootstrap-tests.gradle'
+      - 'infra/ci/android-bootstrap-AndroidManifest.xml'
   workflow_call:
     inputs:
       https_required:
@@ -249,6 +251,7 @@ jobs:
           CI=1 npm run ci:prebuild -- --platform android
           mkdir -p android/app/src/androidTest/java/org/agoraweave/bootstrap
           cp ../../tests/e2e/android/BootstrapShellTest.kt android/app/src/androidTest/java/org/agoraweave/bootstrap/
+          cp ../../infra/ci/android-bootstrap-AndroidManifest.xml android/app/src/androidTest/AndroidManifest.xml
           if [ '${{ inputs.https_required }}' = 'true' ]; then
             cd ../..
             GH_TOKEN='${{ github.token }}' node --experimental-strip-types tools/ci/https-client-config.ts
