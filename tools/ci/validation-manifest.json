@@ -2979,9 +2979,17 @@
         "tests/concurrency/core/admission.spec.ts"
       ],
       "case_count": 2
+    },
+    {
+      "id": "core.configuration-resolution",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/configuration.spec.ts"
+      ],
+      "case_count": 5
     }
   ],
-  "core_case_count": 55,
+  "core_case_count": 60,
   "core_migrations": [
     {
       "file": "supabase/migrations/0001_identity.sql",
