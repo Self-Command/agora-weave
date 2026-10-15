@@ -3,6 +3,9 @@ on:
   workflow_call:
 permissions:
   contents: read
+  actions: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 jobs:
   install:
     runs-on: ubuntu-24.04
@@ -33,11 +36,16 @@ jobs:
             source: 'github-actions', runner_environment: process.env.RUNNER_ENVIRONMENT,
             run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
             package_lock_sha256: actualLock, node: process.version, scope: 'bootstrap-only',
+            check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+            toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
             readiness: 'not_evaluated',
           }, null, 2) + '\n');
           NODE
           npm run ci:install > install-output/install.log 2>&1
           npm run ci:typecheck > install-output/typecheck.log 2>&1 || { cat install-output/typecheck.log; exit 1; }
+          mkdir -p lint-output
+          npm run ci:lint
+          cp lint-output/report.json install-output/lint-report.json
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       - if: ${{ always() }}
@@ -59,6 +67,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
@@ -110,9 +119,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p verify-output
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs?per_page=100" > verify-output/original-jobs.json
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" > verify-output/original-artifacts.json
+          git fetch --no-tags origin 665fffada2dd4fb908b53ad7ca16159ce5e263d8
+          npm run ci:evidence
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
@@ -120,12 +128,28 @@ jobs:
           path: verify-output/
           if-no-files-found: error
           retention-days: 7
+  archive:
+    needs: [reports, review]
+    if: ${{ always() }}
+    uses: ./.github/workflows/archive-bootstrap.yml
+    with:
+      source_run_id: ${{ github.run_id }}
+      source_sha: ${{ github.event.pull_request.head.sha || github.sha }}
+    secrets: inherit
+  review:
+    needs: reports
+    if: ${{ always() }}
+    uses: ./.github/workflows/review-records.yml
+    secrets: inherit
   gate:
     name: agoraweave/ci-gate
-    needs: [install, service, discover, web, native, tooling, tdd, bridge, reports]
+    needs: [install, service, discover, web, native, tooling, tdd, bridge, reports, review, archive]
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -134,26 +158,15 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
-      - name: Refuse readiness while required admission or evidence is unavailable
+      - name: Recompute readiness from every collected original report and frozen requirement
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p gate-output
-          node --input-type=module <<'NODE'
-          import { readFileSync, writeFileSync } from 'node:fs';
-          const needs = JSON.parse(process.env.NEEDS_JSON);
-          const devices = JSON.parse(readFileSync('infra/ci/device-matrix.json', 'utf8'));
-          const reasons = Object.entries(needs).filter(([, result]) => result.result !== 'success').map(([id, result]) => `${id}:${result.result}`);
-          for (const device of devices.devices) if (!['passed'].includes(device.state)) reasons.push(`${device.id}:${device.state}`);
-          if (devices.native_backend_connectivity.state !== 'passed') reasons.push('native_backend_connectivity:unavailable');
-          reasons.push('private_complete_evidence_and_current_codex_records:missing');
-          writeFileSync('gate-output/readiness.json', JSON.stringify({ state: 'blocked', reasons,
-            target_sha: process.env.GITHUB_SHA, run_id: process.env.GITHUB_RUN_ID,
-            attempt: Number(process.env.GITHUB_RUN_ATTEMPT), source: 'github-actions',
-            scope: 'bootstrap-only', feature_complete: false,
-          }, null, 2) + '\n');
-          throw new Error(`Initialization remains blocked: ${reasons.join(', ')}`);
-          NODE
+          node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" verify-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" review-output || true
+          node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" private-receipts || true
+          node --experimental-strip-types tools/ci/aggregate-cli.ts
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:

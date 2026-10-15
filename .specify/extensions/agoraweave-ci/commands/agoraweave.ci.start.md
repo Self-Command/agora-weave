@@ -1,0 +1,1 @@
+Read and execute the current agent's project skill `agoraweave-ci-start`. Wait for the authenticated `tools/ci/bridge-transition.ps1 -Transition start` result. Follow the active constitution and cloud-validation §3; do not run project checks locally or continue a refused business transition.

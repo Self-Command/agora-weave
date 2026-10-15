@@ -79,9 +79,18 @@ export function assessTddCycle(input: unknown): Result {
 function bootstrapPath(value: string): boolean {
   const normalized = value.replaceAll('\\', '/');
   if (path.posix.isAbsolute(normalized) || normalized.split('/').some(part => part === '..') || /^[A-Za-z]:/.test(normalized)) return false;
+  const shellFiles = ['apps/admin/LICENSE', 'apps/admin/components.json', 'apps/admin/package.json', 'apps/admin/postcss.config.mjs',
+    'apps/admin/src/app/globals.css', 'apps/admin/src/app/layout.tsx', 'apps/admin/src/app/page.tsx',
+    'apps/admin/src/components/ui/button.tsx', 'apps/admin/src/lib/utils.ts', 'apps/admin/tsconfig.json',
+    'apps/mobile/app.json', 'apps/mobile/app/_layout.tsx', 'apps/mobile/app/index.tsx', 'apps/mobile/package.json', 'apps/mobile/tsconfig.json',
+    'apps/share/package.json', 'apps/share/src/app/globals.css', 'apps/share/src/app/layout.tsx', 'apps/share/src/app/page.tsx', 'apps/share/tsconfig.json'];
   return ['tools/ci/', 'tests/contract/ci/', 'tests/integration/ci/', 'tests/security/ci/', 'tests/fixtures/bootstrap/',
-    'tests/e2e/bootstrap/', '.github/workflows/', 'infra/ci/', 'supabase/upstream/', 'docs/engineering/'].some(prefix => normalized.startsWith(prefix)) ||
-    ['package.json', 'package-lock.json', '.gitignore', '.gitmodules'].includes(normalized);
+    'tests/e2e/bootstrap/', 'tests/e2e/ios/', 'tests/e2e/android/', '.github/workflows/', 'infra/ci/', 'supabase/upstream/',
+    'docs/engineering/', '.specify/bridge-snapshots/', '.specify/extensions/agoraweave-ci/',
+    '.agents/skills/agoraweave-ci-', '.claude/skills/agoraweave-ci-', 'specs/001-agoraweave-v1/'].some(prefix => normalized.startsWith(prefix)) ||
+    [...shellFiles, 'package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', 'superpowers-v7', '.specify/extensions.yml',
+      '.specify/superpowers-handoff.json', '.specify/bridge-events.jsonl',
+      '.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1'].includes(normalized);
 }
 
 export function assessBridgeGate(input: unknown): Result {

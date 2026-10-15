@@ -8,7 +8,8 @@ const clients = [
 for (const client of clients) {
   for (const colorScheme of ['light', 'dark'] as const) {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 800 }]) {
-      test(`${client.name} ${colorScheme} ${viewport.width}: navigation and reload`, async ({ page }, testInfo) => {
+      for (const fontScale of [1, 2]) {
+      test(`${client.name} ${colorScheme} ${viewport.width} font${fontScale}: navigation and reload`, async ({ page }, testInfo) => {
         const errors: string[] = [];
         page.on('pageerror', error => errors.push(error.message));
         await page.setViewportSize(viewport);
@@ -24,17 +25,37 @@ for (const client of clients) {
         await page.goto('about:blank');
         await page.goBack();
         await expect(heading).toBeVisible();
+        await page.evaluate(scale => { document.documentElement.style.fontSize = `${scale * 100}%`; }, fontScale);
         const geometry = await heading.boundingBox();
         expect(geometry).not.toBeNull();
         expect(geometry!.x).toBeGreaterThanOrEqual(0);
         expect(geometry!.x + geometry!.width).toBeLessThanOrEqual(viewport.width);
+        expect(geometry!.y).toBeGreaterThanOrEqual(0);
+        expect(geometry!.y + geometry!.height).toBeLessThanOrEqual(viewport.height);
+        const metrics = await page.evaluate(() => {
+          const heading = document.querySelector('h1')!;
+          const foreground = getComputedStyle(heading).color;
+          const background = getComputedStyle(document.body).backgroundColor;
+          return { foreground, background, fontSize: getComputedStyle(heading).fontSize,
+            viewportWidth: innerWidth, documentWidth: document.documentElement.scrollWidth };
+        });
+        const luminance = (color: string) => {
+          const channels = color.match(/[\d.]+/g)!.slice(0, 3).map(value => Number(value) / 255)
+            .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+          return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+        };
+        const colors = [luminance(metrics.foreground), luminance(metrics.background)].sort((a, b) => b - a);
+        expect((colors[0] + 0.05) / (colors[1] + 0.05)).toBeGreaterThanOrEqual(4.5);
+        expect(metrics.documentWidth).toBeLessThanOrEqual(metrics.viewportWidth);
+        expect(Number.parseFloat(metrics.fontSize)).toBeGreaterThanOrEqual(23 * fontScale);
         expect(errors).toEqual([]);
         await testInfo.attach('shell-fullscreen', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
         await testInfo.attach('actual-environment', { body: JSON.stringify({
-          client: client.name, colorScheme, viewport, browser: page.context().browser()?.version(),
+          client: client.name, colorScheme, viewport, fontScale, metrics, browser: page.context().browser()?.version(),
           checkout_sha: process.env.CHECKOUT_SHA, scope: 'no-business-shell', baseline: 'not_created',
         }), contentType: 'application/json' });
       });
+      }
     }
   }
 }

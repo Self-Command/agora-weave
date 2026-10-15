@@ -61,9 +61,18 @@ for (const item of catalog) {
     if (String(file.path).endsWith('.png')) images.push(id);
   }
   const name = String(item.artifact_name);
-  let kind = '', ids: string[] = [], jobPattern = '', raw: Record<string, unknown> = {}, identity: Record<string, any>;
+  let kind: string, ids: string[] = [], jobPattern = '', raw: Record<string, unknown>, identity: Record<string, any>;
   try {
-    if (name.startsWith('verify-checkset-')) {
+    if (name.startsWith('bootstrap-tooling-')) {
+      kind = 'tooling'; ids = ['bootstrap.tooling']; jobPattern = ' / tooling / compatibility';
+      identity = parse(root, 'mapping.json');
+      const tasks = readFileSync('specs/001-agoraweave-v1/tasks.md');
+      const canonicalTaskIds = tasks.toString().split(/\r?\n/).filter(line => /^- \[ \] T\d{3}\b/.test(line))
+        .map(line => line.match(/T\d{3}/)![0]);
+      raw = { mapping: identity, refusal: parse(root, 'effective-refusal.json'), canonical_task_ids: canonicalTaskIds,
+        tasks_sha256: hash(tasks), first_brief: read(root, 'first-brief.md'), last_brief: read(root, 'last-brief.md'),
+        ledger: read(root, 'raw-native-ledger.md'), command: read(root, 'raw-task-command.log') };
+    } else if (name.startsWith('verify-checkset-')) {
       kind = 'engineering'; ids = ['bootstrap.engineering', 'bootstrap.discovery']; jobPattern = ' / discover';
       identity = parse(root, 'execution.json'); raw = { tap: read(root, 'engineering.tap'), expected_count: manifest.engineering_case_count };
       if (parse(root, 'discovery.json').state !== 'discovered') throw new Error('Missing actual discovery');
@@ -114,11 +123,13 @@ for (const item of catalog) {
       check_set_digest: checkSetDigest, source_job_conclusion: matches[0]?.conclusion || 'missing',
       raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)), artifact_id: item.artifact_id });
     if (kind === 'service' && result.state === 'passed') {
-      cleanupEnvironments.push(parse(root, 'cleanup.json'));
-      cleanupSources.push({ artifact_id: item.artifact_id, raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
-      cleanupIdentity = identity;
+      try {
+        cleanupEnvironments.push(parse(root, 'cleanup.json'));
+        cleanupSources.push({ artifact_id: item.artifact_id, raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
+        cleanupIdentity = identity;
+      } catch { /* An absent postcondition record leaves cleanup incomplete. */ }
     }
-  } catch (error) {
+  } catch {
     for (const id of ids) observed.push({ id, state: 'missing', source_sha: sha, artifact_id: item.artifact_id,
       reason: 'Required original executor file is missing, unreadable or unbound' });
   }
@@ -133,8 +144,8 @@ if (cleanupIdentity) {
 }
 const requiredIds = manifest.bootstrap_checks.filter((check: Record<string, unknown>) => check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id);
 for (const id of requiredIds) if (!observed.some(check => check.id === id)) observed.push({ id,
-  state: 'missing', source_sha: sha, source_verified: false,
-  reason: 'No bound original executor evidence collected' });
+  state: id === 'bootstrap.physical-devices' ? 'unavailable' : 'missing', source_sha: sha, source_verified: false,
+  reason: id === 'bootstrap.physical-devices' ? 'ED-13 physical service unavailable' : 'No bound original executor evidence collected' });
 mkdirSync('verify-output', { recursive: true });
 writeFileSync('verify-output/original-attempts-and-jobs.json', JSON.stringify(attempts, null, 2) + '\n');
 writeFileSync('verify-output/collected-checks.json', JSON.stringify({ source_authenticated: true, source: 'github-actions',
@@ -163,7 +174,7 @@ writeFileSync('verify-output/review-context.json', JSON.stringify({ target_sha: 
     actual_checks: { source: 'github-actions', state: engineeringPassed ? 'passed' : 'blocked', interactions_passed: false, accessibility_passed: false } },
   visual: { ...shared, review_kind: 'visual', required_images: images,
     required_coverage: ['admin:shell', 'share:shell', 'ios:current:launch-resume', 'ios:minimum:launch-resume',
-      'android:current:launch-resume', 'android:minimum:launch-resume', 'simulator-accessibility-admission'],
+      'android:current:launch-resume', 'android:minimum:launch-resume', 'physical-accessibility-admission'],
     actual_checks: { source: 'github-actions', state: interactionsPassed ? 'passed' : 'blocked',
-      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-14: hardware-only assistive technology and hardware radio/audio paths are not applicable; simulator semantic/focus evidence remains required' } },
+      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-13 physical VoiceOver/TalkBack evidence unavailable' } },
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');

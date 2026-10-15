@@ -57,4 +57,3 @@ test('RB07: code record validation binds actual contracts independently of physi
   record.actual_checks = context.actual_checks = { ...context.actual_checks, interactions_passed: false, accessibility_passed: false };
   assert.equal(bindReviewRecord(record, context).state, 'passed');
 });
-

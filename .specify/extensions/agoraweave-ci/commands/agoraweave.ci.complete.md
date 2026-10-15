@@ -1,0 +1,1 @@
+Read and execute the current agent's project skill `agoraweave-ci-complete`. Wait for the authenticated `tools/ci/bridge-transition.ps1 -Transition complete` result. Follow the active constitution and cloud-validation §3; refusal preserves the incomplete handoff.
