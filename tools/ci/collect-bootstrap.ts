@@ -133,8 +133,8 @@ if (cleanupIdentity) {
 }
 const requiredIds = manifest.bootstrap_checks.filter((check: Record<string, unknown>) => check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id);
 for (const id of requiredIds) if (!observed.some(check => check.id === id)) observed.push({ id,
-  state: id === 'bootstrap.physical-devices' ? 'unavailable' : 'missing', source_sha: sha, source_verified: false,
-  reason: id === 'bootstrap.physical-devices' ? 'ED-13 physical service unavailable' : 'No bound original executor evidence collected' });
+  state: 'missing', source_sha: sha, source_verified: false,
+  reason: 'No bound original executor evidence collected' });
 mkdirSync('verify-output', { recursive: true });
 writeFileSync('verify-output/original-attempts-and-jobs.json', JSON.stringify(attempts, null, 2) + '\n');
 writeFileSync('verify-output/collected-checks.json', JSON.stringify({ source_authenticated: true, source: 'github-actions',
@@ -163,7 +163,7 @@ writeFileSync('verify-output/review-context.json', JSON.stringify({ target_sha: 
     actual_checks: { source: 'github-actions', state: engineeringPassed ? 'passed' : 'blocked', interactions_passed: false, accessibility_passed: false } },
   visual: { ...shared, review_kind: 'visual', required_images: images,
     required_coverage: ['admin:shell', 'share:shell', 'ios:current:launch-resume', 'ios:minimum:launch-resume',
-      'android:current:launch-resume', 'android:minimum:launch-resume', 'physical-accessibility-admission'],
+      'android:current:launch-resume', 'android:minimum:launch-resume', 'simulator-accessibility-admission'],
     actual_checks: { source: 'github-actions', state: interactionsPassed ? 'passed' : 'blocked',
-      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-13 physical VoiceOver/TalkBack evidence unavailable' } },
+      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-14: hardware-only assistive technology and hardware radio/audio paths are not applicable; simulator semantic/focus evidence remains required' } },
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');

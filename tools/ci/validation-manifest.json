@@ -2452,7 +2452,14 @@
         "tests/security/ci/review-binding.spec.ts"
       ],
       "id": "ci.review-binding"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/simulator-admission.spec.ts"
+      ],
+      "id": "ci.simulator-admission"
     }
   ],
-  "engineering_case_count": 102
+  "engineering_case_count": 115
 }
