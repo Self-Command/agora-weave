@@ -2557,7 +2557,18 @@
       ],
       "id": "ci.actual-web-report-handoff",
       "command": "ci:contracts"
+    },
+    {
+      "id": "ci.https-ingress",
+      "path": "tests/security/ci/https-ingress.spec.ts",
+      "entry": "ci:contracts",
+      "category": "security",
+      "requirements": [
+        "QR-003",
+        "QR-007"
+      ],
+      "activation": "bootstrap"
     }
   ],
-  "engineering_case_count": 140
+  "engineering_case_count": 145
 }
