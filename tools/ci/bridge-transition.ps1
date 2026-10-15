@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $taskRepository = 'Self-Command/agora-weave'
 $taskRoot = (& git rev-parse --show-toplevel 2>$null)
 if ($LASTEXITCODE -ne 0 -or -not $taskRoot) { throw 'Cloud transition requires an identified Git checkout' }
-$taskRoot = $taskRoot.Trim()
+$taskRoot = [System.IO.Path]::GetFullPath($taskRoot.Trim())
 $taskHead = (& git rev-parse HEAD 2>$null)
 if ($LASTEXITCODE -ne 0 -or $taskHead -notmatch '^[a-f0-9]{40}$') { throw 'Missing current committed target; raw status is ineffective' }
 $taskHead = $taskHead.Trim()

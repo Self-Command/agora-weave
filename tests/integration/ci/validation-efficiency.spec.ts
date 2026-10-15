@@ -3,7 +3,12 @@ import { test } from 'node:test';
 import { spawnSync } from 'node:child_process';
 import { resolveValidationRequest } from '../../../tools/ci/run-check-set.ts';
 
-function workflows(): Record<string, any> {
+type Step = { run?: string; uses?: string; with?: Record<string, string> };
+type Job = { uses?: string; steps?: Step[] };
+type Workflow = { on?: Record<string, { branches?: string[] } | null>; true?: Record<string, { branches?: string[] } | null>;
+  jobs: Record<string, Job>; concurrency: { group: string; 'cancel-in-progress': boolean } };
+
+function workflows(): Record<string, Workflow> {
   const parsed = spawnSync('python3', ['-c',
     'import glob,json,yaml; print(json.dumps({p:yaml.safe_load(open(p,encoding="utf-8")) for p in glob.glob(".github/workflows/*.yml")}))'], { encoding: 'utf8' });
   assert.equal(parsed.status, 0, parsed.stderr);
@@ -14,7 +19,7 @@ test('EV01: an open feature PR has exactly one automatic full native execution o
   const all = workflows();
   function calledNative(file: string): number {
     if (file.endsWith('/native-bootstrap.yml')) return 1;
-    return Object.values(all[file]?.jobs || {}).reduce<number>((sum, job: any) =>
+    return Object.values(all[file]?.jobs || {}).reduce<number>((sum, job) =>
       sum + (typeof job.uses === 'string' && job.uses.startsWith('./.github/workflows/') ? calledNative(job.uses.slice(2)) : 0), 0);
   }
   let nativeOwners = 0;
@@ -45,13 +50,13 @@ test('EV02: old targets and evidence cleanup cannot be automatically cancelled b
 test('EV03: immutable npm downloads are cached by lock, toolchain and runner platform while real installs remain', () => {
   const all = workflows();
   for (const file of ['ci-bootstrap.yml', 'verify-increment.yml', 'native-bootstrap.yml', 'web-bootstrap.yml']) {
-    for (const job of Object.values(all[`.github/workflows/${file}`].jobs) as any[]) {
-      if (!job.steps?.some((step: any) => String(step.run || '').includes('ci:install') || String(step.run || '').includes('npm ci'))) continue;
-      const setup = job.steps.find((step: any) => String(step.uses || '').startsWith('actions/setup-node@'));
+    for (const job of Object.values(all[`.github/workflows/${file}`].jobs)) {
+      if (!job.steps?.some(step => String(step.run || '').includes('ci:install') || String(step.run || '').includes('npm ci'))) continue;
+      const setup = job.steps.find(step => String(step.uses || '').startsWith('actions/setup-node@'));
       assert.equal(setup?.with?.cache, 'npm', `${file}: dependency download cache is missing`);
-      const inputs = String(setup.with['cache-dependency-path']);
+      const inputs = String(setup?.with?.['cache-dependency-path']);
       assert.ok(inputs.includes('package-lock.json') && inputs.includes('infra/ci/toolchain-lock.json'), file);
-      assert.ok(job.steps.some((step: any) => String(step.run || '').includes('ci:install') || String(step.run || '').includes('npm ci')));
+      assert.ok(job.steps.some(step => String(step.run || '').includes('ci:install') || String(step.run || '').includes('npm ci')));
     }
   }
 });

@@ -2401,6 +2401,7 @@
     {"id":"ci.evidence-reuse","command":"ci:contracts","files":["tests/integration/ci/evidence-reuse.spec.ts"]},
     {"id":"ci.ready-bootstrap-start","command":"ci:contracts","files":["tests/security/ci/bridge-ready-start.spec.ts"]},
     {"id":"ci.validation-efficiency","command":"ci:contracts","files":["tests/integration/ci/validation-efficiency.spec.ts"]},
+    {"id":"ci.bridge-reader-path","command":"ci:contracts","files":["tests/integration/ci/bridge-reader-path.spec.ts"]},
     {
       "command": "ci:contracts",
       "id": "ci.evidence",
@@ -2663,5 +2664,5 @@
       "files": ["tests/integration/ci/android7-system-chrome.spec.ts"]
     }
   ],
-  "engineering_case_count": 185
+  "engineering_case_count": 186
 }
