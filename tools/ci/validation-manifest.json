@@ -2948,9 +2948,17 @@
         "tests/integration/core/schema-config.spec.ts"
       ],
       "case_count": 29
+    },
+    {
+      "id": "core.schema-invariants",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/schema-invariants.spec.ts"
+      ],
+      "case_count": 7
     }
   ],
-  "core_case_count": 38,
+  "core_case_count": 45,
   "core_migrations": [],
   "core_fixture_files": [
     "tests/fixtures/core/seed.sql",
