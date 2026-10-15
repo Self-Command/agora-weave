@@ -82,3 +82,42 @@ test('BR06: both original XCTest summaries and all launch/resume images are requ
     assert.equal(assessBootstrapRaw(fixture('ios', { ...raw, ...patch })).state, 'blocked');
   }
 });
+
+test('BR08: bridge admission is recomputed from the bound original record and rejects a forged passed state', () => {
+  const sha = 'a'.repeat(40), checkSet = 'b'.repeat(64);
+  const bridge = { state: 'passed', actor: 'codex', expected_actor: 'codex',
+    feature: 'specs/001-agoraweave-v1', expected_feature: 'specs/001-agoraweave-v1',
+    target_sha: sha, expected_sha: sha, contract_digest: 'd'.repeat(64), expected_contract_digest: 'd'.repeat(64),
+    check_set_digest: checkSet, expected_check_set_digest: checkSet,
+    source: 'github-actions', runner_environment: 'github-hosted', mode: 'bootstrap-only', transition: 'start',
+    ownership_guard_passed: true, required_hooks_ran: true, working_tree_clean: true,
+    changed_paths: ['tools/ci/bridge-gate.ts'], read_by: 'actions-ownership', read_at: '2026-10-14T20:00:00Z',
+    ci_ready: false, feature_complete: false };
+  assert.equal(assessBootstrapRaw(fixture('bridge', { admission: bridge })).state, 'passed');
+  for (const patch of [{ required_hooks_ran: false }, { target_sha: 'f'.repeat(40), expected_sha: 'f'.repeat(40) },
+    { changed_paths: ['apps/mobile/app/new-business.tsx'] }, { ci_ready: true }]) {
+    assert.equal(assessBootstrapRaw(fixture('bridge', { admission: { ...bridge, ...patch } })).state, 'blocked');
+  }
+});
+
+test('BR09: cleanup requires observed zero residual resources and removed temporary files in both environments', () => {
+  const environments = ['dev', 'test'].map(environment => ({ environment, cleanup: 'success',
+    remaining_containers: [], remaining_volumes: [], remaining_networks: [], temporary_files_removed: true }));
+  assert.equal(assessBootstrapRaw(fixture('cleanup', { environments })).state, 'passed');
+  for (const invalid of [environments.slice(1), [environments[0], environments[0]],
+    [environments[0], { ...environments[1], remaining_volumes: ['synthetic-leftover'] }],
+    [environments[0], { ...environments[1], temporary_files_removed: false }],
+    [environments[0], { ...environments[1], cleanup: 'failure' }]]) {
+    assert.equal(assessBootstrapRaw(fixture('cleanup', { environments: invalid })).state, 'blocked');
+  }
+});
+
+test('BR10: a partial TDD catalog never satisfies full bootstrap coverage despite individually green cycles', () => {
+  const journal = { target_sha: 'a'.repeat(40), coverage: 'complete', state: 'recorded_cycles_verified',
+    records: [{ cycle_id: 'synthetic-case', target_sha: 'a'.repeat(40), assessment: { state: 'passed' } }] };
+  assert.equal(assessBootstrapRaw(fixture('tdd', { journal })).state, 'passed');
+  for (const patch of [{ coverage: 'partial' }, { records: [] }, { target_sha: 'e'.repeat(40) },
+    { records: [{ ...journal.records[0], assessment: { state: 'blocked' } }] }]) {
+    assert.equal(assessBootstrapRaw(fixture('tdd', { journal: { ...journal, ...patch } })).state, 'blocked');
+  }
+});
