@@ -1497,6 +1497,9 @@
       "case_ids": [
         "BR01"
       ],
+      "case_titles": [
+        "BR01: a ready handoff obtains bootstrap start admission before its executing transition"
+      ],
       "requirements": [
         "QR-003",
         "QR-006",
