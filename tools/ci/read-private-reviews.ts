@@ -13,6 +13,9 @@ const context = JSON.parse(contextBytes.toString());
 if (context.target_sha !== sha || context.source_authenticated !== true || context.source !== 'github-actions') {
   throw new Error('Current authenticated review input context is required');
 }
+if (context.code?.actual_checks?.state !== 'passed' || context.visual?.actual_checks?.state !== 'passed') {
+  throw new Error('Actual executor prerequisites must pass before current Codex review can finish');
+}
 const digest = createHash('sha256').update(contextBytes).digest('hex');
 const temporary = process.env.RUNNER_TEMP!;
 const key = join(temporary, 'review-read-key'), hosts = join(temporary, 'review-read-hosts');

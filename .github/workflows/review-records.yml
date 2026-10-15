@@ -32,6 +32,14 @@ jobs:
         run: node --experimental-strip-types tools/ci/read-private-reviews.ts
       - name: Validate current Codex statements against authenticated input bytes and actual checks
         run: npm run ci:review
+      - name: Remove any review transport credential files
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/review-read-key" "$RUNNER_TEMP/review-read-hosts" "$RUNNER_TEMP/review-read-batch"
+          test ! -e "$RUNNER_TEMP/review-read-key"
+          test ! -e "$RUNNER_TEMP/review-read-hosts"
+          test ! -e "$RUNNER_TEMP/review-read-batch"
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
