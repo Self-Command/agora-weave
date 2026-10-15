@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "scope": "bootstrap-only",
-  "coverage": "partial",
+  "coverage": "complete",
   "cycles": [
     {
       "cycle_id": "ci-authenticated-tdd-source-001",
@@ -1096,6 +1096,37 @@
         "NC01",
         "NC02"
       ]
+    },
+    {
+      "cycle_id": "ci-final-tdd-coverage-001",
+      "behavior_id": "ci.final-tdd-coverage",
+      "case_ids": [
+        "TC01",
+        "TC02",
+        "TC03"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tdd-coverage.spec.ts",
+      "fixture_file": "tests/integration/ci/tdd-coverage.spec.ts",
+      "red": {
+        "sha": "3253b3775c152a8c403d7927e5975d13394267eb",
+        "run_id": "38666574405",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "46f496f237ee909d163db6df78535fc94912adef",
+        "run_id": "38666753816",
+        "attempt": 1
+      },
+      "implementation_sha": "46f496f237ee909d163db6df78535fc94912adef",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T01:38:01Z",
+      "cause_summary": "Read the three complete original TC failure blocks before implementing final assertion coverage. Actual Green executed all 157 assertions with zero failed, cancelled, skipped or todo; completeness is derived from authenticated final bytes and every selected assertion."
     }
   ]
 }
