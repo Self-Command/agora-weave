@@ -29,7 +29,7 @@ assert put[2] == get[1]
 shutil.copyfile(put[1], get[2])
 `, { mode: 0o700 });
     process.env.PATH = `${root}:${saved.PATH}`;
-    let receipt: Record<string, any> = {};
+    let receipt: Record<string, unknown> = {};
     assert.doesNotThrow(() => { receipt = preservePrivateBridgeRecord({ target_sha: 'a'.repeat(40), run_id: '1234', attempt: 1 }); },
       'The bridge must obey the same admitted storage layout as complete source archives');
     assert.equal(receipt.state, 'archived_and_readback_verified');
