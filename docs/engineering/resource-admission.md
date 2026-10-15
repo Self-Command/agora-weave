@@ -11,7 +11,7 @@
 | 当前Codex审查 | 用户明确确认ED-11，当前会话分别审代码和Actions实际图像／报告 | 受控记录SHA、输入／图像摘要、覆盖／findings／处置，Actions校绑定 | 无额外审查API Key要求；缺实际图像或无法判断仍阻塞 |
 | 隔离Compose凭据 | CI_DEV_SUPABASE_ENV／CI_TEST_SUPABASE_ENV 已分别供给随机秘密；不复用生产 | T004：不同 runner／Compose 网络／存储／账号／秘密，禁公开服务端口及短信邮件副作用 | run38605816529在5bd296a上dev/test全部11服务、DB/Auth/Storage探针及清理真实成功；壳联通／统一编排未完成，仍非ci-ready |
 | 原生设备 | ED-14已取代ED-13，今后只用GitHub-hosted模拟器 | T007/T025/T272：最低iOS16.4/Android7和当前OS各自实际原生产物；语义/焦点/键盘/媒体/适用辅助技术按simulator-validation契约，硬件排除明示风险不计passed | run38648396184的4组模拟器启动/恢复已实际成功；新版SHA须重验；新增无障碍证据尚缺，物理设备不再是必需资源 |
-| 跨runner原生服务联通 | Linux独立dev/test Compose健康已通过；macOS模拟器无法直接访问该runner内网 | 原生客户端真实访问受控非生产HTTPS入口，隔离dev/test，最小临时身份且撤租约 | ED-16已授权只读调查并准备方案，未授权部署/采购；2026-10-15本地只读SSH连接超时，当前容量/入口配置尚未重核；不在仅获准存储的服务器上新增计算服务，联通仍blocked |
+| 跨runner原生服务联通 | ED-17明确批准Actions内Cloudflare临时HTTPS和一次性网关，只传合成非生产数据，无采购；证据服务器角色不变 | 原生SDK实际访问独立dev/test健康路由，核匿名401、跨环境401及私有路径404；每次入口随run/attempt/SHA绑定并清理 | 固定cloudflared2026.10.0及摘要，专用secret已配置；run38664125035的iOS16.4/26.4及Android24原生作业成功，Android36失败，整轮不通过；新完整矩阵及清理仍在执行，最终SHA重新验真 |
 | 首次视觉基准 | 用户本人为确认人 | 当前真实产品候选摘要、覆盖、Codex审查及交互证据形成后确认 | 尚无候选，不预批，不用壳作基准 |
 | 阿里云短信／产品AI／审核／推送 | 仍按既定故事准入 | 相应测试前索取专用测试身份、模板、获准对象及政策资料 | 尚未到业务节点 |
 

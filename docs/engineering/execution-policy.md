@@ -1,6 +1,6 @@
 # 执行边界
 
-依据：根 `AGENTS.md`、宪法 v3.0.1、`specs/001-agoraweave-v1/{spec,plan,tasks}.md`、`contracts/cloud-validation.md` 和已确认的 ED-05–12。任务清单是唯一完成契约，现有全部 285 项仍未完成。
+依据：根 `AGENTS.md`、宪法 v3.0.1、`specs/001-agoraweave-v1/{spec,plan,tasks}.md`、`contracts/cloud-validation.md` 和已确认的 ED-05–17（后续决定取代相应历史范围）。任务清单是唯一完成契约，现有全部 285 项仍未完成。
 
 ## 初始化范围
 

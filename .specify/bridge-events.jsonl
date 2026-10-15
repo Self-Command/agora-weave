@@ -24,3 +24,5 @@
 
 {"timestamp":"2026-10-14T16:19:08.4421416Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
 
+{"timestamp":"2026-10-15T01:55:33.1006207Z","action":"handoff","status":"executing","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"Refresh approved ED-14 and ED-17 canonical artifact bindings; initialization still in execution","actor":"codex","prior_actor":"codex","snapshot_id":"20261015T0155330319931Z-executing"}
+

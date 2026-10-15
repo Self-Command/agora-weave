@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "decisions": [
-    "ED-14"
+    "ED-14",
+    "ED-17"
   ],
   "runner_policy": "github-actions-github-hosted-only",
   "devices": [
@@ -25,15 +26,15 @@
     {
       "id": "ios-minimum",
       "os": "16.4",
-      "state": "unavailable",
-      "reason": "Matching simulator runtime or cloud device channel has not been supplied or verified"
+      "state": "historical_runtime_observed_final_validation_required",
+      "reason": "Actual iOS16.4 XCTest succeeded in run38664125035; the final SHA still requires its own complete simulator results."
     },
     {
       "id": "android-minimum",
       "os": "7.0",
       "api": 24,
-      "state": "not_evaluated",
-      "reason": "Compilation minSdk24 does not establish actual coverage"
+      "state": "historical_runtime_observed_final_validation_required",
+      "reason": "Actual API24 instrumentation succeeded in run38664125035; the final SHA still requires its own complete emulator results."
     },
     {
       "id": "ios-accessibility-simulator",
@@ -63,8 +64,8 @@
     }
   ],
   "native_backend_connectivity": {
-    "state": "unavailable",
-    "reason": "Ubuntu internal Compose cannot be directly reached from macOS runner; isolated dev/test HTTPS ingress not supplied",
+    "state": "approved_implementation_in_validation",
+    "reason": "ED-17 temporary HTTPS ingress is implemented in GitHub-hosted Actions; partial native results do not satisfy the complete final matrix and cleanup.",
     "server_role": "private-evidence-storage-only"
   },
   "readiness": "not_evaluated",

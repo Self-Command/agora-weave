@@ -1127,6 +1127,37 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T01:38:01Z",
       "cause_summary": "Read the three complete original TC failure blocks before implementing final assertion coverage. Actual Green executed all 157 assertions with zero failed, cancelled, skipped or todo; completeness is derived from authenticated final bytes and every selected assertion."
+    },
+    {
+      "cycle_id": "ci-current-review-arrival-001",
+      "behavior_id": "ci.current-review-arrival",
+      "case_ids": [
+        "RV01",
+        "RV02"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/review-arrival.spec.ts",
+      "fixture_file": "tests/integration/ci/review-arrival.spec.ts",
+      "red": {
+        "sha": "1ad14c0a1079769f0d389bf69c24cea2c4a99f81",
+        "run_id": "38667660482",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "359ae1f95ea97b0428baf6143c945483edf91a85",
+        "run_id": "38668006219",
+        "attempt": 1
+      },
+      "implementation_sha": "4d90171efe51ba1c818a022646b2c0444fc1bfc7",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T01:49:28Z",
+      "cause_summary": "Read both original RV assertion blocks before adding bounded private-record arrival. Late current records arrive; stale, partial, empty and failed transfers time out without satisfying availability. All 159 assertions pass in Green; typecheck and lint also pass after preserving the primary failure during credential cleanup."
     }
   ]
 }
