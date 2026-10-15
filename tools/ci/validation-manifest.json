@@ -2816,7 +2816,19 @@
       "files": [
         "tests/integration/ci/final-gate-boundary.spec.ts"
       ]
+    },
+    {
+      "id": "ci.public-bridge-consumer",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-006",
+        "QR-007",
+        "QR-009"
+      ],
+      "files": [
+        "tests/integration/ci/public-bridge-consumer.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 212
+  "engineering_case_count": 213
 }

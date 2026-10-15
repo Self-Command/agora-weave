@@ -74,7 +74,7 @@ const result = deriveBridgeEvidence({ context: input, initialization, completion
     manifest.frozen_profiles?.[mode]?.required_ids || [],
   canonical_tasks_complete: !/^- \[ \] T\d+/m.test(readFileSync('specs/001-agoraweave-v1/tasks.md', 'utf8')) });
 mkdirSync('bridge-output', { recursive: true });
-const record = { ...input, ...result,
+const record: Record<string, any> = { ...input, ...result,
   input_digests: inputDigests, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
   checkout_sha: sha, toolchain_digest: inputDigests['infra/ci/toolchain-lock.json'],
   scope_base_sha: scopeBase, initialization_source: initialization, completion_source: completion, development_source: development };
