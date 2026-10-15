@@ -2,8 +2,11 @@
 export function publicBridgeReceipt(record: Record<string, any>, privateCopy?: Record<string, any>): Record<string, any> {
   const privateRequired = record.state === 'passed' && Boolean(record.completion_record || record.completion_source ||
     record.initialization_source || record.development_source);
+  const boundPath = /^[a-f0-9]{40}$/.test(record.target_sha || '') && /^[1-9]\d*$/.test(String(record.run_id)) &&
+    Number.isInteger(record.attempt) && record.attempt > 0 &&
+    privateCopy?.path === `/archive/ordinary/bridge-admission-${record.target_sha}-${record.run_id}-${record.attempt}.json`;
   const verified = privateCopy?.state === 'archived_and_readback_verified' && privateCopy?.temporary_key_files_removed === true &&
-    /^\/archive\/ordinary\/bridge-admission\/[a-zA-Z0-9._-]+\.json$/.test(privateCopy?.path || '') &&
+    (boundPath || /^\/archive\/ordinary\/bridge-admission\/[a-zA-Z0-9._-]+\.json$/.test(privateCopy?.path || '')) &&
     /^[a-f0-9]{64}$/.test(privateCopy?.sha256 || '');
   if (privateRequired && !verified) throw new Error('Private bridge record has not been preserved and read back');
   const keys = ['state', 'reason_codes', 'actor', 'feature', 'target_sha', 'contract_digest', 'check_set_digest',

@@ -2054,6 +2054,66 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T15:15:24.387410Z",
       "cause_summary": "The real service pipeline lacked ci:migrate and the required core execution entries; CW05 failed with ERR_ASSERTION."
+    },
+    {
+      "cycle_id": "ci-core-execution-integrity-001",
+      "behavior_id": "core-execution-integrity-001",
+      "case_ids": [
+        "CW06",
+        "CW07",
+        "CW08"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/core-execution-integrity.spec.ts",
+      "fixture_file": "tests/integration/ci/core-execution-integrity.spec.ts",
+      "red": {
+        "sha": "5af7d21b1456639ae077a17b51453891db7075d5",
+        "run_id": "38761681240",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "f9283a6932704600e996a525e77b2610e3f5f9c5",
+        "run_id": "38763928389",
+        "attempt": 1
+      },
+      "implementation_sha": "0ba971b1798c54ecbf43d21ef471e51dccd46755",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:40:00Z",
+      "cause_summary": "Healthy transport executed all225 cases; three target assertions exposed zero-exit script substitution, missing runner installation and incorrect core purpose inventory. Direct entry enforcement is not itself proof of a business suite Green; live core execution remains required."
+    },
+    {
+      "cycle_id": "ci-private-bridge-storage-layout-001",
+      "behavior_id": "private-bridge-storage-layout-001",
+      "case_ids": [
+        "PB03"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/private-bridge-storage-layout.spec.ts",
+      "fixture_file": "tests/integration/ci/private-bridge-storage-layout.spec.ts",
+      "red": {
+        "sha": "a8ad284bfe144e4d556d35949d5bbfa7eb7444bb",
+        "run_id": "38763676633",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "f9283a6932704600e996a525e77b2610e3f5f9c5",
+        "run_id": "38763928389",
+        "attempt": 1
+      },
+      "implementation_sha": "f9283a6932704600e996a525e77b2610e3f5f9c5",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:50:49.707039Z",
+      "cause_summary": "The type-correct unchanged assertion reproduced the admitted storage-policy failure on its original pre-implementation source; initial5af failure was also read before0ba implementation."
     }
   ]
 }
