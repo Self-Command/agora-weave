@@ -1276,6 +1276,68 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T02:45:19Z",
       "cause_summary": "Read both complete actual semantic Red blocks and healthy transport before implementation; the refusal case already remained blocked. Green167of167 includes authenticated ancestor and exact infrastructure bindings plus current frozen completion report digests and reader details, with typecheck and lint passed. The actual strict-schema configuration failure remains preserved and was repaired separately; native and readiness checks remain mandatory."
+    },
+    {
+      "cycle_id": "ci-wait-current-shared-001",
+      "behavior_id": "ci.wait-shared-execution",
+      "case_ids": [
+        "SW01",
+        "SW02"
+      ],
+      "requirements": [
+        "QR-002",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/wait-shared-execution.spec.ts",
+      "fixture_file": "tests/integration/ci/wait-shared-execution.spec.ts",
+      "red": {
+        "attempt": 1,
+        "run_id": "38674100162",
+        "sha": "4c9b75482d076561059400a7a3ee3e8022d9a594"
+      },
+      "green": {
+        "attempt": 1,
+        "run_id": "38674372143",
+        "sha": "72639929453392a5f6f366e6bd045f7c2e45a549"
+      },
+      "implementation_sha": "72639929453392a5f6f366e6bd045f7c2e45a549",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T03:03:48Z",
+      "cause_summary": "Read both complete original semantic SW failure blocks and healthy transport before implementation. Green executed all169 assertions with no failed, cancelled, skipped or todo; the current source waits for the exact SHA, event, repository, branch and complete shared executor, with bounded timeout and terminal failure refusal."
+    },
+    {
+      "cycle_id": "ci-native-measurement-details-001",
+      "behavior_id": "ci.native-measurement-details",
+      "case_ids": [
+        "NM01",
+        "NM02",
+        "NM03"
+      ],
+      "requirements": [
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/native-measurement-details.spec.ts",
+      "fixture_file": "tests/integration/ci/native-measurement-details.spec.ts",
+      "red": {
+        "attempt": 1,
+        "run_id": "38675485960",
+        "sha": "211c650d9ac1081760f41e71614d378564b19f9c"
+      },
+      "green": {
+        "attempt": 1,
+        "run_id": "38675987665",
+        "sha": "d688cbffb9277df69ad5a537f7203a147ff4dacb"
+      },
+      "implementation_sha": "51502a63a4ddbd6eb50522ca2843e4addb699525",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T03:18:54Z",
+      "cause_summary": "Read all three complete semantic NM failures in the healthy original172-case transport before implementation. Registered Green ran172of172 with zero failed, skipped, cancelled or todo, typecheck and lint passed. Actual native snapshot counts, styled font metrics and observed HOME are separately mandatory; the earlier unmapped discovery refusal remains preserved."
     }
   ]
 }
