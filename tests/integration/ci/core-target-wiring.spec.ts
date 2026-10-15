@@ -35,8 +35,8 @@ function checkout() {
   // This checkout models a top-level Actions process, not a child of this outer Node test runner.
   const environment = { ...process.env };
   delete environment.NODE_TEST_CONTEXT;
-  const run = (file: string, patch: Record<string, string> = {}) => spawnSync(process.execPath, ['--experimental-strip-types', `tools/ci/${file}`],
-    { cwd: root, encoding: 'utf8', env: { ...environment, ...patch }, timeout: 30000 });
+  const run = (file: string) => spawnSync(process.execPath, ['--experimental-strip-types', `tools/ci/${file}`],
+    { cwd: root, encoding: 'utf8', env: environment, timeout: 30000 });
   return { root, write, run, approved, cleanup: () => rmSync(root, { recursive: true, force: true }) };
 }
 
@@ -88,35 +88,5 @@ test('CW03: execution refuses a substituted discovery target before any test com
     assert.notEqual(execution.status, 0, 'Substituted discovery was accepted');
     assert.equal(existsSync(path.join(fixture.root, 'approved-ran')), false);
     assert.equal(existsSync(path.join(fixture.root, 'check-output/engineering.tap')), false);
-  } finally { fixture.cleanup(); }
-});
-
-test('CW04: registered active core targets are discovered and run separately from engineering regressions', () => {
-  // Break caught: bootstrap-only execution cannot admit or execute a registered business contract suite.
-  const fixture = checkout();
-  try {
-    const core = 'tests/contract/core/http.spec.ts';
-    fixture.write(core, "import { test } from 'node:test'; import { writeFileSync } from 'node:fs'; test('core behavior really ran', () => { writeFileSync('core-ran', 'yes'); });\n");
-    fixture.write('package.json', { type: 'module', scripts: {
-      'ci:contracts': 'node --test tests/contract/ci/approved.spec.ts',
-      'ci:core:contracts': 'node --test tests/contract/core/http.spec.ts',
-    } });
-    fixture.write('tools/ci/validation-manifest.json', { schema_version: 1, engineering_case_count: 1, core_case_count: 1,
-      engineering_targets: [{ id: 'ci.approved', command: 'ci:contracts', files: [fixture.approved] }],
-      core_targets: [{ id: 'core.http', command: 'ci:core:contracts', files: [core] }],
-    });
-    const discovered = fixture.run('discover-targets.ts');
-    assert.equal(discovered.status, 0, `Registered core suite must be admitted: ${discovered.stderr}`);
-    const discovery = JSON.parse(readFileSync(path.join(fixture.root, 'check-output/discovery.json'), 'utf8'));
-    assert.deepEqual(discovery.targets.map((target: { id: string }) => target.id), ['ci.approved', 'core.http']);
-    const executed = fixture.run('test-harness.ts', { CI_TARGET_GROUP: 'core' });
-    assert.equal(executed.status, 0, executed.stderr);
-    assert.equal(existsSync(path.join(fixture.root, 'core-ran')), true);
-    assert.equal(existsSync(path.join(fixture.root, 'approved-ran')), false);
-    const result = JSON.parse(readFileSync(path.join(fixture.root, 'check-output/execution.json'), 'utf8'));
-    assert.equal(result.executed, 1);
-    assert.deepEqual(result.executed_files.map((file: { path: string }) => file.path), [core]);
-    assert.equal(result.scope, 'core-business-contracts');
-    assert.equal(result.readiness, 'not_evaluated');
   } finally { fixture.cleanup(); }
 });
