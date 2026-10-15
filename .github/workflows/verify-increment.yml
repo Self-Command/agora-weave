@@ -81,8 +81,22 @@ jobs:
   native:
     needs: discover
     uses: ./.github/workflows/native-bootstrap.yml
+<<<<<<< HEAD
   reports:
     needs: [install, service, discover, web, native]
+=======
+  tooling:
+    needs: discover
+    uses: ./.github/workflows/tooling-bootstrap.yml
+  tdd:
+    needs: discover
+    uses: ./.github/workflows/tdd-cycle.yml
+  bridge:
+    needs: install
+    uses: ./.github/workflows/bridge-admission.yml
+  reports:
+    needs: [install, service, discover, web, native, tooling, tdd, bridge]
+>>>>>>> 6ddf74a (test(ci): refuse mislabeled Android themes and connect authentic cycle journals)
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -113,7 +127,11 @@ jobs:
           retention-days: 7
   gate:
     name: agoraweave/ci-gate
+<<<<<<< HEAD
     needs: [install, service, discover, web, native, reports]
+=======
+    needs: [install, service, discover, web, native, tooling, tdd, bridge, reports, archive]
+>>>>>>> 6ddf74a (test(ci): refuse mislabeled Android themes and connect authentic cycle journals)
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5

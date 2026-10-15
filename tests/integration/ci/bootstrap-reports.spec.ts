@@ -46,10 +46,21 @@ test('BR03: official service report needs every container, isolated ports, schem
 
 test('BR04: Android parser needs actual light/dark instrumentation, foreground hierarchy and both images', () => {
   const raw = { light_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n', dark_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n',
-    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)] };
+    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)],
+    light_theme: 'light:16', dark_theme: 'dark:32' };
   assert.equal(assessBootstrapRaw(fixture('android', raw)).state, 'passed');
   for (const patch of [{ dark_log: 'FAILURES!!!\nTests run: 1, Failures: 1' }, { images: [] },
     { hierarchy: '<node package="com.google.android.apps.nexuslauncher" text="AgoraWeave" />' }]) {
+    assert.equal(assessBootstrapRaw(fixture('android', { ...raw, ...patch })).state, 'blocked');
+  }
+});
+
+test('BR07: a named dark capture with a light or absent actual configuration is rejected', () => {
+  const raw = { light_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n', dark_log: 'OK (1 test)\nINSTRUMENTATION_CODE: -1\n',
+    hierarchy: '<node package="org.agoraweave.app" text="AgoraWeave" />', images: ['d'.repeat(64), 'e'.repeat(64)],
+    light_theme: 'light:16', dark_theme: 'dark:32' };
+  assert.equal(assessBootstrapRaw(fixture('android', raw)).state, 'passed');
+  for (const patch of [{ dark_theme: 'light:16' }, { dark_theme: '' }, { light_theme: 'light:32' }]) {
     assert.equal(assessBootstrapRaw(fixture('android', { ...raw, ...patch })).state, 'blocked');
   }
 });
@@ -58,5 +69,16 @@ test('BR05: failed original job or different checkout/digests never passes from 
   for (const patch of [{ source_authenticated: false }, { source_job_state: 'failure' }, { target_sha: 'e'.repeat(40) },
     { check_set_digest: 'e'.repeat(64) }, { toolchain_digest: 'e'.repeat(64) }]) {
     assert.equal(assessBootstrapRaw({ ...fixture('engineering', { tap, expected_count: 1 }), ...patch }).state, 'blocked');
+  }
+});
+
+test('BR06: both original XCTest summaries and all launch/resume images are required', () => {
+  const summary = { result: 'Passed', totalTestCount: 1, passedTests: 1, failedTests: 0, skippedTests: 0,
+    expectedFailures: 0, testFailures: [] };
+  const raw = { light: summary, dark: summary, images: Array(4).fill('d'.repeat(64)) };
+  assert.equal(assessBootstrapRaw(fixture('ios', raw)).state, 'passed');
+  for (const patch of [{ dark: { ...summary, skippedTests: 1 } }, { light: { ...summary, failedTests: 1 } },
+    { images: ['d'.repeat(64)] }, { dark: { ...summary, result: 'Failed' } }]) {
+    assert.equal(assessBootstrapRaw(fixture('ios', { ...raw, ...patch })).state, 'blocked');
   }
 });
