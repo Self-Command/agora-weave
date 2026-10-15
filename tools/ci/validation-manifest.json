@@ -2612,7 +2612,14 @@
       "files": [
         "tests/integration/ci/review-arrival.spec.ts"
       ]
+    },
+    {
+      "id": "ci.visual-image-inventory",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/review-image-inventory.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 159
+  "engineering_case_count": 161
 }
