@@ -2791,7 +2791,20 @@
       "files": [
         "tests/security/ci/validation-governance.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-target-wiring",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-002",
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/core-target-wiring.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 205
+  "engineering_case_count": 208
 }
