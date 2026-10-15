@@ -1064,6 +1064,38 @@
       ],
       "behavior_id": "ci.simulator-accessibility-admission",
       "fixture_file": "tests/integration/ci/native-admission.spec.ts"
+    },
+    {
+      "cause": "missing_behavior",
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-005",
+        "QR-006",
+        "QR-007"
+      ],
+      "cycle_id": "ci-native-report-compatibility-001",
+      "implementation_sha": "b9f884e85e908c6be44d23618fccd18a826cdff3",
+      "cause_summary": "Read both original blocked-versus-passed assertions after observing actual Android View heading semantics and XML attribute order. Green executed all 154 engineering cases with zero failed, skipped, cancelled or todo.",
+      "test_file": "tests/integration/ci/native-report-compatibility.spec.ts",
+      "behavior_id": "ci.native-report-compatibility",
+      "cause_read_by": "current-codex",
+      "green": {
+        "run_id": "38666252772",
+        "attempt": 1,
+        "sha": "b9f884e85e908c6be44d23618fccd18a826cdff3"
+      },
+      "fixture_file": "tests/integration/ci/native-report-compatibility.spec.ts",
+      "cause_read_at": "2026-10-15T01:30:39Z",
+      "red": {
+        "run_id": "38665925287",
+        "attempt": 1,
+        "sha": "608704139102651683267290cc3c6e21e9e91e47"
+      },
+      "case_ids": [
+        "NC01",
+        "NC02"
+      ]
     }
   ]
 }

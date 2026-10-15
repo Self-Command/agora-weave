@@ -2598,7 +2598,14 @@
         "tests/integration/ci/native-report-compatibility.spec.ts"
       ],
       "command": "ci:contracts"
+    },
+    {
+      "id": "ci.derived-tdd-coverage",
+      "files": [
+        "tests/integration/ci/tdd-coverage.spec.ts"
+      ],
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 154
+  "engineering_case_count": 157
 }
