@@ -2605,7 +2605,14 @@
         "tests/integration/ci/tdd-coverage.spec.ts"
       ],
       "command": "ci:contracts"
+    },
+    {
+      "id": "ci.current-review-arrival",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/review-arrival.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 157
+  "engineering_case_count": 159
 }
