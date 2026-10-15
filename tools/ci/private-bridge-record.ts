@@ -14,13 +14,13 @@ export function preservePrivateBridgeRecord(record: Record<string, any>): Record
   const folder = mkdtempSync(join(process.env.RUNNER_TEMP!, 'bridge-private-'));
   const key = join(folder, 'key'), hosts = join(folder, 'hosts'), batch = join(folder, 'batch');
   const source = join(folder, 'record.json'), readback = join(folder, 'readback.json');
-  const remote = `/archive/ordinary/bridge-admission/${sha}-${run}-${attempt}.json`;
+  const remote = `/archive/ordinary/bridge-admission-${sha}-${run}-${attempt}.json`;
   const bytes = Buffer.from(JSON.stringify(record, null, 2) + '\n');
   try {
     writeFileSync(key, process.env.EVIDENCE_SSH_PRIVATE_KEY!.replaceAll('\r', '').trimEnd() + '\n', { mode: 0o600 });
     writeFileSync(hosts, process.env.EVIDENCE_SSH_KNOWN_HOSTS!.replaceAll('\r', ''), { mode: 0o600 });
     writeFileSync(source, bytes, { mode: 0o600 });
-    writeFileSync(batch, `-mkdir /archive/ordinary/bridge-admission\nput ${source} ${remote}\nget ${remote} ${readback}\n`, { mode: 0o600 });
+    writeFileSync(batch, `put ${source} ${remote}\nget ${remote} ${readback}\n`, { mode: 0o600 });
     let transportFailure: string | undefined;
     try {
       execFileSync('sftp', ['-b', batch, '-i', key, '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes',

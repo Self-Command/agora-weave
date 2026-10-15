@@ -17,6 +17,8 @@ const identity = { target_sha: execFileSync('git', ['rev-parse', 'HEAD'], { enco
 mkdirSync('core-output', { recursive: true });
 const save = (file: string, value: object) => writeFileSync(`core-output/${file}.json`, JSON.stringify({ ...identity, ...value }, null, 2) + '\n');
 const invoke = (command: string) => execFileSync('npm', ['run', command], { stdio: 'inherit', timeout: 180000 });
+const execute = (...args: string[]) => execFileSync(process.execPath,
+  ['--experimental-strip-types', 'tools/ci/core-entry.ts', ...args], { stdio: 'inherit', timeout: 180000 });
 const action = process.argv[2];
 if (action === 'all') {
   // Discovery is mandatory even with no core suites; writing a new suite activates it immediately.
@@ -30,13 +32,13 @@ if (action === 'all') {
       }
     }
     if (targets.reduce((count, target) => count + target.case_count, 0) !== manifest.core_case_count) throw new Error('Core case inventory differs');
-    invoke('ci:migrate');
-    invoke('ci:migrate'); // Unchanged committed migrations must also survive the incremental path.
-    invoke('ci:seed');
+    execute('migrate');
+    execute('migrate'); // Unchanged committed migrations must also survive the incremental path.
+    execute('seed');
     let failed = false;
     for (const command of commands) {
       if (!targets.some(target => target.command === command)) continue;
-      try { invoke(command); } catch { failed = true; }
+      try { execute('suite', command); } catch { failed = true; }
     }
     save('execution', { state: failed ? 'blocked' : 'passed', active_commands: [...new Set(targets.map(target => target.command))],
       discovered: manifest.core_case_count, scope: 'current-core-only', task_complete: false });

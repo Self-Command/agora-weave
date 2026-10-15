@@ -1967,6 +1967,93 @@
       "implementation_sha": "eb9daaa6ac81295d242a32ba34c1d57fd527f28c",
       "cause_read_at": "2026-10-15T14:12Z",
       "cause_summary": "Read the AD03 target semantic failure before eb9daaa: the cumulative PR retained two known initialization inputs and incorrectly resolved blocked rather than development. Qualified Red executed218:217pass,1targetfail,0skip/cancel/todo; ZIP11978694939 and freeze11979193876 verified and read. Fix permits only the exact existing iOS shell probe path and pinned tooling gitlink; iOS business/native/unknown inputs remain rejected. Unchanged oracle passed Green218of218 with zero failures/skips/cancels/todo; transport11980665950 and freeze11980666130 verified and read. No iOS execution or formal completion is authorized."
+    },
+    {
+      "cycle_id": "ci-private-bridge-key-001",
+      "behavior_id": "private-bridge-key-001",
+      "case_ids": [
+        "PB02"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/private-bridge-transport.spec.ts",
+      "fixture_file": "tests/integration/ci/private-bridge-transport.spec.ts",
+      "red": {
+        "sha": "c9e2bb4690c63787c986d6b1725487dff46f9a6d",
+        "run_id": "38756562325",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "66cff49ffd65b50b29772a86b8ab4853f580b5d6",
+        "run_id": "38757447361",
+        "attempt": 1
+      },
+      "implementation_sha": "66cff49ffd65b50b29772a86b8ab4853f580b5d6",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:02:44.332452Z",
+      "cause_summary": "A valid trimmed SSH secret was rejected as key_format; real assertion failure with healthy original transport."
+    },
+    {
+      "cycle_id": "ci-core-target-discovery-001",
+      "behavior_id": "core-target-discovery-001",
+      "case_ids": [
+        "CW04"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/core-active-targets.spec.ts",
+      "fixture_file": "tests/integration/ci/core-active-targets.spec.ts",
+      "red": {
+        "sha": "c9e2bb4690c63787c986d6b1725487dff46f9a6d",
+        "run_id": "38756562325",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "66cff49ffd65b50b29772a86b8ab4853f580b5d6",
+        "run_id": "38757447361",
+        "attempt": 1
+      },
+      "implementation_sha": "66cff49ffd65b50b29772a86b8ab4853f580b5d6",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:02:44.332452Z",
+      "cause_summary": "A registered actual core suite was rejected as unmapped instead of executing through its dedicated group."
+    },
+    {
+      "cycle_id": "ci-core-service-pipeline-001",
+      "behavior_id": "core-service-pipeline-001",
+      "case_ids": [
+        "CW05"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/core-service-pipeline.spec.ts",
+      "fixture_file": "tests/integration/ci/core-service-pipeline.spec.ts",
+      "red": {
+        "sha": "74b96555ecb7be256ead5e71e8625a11312ada33",
+        "run_id": "38758263939",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "e88be1791a7e871708ef0c942f314943b814cef3",
+        "run_id": "38758785200",
+        "attempt": 1
+      },
+      "implementation_sha": "e88be1791a7e871708ef0c942f314943b814cef3",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:15:24.387410Z",
+      "cause_summary": "The real service pipeline lacked ci:migrate and the required core execution entries; CW05 failed with ERR_ASSERTION."
     }
   ]
 }

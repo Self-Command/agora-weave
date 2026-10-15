@@ -98,7 +98,7 @@ try {
                     ($taskReceipt.private_record.state -ne 'archived_and_readback_verified' -or
                      $taskReceipt.private_record.temporary_key_files_removed -ne $true -or
                      $taskReceipt.private_record.sha256 -notmatch '^[a-f0-9]{64}$' -or
-                     $taskReceipt.private_record.path -notmatch '^/archive/ordinary/bridge-admission/[a-f0-9]{40}-[1-9]\d*-[1-9]\d*\.json$')) {
+                     $taskReceipt.private_record.path -notmatch '^/archive/ordinary/bridge-admission-[a-f0-9]{40}-[1-9]\d*-[1-9]\d*\.json$')) {
                     throw 'Missing privately preserved complete bridge record'
                 }
                 if ($null -ne $taskReceipt.completion_record -or $null -ne $taskReceipt.completion_source -or

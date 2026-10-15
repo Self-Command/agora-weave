@@ -47,8 +47,17 @@ export function resolveTddSourcePurpose(input: Fields): Fields {
         legacy_source_tuple_digest: hash(JSON.stringify({ cycle_id: cycle.cycle_id, label, source: sourceTuple })),
         legacy_approval_basis: 'exact_approved_baseline_catalog_tuple' };
     } else return refused();
+    let expectedCount = manifest?.engineering_case_count;
+    if (object(cycle.executor) && cycle.executor.kind === 'core') {
+      if (!manifest || !['dev', 'test'].includes(String(cycle.executor.environment)) ||
+          !Array.isArray(manifest.core_targets)) return refused();
+      const targets = manifest.core_targets.filter((target: Fields) => target.command === cycle.executor.command);
+      if (!targets.length || !targets.some((target: Fields) => Array.isArray(target.files) && target.files.includes(cycle.test_file)) ||
+          targets.some((target: Fields) => !Number.isInteger(target.case_count) || Number(target.case_count) < 1)) return refused();
+      expectedCount = targets.reduce((count: number, target: Fields) => count + Number(target.case_count), 0);
+    }
     const applicable = !!manifest && normalizeExecution({ format: 'tap', raw: input.raw,
-      expected_count: manifest.engineering_case_count, exit_code: 0 }).state === 'passed';
+      expected_count: expectedCount, exit_code: 0 }).state === 'passed';
     // A pre-manifest historical approval is explicit; its observed plan is not a newly frozen set.
     const plans = [...input.raw.matchAll(/^1\.\.(\d+)\r?$/gm)];
     const legacyPlan = plans.length === 1 && Number(plans[0][1]) > 0 ? Number(plans[0][1]) : undefined;

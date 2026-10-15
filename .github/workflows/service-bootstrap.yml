@@ -35,6 +35,8 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             infra/ci/toolchain-lock.json
+      - name: Install committed frozen dependencies on this isolated runner
+        run: npm run ci:install
       - name: Prepare isolated configuration and locked image override
         shell: bash
         run: |
