@@ -14,6 +14,11 @@ export function aggregateBootstrap(input: unknown): Record<string, unknown> {
     !Array.isArray(input.observed) || !input.observed.every(fields) ||
     !Array.isArray(input.previous_attempts) || !input.previous_attempts.every(fields)) return deny('invalid_frozen_aggregate');
   const reasons = new Set<string>();
+  if (input.validation_intent !== undefined || input.required_intent !== undefined) {
+    const rank: Record<string, number> = { feedback: 0, green: 1, completion: 2 };
+    const actual = rank[String(input.validation_intent)], required = rank[String(input.required_intent)];
+    if (actual === undefined || required === undefined || actual < required || actual === 0) reasons.add('insufficient_validation_intent');
+  }
   const observed = input.observed;
   for (const id of input.frozen_required_ids) {
     const checks = observed.filter(check => check.id === id);

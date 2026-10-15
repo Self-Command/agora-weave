@@ -16,11 +16,14 @@ export type CollectionResult = {
   artifact_id?: number;
   original_conclusion?: string;
   source_run?: Record<string, unknown>;
+  reuse_receipt?: Record<string, unknown>;
 };
 
 type Fields = Record<string, unknown>;
 const fields = (value: unknown): value is Fields => value !== null && typeof value === 'object' && !Array.isArray(value);
 function fail(reason: string): never { throw new Error(`source_${reason}`); }
+const byteCaches = new WeakMap<typeof fetch, Map<string, Promise<{ archive: Buffer; transfer_ms: number }>>>();
+const byteCacheSizes = new WeakMap<typeof fetch, Map<string, number>>();
 
 /** Authenticating a source preserves its outcome; it does not assess the reported checks. */
 export async function collectEvidence(request: CollectionRequest, fetcher: typeof fetch = fetch): Promise<CollectionResult> {
@@ -75,6 +78,20 @@ export async function collectEvidence(request: CollectionRequest, fetcher: typeo
       !fields(artifact.workflow_run) || String(artifact.workflow_run.id) !== request.run_id ||
       artifact.workflow_run.head_sha !== request.expected_sha ||
       typeof artifact.digest !== 'string' || !/^sha256:[a-f0-9]{64}$/.test(artifact.digest)) fail('artifact_identity_mismatch');
+    // Metadata above is deliberately re-authenticated on every read, including cache hits.
+    const cacheIdentity = { repository: request.repository, repository_id: (run.repository as Fields).id,
+      run_id: request.run_id, attempt: request.expected_attempt,
+      artifact_id: artifact.id, target_sha: request.expected_sha, expected_checkout_sha: request.expected_sha,
+      workflow: request.workflow_path, referenced_workflows: run.referenced_workflows, event: run.event, branch: run.head_branch,
+      expected_runner_environment: 'github-hosted', archive_digest: artifact.digest, bytes: artifact.size_in_bytes,
+      credential_scope: createHash('sha256').update(request.token).digest('hex') };
+    const cacheKey = createHash('sha256').update(JSON.stringify(cacheIdentity)).digest('hex');
+    let cache = byteCaches.get(fetcher);
+    if (!cache) { cache = new Map(); byteCaches.set(fetcher, cache); }
+    let sizes = byteCacheSizes.get(fetcher);
+    if (!sizes) { sizes = new Map(); byteCacheSizes.set(fetcher, sizes); }
+    const hit = cache.has(cacheKey);
+    async function transfer() {
     const response = await fetcher(`${root}/actions/artifacts/${artifact.id}/zip`, {
       headers, redirect: 'manual', signal: AbortSignal.timeout(30000),
     });
@@ -85,6 +102,7 @@ export async function collectEvidence(request: CollectionRequest, fetcher: typeo
     if (signed.protocol !== 'https:' || signed.username || signed.password ||
       !['.actions.githubusercontent.com', '.githubusercontent.com', '.blob.core.windows.net'].some(suffix => signed.hostname.endsWith(suffix))) fail('untrusted_download_location');
     // GitHub bearer credentials are only sent to api.github.com, never the signed storage URL.
+    const started = performance.now();
     const download = await fetcher(signed.href, { redirect: 'error', signal: AbortSignal.timeout(30000) });
     if (!download.ok || !download.body) fail(`download_http_${download.status}`);
     const reader = download.body.getReader();
@@ -99,8 +117,30 @@ export async function collectEvidence(request: CollectionRequest, fetcher: typeo
     }
     const archive = Buffer.concat(chunks);
     const digest = createHash('sha256').update(archive).digest('hex');
-    if (`sha256:${digest}` !== artifact.digest) fail('archive_digest_mismatch');
+    if (size !== artifact.size_in_bytes || `sha256:${digest}` !== artifact.digest) fail('archive_digest_mismatch');
+    return { archive, transfer_ms: performance.now() - started };
+    }
+    let pending = cache.get(cacheKey);
+    if (!pending) { pending = transfer(); cache.set(cacheKey, pending); }
+    else { cache.delete(cacheKey); cache.set(cacheKey, pending); }
+    let verified: { archive: Buffer; transfer_ms: number };
+    try { verified = await pending; } catch (error) { cache.delete(cacheKey); sizes.delete(cacheKey); throw error; }
+    const archive = Buffer.from(verified.archive);
+    const digest = createHash('sha256').update(archive).digest('hex');
+    if (archive.length !== artifact.size_in_bytes || `sha256:${digest}` !== artifact.digest) {
+      cache.delete(cacheKey); sizes.delete(cacheKey); fail('archive_digest_mismatch');
+    }
+    sizes.set(cacheKey, archive.length);
+    // Bound retained verified bytes without persisting credentials or runtime state.
+    while (cache.size > 64 || [...sizes.values()].reduce((sum, bytes) => sum + bytes, 0) > 256 * 1024 * 1024) {
+      const oldest = cache.keys().next().value!;
+      cache.delete(oldest);
+      sizes.delete(oldest);
+    }
     return { state: 'verified_source', reason_codes: [], archive, archive_sha256: digest,
+      reuse_receipt: { ...cacheIdentity, credential_scope: undefined, cache_key: cacheKey, cache_hit: hit,
+        archive_digest_verified: true, raw_validation: 'required_at_consumer', checked_at: new Date().toISOString(),
+        download_requests: hit ? 0 : 1, downloaded_bytes: hit ? 0 : archive.length, transfer_ms: hit ? 0 : verified.transfer_ms },
       attempts, artifact_id: Number(artifact.id), source_run: run,
       original_conclusion: String(attempts.at(-1)?.conclusion ?? 'unknown') };
   } catch (error) {

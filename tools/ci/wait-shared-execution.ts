@@ -7,6 +7,9 @@ export async function waitSharedExecution(input: Record<string, any>, read: () =
     !Number.isInteger(input.timeout_ms) || input.timeout_ms < 1 || input.timeout_ms > 90 * 60 * 1000 ||
     !Number.isInteger(input.interval_ms) || input.interval_ms < 1 || input.interval_ms > input.timeout_ms) return blocked('invalid_shared_wait');
   const deadline = now() + input.timeout_ms;
+  const maximum = input.max_interval_ms ?? Math.max(input.interval_ms, 60000);
+  if (!Number.isInteger(maximum) || maximum < input.interval_ms || maximum > 300000) return blocked('invalid_shared_wait');
+  let previousState = '', interval = input.interval_ms;
   for (;;) {
     let run: Record<string, any>;
     try { run = await read(); } catch { return blocked('shared_executor_unavailable'); }
@@ -20,6 +23,9 @@ export async function waitSharedExecution(input: Record<string, any>, read: () =
     if (!['queued', 'requested', 'pending', 'waiting', 'in_progress'].includes(run.status)) return blocked('shared_executor_not_passed');
     const remaining = deadline - now();
     if (remaining <= 0) return blocked('shared_executor_timeout');
-    await sleep(Math.min(input.interval_ms, remaining));
+    const state = `${run.status}:${run.run_attempt}`;
+    interval = state === previousState ? Math.min(interval * 2, maximum) : input.interval_ms;
+    previousState = state;
+    await sleep(Math.min(interval, remaining));
   }
 }

@@ -5,9 +5,26 @@ export type DiscoveryInput = {
   available_files: string[];
 };
 
-/** Interface shell for the validation-request contract; admission is not yet implemented. */
-export function resolveValidationRequest(_request: unknown, _context: unknown): Record<string, any> {
-  return { state: 'not_evaluated' };
+/** Intent never changes the bootstrap manifest or authorizes readiness. */
+export function resolveValidationRequest(request: unknown, context: unknown): Record<string, any> {
+  const object = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
+  const sha = (value: unknown) => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+  if (!object(request) || request.schema_version !== 1 || !['feedback', 'green', 'completion'].includes(request.validation_intent) ||
+    !object(context) || context.repository !== 'Self-Command/agora-weave' || !sha(context.target_sha) ||
+    context.checkout_sha !== context.target_sha || !sha(context.event_sha) ||
+    !['push', 'pull_request', 'workflow_dispatch'].includes(context.event) ||
+    typeof context.check_set_digest !== 'string' || !/^[a-f0-9]{64}$/.test(context.check_set_digest) ||
+    !Array.isArray(context.changed_paths) || context.changed_paths.length === 0 ||
+    context.changed_paths.some((file: unknown) => typeof file !== 'string' || !file || file.includes('..')) ||
+    (context.event === 'pull_request' && (context.pr_head_sha !== context.target_sha || context.pr_merge_sha !== context.event_sha))) {
+    return { state: 'blocked', reason_codes: ['invalid_validation_request'], readiness: 'not_evaluated' };
+  }
+  const ordinaryFeedback = context.changed_paths.every((file: string) => /^docs\/engineering\/.test(file) ||
+    /^tools\/ci\//.test(file) && !/(validation-manifest|gates|aggregate|bridge|run-check-set|test-harness|discover-targets)/.test(file));
+  return { ...context, state: 'resolved', reason_codes: [], profile: 'bootstrap', validation_intent: request.validation_intent,
+    full_required: request.validation_intent !== 'feedback' || !ordinaryFeedback,
+    classification: ordinaryFeedback ? 'known_feedback_scope' : 'conservative_complete_scope',
+    readiness: 'not_evaluated', feature_complete: false };
 }
 
 export function discoverApprovedTargets(input: DiscoveryInput): Record<string, unknown> {

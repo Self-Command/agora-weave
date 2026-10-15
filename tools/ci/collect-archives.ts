@@ -68,6 +68,8 @@ for (const artifact of artifacts) {
   writeFileSync(`${directory}/index.json`, bytes);
   catalog.push({ artifact_id: result.artifact_id, artifact_name: artifact.name, directory, remote_directory: remote,
     archive_sha256: result.archive_sha256, index_sha256: createHash('sha256').update(bytes).digest('hex'),
-    original_conclusion: result.original_conclusion, source_sha: expectedSha, source_run: runId });
+    original_conclusion: result.original_conclusion, source_sha: expectedSha, source_run: runId,
+    source_reuse: { ...result.reuse_receipt, raw_index_digest: createHash('sha256').update(readFileSync(`${directory}/raw-files.json`)).digest('hex'),
+      raw_files_verified: true } });
 }
 writeFileSync('archive-output/catalog.json', JSON.stringify(catalog, null, 2) + '\n');

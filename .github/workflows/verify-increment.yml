@@ -18,6 +18,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Check frozen checkout dependencies and bootstrap scope
         shell: bash
         run: |
@@ -72,6 +76,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Install discover and execute approved nonempty targets
         run: |
           npm run ci:install
@@ -124,6 +132,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Preserve all executor job outcomes before aggregation
         env:
           GH_TOKEN: ${{ github.token }}
@@ -168,6 +180,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Recompute readiness from every collected original report and frozen requirement
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}

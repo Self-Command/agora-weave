@@ -1,14 +1,40 @@
 name: Approved initialization verification
 on:
   push:
+    branches: [main]
   pull_request:
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: verify-initialization-${{ github.head_ref || github.ref_name }}
+  group: verify-initialization-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}
   cancel-in-progress: false
 jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      full_required: ${{ steps.plan.outputs.full_required }}
+      validation_intent: ${{ steps.plan.outputs.validation_intent }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - id: plan
+        run: node --experimental-strip-types tools/ci/write-validation-plan.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: validation-plan-${{ github.run_id }}-${{ github.run_attempt }}
+          path: validation-plan/
+          if-no-files-found: error
   bootstrap:
+    needs: plan
+    if: ${{ needs.plan.outputs.full_required == 'true' }}
     uses: ./.github/workflows/verify-increment.yml
     secrets: inherit

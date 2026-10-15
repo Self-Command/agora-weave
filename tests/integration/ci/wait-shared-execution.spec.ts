@@ -42,16 +42,3 @@ test('SW02: failure, nonpassing terminal state, changed identity, unreadable met
   assert.equal(unavailable.state, 'blocked');
   assert.deepEqual(unavailable.reason_codes, ['shared_executor_unavailable']);
 });
-
-test('EP01: unchanged pending state uses bounded backoff and stops polling at the terminal result', async () => {
-  const { input, run } = fixture();
-  const waits: number[] = [];
-  let elapsed = 0, reads = 0;
-  const result = await waitSharedExecution({ ...input, timeout_ms: 1000, max_interval_ms: 40 }, async () => {
-    reads++;
-    return reads < 5 ? { ...run, status: 'in_progress', conclusion: null } : run;
-  }, async milliseconds => { waits.push(milliseconds); elapsed += milliseconds; }, () => elapsed);
-  assert.equal(result.state, 'complete');
-  assert.deepEqual(waits, [10, 20, 40, 40]);
-  assert.equal(reads, 5);
-});

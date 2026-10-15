@@ -2,6 +2,7 @@ name: CI bootstrap
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
@@ -26,6 +27,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Verify official Compose source blobs
         shell: bash
         run: |
@@ -229,6 +234,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Collect transport health
         id: health
         shell: bash
@@ -320,6 +329,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Fetch every actual attempt and verify downloaded archive bytes
         shell: bash
         env:
@@ -381,6 +394,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Authenticate the current shared executor and recompute every frozen requirement
         env:
           GH_TOKEN: ${{ github.token }}

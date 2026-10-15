@@ -1,10 +1,5 @@
 name: Private complete source archive
 on:
-  push:
-    paths:
-      - '.github/workflows/archive-bootstrap.yml'
-      - 'tools/ci/collect-archives.ts'
-      - 'tools/ci/index-archive.py'
   workflow_call:
     inputs:
       source_run_id:
@@ -28,6 +23,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Authenticate every original artifact and index bounded raw ZIP members
         env:
           GH_TOKEN: ${{ github.token }}

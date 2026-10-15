@@ -56,7 +56,9 @@ for (const cycle of catalog.cycles) {
       test_digest: hash(test), fixture_digest: hash(fixture), oracle_digest: hash(test),
       original_conclusion: result.original_conclusion, archive_sha256: result.archive_sha256,
       artifact_id: result.artifact_id, selected_assertions: selected,
-      raw_report_digest: hash(raw), original_attempts: result.attempts };
+      raw_report_digest: hash(raw), original_attempts: result.attempts,
+      source_reuse: { ...result.reuse_receipt, raw_index_digest: hash(readFileSync(`${root}/raw-files.json`)),
+        raw_files_verified: true } };
   }
   const red = await execution(cycle.red, 'red');
   const green = await execution(cycle.green, 'green');

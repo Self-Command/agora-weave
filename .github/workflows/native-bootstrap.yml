@@ -1,34 +1,17 @@
 name: Native shell bootstrap
 on:
-  push:
-    paths:
-      - 'apps/mobile/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/native-bootstrap.yml'
-      - 'tests/e2e/ios/**'
-      - 'tests/e2e/android/**'
-      - 'tools/ci/install-ios-bootstrap-tests.rb'
-      - 'infra/ci/android-bootstrap-tests.gradle'
-      - 'infra/ci/android-bootstrap-AndroidManifest.xml'
-  pull_request:
-    paths:
-      - 'apps/mobile/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/native-bootstrap.yml'
-      - 'tests/e2e/ios/**'
-      - 'tests/e2e/android/**'
-      - 'tools/ci/install-ios-bootstrap-tests.rb'
-      - 'infra/ci/android-bootstrap-tests.gradle'
-      - 'infra/ci/android-bootstrap-AndroidManifest.xml'
+  workflow_dispatch:
+    inputs:
+      https_required:
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       https_required:
         type: boolean
         default: false
 concurrency:
-  group: native-bootstrap-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: native-bootstrap-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ inputs.https_required }}
   cancel-in-progress: false
 permissions:
   contents: read
@@ -80,6 +63,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Install frozen dependencies and generate no-business native shell
         shell: bash
         run: |
@@ -215,6 +202,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Prepare SDK and record actual toolchain
         shell: bash
         run: |

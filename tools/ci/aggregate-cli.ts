@@ -85,6 +85,8 @@ observed = observed.map((check: Record<string, any>) => check.id !== 'bootstrap.
     source_job_conclusion: orchestration.state === 'passed' ? 'success' : 'missing', raw_report_digest: hash(JSON.stringify(orchestration)) });
 const observedState = (id: string) => observed.filter((item: Record<string, any>) => item.id === id && item.state === 'passed').length === 1 ? 'passed' : 'missing';
 const result = aggregateBootstrap({ profile: 'bootstrap', expected_sha: sha, target_sha: collected.target_sha,
+  validation_intent: JSON.parse(readFileSync('infra/ci/validation-request.json', 'utf8')).validation_intent,
+  required_intent: 'completion',
   expected_check_set_digest: digest, check_set_digest: collected.check_set_digest,
   source_authenticated: currentSource, frozen_required_ids: manifest.bootstrap_checks.filter((check: Record<string, unknown>) =>
     check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id),

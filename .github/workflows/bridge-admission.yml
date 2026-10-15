@@ -1,6 +1,7 @@
 name: Cloud bootstrap bridge admission
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_call:
     inputs:
@@ -48,6 +49,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Install frozen result-schema validator
         run: npm run ci:install
       - name: Execute actual native ownership pre-hook

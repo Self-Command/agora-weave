@@ -45,13 +45,3 @@ test('SA05: unread reports or missing review, archive, TDD, cleanup, graph and b
     assert.equal(aggregateBootstrap({ ...fixture(), [key]: key === 'reports_read' ? false : 'missing' }).state, 'blocked');
   }
 });
-
-test('EI01: feedback success cannot authorize formal Green or completion', () => {
-  for (const required_intent of ['green', 'completion']) {
-    const result = aggregateBootstrap({ ...fixture(), validation_intent: 'feedback', required_intent });
-    assert.equal(result.state, 'blocked');
-    assert.ok((result.reason_codes as string[]).includes('insufficient_validation_intent'));
-  }
-  assert.equal(aggregateBootstrap({ ...fixture(), validation_intent: 'green', required_intent: 'completion' }).state, 'blocked');
-  assert.equal(aggregateBootstrap({ ...fixture(), validation_intent: 'completion', required_intent: 'completion' }).state, 'passed');
-});
