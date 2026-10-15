@@ -18,6 +18,8 @@ services:
     environment:
       OPENAI_API_KEY: ''
   functions:
+    environment:
+      VERIFY_JWT: 'false'
     volumes:
       - ${GITHUB_WORKSPACE}/supabase/functions/core:/home/deno/functions/core:ro
 networks:
