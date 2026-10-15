@@ -1,8 +1,0 @@
-{
-  "scope": "core-runtime-extension",
-  "previous_lock_sha256": "8cb3ebedea518954777aee8e24ea04ed7fcdb7ec68399094f9005c048e89651c",
-  "packages": {
-    "unicode-segmenter": "0.17.3",
-    "postgres": "3.4.7"
-  }
-}
