@@ -17,6 +17,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import org.json.JSONObject
+import org.json.JSONArray
+import java.security.MessageDigest
 
 class BootstrapShellTest {
   @Test
@@ -44,6 +49,42 @@ class BootstrapShellTest {
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).depth(0)), 15000))
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("AgoraWeave")), 15000))
     assertEquals(targetPackage, device.currentPackageName)
+    val instrumentation = InstrumentationRegistry.getInstrumentation()
+    if (instrumentation.context.assets.list("")!!.contains("https-client.json")) {
+      val config = JSONObject(instrumentation.context.assets.open("https-client.json").bufferedReader().use { it.readText() })
+      val environments = JSONArray()
+      for (environment in listOf("dev", "test")) {
+        val values = config.getJSONObject(environment)
+        fun request(route: String, token: String?): Pair<Int, ByteArray> {
+          val connection = URL(values.getString("url") + route).openConnection() as HttpsURLConnection
+          connection.instanceFollowRedirects = false
+          connection.connectTimeout = 15000
+          connection.readTimeout = 15000
+          if (token != null) connection.setRequestProperty("Authorization", "Bearer $token")
+          return try {
+            val status = connection.responseCode
+            Pair(status, if (status == 200) connection.inputStream.use { it.readBytes() } else ByteArray(0))
+          } finally { connection.disconnect() }
+        }
+        val token = values.getString("token")
+        val accepted = request("/auth/v1/health", token)
+        assertEquals(200, accepted.first)
+        assertEquals("GoTrue", JSONObject(String(accepted.second, Charsets.UTF_8)).getString("name"))
+        val anonymous = request("/auth/v1/health", null).first
+        val other = request("/auth/v1/health", values.getString("other_token")).first
+        val privatePath = request("/auth/v1/admin", token).first
+        assertEquals(401, anonymous)
+        assertEquals(401, other)
+        assertEquals(404, privatePath)
+        environments.put(JSONObject().put("environment", environment).put("accepted", accepted.first)
+          .put("anonymous", anonymous).put("other_environment", other).put("private_path", privatePath)
+          .put("body_sha256", MessageDigest.getInstance("SHA-256").digest(accepted.second).joinToString("") { "%02x".format(it.toInt() and 255) }))
+      }
+      File(context.getExternalFilesDir(null)!!, "bootstrap-https.json").writeText(JSONObject()
+        .put("state", "passed").put("source", "native-android-httpsurlconnection")
+        .put("run_id", config.getString("run_id")).put("attempt", config.getInt("attempt"))
+        .put("target_sha", config.getString("target_sha")).put("environments", environments).toString())
+    }
     device.pressHome()
     assertTrue(device.wait(Until.gone(By.pkg(targetPackage).depth(0)), 10000))
     context.startActivity(context.packageManager.getLaunchIntentForPackage(targetPackage)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))

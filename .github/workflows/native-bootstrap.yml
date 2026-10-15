@@ -21,13 +21,19 @@ on:
       - 'tools/ci/install-ios-bootstrap-tests.rb'
       - 'infra/ci/android-bootstrap-tests.gradle'
   workflow_call:
+    inputs:
+      https_required:
+        type: boolean
+        default: false
 concurrency:
   group: native-bootstrap-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: false
 permissions:
   contents: read
+  actions: read
 env:
   GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+  AGORAWEAVE_HTTPS_SEED: ${{ inputs.https_required && secrets.AGORAWEAVE_HTTPS_SEED || '' }}
 jobs:
   ios:
     name: iOS shell ${{ matrix.ios }} exact toolchain (not ci-ready)
@@ -90,6 +96,9 @@ jobs:
           done
           test "$pods_ready" = true
           cd ../../..
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            GH_TOKEN='${{ github.token }}' node --experimental-strip-types tools/ci/https-client-config.ts
+          fi
           ruby tools/ci/install-ios-bootstrap-tests.rb > native-output/xctest-configuration.log
       - name: Build install and capture actual iOS shell
         shell: bash
@@ -131,6 +140,20 @@ jobs:
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-dark.xcresult > native-output/ios-tests-dark.json
           xcrun xcresulttool export attachments --path native-output/ios-tests-dark.xcresult --output-path native-output/ios-attachments-dark
           xcrun simctl shutdown "$device"
+      - name: Remove temporary iOS HTTPS configuration
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/https-client.json"
+          if [ -d "$RUNNER_TEMP/ios-derived" ]; then
+            find "$RUNNER_TEMP/ios-derived" -type f -name https-client.json -delete
+          fi
+          node --input-type=module <<'NODE'
+          import { existsSync, writeFileSync } from 'node:fs';
+          const removed = !existsSync(process.env.RUNNER_TEMP + '/https-client.json');
+          writeFileSync('native-output/https-client-cleanup.json', JSON.stringify({ temporary_config_removed: removed }) + '\n');
+          if (!removed) throw new Error('Temporary native configuration remains');
+          NODE
       - name: Preserve actual iOS environment and shell results
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -202,6 +225,13 @@ jobs:
           CI=1 npm run ci:prebuild -- --platform android
           mkdir -p android/app/src/androidTest/java/org/agoraweave/bootstrap
           cp ../../tests/e2e/android/BootstrapShellTest.kt android/app/src/androidTest/java/org/agoraweave/bootstrap/
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            cd ../..
+            GH_TOKEN='${{ github.token }}' node --experimental-strip-types tools/ci/https-client-config.ts
+            cd apps/mobile
+            mkdir -p android/app/src/androidTest/assets
+            cp "$RUNNER_TEMP/https-client.json" android/app/src/androidTest/assets/https-client.json
+          fi
           printf '\napply from: "%s/infra/ci/android-bootstrap-tests.gradle"\n' "$GITHUB_WORKSPACE" >> android/app/build.gradle
           cd android
           ./gradlew assembleRelease assembleReleaseAndroidTest --no-daemon -PreactNativeArchitectures=x86_64 > ../../../native-output/android-build.log 2>&1
@@ -269,7 +299,22 @@ jobs:
           grep -q 'OK (1 test)' native-output/android-tests-dark.log
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-dark.png
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-theme.txt native-output/android-theme-dark.txt
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https.json
+            adb uninstall org.agoraweave.app.test
+          fi
           adb emu kill
+      - name: Remove temporary Android HTTPS configuration
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/https-client.json" apps/mobile/android/app/src/androidTest/assets/https-client.json
+          node --input-type=module <<'NODE'
+          import { existsSync, writeFileSync } from 'node:fs';
+          const removed = !existsSync(process.env.RUNNER_TEMP + '/https-client.json') && !existsSync('apps/mobile/android/app/src/androidTest/assets/https-client.json');
+          writeFileSync('native-output/https-client-cleanup.json', JSON.stringify({ temporary_config_removed: removed }) + '\n');
+          if (!removed) throw new Error('Temporary native configuration remains');
+          NODE
       - name: Preserve actual Android environment and shell results
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

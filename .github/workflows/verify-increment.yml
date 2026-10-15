@@ -90,6 +90,15 @@ jobs:
   native:
     needs: discover
     uses: ./.github/workflows/native-bootstrap.yml
+    with:
+      https_required: true
+    secrets: inherit
+  ingress:
+    needs: discover
+    uses: ./.github/workflows/service-bootstrap.yml
+    with:
+      https_ingress: true
+    secrets: inherit
   tooling:
     needs: discover
     uses: ./.github/workflows/tooling-bootstrap.yml
@@ -100,7 +109,7 @@ jobs:
     needs: install
     uses: ./.github/workflows/bridge-admission.yml
   reports:
-    needs: [install, service, discover, web, native, tooling, tdd, bridge]
+    needs: [install, service, discover, web, native, ingress, tooling, tdd, bridge]
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -143,7 +152,7 @@ jobs:
     secrets: inherit
   gate:
     name: agoraweave/ci-gate
-    needs: [install, service, discover, web, native, tooling, tdd, bridge, reports, review, archive]
+    needs: [install, service, discover, web, native, ingress, tooling, tdd, bridge, reports, review, archive]
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5

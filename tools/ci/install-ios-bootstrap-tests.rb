@@ -9,6 +9,11 @@ target = project.new_target(:ui_test_bundle, 'BootstrapShellTests', :ios, '16.4'
 target.add_dependency(app)
 source = project.main_group.new_group('BootstrapShellTests').new_file(File.join(root, 'tests/e2e/ios/BootstrapShellTests.swift'))
 target.source_build_phase.add_file_reference(source)
+https_config = File.join(ENV.fetch('RUNNER_TEMP'), 'https-client.json')
+if File.file?(https_config)
+  resource = project.main_group.new_file(https_config)
+  target.resources_build_phase.add_file_reference(resource)
+end
 target.build_configurations.each do |configuration|
   configuration.build_settings.merge!({
     'PRODUCT_BUNDLE_IDENTIFIER' => 'org.agoraweave.bootstrap.tests',

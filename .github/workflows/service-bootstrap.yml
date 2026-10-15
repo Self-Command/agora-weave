@@ -17,13 +17,18 @@ on:
       - 'infra/ci/bootstrap-probe.sql'
       - '.github/workflows/service-bootstrap.yml'
   workflow_call:
+    inputs:
+      https_ingress:
+        type: boolean
+        default: false
 permissions:
   contents: read
+  actions: read
 jobs:
   services:
     name: Official Compose (${{ matrix.environment }}, not ci-ready)
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: ${{ inputs.https_ingress && 75 || 20 }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +36,7 @@ jobs:
     env:
       CI_ENVIRONMENT: ${{ matrix.environment }}
       CI_SERVICE_ENV: ${{ matrix.environment == 'dev' && secrets.CI_DEV_SUPABASE_ENV || secrets.CI_TEST_SUPABASE_ENV }}
+      AGORAWEAVE_HTTPS_SEED: ${{ inputs.https_ingress && secrets.AGORAWEAVE_HTTPS_SEED || '' }}
     steps:
       - name: Checkout exact target
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -101,6 +107,54 @@ jobs:
           docker rm -f agoraweave-import-cache > /dev/null
           "${compose[@]}" up -d --wait --wait-timeout 300
           npm run ci:health
+      - name: Publish authenticated run-scoped HTTPS health ingress
+        if: ${{ inputs.https_ingress }}
+        shell: bash
+        run: |
+          set -eu
+          test -n "$AGORAWEAVE_HTTPS_SEED"
+          curl --fail --location --retry 2 https://github.com/cloudflare/cloudflared/releases/download/2026.10.0/cloudflared-linux-amd64 -o "$RUNNER_TEMP/cloudflared"
+          printf 'd33ff2d14475178d2012c2c56beba87389ac5ded27649519f198a7d3134a99db  %s\n' "$RUNNER_TEMP/cloudflared" | sha256sum -c -
+          chmod 700 "$RUNNER_TEMP/cloudflared"
+          "$RUNNER_TEMP/cloudflared" --version > service-output/cloudflared-version.txt
+          node --experimental-strip-types tools/ci/https-service.ts > "$RUNNER_TEMP/https-service.log" 2>&1 &
+          for poll in $(seq 1 60); do
+            if [ -f service-output/https-ready.json ]; then break; fi
+            sleep 2
+          done
+          test -f service-output/https-ready.json
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { deriveIngressToken } from './tools/ci/https-ingress.ts';
+          const ready = JSON.parse(readFileSync('service-output/https-ready.json', 'utf8'));
+          const token = deriveIngressToken(process.env.AGORAWEAVE_HTTPS_SEED, ready);
+          console.log('::add-mask::' + token);
+          const attempts = [];
+          let passed = false;
+          for (let poll = 0; poll < 30; poll++) {
+            try {
+              const response = await fetch(ready.url + '/auth/v1/health', { headers: { authorization: 'Bearer ' + token }, redirect: 'error', signal: AbortSignal.timeout(10000) });
+              attempts.push({ status: response.status, at: new Date().toISOString() });
+              if (response.status === 200 && (await response.json()).name === 'GoTrue') { passed = true; break; }
+            } catch { attempts.push({ state: 'unavailable', at: new Date().toISOString() }); }
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          }
+          writeFileSync('service-output/https-startup-probe.json', JSON.stringify({ state: passed ? 'passed' : 'blocked', attempts }, null, 2) + '\n');
+          if (!passed) throw new Error('Real temporary HTTPS health unavailable');
+          NODE
+      - name: Publish credential-free live HTTPS descriptor
+        if: ${{ inputs.https_ingress }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: https-ready-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: service-output/https-ready.json
+          if-no-files-found: error
+          retention-days: 1
+      - name: Keep isolated HTTPS ingress alive until actual native clients finish
+        if: ${{ inputs.https_ingress }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --experimental-strip-types tools/ci/https-wait-native.ts
       - name: Capture sanitized real container failure detail
         if: ${{ always() }}
         shell: bash
@@ -138,6 +192,22 @@ jobs:
         shell: bash
         run: |
           set -eu
+          if [ -f "$RUNNER_TEMP/https-gateway.pid" ]; then
+            gateway_pid=$(cat "$RUNNER_TEMP/https-gateway.pid")
+            kill "$gateway_pid" 2>/dev/null || true
+          fi
+          if [ -f "$RUNNER_TEMP/https-cloudflared.pid" ]; then
+            tunnel_pid=$(cat "$RUNNER_TEMP/https-cloudflared.pid")
+            kill "$tunnel_pid" 2>/dev/null || true
+          fi
+          sleep 2
+          node --input-type=module <<'NODE'
+          import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+          const pids = ['https-gateway.pid', 'https-cloudflared.pid'].filter(name => existsSync(process.env.RUNNER_TEMP + '/' + name)).map(name => Number(readFileSync(process.env.RUNNER_TEMP + '/' + name)));
+          const stopped = pids.every(pid => { try { process.kill(pid, 0); return false; } catch { return true; } });
+          writeFileSync('service-output/https-process-cleanup.json', JSON.stringify({ processes_observed: pids.length, stopped }) + '\n');
+          if (!stopped) throw new Error('Temporary HTTPS process remains');
+          NODE
           docker rm -f agoraweave-import-cache > /dev/null 2>&1 || true
           if [ -f "$RUNNER_TEMP/agoraweave-ci.env" ] && [ -f "$RUNNER_TEMP/agoraweave-images.json" ]; then
             docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env" \
@@ -145,6 +215,7 @@ jobs:
               down --volumes --remove-orphans
           fi
           rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json"
+          rm -f "$RUNNER_TEMP/https-gateway.pid" "$RUNNER_TEMP/https-cloudflared.pid" "$RUNNER_TEMP/https-service.log" "$RUNNER_TEMP/cloudflared"
           node --input-type=module <<'NODE'
           import { execFileSync } from 'node:child_process';
           import { existsSync, writeFileSync } from 'node:fs';
@@ -157,7 +228,7 @@ jobs:
           const remaining_containers = inspect('containers', ['ps', '-aq', '--filter', filter]);
           const remaining_volumes = inspect('volumes', ['volume', 'ls', '-q', '--filter', filter]);
           const remaining_networks = inspect('networks', ['network', 'ls', '-q', '--filter', filter]);
-          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
+          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json', 'https-gateway.pid', 'https-cloudflared.pid', 'https-service.log', 'cloudflared'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
           const complete = !remaining_containers.length && !remaining_volumes.length && !remaining_networks.length && temporary_files_removed;
           writeFileSync('service-output/cleanup.json', JSON.stringify({ source: 'github-actions',
             environment: process.env.CI_ENVIRONMENT, cleanup: complete ? 'success' : 'failure',
@@ -184,7 +255,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: bootstrap-services-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: ${{ inputs.https_ingress && 'bootstrap-https-services' || 'bootstrap-services' }}-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: service-output/
           if-no-files-found: error
           retention-days: 7
