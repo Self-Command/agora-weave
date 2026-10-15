@@ -49,9 +49,10 @@ export function resolveTddSourcePurpose(input: Fields): Fields {
     } else return refused();
     let expectedCount = manifest?.engineering_case_count;
     if (object(cycle.executor) && cycle.executor.kind === 'core') {
-      if (!manifest || !['dev', 'test'].includes(String(cycle.executor.environment)) ||
+      const executor = cycle.executor;
+      if (!manifest || !['dev', 'test'].includes(String(executor.environment)) ||
           !Array.isArray(manifest.core_targets)) return refused();
-      const targets = manifest.core_targets.filter((target: Fields) => target.command === cycle.executor.command);
+      const targets = manifest.core_targets.filter((target: Fields) => target.command === executor.command);
       if (!targets.length || !targets.some((target: Fields) => Array.isArray(target.files) && target.files.includes(cycle.test_file)) ||
           targets.some((target: Fields) => !Number.isInteger(target.case_count) || Number(target.case_count) < 1)) return refused();
       expectedCount = targets.reduce((count: number, target: Fields) => count + Number(target.case_count), 0);
