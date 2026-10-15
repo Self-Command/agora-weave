@@ -2906,9 +2906,16 @@
       "files": [
         "tests/integration/ci/private-bridge-projection.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-runtime-freeze",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/core-runtime-freeze.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 226,
+  "engineering_case_count": 227,
   "core_targets": [
     {
       "id": "core.http",
