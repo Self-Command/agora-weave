@@ -2752,7 +2752,20 @@
       "files": [
         "tests/integration/ci/tdd-purpose-history.spec.ts"
       ]
+    },
+    {
+      "id": "ci.development-foundation",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "files": [
+        "tests/security/ci/development-foundation.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 199
+  "engineering_case_count": 202
 }
