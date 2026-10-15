@@ -225,7 +225,10 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: verify-readiness-${{ github.run_id }}-${{ github.run_attempt }}
-          path: gate-output/
+          path: |
+            gate-output/readiness.json
+            gate-output/orchestration.json
+            gate-output/final-source-job-outcomes.json
           if-no-files-found: error
           retention-days: 7
   development-readiness:

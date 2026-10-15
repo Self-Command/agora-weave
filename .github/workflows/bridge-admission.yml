@@ -78,11 +78,15 @@ jobs:
           INITIALIZATION_RUN_ID: ${{ inputs.initialization_run_id }}
           COMPLETION_RUN_ID: ${{ inputs.completion_run_id }}
           DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
         run: node --experimental-strip-types tools/ci/bridge-gate.ts
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: bridge-admission-${{ github.run_id }}-${{ github.run_attempt }}
-          path: bridge-output/
+          path: bridge-output/bridge-admission.json
           if-no-files-found: error
           retention-days: 7

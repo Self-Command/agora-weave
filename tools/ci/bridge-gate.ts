@@ -6,6 +6,8 @@ import { deriveBridgeEvidence } from './bridge-source.ts';
 import { initializationDigests } from './bridge-inputs.ts';
 import { collectEvidence } from './collect-evidence.ts';
 import { readDevelopmentSource } from './development-source.ts';
+import { publicBridgeReceipt } from './bridge-public.ts';
+import { preservePrivateBridgeRecord } from './private-bridge-record.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Bridge assessment requires GitHub-hosted Actions');
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
@@ -76,15 +78,18 @@ const record = { ...input, ...result,
   input_digests: inputDigests, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
   checkout_sha: sha, toolchain_digest: inputDigests['infra/ci/toolchain-lock.json'],
   scope_base_sha: scopeBase, initialization_source: initialization, completion_source: completion, development_source: development };
-writeFileSync('bridge-output/bridge-admission.json', JSON.stringify(record, null, 2) + '\n');
-if (result.state !== 'passed') throw new Error(`Cloud bridge transition refused: ${result.reason_codes.join(',')}`);
+let privateCopy: Record<string, any> | undefined;
+try {
+  if (record.completion_record || initialization || completion || development) privateCopy = preservePrivateBridgeRecord(record);
+} catch {
+  record.state = 'blocked';
+  record.reason_codes = [...record.reason_codes, 'private_bridge_record_not_verified'];
+}
+writeFileSync('bridge-output/bridge-admission.json', JSON.stringify(publicBridgeReceipt(record, privateCopy), null, 2) + '\n');
+if (record.state !== 'passed') throw new Error(`Cloud bridge transition refused: ${record.reason_codes.join(',')}`);
 const require = createRequire(import.meta.url);
 const Ajv = require('ajv/dist/2020').default;
 const ajv = new Ajv({ strict: true, allErrors: true });
 require('ajv-formats')(ajv);
 const validate = ajv.compile(JSON.parse(readFileSync('tools/ci/schemas/bridge-result.schema.json', 'utf8')));
 if (!validate(record)) throw new Error('Bridge result schema refused its record');
-if (result.completion_record) {
-  mkdirSync('bridge-output/completion-records', { recursive: true });
-  writeFileSync(`bridge-output/completion-records/${sha}.json`, JSON.stringify(result.completion_record, null, 2) + '\n');
-}

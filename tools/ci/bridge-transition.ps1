@@ -93,8 +93,18 @@ try {
                     }).Count -ne 0) { throw 'Unexpected cloud bridge archive content' }
                 $taskReader = [System.IO.StreamReader]::new($taskZip.GetEntry('bridge-admission.json').Open())
                 try { $taskReceipt = $taskReader.ReadToEnd() | ConvertFrom-Json } finally { $taskReader.Dispose() }
-                $taskExpectedEntries = if ($taskReceipt.transition -eq 'complete') { 2 } else { 1 }
-                if ($taskEntryNames.Count -ne $taskExpectedEntries) { throw 'Unexpected cloud bridge archive content' }
+                if ($taskEntryNames.Count -ne 1) { throw 'Unexpected cloud bridge archive content' }
+                if ($taskReceipt.transition -eq 'complete' -and
+                    ($taskReceipt.private_record.state -ne 'archived_and_readback_verified' -or
+                     $taskReceipt.private_record.temporary_key_files_removed -ne $true -or
+                     $taskReceipt.private_record.sha256 -notmatch '^[a-f0-9]{64}$' -or
+                     $taskReceipt.private_record.path -notmatch '^/archive/ordinary/bridge-admission/[a-f0-9]{40}-[1-9]\d*-[1-9]\d*\.json$')) {
+                    throw 'Missing privately preserved complete bridge record'
+                }
+                if ($null -ne $taskReceipt.completion_record -or $null -ne $taskReceipt.completion_source -or
+                    $null -ne $taskReceipt.initialization_source -or $null -ne $taskReceipt.development_source) {
+                    throw 'Private source documents cannot appear in the public bridge receipt'
+                }
             } finally { $taskZip.Dispose() }
             if ($taskReceipt.target_sha -ne $taskHead -or $taskReceipt.source -ne 'github-actions' -or
                 $taskReceipt.runner_environment -ne 'github-hosted' -or [string]$taskReceipt.run_id -ne [string]$taskRun.id -or
