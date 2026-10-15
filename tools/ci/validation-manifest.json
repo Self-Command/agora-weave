@@ -2854,6 +2854,30 @@
       "files": [
         "tests/integration/ci/android-development-pr-range.spec.ts"
       ]
+    },
+    {
+      "id": "ci.private-bridge-transport",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/private-bridge-transport.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.core-active-targets",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "files": [
+        "tests/integration/ci/core-active-targets.spec.ts"
+      ]
     }
   ],
   "engineering_case_count": 220
