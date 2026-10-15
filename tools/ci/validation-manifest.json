@@ -2591,7 +2591,14 @@
         "tests/integration/ci/native-admission.spec.ts"
       ],
       "command": "ci:contracts"
+    },
+    {
+      "id": "ci.native-report-compatibility",
+      "files": [
+        "tests/integration/ci/native-report-compatibility.spec.ts"
+      ],
+      "command": "ci:contracts"
     }
   ],
-  "engineering_case_count": 152
+  "engineering_case_count": 154
 }
