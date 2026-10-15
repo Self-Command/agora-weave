@@ -32,8 +32,11 @@ function checkout() {
   execFileSync('git', ['add', '.'], { cwd: root });
   execFileSync('git', ['-c', 'user.name=synthetic-fixture', '-c', 'user.email=fixture@example.invalid',
     'commit', '--quiet', '-m', 'isolated wiring fixture'], { cwd: root });
+  // This checkout models a top-level Actions process, not a child of this outer Node test runner.
+  const environment = { ...process.env };
+  delete environment.NODE_TEST_CONTEXT;
   const run = (file: string) => spawnSync(process.execPath, ['--experimental-strip-types', `tools/ci/${file}`],
-    { cwd: root, encoding: 'utf8', env: process.env, timeout: 30000 });
+    { cwd: root, encoding: 'utf8', env: environment, timeout: 30000 });
   return { root, write, run, approved, cleanup: () => rmSync(root, { recursive: true, force: true }) };
 }
 
