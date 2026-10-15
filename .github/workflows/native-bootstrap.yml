@@ -302,11 +302,15 @@ jobs:
           done
           adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           adb install apps/mobile/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+          adb shell dumpsys package org.agoraweave.app > native-output/android-target-package.txt
+          adb shell dumpsys package org.agoraweave.app.test > native-output/android-test-package.txt
           capture_failure() {
             adb logcat -d > native-output/android-failure-logcat.txt || true
             adb shell dumpsys activity activities > native-output/android-failure-activities.txt || true
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-failure.png || true
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-background.txt native-output/android-failure-background.txt || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-font-diagnostic.json native-output/android-font-diagnostic.json || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-launcher-diagnostic.json native-output/android-launcher-diagnostic.json || true
             adb emu kill || true
           }
           trap capture_failure ERR

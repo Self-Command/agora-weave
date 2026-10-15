@@ -2626,10 +2626,15 @@
       "files": ["tests/integration/ci/task-adapter.spec.ts"]
     },
     {
+      "id": "ci.bridge-source",
+      "command": "ci:contracts",
+      "files": ["tests/security/ci/bridge-source.spec.ts"]
+    },
+    {
       "id": "ci.native-archive-capacity",
       "command": "ci:contracts",
       "files": ["tests/integration/ci/native-archive-capacity.spec.ts"]
     }
   ],
-  "engineering_case_count": 164
+  "engineering_case_count": 167
 }
