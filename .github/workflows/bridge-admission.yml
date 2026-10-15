@@ -1,17 +1,7 @@
 name: Cloud bootstrap bridge admission
 on:
   push:
-    paths:
-      - '.github/workflows/bridge-admission.yml'
-      - 'tools/ci/bridge-gate.ts'
-      - 'tools/ci/bridge-transition.ps1'
-      - '.specify/extensions.yml'
   pull_request:
-    paths:
-      - '.github/workflows/bridge-admission.yml'
-      - 'tools/ci/bridge-gate.ts'
-      - 'tools/ci/bridge-transition.ps1'
-      - '.specify/extensions.yml'
   workflow_call:
     inputs:
       mode:

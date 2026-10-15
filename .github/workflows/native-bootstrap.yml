@@ -166,6 +166,7 @@ jobs:
           for bundle in native-output/ios-tests-*.xcresult; do
             if [ ! -d "$bundle" ]; then continue; fi
             name=$(basename "$bundle" .xcresult)
+            if [ -s "native-output/$name.json" ]; then continue; fi
             xcrun xcresulttool get test-results summary --path "$bundle" > "native-output/$name.json"
             xcrun xcresulttool export attachments --path "$bundle" --output-path "native-output/$name-diagnostics"
           done

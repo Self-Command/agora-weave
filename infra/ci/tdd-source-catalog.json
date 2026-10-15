@@ -1245,6 +1245,37 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T02:41:06Z",
       "cause_summary": "Read the original CA01 assertion and healthy transport before implementation. The real iOS result ZIP was 67750196 bytes and exceeded the previous64MiB bound. Green authenticated that size with exact digest and preserved both original attempts while refusing an oversized archive;164 of164 assertions passed, typecheck passed, lint81files had zero errors or warnings."
+    },
+    {
+      "cycle_id": "ci-authenticated-bridge-transitions-001",
+      "behavior_id": "ci.authenticated-bridge-transitions",
+      "case_titles": [
+        "BS01: business start derives readiness from an authenticated initialization ancestor and exact unchanged infrastructure inputs",
+        "BS02: caller supplied readiness flags cannot bypass unauthenticated, unrelated, drifted or incomplete initialization evidence",
+        "BC01: bootstrap completion binds all current frozen raw report digests and reader details without declaring the feature complete"
+      ],
+      "requirements": [
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/security/ci/bridge-source.spec.ts",
+      "fixture_file": "tests/security/ci/bridge-source.spec.ts",
+      "red": {
+        "sha": "417ec467c3258ff12226b6c52e2ee5825053fa17",
+        "run_id": "38672553169",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "666368dfb947ae2dde52ce2c64cfd2021aa7832b",
+        "run_id": "38673099857",
+        "attempt": 1
+      },
+      "implementation_sha": "666368dfb947ae2dde52ce2c64cfd2021aa7832b",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T02:45:19Z",
+      "cause_summary": "Read both complete actual semantic Red blocks and healthy transport before implementation; the refusal case already remained blocked. Green167of167 includes authenticated ancestor and exact infrastructure bindings plus current frozen completion report digests and reader details, with typecheck and lint passed. The actual strict-schema configuration failure remains preserved and was repaired separately; native and readiness checks remain mandatory."
     }
   ]
 }
