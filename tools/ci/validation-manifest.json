@@ -2847,7 +2847,14 @@
       "files": [
         "tests/integration/ci/android-development-scope.spec.ts"
       ]
+    },
+    {
+      "id": "ci.android-development-pr-range",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/android-development-pr-range.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 217
+  "engineering_case_count": 218
 }
