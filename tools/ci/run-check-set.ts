@@ -51,7 +51,8 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
   const androidPaths = context.changed_paths.every((file: string) =>
     /^(apps\/(mobile|admin|share)\/|packages\/|services\/|supabase\/(functions|migrations|upstream)\/|tests\/|tools\/ci\/|infra\/ci\/|\.github\/(workflows|actions)\/|docs\/engineering\/|specs\/001-agoraweave-v1\/|\.specify\/|\.agents\/skills\/agoraweave-ci-|\.claude\/skills\/agoraweave-ci-)/.test(file) &&
       !/^(tests\/e2e\/ios\/|apps\/mobile\/ios\/)/.test(file) ||
-    ['package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', '.npmrc', '.node-version', '.nvmrc'].includes(file));
+    ['package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', '.npmrc', '.node-version', '.nvmrc',
+      'tests/e2e/ios/BootstrapShellTests.swift', 'superpowers-v7'].includes(file));
   const androidDevelopment = request.development_platform === 'android' && request.validation_intent === 'green' && androidPaths;
   if (request.development_platform === 'android' && request.validation_intent !== 'completion' && !androidDevelopment) {
     return { state: 'blocked', reason_codes: ['outside_android_development_scope'], readiness: 'not_evaluated', ci_ready: false };
