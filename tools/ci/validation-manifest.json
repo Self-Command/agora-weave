@@ -2560,14 +2560,10 @@
     },
     {
       "id": "ci.https-ingress",
-      "path": "tests/security/ci/https-ingress.spec.ts",
-      "entry": "ci:contracts",
-      "category": "security",
-      "requirements": [
-        "QR-003",
-        "QR-007"
-      ],
-      "activation": "bootstrap"
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/https-ingress.spec.ts"
+      ]
     }
   ],
   "engineering_case_count": 145
