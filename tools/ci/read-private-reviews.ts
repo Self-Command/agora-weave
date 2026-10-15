@@ -40,5 +40,5 @@ try {
   if (result.state !== 'available') throw new Error('Current Codex review records did not arrive before the deadline');
 } finally {
   for (const file of [key, hosts, batch]) rmSync(file, { force: true });
-  if ([key, hosts, batch].some(file => existsSync(file))) throw new Error('Temporary review credentials remain');
 }
+if ([key, hosts, batch].some(file => existsSync(file))) throw new Error('Temporary review credentials remain');
