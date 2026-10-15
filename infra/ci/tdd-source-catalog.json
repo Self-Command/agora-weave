@@ -934,6 +934,71 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T00:56:06.094334Z",
       "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
+    },
+    {
+      "cause_summary": "Read all five original cloud assertion failures before implementing the run-bound HTTP ingress; Green executed all 145 activated engineering cases.",
+      "implementation_sha": "a9156613f6202f00a4ba1638697302d50fb40fa3",
+      "cause_read_by": "current-codex",
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-006",
+        "QR-007"
+      ],
+      "behavior_id": "ci.https-ingress",
+      "red": {
+        "attempt": 1,
+        "run_id": "38662951406",
+        "sha": "15d5c6ece04c753f94df39716865df0022fc63bd"
+      },
+      "cause": "missing_behavior",
+      "fixture_file": "tests/security/ci/https-ingress.spec.ts",
+      "test_file": "tests/security/ci/https-ingress.spec.ts",
+      "cycle_id": "ci-https-ingress-001",
+      "cause_read_at": "2026-10-15T00:59:20Z",
+      "green": {
+        "attempt": 1,
+        "run_id": "38663160910",
+        "sha": "a9156613f6202f00a4ba1638697302d50fb40fa3"
+      },
+      "case_ids": [
+        "HG01",
+        "HG02",
+        "HG03",
+        "HG04",
+        "HG05"
+      ]
+    },
+    {
+      "cause_summary": "Read the original HD01 false-versus-true failure before implementing descriptor validation; HD02 already rejected invalid inputs. Green executed all 147 cases with zero skipped, failed or cancelled.",
+      "implementation_sha": "4237c9900ec3e9ad88fee3d214c634b31a44961d",
+      "cause_read_by": "current-codex",
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-006",
+        "QR-007"
+      ],
+      "behavior_id": "ci.https-descriptor",
+      "red": {
+        "attempt": 1,
+        "run_id": "38663375039",
+        "sha": "bee8a81d02ab490ac04af5e7bb8d1fb867afe6fc"
+      },
+      "cause": "missing_behavior",
+      "fixture_file": "tests/security/ci/https-descriptor.spec.ts",
+      "test_file": "tests/security/ci/https-descriptor.spec.ts",
+      "cycle_id": "ci-https-descriptor-001",
+      "cause_read_at": "2026-10-15T01:04:43Z",
+      "green": {
+        "attempt": 1,
+        "run_id": "38664125111",
+        "sha": "4237c9900ec3e9ad88fee3d214c634b31a44961d"
+      },
+      "case_ids": [
+        "HD01",
+        "HD02"
+      ]
     }
   ]
 }

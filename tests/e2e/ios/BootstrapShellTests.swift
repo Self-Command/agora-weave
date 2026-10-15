@@ -1,5 +1,6 @@
 import XCTest
 import CryptoKit
+import UIKit
 
 private final class HTTPSRedirectRefusal: NSObject, URLSessionTaskDelegate {
   func urlSession(_ session: URLSession, task: URLSessionTask,
@@ -34,10 +35,59 @@ final class BootstrapShellTests: XCTestCase {
     app.activate()
     XCTAssertTrue(app.wait(for: .runningForeground, timeout: 5))
     XCTAssertTrue(app.staticTexts["AgoraWeave"].waitForExistence(timeout: 10))
-    let resume = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+    let resumeScreen = XCUIScreen.main.screenshot()
+    try captureAccessibility(app, resumeScreen)
+    let resume = XCTAttachment(screenshot: resumeScreen)
     resume.name = "bootstrap-resume"
     resume.lifetime = .keepAlways
     add(resume)
+  }
+
+  private func captureAccessibility(_ app: XCUIApplication, _ screenshot: XCUIScreenshot) throws {
+    let title = app.staticTexts["AgoraWeave"]
+    XCTAssertEqual(app.staticTexts.matching(identifier: "AgoraWeave").count, 1)
+    XCTAssertTrue(title.isEnabled)
+    let window = app.windows.firstMatch.frame
+    let top = max(window.minY + 24, app.statusBars.firstMatch.exists ? app.statusBars.firstMatch.frame.maxY : 0)
+    let viewport = CGRect(x: window.minX, y: top, width: window.width, height: window.maxY - top - 24)
+    XCTAssertTrue(viewport.contains(title.frame))
+    let interactive = app.buttons.count + app.switches.count + app.sliders.count
+    let editable = app.textFields.count + app.secureTextFields.count + app.textViews.count
+    XCTAssertEqual(interactive, 0)
+    XCTAssertEqual(editable, 0)
+    var audit: [String: Any]
+    if #available(iOS 17.0, *) {
+      try app.performAccessibilityAudit()
+      audit = ["method": "xctest-system-audit", "executed": true, "issues": []]
+    } else {
+      audit = ["method": "unavailable-before-ios17", "executed": false, "decision_ref": "ED-14", "issues": []]
+    }
+    let tree = app.debugDescription
+    let treeAttachment = XCTAttachment(string: tree)
+    treeAttachment.name = "bootstrap-accessibility-tree"
+    treeAttachment.lifetime = .keepAlways
+    add(treeAttachment)
+    let pixels = screenshot.image.cgImage!
+    var rgba = [UInt8](repeating: 0, count: 4)
+    rgba.withUnsafeMutableBytes { bytes in
+      let context = CGContext(data: bytes.baseAddress, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+        space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+      context.translateBy(x: -CGFloat(pixels.width / 2), y: -CGFloat(pixels.height / 4))
+      context.draw(pixels, in: CGRect(x: 0, y: 0, width: CGFloat(pixels.width), height: CGFloat(pixels.height)))
+    }
+    let light = rgba.prefix(3).allSatisfy { abs(Int($0) - 255) <= 3 }
+    let dark = abs(Int(rgba[0]) - 17) <= 3 && abs(Int(rgba[1]) - 17) <= 3 && abs(Int(rgba[2]) - 19) <= 3
+    XCTAssertTrue(light || dark, "Actual shell background must match an expected theme")
+    func rect(_ value: CGRect) -> [String: CGFloat] { ["x": value.minX, "y": value.minY, "width": value.width, "height": value.height] }
+    func hash(_ bytes: Data) -> String { SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined() }
+    let measurement: [String: Any] = ["theme": light ? "light" : "dark", "font_scale": UIFontMetrics.default.scaledValue(for: 17) / 17,
+      "title": title.label, "role": "staticText", "enabled": title.isEnabled, "title_count": 1,
+      "interactive_count": interactive, "editable_count": editable, "frame": rect(title.frame), "viewport": rect(viewport),
+      "background_rgb": Array(rgba.prefix(3)), "audit": audit, "tree_sha256": hash(Data(tree.utf8)), "screenshot_sha256": hash(screenshot.pngRepresentation)]
+    let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: ["source": "native-xctest", "measurement": measurement], options: [.sortedKeys]), uniformTypeIdentifier: "public.json")
+    attachment.name = "bootstrap-accessibility"
+    attachment.lifetime = .keepAlways
+    add(attachment)
   }
 
   private func verifyHTTPS(_ configURL: URL) throws {

@@ -123,6 +123,9 @@ jobs:
           xcrun simctl boot "$device"
           xcrun simctl bootstatus "$device" -b
           xcrun simctl install "$device" "$RUNNER_TEMP/ios-derived/Build/Products/Release-iphonesimulator/AgoraWeave.app"
+          xcrun simctl help ui > native-output/ios-simctl-ui-help.txt 2>&1
+          xcrun simctl ui "$device" content_size large
+          xcrun simctl ui "$device" content_size > native-output/ios-font-normal.txt
           xcrun simctl ui "$device" appearance light
           xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
             -configuration Release -destination "platform=iOS Simulator,id=$device" \
@@ -139,6 +142,19 @@ jobs:
             CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-dark.log 2>&1
           xcrun xcresulttool get test-results summary --path native-output/ios-tests-dark.xcresult > native-output/ios-tests-dark.json
           xcrun xcresulttool export attachments --path native-output/ios-tests-dark.xcresult --output-path native-output/ios-attachments-dark
+          xcrun simctl ui "$device" content_size accessibility-extra-large
+          xcrun simctl ui "$device" content_size > native-output/ios-font-large.txt
+          for theme in light dark; do
+            xcrun simctl ui "$device" appearance "$theme"
+            xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+              -configuration Release -destination "platform=iOS Simulator,id=$device" \
+              -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
+              -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath "native-output/ios-tests-large-$theme.xcresult" \
+              CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > "native-output/ios-tests-large-$theme.log" 2>&1
+            xcrun xcresulttool get test-results summary --path "native-output/ios-tests-large-$theme.xcresult" > "native-output/ios-tests-large-$theme.json"
+            xcrun xcresulttool export attachments --path "native-output/ios-tests-large-$theme.xcresult" --output-path "native-output/ios-attachments-large-$theme"
+          done
+          xcrun simctl ui "$device" content_size large
           xcrun simctl shutdown "$device"
       - name: Remove temporary iOS HTTPS configuration
         if: ${{ always() }}
@@ -286,6 +302,8 @@ jobs:
             fi
           }
           drive_legacy_power_theme 0 light false
+          adb shell settings put system font_scale 1.0
+          adb shell settings get system font_scale > native-output/android-font-normal.txt
           adb shell cmd uimode night no
           adb shell am instrument -w -r -e theme light org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > native-output/android-tests-light.log
           grep -q 'OK (1 test)' native-output/android-tests-light.log
@@ -293,12 +311,39 @@ jobs:
           grep -q 'AgoraWeave' native-output/android-ui.xml
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-light.png
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-theme.txt native-output/android-theme-light.txt
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json native-output/android-accessibility-light.json
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml native-output/android-ui-light.xml
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https-light.json
+          fi
           drive_legacy_power_theme 1 dark true
           adb shell cmd uimode night yes
           adb shell am instrument -w -r -e theme dark org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > native-output/android-tests-dark.log
           grep -q 'OK (1 test)' native-output/android-tests-dark.log
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-dark.png
           adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-theme.txt native-output/android-theme-dark.txt
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json native-output/android-accessibility-dark.json
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml native-output/android-ui-dark.xml
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https-dark.json
+          fi
+          adb shell settings put system font_scale 2.0
+          adb shell settings get system font_scale > native-output/android-font-large.txt
+          for theme in light dark; do
+            if [ "$theme" = light ]; then
+              drive_legacy_power_theme 0 light false
+              adb shell cmd uimode night no
+            else
+              drive_legacy_power_theme 1 dark true
+              adb shell cmd uimode night yes
+            fi
+            adb shell am instrument -w -r -e theme "$theme" org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > "native-output/android-tests-large-$theme.log"
+            grep -q 'OK (1 test)' "native-output/android-tests-large-$theme.log"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json "native-output/android-accessibility-large-$theme.json"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml "native-output/android-ui-large-$theme.xml"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png "native-output/android-large-$theme.png"
+          done
+          adb shell settings put system font_scale 1.0
           if [ '${{ inputs.https_required }}' = 'true' ]; then
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https.json
             adb uninstall org.agoraweave.app.test

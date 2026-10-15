@@ -18,6 +18,55 @@ export function assessBootstrapRaw(input: unknown): Document {
       identity.runner_environment !== 'github-hosted' || identity.run_id !== input.run_id ||
       !Number.isInteger(input.attempt) || Number(input.attempt) < 1 || Number(identity.attempt) !== input.attempt) return deny('executor_identity_mismatch');
   switch (input.kind) {
+    case 'native-https': {
+      const report = raw.report, cleanup = raw.cleanup;
+      const platform = String(identity.platform);
+      const source = platform.startsWith('ios-') ? 'native-xctest-urlsession' : 'native-android-httpsurlconnection';
+      if (!/^(ios-(16\.4|26\.4)|android-api(24|36))$/.test(platform) || !record(report) || report.source !== source ||
+          report.target_sha !== input.target_sha || report.run_id !== input.run_id || report.attempt !== input.attempt ||
+          !record(cleanup) || cleanup.temporary_config_removed !== true || !Array.isArray(report.environments) ||
+          report.environments.length !== 2 || !report.environments.every(record)) return deny('native_https_identity_or_cleanup_missing');
+      const environments = report.environments;
+      return ['dev', 'test'].every(environment => environments.filter(item => item.environment === environment &&
+        item.accepted === 200 && item.anonymous === 401 && item.other_environment === 401 && item.private_path === 404 &&
+        digest(item.body_sha256)).length === 1) ? accept(['https:dev', 'https:test']) : deny('native_https_response_incomplete');
+    }
+    case 'native-accessibility': {
+      const platform = String(identity.platform), ios = platform.startsWith('ios-');
+      if (!/^(ios-(16\.4|26\.4)|android-api(24|36))$/.test(platform) || raw.source !== (ios ? 'native-xctest' : 'native-android-accessibility') ||
+          !Array.isArray(raw.measurements) || raw.measurements.length !== 4 || !raw.measurements.every(record) ||
+          !Array.isArray(raw.exclusions) || !raw.exclusions.length || !raw.exclusions.every(item => record(item) &&
+            item.applicability === 'not_applicable' && item.decision_ref === 'ED-14' && text(item.reason) &&
+            item.behavior === (ios ? 'voiceover-navigation' : 'talkback-navigation'))) return deny('native_accessibility_measurements_missing');
+      const measurements = raw.measurements;
+      const rectangle = (value: unknown): value is Document => record(value) && ['x', 'y', 'width', 'height'].every(key =>
+        typeof value[key] === 'number' && Number.isFinite(value[key])) && Number(value.width) > 0 && Number(value.height) > 0;
+      for (const item of measurements) {
+        if (!['light', 'dark'].includes(String(item.theme)) || typeof item.font_scale !== 'number' || !Number.isFinite(item.font_scale) ||
+            item.font_scale < 1 || item.font_scale > 4 || item.title !== 'AgoraWeave' || item.role !== (ios ? 'staticText' : 'android.widget.TextView') ||
+            item.enabled !== true || item.title_count !== 1 || item.interactive_count !== 0 || item.editable_count !== 0 ||
+            !digest(item.screenshot_sha256) || !digest(item.tree_sha256) || !rectangle(item.frame) || !rectangle(item.viewport) ||
+            Number(item.frame.x) < Number(item.viewport.x) || Number(item.frame.y) < Number(item.viewport.y) ||
+            Number(item.frame.x) + Number(item.frame.width) > Number(item.viewport.x) + Number(item.viewport.width) + 1 ||
+            Number(item.frame.y) + Number(item.frame.height) > Number(item.viewport.y) + Number(item.viewport.height) + 1 ||
+            !record(item.audit) || !Array.isArray(item.audit.issues) || item.audit.issues.length) return deny('native_accessibility_semantics_or_bounds_failed');
+        if (ios && platform !== 'ios-16.4') {
+          if (item.audit.method !== 'xctest-system-audit' || item.audit.executed !== true) return deny('supported_system_audit_missing');
+        } else if (ios) {
+          if (item.audit.method !== 'unavailable-before-ios17' || item.audit.executed !== false || item.audit.decision_ref !== 'ED-14') return deny('minimum_system_audit_misrepresented');
+        } else if (item.audit.method !== 'native-semantic-focus' || item.audit.executed !== true || item.accessibility_focused !== true || item.heading !== true) {
+          return deny('android_semantic_focus_missing');
+        }
+      }
+      for (const theme of ['light', 'dark']) {
+        const normal = measurements.filter(item => item.theme === theme && Number(item.font_scale) >= 1 && Number(item.font_scale) <= 1.05);
+        const large = measurements.filter(item => item.theme === theme && Number(item.font_scale) >= 2);
+        if (normal.length !== 1 || large.length !== 1 || Number((large[0].frame as Document).height) < Number((normal[0].frame as Document).height) * 1.95) {
+          return deny('actual_large_font_growth_missing');
+        }
+      }
+      return accept(['a11y:light:normal', 'a11y:dark:normal', 'a11y:light:large', 'a11y:dark:large']);
+    }
     case 'engineering': {
       const actual = normalizeExecution({ format: 'tap', raw: raw.tap, expected_count: raw.expected_count, exit_code: 0 });
       return actual.state === 'passed' ? accept(Array.from({ length: Number(raw.expected_count) }, (_, i) => `engineering:${i + 1}`)) : deny('engineering_failed');

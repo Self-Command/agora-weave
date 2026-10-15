@@ -261,6 +261,19 @@
       "bootstrap_applicability": "required",
       "activation": "bootstrap",
       "actual_state": "not_executed"
+    },
+    {
+      "task": "T007",
+      "decision_ref": "ED-14",
+      "activation": "bootstrap",
+      "requirements": [
+        "QR-004",
+        "QR-005"
+      ],
+      "actual_state": "not_executed",
+      "id": "bootstrap.native-accessibility",
+      "bootstrap_applicability": "required",
+      "entry": "native-bootstrap.yml"
     }
   ],
   "product_cases": [

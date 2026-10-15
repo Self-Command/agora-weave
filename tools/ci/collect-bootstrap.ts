@@ -42,6 +42,9 @@ const verifiedInputs: Record<string, string>[] = [];
 const images: string[] = [];
 const cleanupEnvironments: Record<string, unknown>[] = [];
 const cleanupSources: Record<string, unknown>[] = [];
+const nativeHttpsChecks: Record<string, unknown>[] = [];
+const nativeAccessibilityChecks: Record<string, unknown>[] = [];
+const ingressChecks: Record<string, unknown>[] = [];
 let cleanupIdentity: Record<string, any> | undefined;
 const parse = (root: string, file: string) => JSON.parse(readFileSync(`${root}/${file}`, 'utf8'));
 const read = (root: string, file: string) => readFileSync(`${root}/${file}`, 'utf8');
@@ -49,13 +52,23 @@ function allPng(root: string): string[] {
   return readdirSync(root, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? allPng(`${root}/${entry.name}`) :
     entry.name.endsWith('.png') ? [hash(readFileSync(`${root}/${entry.name}`))] : []);
 }
+function nativeDocuments(root: string): Record<string, any>[] {
+  return readdirSync(root, { withFileTypes: true }).flatMap(entry => {
+    if (entry.isDirectory()) return entry.name.endsWith('.xcresult') ? [] : nativeDocuments(`${root}/${entry.name}`);
+    if (!entry.name.endsWith('.json')) return [];
+    try {
+      const document = parse(root, entry.name);
+      return ['native-xctest', 'native-android-accessibility', 'native-xctest-urlsession', 'native-android-httpsurlconnection'].includes(document.source) ? [document] : [];
+    } catch { return []; }
+  });
+}
 for (const item of catalog) {
   const root = `${item.directory}/raw`;
   execFileSync('python3', ['tools/ci/index-archive.py', `${item.directory}/source.zip`, `${item.directory}/raw-files.json`, root]);
   const rawFiles = parse(item.directory, 'raw-files.json') as Record<string, any>[];
   for (const file of rawFiles) {
     if (String(file.path).includes('.xcresult/') || !/\.(png|json|xml|tap)$/.test(file.path) &&
-      !/^(android-theme-.+|schema-seed-probe.*|database-health)\.txt$/.test(file.path)) continue;
+      !/\.txt$/.test(file.path)) continue;
     const id = `artifact:${item.artifact_id}/${file.path}`;
     verifiedInputs.push({ id, digest: file.sha256 });
     if (String(file.path).endsWith('.png')) images.push(id);
@@ -84,7 +97,7 @@ for (const item of catalog) {
       identity = parse(root, 'journal.json'); raw = { journal: identity };
     } else if (name.startsWith('bootstrap-services-')) {
       kind = 'service'; identity = parse(root, 'configuration.json'); ids = [`bootstrap.${identity.environment}-services`];
-      jobPattern = `Official Compose (${identity.environment},`;
+      jobPattern = ` / service / Official Compose (${identity.environment},`;
       identity.attempt = Number(identity.attempt);
       raw = { configuration: identity, outcome: parse(root, 'outcome.json'),
         containers: read(root, 'service-health.json').trim().split(/\r?\n/).map(line => JSON.parse(line)),
@@ -96,7 +109,8 @@ for (const item of catalog) {
       kind = 'ios'; identity = parse(root, 'identity.json');
       ids = [identity.platform === 'ios-16.4' ? 'bootstrap.minimum-ios' : 'bootstrap.ios'];
       jobPattern = `iOS shell ${identity.platform.replace('ios-', '')} exact`;
-      raw = { light: parse(root, 'ios-tests-light.json'), dark: parse(root, 'ios-tests-dark.json'), images: allPng(root) };
+      raw = { light: parse(root, 'ios-tests-light.json'), dark: parse(root, 'ios-tests-dark.json'),
+        images: [...allPng(`${root}/ios-attachments-light`), ...allPng(`${root}/ios-attachments-dark`)] };
     } else if (name.startsWith('bootstrap-android-api')) {
       kind = 'android'; identity = parse(root, 'identity.json');
       ids = [identity.platform === 'android-api24' ? 'bootstrap.minimum-android' : 'bootstrap.android'];
@@ -104,6 +118,21 @@ for (const item of catalog) {
       raw = { light_log: read(root, 'android-tests-light.log'), dark_log: read(root, 'android-tests-dark.log'),
         light_theme: read(root, 'android-theme-light.txt'), dark_theme: read(root, 'android-theme-dark.txt'),
         hierarchy: read(root, 'android-ui.xml'), images: [hash(readFileSync(`${root}/android-light.png`)), hash(readFileSync(`${root}/android-dark.png`))] };
+    } else if (name.startsWith('bootstrap-https-services-')) {
+      identity = parse(root, 'configuration.json');
+      const matching = jobs.filter(job => String(job.name).includes(' / ingress / ') && String(job.name).includes(`Official Compose (${identity.environment},`));
+      const cleanup = parse(root, 'cleanup.json'), processes = parse(root, 'https-process-cleanup.json');
+      const service = assessBootstrapRaw({ kind: 'service', target_sha: sha, check_set_digest: checkSetDigest, toolchain_digest: toolchainDigest,
+        source_authenticated: true, source_job_state: matching.length === 1 ? matching[0].conclusion : 'missing',
+        run_id: runId, attempt: Number(run.run_attempt), identity: { ...identity, attempt: Number(identity.attempt) },
+        raw: { configuration: identity, outcome: parse(root, 'outcome.json'), containers: read(root, 'service-health.json').trim().split(/\r?\n/).map(line => JSON.parse(line)),
+          schema_seed: read(root, 'schema-seed-probe.txt'), schema_seed_repeat: read(root, 'schema-seed-probe-repeat.txt') } });
+      const valid = service.state === 'passed' && parse(root, 'https-startup-probe.json').state === 'passed' &&
+        processes.processes_observed === 2 && processes.stopped === true && cleanup.temporary_files_removed === true &&
+        ['remaining_containers', 'remaining_volumes', 'remaining_networks'].every(key => Array.isArray(cleanup[key]) && cleanup[key].length === 0);
+      ingressChecks.push({ environment: identity.environment, state: valid ? 'passed' : 'blocked', artifact_id: item.artifact_id,
+        raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)) });
+      continue;
     } else if (name.startsWith('verify-install-')) {
       identity = parse(root, 'identity.json'); ids = ['bootstrap.install']; jobPattern = ' / install';
       const matches = jobs.filter(job => String(job.name).endsWith(jobPattern));
@@ -122,6 +151,22 @@ for (const item of catalog) {
     for (const id of ids) observed.push({ id, ...result, source_verified: true, source_sha: sha,
       check_set_digest: checkSetDigest, source_job_conclusion: matches[0]?.conclusion || 'missing',
       raw_report_digest: hash(readFileSync(`${item.directory}/raw-files.json`)), artifact_id: item.artifact_id });
+    if (kind === 'ios' || kind === 'android') {
+      const bound = { target_sha: sha, check_set_digest: checkSetDigest, toolchain_digest: toolchainDigest, source_authenticated: true,
+        source_job_state: matches.length === 1 ? matches[0].conclusion : 'missing', run_id: runId, attempt: Number(run.run_attempt), identity };
+      const documents = nativeDocuments(root);
+      const https = documents.filter(document => document.source.endsWith('urlsession') || document.source.endsWith('httpsurlconnection'));
+      const httpsValid = https.length >= 2 && https.every(report => assessBootstrapRaw({ ...bound, kind: 'native-https',
+        raw: { report, cleanup: parse(root, 'https-client-cleanup.json') } }).state === 'passed');
+      nativeHttpsChecks.push({ platform: identity.platform, state: httpsValid ? 'passed' : 'blocked', artifact_id: item.artifact_id });
+      const measurements = documents.filter(document => document.measurement).map(document => document.measurement);
+      const digests = new Set(rawFiles.map(file => file.sha256));
+      const actualBytesMatch = measurements.every(measurement => digests.has(measurement.tree_sha256) && digests.has(measurement.screenshot_sha256));
+      const accessibility = assessBootstrapRaw({ ...bound, kind: 'native-accessibility', raw: { source: kind === 'ios' ? 'native-xctest' : 'native-android-accessibility', measurements,
+        exclusions: [{ behavior: kind === 'ios' ? 'voiceover-navigation' : 'talkback-navigation', applicability: 'not_applicable', decision_ref: 'ED-14',
+          reason: kind === 'ios' ? 'Current locked iOS runtime has no supported VoiceOver UI service' : 'Locked Google APIs emulator image supplies semantic automation without a TalkBack navigation service' }] } });
+      nativeAccessibilityChecks.push({ platform: identity.platform, ...accessibility, state: actualBytesMatch ? accessibility.state : 'blocked', artifact_id: item.artifact_id });
+    }
     if (kind === 'service' && result.state === 'passed') {
       try {
         cleanupEnvironments.push(parse(root, 'cleanup.json'));
@@ -134,6 +179,17 @@ for (const item of catalog) {
       reason: 'Required original executor file is missing, unreadable or unbound' });
   }
 }
+const nativeMatrix = ['ios-16.4', 'ios-26.4', 'android-api24', 'android-api36'];
+const matrixPassed = (checks: Record<string, unknown>[]) => checks.length === 4 && nativeMatrix.every(platform =>
+  checks.filter(check => check.platform === platform && check.state === 'passed').length === 1);
+const nativeConnectivityPassed = matrixPassed(nativeHttpsChecks) && ingressChecks.length === 2 && ['dev', 'test'].every(environment =>
+  ingressChecks.filter(check => check.environment === environment && check.state === 'passed').length === 1);
+const nativeAccessibilityPassed = matrixPassed(nativeAccessibilityChecks);
+for (const [id, passed, reports] of [['bootstrap.native-connectivity', nativeConnectivityPassed, [...nativeHttpsChecks, ...ingressChecks]],
+  ['bootstrap.native-accessibility', nativeAccessibilityPassed, nativeAccessibilityChecks]] as const) {
+  observed.push({ id, state: passed ? 'passed' : 'blocked', source_verified: true, source_sha: sha,
+    check_set_digest: checkSetDigest, source_job_conclusion: passed ? 'success' : 'missing', raw_report_digest: hash(JSON.stringify(reports)), source_reports: reports });
+}
 if (cleanupIdentity) {
   const result = assessBootstrapRaw({ kind: 'cleanup', target_sha: sha, check_set_digest: checkSetDigest,
     toolchain_digest: toolchainDigest, source_authenticated: true, source_job_state: 'success',
@@ -144,8 +200,7 @@ if (cleanupIdentity) {
 }
 const requiredIds = manifest.bootstrap_checks.filter((check: Record<string, unknown>) => check.bootstrap_applicability === 'required').map((check: Record<string, unknown>) => check.id);
 for (const id of requiredIds) if (!observed.some(check => check.id === id)) observed.push({ id,
-  state: id === 'bootstrap.physical-devices' ? 'unavailable' : 'missing', source_sha: sha, source_verified: false,
-  reason: id === 'bootstrap.physical-devices' ? 'ED-13 physical service unavailable' : 'No bound original executor evidence collected' });
+  state: 'missing', source_sha: sha, source_verified: false, reason: 'No bound original executor evidence collected' });
 mkdirSync('verify-output', { recursive: true });
 writeFileSync('verify-output/original-attempts-and-jobs.json', JSON.stringify(attempts, null, 2) + '\n');
 writeFileSync('verify-output/collected-checks.json', JSON.stringify({ source_authenticated: true, source: 'github-actions',
@@ -174,7 +229,9 @@ writeFileSync('verify-output/review-context.json', JSON.stringify({ target_sha: 
     actual_checks: { source: 'github-actions', state: engineeringPassed ? 'passed' : 'blocked', interactions_passed: false, accessibility_passed: false } },
   visual: { ...shared, review_kind: 'visual', required_images: images,
     required_coverage: ['admin:shell', 'share:shell', 'ios:current:launch-resume', 'ios:minimum:launch-resume',
-      'android:current:launch-resume', 'android:minimum:launch-resume', 'physical-accessibility-admission'],
-    actual_checks: { source: 'github-actions', state: interactionsPassed ? 'passed' : 'blocked',
-      interactions_passed: interactionsPassed, accessibility_passed: false, limitation: 'ED-13 physical VoiceOver/TalkBack evidence unavailable' } },
+      'android:current:launch-resume', 'android:minimum:launch-resume', 'simulator-accessibility-admission'],
+    actual_checks: { source: 'github-actions', state: interactionsPassed && nativeAccessibilityPassed ? 'passed' : 'blocked',
+      interactions_passed: interactionsPassed, accessibility_passed: nativeAccessibilityPassed,
+      device_scope: 'ED-14 GitHub-hosted simulators', exclusions: ['VoiceOver navigation unavailable on locked iOS', 'TalkBack navigation unavailable in locked image'],
+      deferred_controls: 'Title-only bootstrap has no editable fields, IME flow or actionable touch controls; business activation retains their required checks' } },
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');
