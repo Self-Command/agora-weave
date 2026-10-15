@@ -2956,9 +2956,17 @@
         "tests/integration/core/schema-invariants.spec.ts"
       ],
       "case_count": 7
+    },
+    {
+      "id": "core.current-policy",
+      "command": "ci:security",
+      "files": [
+        "tests/security/core/current-policy.spec.ts"
+      ],
+      "case_count": 8
     }
   ],
-  "core_case_count": 45,
+  "core_case_count": 53,
   "core_migrations": [
     {
       "file": "supabase/migrations/0001_identity.sql",
@@ -3007,6 +3015,7 @@
   ],
   "core_fixture_files": [
     "tests/fixtures/core/seed.sql",
-    "tests/fixtures/core/runtime.ts"
+    "tests/fixtures/core/runtime.ts",
+    "tests/fixtures/core/policy.sql"
   ]
 }
