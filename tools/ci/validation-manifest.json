@@ -2619,7 +2619,12 @@
       "files": [
         "tests/security/ci/review-image-inventory.spec.ts"
       ]
+    },
+    {
+      "id": "ci.pending-task-adapter",
+      "command": "ci:contracts",
+      "files": ["tests/integration/ci/task-adapter.spec.ts"]
     }
   ],
-  "engineering_case_count": 161
+  "engineering_case_count": 163
 }
