@@ -63,6 +63,13 @@ if (action === 'all') {
     applied.add(next.file);
   }
   const sequence = existsSync('core-output/migrate-clean.json') ? 'incremental' : 'clean';
+  if (migrations.some(entry => entry.file === 'supabase/migrations/0008_current_authorization.sql')) {
+    const environment = readFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, 'utf8');
+    const password = environment.match(/^CORE_DATABASE_PASSWORD=([a-f0-9]{64})$/m)?.[1];
+    if (!password) throw new Error('Isolated runtime credential was not provisioned');
+    // Only the cloud migration adapter sees this secret; it never enters an artifact.
+    sql(`ALTER ROLE core_runtime PASSWORD '${password}';`);
+  }
   save(`migrate-${sequence}`, { state: 'passed', migrations: results, scope: 'isolated-current-schema' });
 } else if (action === 'seed') {
   const fixture = 'tests/fixtures/core/seed.sql';

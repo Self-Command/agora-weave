@@ -3026,6 +3026,14 @@
         "supabase/migrations/0001_identity.sql",
         "supabase/migrations/0003_effects.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0008_current_authorization.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0002_policy_facts.sql",
+        "supabase/migrations/0004_resources_media.sql"
+      ]
     }
   ],
   "core_fixture_files": [
