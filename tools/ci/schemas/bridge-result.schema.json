@@ -24,6 +24,11 @@
     "ci_ready": { "type": "boolean" },
     "feature_complete": { "type": "boolean" },
     "completion_record": { "type": "object", "required": ["target_sha", "mode", "actor", "feature", "contract_digest", "check_set_digest", "read_by", "read_at", "report_digests", "summary", "unresolved_items"], "properties": {
+      "target_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+      "mode": { "enum": ["bootstrap-only", "business-increment", "full-release"] },
+      "actor": { "const": "codex" }, "feature": { "const": "specs/001-agoraweave-v1" },
+      "contract_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+      "check_set_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
       "read_by": { "type": "string", "minLength": 1 }, "read_at": { "type": "string", "format": "date-time" },
       "report_digests": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
       "summary": { "type": "string", "minLength": 1 }, "unresolved_items": { "type": "array", "maxItems": 0 }
