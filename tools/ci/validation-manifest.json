@@ -2913,9 +2913,16 @@
       "files": [
         "tests/integration/ci/core-runtime-freeze.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-tdd-consumption",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/core-tdd-consumption.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 227,
+  "engineering_case_count": 231,
   "core_targets": [
     {
       "id": "core.http",
@@ -2964,9 +2971,17 @@
         "tests/security/core/current-policy.spec.ts"
       ],
       "case_count": 8
+    },
+    {
+      "id": "core.admission-concurrency",
+      "command": "ci:concurrency",
+      "files": [
+        "tests/concurrency/core/admission.spec.ts"
+      ],
+      "case_count": 2
     }
   ],
-  "core_case_count": 53,
+  "core_case_count": 55,
   "core_migrations": [
     {
       "file": "supabase/migrations/0001_identity.sql",
@@ -3016,6 +3031,7 @@
   "core_fixture_files": [
     "tests/fixtures/core/seed.sql",
     "tests/fixtures/core/runtime.ts",
-    "tests/fixtures/core/policy.sql"
+    "tests/fixtures/core/policy.sql",
+    "tests/fixtures/core/concurrency.ts"
   ]
 }
