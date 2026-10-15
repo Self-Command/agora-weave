@@ -17,7 +17,7 @@ export function preservePrivateBridgeRecord(record: Record<string, any>): Record
   const remote = `/archive/ordinary/bridge-admission/${sha}-${run}-${attempt}.json`;
   const bytes = Buffer.from(JSON.stringify(record, null, 2) + '\n');
   try {
-    writeFileSync(key, process.env.EVIDENCE_SSH_PRIVATE_KEY!.replaceAll('\r', '').trimEnd() + '\n', { mode: 0o600 });
+    writeFileSync(key, process.env.EVIDENCE_SSH_PRIVATE_KEY!.replaceAll('\r', ''), { mode: 0o600 });
     writeFileSync(hosts, process.env.EVIDENCE_SSH_KNOWN_HOSTS!.replaceAll('\r', ''), { mode: 0o600 });
     writeFileSync(source, bytes, { mode: 0o600 });
     writeFileSync(batch, `-mkdir /archive/ordinary/bridge-admission\nput ${source} ${remote}\nget ${remote} ${readback}\n`, { mode: 0o600 });
