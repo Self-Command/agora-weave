@@ -63,10 +63,15 @@ jobs:
           const request = JSON.parse(readFileSync('infra/ci/dependency-freeze-request.json', 'utf8'));
           const root = JSON.parse(readFileSync('package.json', 'utf8'));
           const previous = createHash('sha256').update(readFileSync('package-lock.json')).digest('hex');
-          const allowed = { eslint: '10.12.0', '@eslint/js': '10.0.1', 'typescript-eslint': '8.71.2', ajv: '8.20.0', 'ajv-formats': '3.0.1' };
-          if (request.scope !== 'bootstrap-test-tool-extension' || request.previous_lock_sha256 !== previous ||
+          const scopes = {
+            'bootstrap-test-tool-extension': { field: 'devDependencies', packages: { eslint: '10.12.0', '@eslint/js': '10.0.1', 'typescript-eslint': '8.71.2', ajv: '8.20.0', 'ajv-formats': '3.0.1' } },
+            'core-runtime-extension': { field: 'dependencies', packages: { postgres: '3.4.7', 'unicode-segmenter': '0.17.3' } },
+          };
+          const scope = Object.hasOwn(scopes, request.scope) ? scopes[request.scope] : undefined;
+          const allowed = scope?.packages || {};
+          if (!scope || request.previous_lock_sha256 !== previous ||
             !request.packages || Object.keys(request.packages).length !== Object.keys(allowed).length ||
-            Object.entries(allowed).some(([name, version]) => request.packages[name] !== version || root.devDependencies?.[name] !== version)) {
+            Object.entries(allowed).some(([name, version]) => request.packages[name] !== version || root[scope.field]?.[name] !== version)) {
             throw new Error('Unmatched cloud dependency freeze request');
           }
           NODE

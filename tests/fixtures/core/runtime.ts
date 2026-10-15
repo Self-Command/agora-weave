@@ -30,6 +30,12 @@ export function request(path: string, options: { method?: string; token?: string
   const split = raw.lastIndexOf('\n'), body = raw.slice(0, split), status = Number(raw.slice(split + 1));
   let data: Record<string, unknown> = {};
   try { data = JSON.parse(body); } catch { /* A non-JSON upstream response remains visible as a contract failure. */ }
+  if (options.auth && status >= 500) {
+    const log = compose(['logs', '--no-color', '--tail', '40', 'auth']);
+    const scan = log.match(/sql: Scan error on column index \d+, name [\\"]+[a-z_]+[\\"]+: converting NULL to string is unsupported/);
+    console.error(JSON.stringify({ fixture_diagnostic: 'auth_5xx', status,
+      code: data.error_code || data.code, database_scan_error: scan?.[0] || 'not_observed' }));
+  }
   return { status, data, body };
 }
 export const rows = (statement: string): Record<string, unknown>[] => JSON.parse(sql(`SELECT coalesce(json_agg(q),'[]'::json) FROM (${statement}) q;`).trim());
