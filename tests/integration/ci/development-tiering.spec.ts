@@ -40,12 +40,12 @@ function admission() {
   const document = { state: 'passed', development_ready: true, ci_ready: false,
     readiness_kind: 'development-ready', scope: 'development', validation_intent: 'green',
     target_sha: gate.target_sha, check_set_digest: gate.check_set_digest, feature_complete: false,
-    foundation_digests: foundation, required_ids: required, reports_read: true,
+    foundation_digests: { ...foundation }, required_ids: required, reports_read: true,
     read_by: 'actions-original-report-reader', read_at: '2026-10-15T02:00:00Z',
     regressions_passed: true, observed: required.map(id => ({ id, state: 'passed',
       source_verified: true, source_job_conclusion: 'success', source_sha: gate.target_sha,
       check_set_digest: gate.check_set_digest, raw_report_digest: '3'.repeat(64) })) };
-  return { context: gate, current_foundation_digests: foundation,
+  return { context: gate, current_foundation_digests: { ...foundation },
     development: { authenticated: true, ancestor_verified: true, document } };
 }
 
