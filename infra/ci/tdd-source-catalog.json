@@ -1617,6 +1617,166 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T11:32:34.310046+00:00",
       "cause_summary": "Read all four complete semantic failures: executable inputs misclassified, multi-commit earlier inputs hidden, feedback entered formal TDD and reuse receipt disappeared from persisted private index. Original authenticated cloud transport was healthy. Green executed190of190 with zero failed, skipped, cancelled or todo; full initialization acceptance remains separate."
+    },
+    {
+      "cycle_id": "ci-development-tiering-001",
+      "behavior_id": "ci.development-tiering",
+      "case_ids": [
+        "DT01",
+        "DT02",
+        "DT03",
+        "DT04",
+        "DT05",
+        "DT06"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/development-tiering.spec.ts",
+      "fixture_file": "tests/integration/ci/development-tiering.spec.ts",
+      "red": {
+        "sha": "5411a1074f6e19d484be778acc2e1748fa79db8e",
+        "run_id": "38731148270",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+        "run_id": "38731356923",
+        "attempt": 1
+      },
+      "implementation_sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
+      "cause_summary": "Read DT01, DT03 and DT06 semantic failures with the corrected independent foundation fixture; DT02, DT04 and DT05 refusal regressions passed. Original first Red878b390 exposed the same positive behavior before implementation; the corrected source preserves its oracle and fixes only the documented fixture alias. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
+    },
+    {
+      "cycle_id": "ci-tdd-purpose-history-001",
+      "behavior_id": "ci.tdd-purpose-history",
+      "case_ids": [
+        "LP01",
+        "LP02",
+        "LP03"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/tdd-purpose-history.spec.ts",
+      "fixture_file": "tests/integration/ci/tdd-purpose-history.spec.ts",
+      "red": {
+        "sha": "ed7ab3f1d6a2bc54ed581941a5afd7cfc2b7b5e0",
+        "run_id": "38728562994",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+        "run_id": "38731356923",
+        "attempt": 1
+      },
+      "implementation_sha": "84f1c0f22c323919c51eccd3f37f2f254ab6ac3d",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
+      "cause_summary": "Read LP01 and LP03 actual Git reader assertion failures: approved pre-manifest history was refused and current committed whole-set purpose was unavailable; exact-tuple negative regressions stayed required. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
+    },
+    {
+      "cycle_id": "ci-development-foundation-001",
+      "behavior_id": "ci.development-foundation",
+      "case_ids": [
+        "FD01",
+        "FD02",
+        "FD03",
+        "FD04"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/security/ci/development-foundation.spec.ts",
+      "fixture_file": "tests/security/ci/development-foundation.spec.ts",
+      "red": {
+        "sha": "c135b9c9dbcac73466cfb93d95f4d8739d9f6eb1",
+        "run_id": "38729687245",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+        "run_id": "38731356923",
+        "attempt": 1
+      },
+      "implementation_sha": "84f1c0f22c323919c51eccd3f37f2f254ab6ac3d",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
+      "cause_summary": "Read four actual Git drift failures for omitted official Compose/functions, workspace dependency/build configuration, root lint/submodule configuration and tracked gitlink revision. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
+    },
+    {
+      "cycle_id": "ci-bridge-reader-purpose-001",
+      "behavior_id": "ci.bridge-reader-purpose",
+      "case_ids": [
+        "RP01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/bridge-reader-purpose.spec.ts",
+      "fixture_file": "tests/integration/ci/bridge-reader-purpose.spec.ts",
+      "red": {
+        "sha": "c135b9c9dbcac73466cfb93d95f4d8739d9f6eb1",
+        "run_id": "38729687245",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+        "run_id": "38731356923",
+        "attempt": 1
+      },
+      "implementation_sha": "84f1c0f22c323919c51eccd3f37f2f254ab6ac3d",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
+      "cause_summary": "Read actual PowerShell reader refusal: a distinct authenticated bootstrap receipt made the exact business-purpose receipt ambiguous before purpose filtering. Duplicate exact-purpose refusal remains required. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
+    },
+    {
+      "cycle_id": "ci-validation-governance-001",
+      "behavior_id": "ci.validation-governance",
+      "case_ids": [
+        "DG01"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/security/ci/validation-governance.spec.ts",
+      "fixture_file": "tests/security/ci/validation-governance.spec.ts",
+      "red": {
+        "sha": "c135b9c9dbcac73466cfb93d95f4d8739d9f6eb1",
+        "run_id": "38729687245",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "cd94dbc1680b9148e425c760de34df2c9478f081",
+        "run_id": "38731356923",
+        "attempt": 1
+      },
+      "implementation_sha": "84f1c0f22c323919c51eccd3f37f2f254ab6ac3d",
+      "cause": "real_defect",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T12:02:16.096975+00:00",
+      "cause_summary": "Read DG01 semantic failure: approved tiering and migration documents entered ordinary documentation feedback routing instead of complete governing-input validation. Original authenticated cloud transport was healthy. Green executed205of205 with zero failed, skipped, cancelled or todo; development admission and formal acceptance remain separate."
     }
   ]
 }
