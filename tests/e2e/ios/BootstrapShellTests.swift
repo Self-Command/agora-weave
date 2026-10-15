@@ -44,6 +44,10 @@ final class BootstrapShellTests: XCTestCase {
   }
 
   private func captureAccessibility(_ app: XCUIApplication, _ screenshot: XCUIScreenshot) throws {
+    let diagnosticTree = XCTAttachment(string: app.debugDescription)
+    diagnosticTree.name = "bootstrap-accessibility-before-assertions"
+    diagnosticTree.lifetime = .keepAlways
+    add(diagnosticTree)
     let title = app.staticTexts["AgoraWeave"]
     XCTAssertEqual(app.staticTexts.matching(identifier: "AgoraWeave").count, 1)
     XCTAssertTrue(title.isEnabled)

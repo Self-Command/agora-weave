@@ -2624,7 +2624,12 @@
       "id": "ci.pending-task-adapter",
       "command": "ci:contracts",
       "files": ["tests/integration/ci/task-adapter.spec.ts"]
+    },
+    {
+      "id": "ci.native-archive-capacity",
+      "command": "ci:contracts",
+      "files": ["tests/integration/ci/native-archive-capacity.spec.ts"]
     }
   ],
-  "engineering_case_count": 163
+  "engineering_case_count": 164
 }

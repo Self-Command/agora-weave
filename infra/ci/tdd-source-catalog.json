@@ -1162,8 +1162,15 @@
     {
       "cycle_id": "ci-visual-image-inventory-001",
       "behavior_id": "ci.visual-image-inventory",
-      "case_ids": ["RI01", "RI02"],
-      "requirements": ["QR-005", "QR-007", "QR-010"],
+      "case_ids": [
+        "RI01",
+        "RI02"
+      ],
+      "requirements": [
+        "QR-005",
+        "QR-007",
+        "QR-010"
+      ],
       "test_file": "tests/security/ci/review-image-inventory.spec.ts",
       "fixture_file": "tests/security/ci/review-image-inventory.spec.ts",
       "red": {
@@ -1181,6 +1188,35 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T02:17:30Z",
       "cause_summary": "Read both complete original RI assertion blocks before implementation: schema-valid wrong image digests and omitted, duplicate or invented image IDs were accepted despite the authenticated shared input inventory. Green executed all 161 assertions with zero failed, cancelled, skipped or todo; typecheck and independent lint also passed."
+    },
+    {
+      "cycle_id": "ci-pending-task-adapter-001",
+      "behavior_id": "ci.pending-task-adapter",
+      "case_titles": [
+        "TA01: pending native task ordinals follow canonical IDs after completed tasks leave the adapter",
+        "TA02: duplicate canonical IDs are refused and zero pending tasks never invent a native task"
+      ],
+      "requirements": [
+        "QR-007",
+        "QR-008"
+      ],
+      "test_file": "tests/integration/ci/task-adapter.spec.ts",
+      "fixture_file": "tests/integration/ci/task-adapter.spec.ts",
+      "red": {
+        "sha": "df23ba80b94fb578c0e8dc3cb1d3507733954685",
+        "attempt": 1,
+        "run_id": "38671144216"
+      },
+      "green": {
+        "sha": "15939fecf57d55078c455aa5e36dff2bae253615",
+        "attempt": 1,
+        "run_id": "38671385129"
+      },
+      "implementation_sha": "15939fecf57d55078c455aa5e36dff2bae253615",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T02:30:07Z",
+      "cause_summary": "Read both complete original semantic TA failure blocks before implementation. Pending IDs now receive consecutive native ordinals after completed tasks are excluded; duplicates refuse and no pending tasks invent no entry. Green executed all163 assertions with zero failed/skipped/cancelled/todo, typecheck and lint passed, and the installed SP7 probe actually extracted all285 current tasks and retained effective completion refusal."
     }
   ]
 }
