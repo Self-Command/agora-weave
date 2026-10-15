@@ -2959,7 +2959,52 @@
     }
   ],
   "core_case_count": 45,
-  "core_migrations": [],
+  "core_migrations": [
+    {
+      "file": "supabase/migrations/0001_identity.sql",
+      "depends_on": []
+    },
+    {
+      "file": "supabase/migrations/0002_policy_facts.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0003_effects.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0004_resources_media.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0005_obligations.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql",
+        "supabase/migrations/0004_resources_media.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0006_configuration.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0007_documents.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql"
+      ]
+    }
+  ],
   "core_fixture_files": [
     "tests/fixtures/core/seed.sql",
     "tests/fixtures/core/runtime.ts"
