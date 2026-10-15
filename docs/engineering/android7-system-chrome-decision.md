@@ -14,7 +14,7 @@
 
 固定 [Expo SDK57 SystemUI 源码](https://github.com/expo/expo/blob/sdk-57/packages/expo-system-ui/android/src/main/java/expo/modules/systemui/singletons/SystemUI.kt) 在 Android API<28 将 automatic 映射为 `MODE_NIGHT_AUTO_BATTERY`。固定 [Android 7.0 源码](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-7.0.0_r1/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java) 的 `checkBarMode` 在省电状态强制 `MODE_WARNING`。本次实际电源状态、截图和像素结果与该路径一致；普通应用的状态栏前景设置不能取消这一系统警示状态。
 
-## 方案 A：只登记系统强制色的受限例外（建议，须批准）
+## 方案 A：只登记系统强制色的受限例外（ED-18 已批准）
 
 保留 Android7 最低支持、Expo automatic 行为、所有应用内容的可读性与原生验证。仅把 API24、省电已实际开启、dark 捕获中的系统自有警示栏登记为 `not_applicable`，同时保存实测对比度、完整系统栏原图、原生边界、电源转储及未验证风险；不得将 3.08 写成满足4.5或一般性 passed。
 
@@ -28,4 +28,4 @@
 
 ## 决策约束
 
-宪法第九条要求涉及实际行为或验收标准的实质性冲突等待用户明确决定。因此在批准前不修改相关测试、准入阈值、任务完成状态或审查结论；其他不依赖此决定的真实云端验证和只读审查继续。
+宪法第九条要求涉及实际行为或验收标准的实质性冲突等待用户明确决定。用户批准前相关测试及门禁保持不变；批准后按ED-18实施并完整重验。SC02在c943e260/run38690425924取得健康174项中唯一语义Red，当前Codex于2026-10-15T06:07:36Z完整读取后才实施18947af。其工程Green实际174/174、无失败／取消／跳过／todo，lint90文件无错误或警告；工程Green不代替最终原生完整验收或任务完成。

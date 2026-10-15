@@ -1368,6 +1368,21 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T04:17:39Z",
       "cause_summary": "Read the complete original SC01 semantic failure in healthy transport before implementation: the mandatory native-system-chrome report kind was unsupported. The unchanged oracle accepts a measured rendered clock and refuses missing, unreadable, nonfinite, assumed or incomplete measurements. Actual Green executed173of173 with zero failed, skipped, cancelled or todo; typecheck and lint passed. Native pixel regression and app repair remain separate required evidence; the cancelled shared executor does not count as a passing matrix."
+    },
+    {
+      "cycle_id": "ci-android7-system-chrome-001",
+      "behavior_id": "ci.android7-system-chrome",
+      "case_ids": ["SC02"],
+      "requirements": ["QR-004", "QR-005", "QR-006", "QR-007"],
+      "test_file": "tests/integration/ci/android7-system-chrome.spec.ts",
+      "fixture_file": "tests/integration/ci/android7-system-chrome.spec.ts",
+      "red": {"sha": "c943e2606681e5ce4e29198f71c38fcb7af0eee9", "run_id": "38690425924", "attempt": 1},
+      "green": {"sha": "18947afc6ba6254425c2285d9aae0d1c2f6a7623", "run_id": "38690805835", "attempt": 1},
+      "implementation_sha": "18947afc6ba6254425c2285d9aae0d1c2f6a7623",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T06:07:36Z",
+      "cause_summary": "After explicit ED-18 approval, read the complete original SC02 semantic failure in healthy174-case transport before implementing the narrowly scoped measured platform exclusion. Original API24 contrast failure stays preserved. The unchanged SC02 oracle now passes with all174 assertions and zero failed, cancelled, skipped or todo; SC01/API36 remains unchanged. Final native runtime, actual power status, images, full regression and current semantic reviews are independently required."
     }
   ]
 }
