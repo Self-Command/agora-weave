@@ -60,7 +60,8 @@ test('FG04: public bridge receipts omit full completion/source documents and bin
   const source = readFileSync('tools/ci/bridge-gate.ts', 'utf8');
   assert.match(source, /publicBridgeReceipt\(record,/,
     'The real bridge writer must publish the controlled technical receipt, not its full record');
-  const { publicBridgeReceipt } = await import('../../../tools/ci/bridge-public.ts');
+  const helperPath = '../../../tools/ci/' + 'bridge-public.ts';
+  const { publicBridgeReceipt } = await import(helperPath);
   const input = { state: 'passed', transition: 'complete', target_sha: 'a'.repeat(40),
     completion_record: { summary: 'private-review-body' }, completion_source: { document: { private: true } },
     initialization_source: { document: { private: true } }, development_source: { document: { private: true } } };
