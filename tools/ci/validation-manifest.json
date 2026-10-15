@@ -2765,7 +2765,33 @@
       "files": [
         "tests/security/ci/development-foundation.spec.ts"
       ]
+    },
+    {
+      "id": "ci.bridge-reader-purpose",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "files": [
+        "tests/integration/ci/bridge-reader-purpose.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.validation-governance",
+      "command": "ci:contracts",
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
+      "files": [
+        "tests/security/ci/validation-governance.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 202
+  "engineering_case_count": 205
 }
