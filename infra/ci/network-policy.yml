@@ -19,7 +19,7 @@ network:
     decision: ED-17
     runner: github-hosted
     route: /auth/v1/health
-    source: docker-exec-to-isolated-auth-service
+    source: runner-host-http-to-isolated-auth-container-ip
     authorization: per-run-attempt-sha-and-environment
     other_routes: refused
     other_environment_credentials: refused

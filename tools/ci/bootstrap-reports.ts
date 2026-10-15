@@ -21,17 +21,39 @@ export function assessBootstrapRaw(input: unknown): Document {
     case 'native-system-chrome': {
       if (!/^android-api(24|36)$/.test(String(identity.platform)) || !Array.isArray(raw.measurements) ||
           raw.measurements.length !== 4 || !raw.measurements.every(record)) return deny('system_chrome_measurements_missing');
+      const exclusions: Document[] = [], required: string[] = [];
+      const combinations = new Set<string>();
       for (const item of raw.measurements) {
         const bounds = item.status_bar_clock_bounds;
+        const combination = `${String(item.theme)}:${String(item.font_scale)}`;
         if (item.status_bar_measurement_method !== 'rendered-system-clock' ||
             typeof item.status_bar_contrast_ratio !== 'number' || !Number.isFinite(item.status_bar_contrast_ratio) ||
-            item.status_bar_contrast_ratio < 4.5 || !record(bounds) ||
+            item.status_bar_contrast_ratio <= 1 || !record(bounds) || !['light', 'dark'].includes(String(item.theme)) ||
+            ![1, 2].includes(Number(item.font_scale)) || combinations.has(combination) ||
             !['x', 'y', 'width', 'height'].every(key => typeof bounds[key] === 'number' && Number.isFinite(bounds[key])) ||
             Number(bounds.x) < 0 || Number(bounds.y) < 0 || Number(bounds.width) <= 0 || Number(bounds.height) <= 0) {
           return deny('system_clock_unreadable_or_unmeasured');
         }
+        combinations.add(combination);
+        if (item.status_bar_limitation !== undefined) {
+          const limitation = item.status_bar_limitation;
+          if (identity.platform !== 'android-api24' || item.theme !== 'dark' || item.status_bar_power_save !== true ||
+              item.status_bar_power_source !== 'android-power-manager' || item.status_bar_contrast_ratio >= 4.5 ||
+              !Array.isArray(item.status_bar_background_rgb) || item.status_bar_background_rgb.length !== 3 ||
+              !item.status_bar_background_rgb.every((value, index) => value === [244, 81, 30][index]) ||
+              !digest(item.screenshot_sha256) || !digest(item.tree_sha256) || !record(limitation) ||
+              limitation.applicability !== 'not_applicable' || limitation.decision_ref !== 'ED-18' ||
+              limitation.behavior !== 'android7-system-warning-bar' || !text(limitation.reason)) {
+            return deny('system_warning_exception_outside_approved_scope');
+          }
+          exclusions.push({ theme: item.theme, font_scale: item.font_scale, applicability: 'not_applicable',
+            decision_ref: 'ED-18', behavior: 'android7-system-warning-bar', measured_contrast_ratio: item.status_bar_contrast_ratio });
+        } else {
+          if (item.status_bar_contrast_ratio < 4.5) return deny('system_clock_unreadable_or_unmeasured');
+          required.push(`native:system-clock:${combination}`);
+        }
       }
-      return accept(['native:system-clock-contrast']);
+      return { ...accept(required), exclusions };
     }
     case 'native-measurement-details': {
       const platform = String(identity.platform), ios = platform.startsWith('ios-');

@@ -19,3 +19,5 @@ iOS16.4／26.4.1 的 VoiceOver 流程不记为执行成功。Apple 新 `XCUIVoic
 清单迁移须保旧清单及摘要，明确物理层被批准撤出和模拟器项的新增／保留；新最终提交完整运行实际必需集合。旧失败和旧审查不改写，旧成功也不证明新版。
 
 初始化空壳只有一个标题，没有可操作控件或文本输入。此阶段实际采集标题语义、名称／状态、Android 语义焦点、对应系统审计、浅深主题、普通／大字的原生边界和原图；键盘／IME、触区、提交与失权状态仍随业务控件激活，不从静态标题推导通过。iOS 大字使用实际 Simulator content-size 设置并记录字体测量；Android 设置并读回系统 font_scale=1.0／2.0，读取真实 TextView 字号并与对应平台的 SP 转换核对。Android 14 起采用非线性字体缩放，200%系统设置不等于每个字号的像素高度恰好翻倍；必须同时验证实际字号、布局增长、无截断、可读对比度和安全区。依据：[Android 200%非线性缩放](https://developer.android.com/about/versions/14/features#non-linear-font-scaling)。
+
+ED-18限定例外：仅API24、实际PowerManager省电开启、实际深色和原图测得系统警示色RGB244/81/30时，系统自有警示栏记not_applicable，保留实际对比度、原失败和风险，不计为达到4.5。应用内容、浅色和其他版本仍执行原标准；缺少身份、状态、像素、原图绑定或决定引用则阻塞。详见ED-18及android7-system-chrome-decision.md。
