@@ -2899,7 +2899,14 @@
       "files": [
         "tests/integration/ci/private-bridge-storage-layout.spec.ts"
       ]
+    },
+    {
+      "id": "ci.private-bridge-projection",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/private-bridge-projection.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 225
+  "engineering_case_count": 226
 }
