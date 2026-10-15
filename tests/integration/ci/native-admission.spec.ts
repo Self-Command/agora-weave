@@ -12,7 +12,8 @@ const https = { source: 'native-xctest-urlsession', run_id: '101', attempt: 1, t
     other_environment: 401, private_path: 404, body_sha256: 'd'.repeat(64) })) };
 const frame = { x: 40, y: 250, width: 220, height: 30 };
 const sample = (theme: string, fontScale: number) => ({ theme, font_scale: fontScale, title: 'AgoraWeave',
-  role: 'staticText', enabled: true, title_count: 1, interactive_count: 0, editable_count: 0,
+  role: 'staticText', enabled: true, title_count: 1, title_snapshot_count: 2, title_container_count: 1,
+  interactive_count: 0, editable_count: 0,
   frame: { ...frame, height: fontScale * 30 }, viewport: { x: 0, y: 24, width: 375, height: 700 },
   screenshot_sha256: 'e'.repeat(64), tree_sha256: 'f'.repeat(64),
   audit: { method: 'xctest-system-audit', executed: true, issues: [] } });
@@ -78,4 +79,16 @@ test('NA03: a bootstrap title cannot claim controls, input, screen-reader execut
   }
   assert.equal(assessBootstrapRaw(bound('native-accessibility', { ...accessibility,
     exclusions: [{ ...accessibility.exclusions[0], applicability: 'passed' }] })).state, 'blocked');
+});
+
+test('NA04: iOS title uniqueness counts semantic leaves while preserving every observed native container', () => {
+  assert.equal(assessBootstrapRaw(bound('native-accessibility', accessibility)).state, 'passed');
+  for (const patch of [{ title_snapshot_count: undefined }, { title_container_count: undefined },
+    { title_snapshot_count: 3, title_container_count: 1 }, { title_snapshot_count: 1, title_container_count: 1 },
+    { title_snapshot_count: 1.5, title_container_count: 0.5 }, { title_snapshot_count: 0, title_container_count: -1 },
+    { title_count: 2, title_snapshot_count: 3, title_container_count: 1 }]) {
+    const actual = assessBootstrapRaw(bound('native-accessibility', { ...accessibility,
+      measurements: accessibility.measurements.map(item => ({ ...item, ...patch })) }));
+    assert.equal(actual.state, 'blocked', JSON.stringify(patch));
+  }
 });
