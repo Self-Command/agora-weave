@@ -5,6 +5,7 @@ import { collectEvidence } from './collect-evidence.ts';
 import { deriveTddCycle } from './tdd-cycle.ts';
 import { selectTddCases } from './tdd-cases.ts';
 import { selectEngineeringSource } from './source-run-selection.ts';
+import { assessTddCoverage } from './tdd-coverage.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('TDD journal requires GitHub-hosted Actions');
 const repository = process.env.GITHUB_REPOSITORY!;
@@ -26,6 +27,7 @@ if (selected.state !== 'selected') throw new Error('Unique current event-bound e
 const finalSource = { sha, run_id: String(selected.run_id), attempt: Number(selected.attempt) };
 mkdirSync('tdd-output', { recursive: true });
 const records: Record<string, unknown>[] = [];
+let finalRaw: string | undefined;
 for (const cycle of catalog.cycles) {
   async function execution(source: Record<string, any>, label: string) {
     const result = await collectEvidence({ repository, token, run_id: source.run_id, expected_sha: source.sha,
@@ -37,6 +39,10 @@ for (const cycle of catalog.cycles) {
     writeFileSync(`${root}/source.zip`, result.archive);
     execFileSync('python3', ['tools/ci/index-archive.py', `${root}/source.zip`, `${root}/raw-files.json`, `${root}/raw`]);
     const raw = readFileSync(`${root}/raw/engineering.tap`, 'utf8');
+    if (label === 'final') {
+      if (finalRaw !== undefined && hash(finalRaw) !== hash(raw)) throw new Error('Final executor bytes differ between cycles');
+      finalRaw = raw;
+    }
     const outcome = JSON.parse(readFileSync(`${root}/raw/outcome.json`, 'utf8'));
     const selected = selectTddCases(raw, cycle);
     if (!selected.length) throw new Error('TDD target discovery incomplete');
@@ -64,11 +70,14 @@ for (const cycle of catalog.cycles) {
   records.push({ ...source, assessment, feature_complete: false });
 }
 const passed = records.length > 0 && records.every(record => (record.assessment as Record<string, unknown>).state === 'passed');
+const coverage = assessTddCoverage({ ...finalSource, target_sha: sha, source_authenticated: true, records, raw_tap: finalRaw,
+  expected_count: JSON.parse(readFileSync('tools/ci/validation-manifest.json', 'utf8')).engineering_case_count });
 writeFileSync('tdd-output/journal.json', JSON.stringify({ source: 'github-actions', target_sha: sha,
   checkout_sha: sha, runner_environment: process.env.RUNNER_ENVIRONMENT,
   check_set_digest: hash(readFileSync('tools/ci/validation-manifest.json')),
   toolchain_digest: hash(readFileSync('infra/ci/toolchain-lock.json')),
   run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT), records,
-  state: passed ? 'recorded_cycles_verified' : 'blocked', coverage: catalog.coverage,
+  state: passed ? 'recorded_cycles_verified' : 'blocked', coverage: coverage.coverage, coverage_assessment: coverage,
+  declared_coverage: catalog.coverage,
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');
 if (!passed) throw new Error('Authenticated TDD cycle did not pass');
