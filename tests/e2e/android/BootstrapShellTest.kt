@@ -239,6 +239,23 @@ class BootstrapShellTest {
       }
       return 0.2126 * channel(Color.red(color)) + 0.7152 * channel(Color.green(color)) + 0.0722 * channel(Color.blue(color))
     }
+    val clock = device.findObject(By.res("com.android.systemui", "clock"))
+    assertNotNull("The actual visible system clock is required", clock)
+    val clockBounds = clock.visibleBounds
+    assertTrue(clockBounds.width() > 0 && clockBounds.height() > 0)
+    val systemBitmap = BitmapFactory.decodeFile(capture.absolutePath)
+    var clockMinimum = 1.0
+    var clockMaximum = 0.0
+    for (y in clockBounds.top until clockBounds.bottom) for (x in clockBounds.left until clockBounds.right) {
+      val value = luminance(systemBitmap.getPixel(x, y))
+      clockMinimum = kotlin.math.min(clockMinimum, value)
+      clockMaximum = kotlin.math.max(clockMaximum, value)
+    }
+    systemBitmap.recycle()
+    val statusBarContrast = (clockMaximum + 0.05) / (clockMinimum + 0.05)
+    File(captureRoot, "bootstrap-system-chrome.json").writeText(JSONObject().put("theme", theme)
+      .put("contrast_ratio", statusBarContrast).put("method", "rendered-system-clock").toString())
+    assertTrue("Actual rendered system clock contrast must be readable; actual=$statusBarContrast", statusBarContrast >= 4.5)
     var minimumLuminance = 1.0
     var maximumLuminance = 0.0
     for (y in bounds.top until bounds.bottom) for (x in bounds.left until bounds.right) {
@@ -255,6 +272,8 @@ class BootstrapShellTest {
       .put("heading", heading).put("accessibility_focused", title.isAccessibilityFocused).put("title_count", titles.size)
       .put("font_size_px", measuredFontPixels.toDouble()).put("expected_font_size_px", expectedFontPixels.toDouble()).put("contrast_ratio", contrast)
       .put("base_font_size_px", baseFontPixels.toDouble()).put("font_measurement_method", "metric-affecting-spans")
+      .put("status_bar_contrast_ratio", statusBarContrast).put("status_bar_measurement_method", "rendered-system-clock")
+      .put("status_bar_clock_bounds", rect(clockBounds))
       .put("home_package", homePackage).put("observed_home_package", observedHomePackage).put("home_resolution_source", "shell-package-manager")
       .put("interactive_count", interactiveCount).put("editable_count", editableCount).put("frame", rect(bounds)).put("viewport", rect(viewport))
       .put("tree_sha256", hash(File(captureRoot, "bootstrap-ui.xml").readBytes())).put("screenshot_sha256", hash(capture.readBytes()))

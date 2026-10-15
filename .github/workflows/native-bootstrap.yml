@@ -312,6 +312,7 @@ jobs:
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-background.txt native-output/android-failure-background.txt || true
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-font-diagnostic.json native-output/android-font-diagnostic.json || true
             adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-launcher-diagnostic.json native-output/android-launcher-diagnostic.json || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-system-chrome.json native-output/android-system-chrome-diagnostic.json || true
             adb emu kill || true
           }
           trap capture_failure ERR
