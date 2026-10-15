@@ -2083,7 +2083,7 @@
       "implementation_sha": "0ba971b1798c54ecbf43d21ef471e51dccd46755",
       "cause": "missing_behavior",
       "cause_read_by": "current-codex",
-      "cause_read_at": "2026-10-15T15:40:00Z",
+      "cause_read_at": "2026-10-15T15:40:05.973123Z",
       "cause_summary": "Healthy transport executed all225 cases; three target assertions exposed zero-exit script substitution, missing runner installation and incorrect core purpose inventory. Direct entry enforcement is not itself proof of a business suite Green; live core execution remains required."
     },
     {
@@ -2114,6 +2114,35 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T15:50:49.707039Z",
       "cause_summary": "The type-correct unchanged assertion reproduced the admitted storage-policy failure on its original pre-implementation source; initial5af failure was also read before0ba implementation."
+    },
+    {
+      "cycle_id": "ci-private-bridge-projection-001",
+      "behavior_id": "ci.private-bridge-projection",
+      "case_ids": [
+        "PB04"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/private-bridge-projection.spec.ts",
+      "fixture_file": "tests/integration/ci/private-bridge-projection.spec.ts",
+      "red": {
+        "sha": "4a6c423702c9f11f5e2cb62d2ee08d9c087fae98",
+        "run_id": "38764105473",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "29f64c468df445ae395d67a66851b07f2b3baa6a",
+        "run_id": "38764668940",
+        "attempt": 1
+      },
+      "implementation_sha": "29f64c468df445ae395d67a66851b07f2b3baa6a",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T15:55:20.070119Z",
+      "cause_summary": "A verified flat write-once private archive was refused by the actual public receipt consumer; PB04 was the sole semantic failure among226 executed cases. The corrected consumer binds the new path to targetSHA/run/attempt and retains private document exclusion."
     }
   ]
 }

@@ -2908,5 +2908,45 @@
       ]
     }
   ],
-  "engineering_case_count": 226
+  "engineering_case_count": 226,
+  "core_targets": [
+    {
+      "id": "core.http",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/http.spec.ts"
+      ],
+      "case_count": 5
+    },
+    {
+      "id": "core.events",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/events.spec.ts"
+      ],
+      "case_count": 2
+    },
+    {
+      "id": "core.graphemes",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/contracts/graphemes.spec.ts"
+      ],
+      "case_count": 2
+    },
+    {
+      "id": "core.schema-config",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/schema-config.spec.ts"
+      ],
+      "case_count": 29
+    }
+  ],
+  "core_case_count": 38,
+  "core_migrations": [],
+  "core_fixture_files": [
+    "tests/fixtures/core/seed.sql",
+    "tests/fixtures/core/runtime.ts"
+  ]
 }

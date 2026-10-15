@@ -17,6 +17,9 @@ services:
   studio:
     environment:
       OPENAI_API_KEY: ''
+  functions:
+    volumes:
+      - ${GITHUB_WORKSPACE}/supabase/functions/core:/home/deno/functions/core:ro
 networks:
   default:
     internal: true
