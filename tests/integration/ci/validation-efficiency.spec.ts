@@ -64,7 +64,7 @@ test('EV03: immutable npm downloads are cached by lock, toolchain and runner pla
 const context = () => ({ target_sha: 'a'.repeat(40), checkout_sha: 'a'.repeat(40), event: 'pull_request',
   event_sha: 'b'.repeat(40), pr_head_sha: 'a'.repeat(40), pr_merge_sha: 'b'.repeat(40),
   repository: 'Self-Command/agora-weave', check_set_digest: 'c'.repeat(64),
-  changed_paths: ['tools/ci/collect-evidence.ts'] });
+  changed_paths: ['docs/engineering/feedback-note.md'] });
 
 test('VI01: feedback, formal Green and completion retain exact event and head identity with distinct evidence purposes', () => {
   for (const intent of ['feedback', 'green', 'completion']) {
