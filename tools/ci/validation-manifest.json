@@ -2626,6 +2626,11 @@
       "files": ["tests/integration/ci/task-adapter.spec.ts"]
     },
     {
+      "id": "ci.wait-shared-execution",
+      "command": "ci:contracts",
+      "files": ["tests/integration/ci/wait-shared-execution.spec.ts"]
+    },
+    {
       "id": "ci.bridge-source",
       "command": "ci:contracts",
       "files": ["tests/security/ci/bridge-source.spec.ts"]
@@ -2636,5 +2641,5 @@
       "files": ["tests/integration/ci/native-archive-capacity.spec.ts"]
     }
   ],
-  "engineering_case_count": 167
+  "engineering_case_count": 169
 }
