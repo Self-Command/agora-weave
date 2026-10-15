@@ -2878,7 +2878,14 @@
       "files": [
         "tests/integration/ci/core-active-targets.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-service-pipeline",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/core-service-pipeline.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 220
+  "engineering_case_count": 221
 }
