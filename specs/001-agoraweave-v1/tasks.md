@@ -81,7 +81,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T022 实现仅Actions执行的 `tools/ci/bridge-gate.ts` 与结果schema，绑定actor/feature/mode/current SHA/contract/check_set；start核ci-ready祖先及未漂移基础输入，complete冻结当前SHA等待全集合并校下载报告／TDD／AI／基准／回归／read_by/read_at后生成私有 `completion-records/`，新提交或受审输入变化失效（QR-006,QR-007,QR-008）。
 - [ ] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
 - [ ] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
-- [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 核准当前／最低iOS16.4和Android7、物理VoiceOver/TalkBack／键盘／媒体／推送通道及最小临时服务凭据；实际需用按ED-07索取，Actions真实最小采集／归档／撤租约探针，模拟器不能补缺物理资源（QR-004,QR-005,QR-008）。
+- [ ] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 核准当前／最低iOS16.4和Android7、模拟器语义／焦点／适用辅助技术、键盘／媒体／推送通道及最小临时服务凭据；实际需用按ED-07索取，Actions真实最小采集／归档／撤租约探针，按ED-14只验模拟器；能力和排除项按 `contracts/simulator-validation.md`，可执行必需项缺失继续阻塞（QR-004,QR-005,QR-008）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
 - [ ] T026 通过 `.github/workflows/ci-bootstrap.yml` 重跑当前冻结依赖的 S_G与所有已激活初始化套件／当前Codex代码与实际图像审查记录／三端壳／清理／拒绝探针；保存原负向状态与预期拒绝观察，处理findings后同SHA重审，核不同事件及实际保护所需check，不随意关闭既有保护；同时从事件／dispatch真实调用T021共享编排，在bootstrap清单及bootstrap-only范围取得非空安装／健康／目标发现／三端壳／报告归档／当前Codex代码／视觉审查记录的完整同SHA链，全部拒绝探针可核，不等待业务准入（QR-001,QR-003,QR-007）。
@@ -175,7 +175,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **Goal / Purpose**：完整类型发布、分块附件／真实审核和串原子批次、私人多端草稿及响应未知恢复；共享视频/GIF策略、真实播放器及发布预览/正文详情。
 
-**Independent Test**：V03–04；AC-08–10/17，AS-01，SC-003–005。各类正文与媒体N/N+1/时长／非法组合正确接受拒绝且保输入；200MB合法视频不被约50MiB默认挡；整批公开无半串、未知逻辑请求仅一效果、草稿CAS本人选择。 V19A三态网络/静音开声/preload关闭/视区系统条件/失焦及必要物理媒体，保存下载与播放器原报告。
+**Independent Test**：V03–04；AC-08–10/17，AS-01，SC-003–005。各类正文与媒体N/N+1/时长／非法组合正确接受拒绝且保输入；200MB合法视频不被约50MiB默认挡；整批公开无半串、未知逻辑请求仅一效果、草稿CAS本人选择。 V19A三态网络/静音开声/preload关闭/视区系统条件/失焦及模拟器媒体，保存下载与播放器原报告。
 
 **实现前置**：foundation、US1-implementation（见依赖表）。**完整验收前置**：US4/US5/US10审核管理及后续消费者/US16；所有帖子组合首版必需。
 
@@ -185,7 +185,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T066 [P] [US3] 编写 `tests/concurrency/content/thread-batch.spec.ts`，首发／续写部分审核／附件失败、通过revision与后来编辑竞争、强关／丢响应／重复提交；仅作者、整体范围、head依赖／中间保序，不以旧串等待隐藏已通过批（FR-021–022,FR-026–027）。
 - [ ] T067 [P] [US3] 编写 `tests/security/content/uploads-preview.spec.ts`，JPEG/PNG/动态GIF/MP4 H264-AAC真实文件／伪格式／归属／图9×10MB视频1×200MB×300秒GIF1×15MB／不混排，SSRFi每跳DNS核私网metadata／5秒2MiB3跳，最多一预览卡失败不损普通链接（FR-018–019,FR-022,FR-112）。
 - [ ] T068 [P] [US3] 编写 `tests/e2e/ios/ComposerDraftTests.swift`、`tests/e2e/android/ComposerDraftTest.kt`，双端所有发布／草稿状态、媒体选择包括GIF不降首帧／HEIC成熟转换失败、断网输入／部分重试／串批次与真实后台结果（FR-018–027,FR-112–113）。
-- [ ] T069 [P] [US3] 编写 `tests/contract/media/playback-policy.spec.ts`、`tests/e2e/ios/MediaPlaybackTests.swift`、`tests/e2e/android/MediaPlaybackTest.kt`，Actions真实发布预览／内容详情视频与GIF按V19A逐项断言wifi_only默认且静音、Wi-Fi/蜂窝及always/wifi_only/never、明确开声再静音与列表复用、preload关闭无推测请求/取消在途预取而主动缓冲可用、Wi-Fi转蜂窝／视区／失焦／前后台、GIF可视播放与省流量/减少动效显式回退；保存真实网络、Range/字节、播放器/音频/帧/取消释放及交互时间线，关联当前授权撤回与离线拒绝；策略用例/截图不代双端原生及必要物理播放（FR-113,FR-108–110,FR-125–129）。
+- [ ] T069 [P] [US3] 编写 `tests/contract/media/playback-policy.spec.ts`、`tests/e2e/ios/MediaPlaybackTests.swift`、`tests/e2e/android/MediaPlaybackTest.kt`，Actions真实发布预览／内容详情视频与GIF按V19A逐项断言wifi_only默认且静音、Wi-Fi/蜂窝及always/wifi_only/never、明确开声再静音与列表复用、preload关闭无推测请求/取消在途预取而主动缓冲可用、Wi-Fi转蜂窝／视区／失焦／前后台、GIF可视播放与省流量/减少动效显式回退；保存真实网络、Range/字节、播放器/音频/帧/取消释放及交互时间线，关联当前授权撤回与离线拒绝；策略用例/截图不代双端原生模拟器实际播放（FR-113,FR-108–110,FR-125–129）。
 ### Actions Red — 读取真实失败后才实现
 
 - [ ] T070 [US3] 通过 `.github/workflows/tdd-cycle.yml` 按行为取得US3真实 S_R失败并阅读原因，绑定健康真实DB/Storage/上传夹具及oracle于私有 `ci/tdd-cycles/us3/`；对未完成投票／收录端到端消费保激活节点，不能假通过；包含T069全部V19A播放／预取／网络／声音行为，各项先真实S_R并读因果，缺设备或播放器环境不是Red；首次US2尚未实现设置时使用受控真实preferences事实，设置完成后完整消费者回归（FR-018–027,FR-112,FR-113）。
@@ -205,7 +205,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T080 [US3] 实现 `apps/mobile/src/features/composer/ComposerScreen.tsx`、`apps/mobile/src/features/composer/ThreadEditor.tsx`、`apps/mobile/src/features/drafts/DraftsScreen.tsx`，全屏大输入/范围回复/媒体投票/AI用途和收录入口的合法创建值、链接/批次/上传/结果未知/审核/冲突选择真实反馈，无新增复杂文章编辑或多作者续串；发布预览实际接入T079视频/GIF组件及T078播放策略，预览成功／上传成功不代消费播放验证（FR-018–027,FR-112–113,FR-113）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T081 [US3] 通过 `.github/workflows/verify-release.yml` 执行US3真实接口/对象/并发/双端发布草稿与既有回归，同目标S_G及final新Green、当前AI审查与适用基准；读报告存私有 `completion-records/us3/`，US4完整投票与US9收录消费就绪后重跑关联AC，原AC摘要不替全文；对T069在双端原生产物及必要物理端按V19A读实际网络/Range字节/播放音量/帧/视区/预取取消报告；US2偏好和各消费入口就绪后重跑同oracle及当前权限回归（FR-018–027,FR-112–113,QR-003–007,FR-113）。
+- [ ] T081 [US3] 通过 `.github/workflows/verify-release.yml` 执行US3真实接口/对象/并发/双端发布草稿与既有回归，同目标S_G及final新Green、当前AI审查与适用基准；读报告存私有 `completion-records/us3/`，US4完整投票与US9收录消费就绪后重跑关联AC，原AC摘要不替全文；对T069在双端原生产物的模拟器按V19A读实际网络/Range字节/播放音量/帧/视区/预取取消报告；US2偏好和各消费入口就绪后重跑同oracle及当前权限回归（FR-018–027,FR-112–113,QR-003–007,FR-113）。
 
 **Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
@@ -652,7 +652,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **Independent Test**：V18；AC-12/20/33–34/54，SC-002/003/007。关推送仍多端重连补同步/未读一次、服务商接受≠设备送达；全部事件生成及摘要目标失权即时变化，无自通知或重复提醒；SMS/审核/AI/推送/Realtime各故障真实记录，保输入/unknown先查，独立合法功能继续。
 
-**实现前置**：foundation、US1-implementation、US2-implementation、US3-implementation、US4-implementation、US5-implementation、US7-implementation、US8-implementation、US10-implementation、US11-implementation、US6-implementation（见依赖表）。**完整验收前置**：全部事件真实生产者、必要物理端测试推送、独立故障/停用/当前权限与US16。
+**实现前置**：foundation、US1-implementation、US2-implementation、US3-implementation、US4-implementation、US5-implementation、US7-implementation、US8-implementation、US10-implementation、US11-implementation、US6-implementation（见依赖表）。**完整验收前置**：全部事件真实生产者、模拟器支持的实际推送测试、独立故障/停用/当前权限与US16。
 
 ### Tests — 先写目标断言
 
@@ -672,27 +672,27 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T257 [US15] 实现 `supabase/functions/core/failures/dependencies.ts`、`services/core-worker/src/service-incidents.ts`，记录故障类别/实际依赖影响范围/起止/结果/未知对账，SMS拒跳验证/审核待审/AI不暗换/持久消息不丢，安全核心不足保守拒；采用受审配置与最小audit，不编造可用性（FR-124）。
 - [ ] T258 [P] [US15] 实现 `apps/mobile/src/features/notifications/NotificationsScreen.tsx`、`apps/mobile/src/features/settings/NotificationSettings.tsx`、`apps/mobile/src/notifications/push.ts`，分类站内列表/真实group/已读/深链当前访问、foreground重连同步/推送和系统权限状态，Android后台不足提示、必要安全消息说明，默认锁屏无敏感正文（FR-119–123）。
 - [ ] T259 [P] [US15] 实现 `apps/mobile/src/components/ServiceStatus.tsx`、`apps/admin/src/features/operations/ServiceIncidents.tsx`，真实影响/时点/恢复/待核结果与合法行动、错误保输入/retry先查operation、不把独立故障变整站不可用或用旧数据假正常（FR-124,FR-127）。
-- [ ] T260 [US15] 在 `docs/operations/push-channel-admission.md`、`infra/ci/push-test-channels.json` 实际需用时索取用户测试设备/渠道/短期凭据，记录内测前台保证与Android限制；公开大陆发布前核目标渠道，真实物理端默认通用payload及同effect重试/前台重连/拒绝秘密探针，缺资源不替换政策或声称即时送达（FR-121–123,FR-172,QR-004,QR-009）。
+- [ ] T260 [US15] 在 `docs/operations/push-channel-admission.md`、`infra/ci/push-test-channels.json` 实际需用时索取用户测试设备/渠道/短期凭据，记录内测前台保证与Android限制；公开大陆发布前核目标渠道，模拟器实际接收／展示默认通用payload及同effect重试/前台重连/拒绝秘密探针，缺资源不替换政策或声称即时送达（FR-121–123,FR-172,QR-004,QR-009）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T261 [US15] 通过 `.github/workflows/verify-release.yml` 完成US15全部真实事件/各独立故障/多端未读/默认锁屏与必要物理推送集成、跨入口撤权/AI和DM接受/停用回归，读final SHA与代码视觉基准证据存私有 `completion-records/us15/`，provider accepted报告不足代替设备结果（FR-119–124,QR-003–009）。
+- [ ] T261 [US15] 通过 `.github/workflows/verify-release.yml` 完成US15全部真实事件/各独立故障/多端未读/默认锁屏与模拟器推送集成（硬件链路按ED-14排除）、跨入口撤权/AI和DM接受/停用回归，读final SHA与代码视觉基准证据存私有 `completion-records/us15/`，provider accepted报告不足代替设备结果（FR-119–124,QR-003–009）。
 
 **Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
 ## Phase 19: User Story 16 — 在各端获得真实可用的界面 (Priority: P2)
 
-**Goal / Purpose**：全UI-SPEC页面/状态及正式资料流程真实原生与网页可用，取得用户本人具体基准确认和当前Codex实际图像复检；通用基础和每页验收贯穿实施；全入口媒体行为与物理播放汇总。
+**Goal / Purpose**：全UI-SPEC页面/状态及正式资料流程真实原生与网页可用，取得用户本人具体基准确认和当前Codex实际图像复检；通用基础和每页验收贯穿实施；全入口媒体行为与模拟器实际播放汇总。
 
-**Independent Test**：V19；AC-35/52/55，SC-016。iOS/Android最低+当前OS/真实读屏/键盘/播放与后台分享插件对应页面，主题/窄屏/100%-200%大字/长文/加载空错误失权提交未知等全部有证据；五入口侧栏正确、中文可达无假成功，用户确认具体基准摘要，不能网页代原生。 V19A全部实际入口的组件/按audience合法播放输入、双端物理网络/帧/音量/读屏与当前权限；截图不证明播放。 I3 App方法/更新与I4分享默认/页面状态分源；V12B的零私人读取/同步和DB未变须有实际报告。
+**Independent Test**：V19；AC-35/52/55，SC-016。iOS/Android最低+当前OS模拟器/原生语义焦点及适用辅助技术/键盘/播放与后台分享插件对应页面，主题/窄屏/100%-200%大字/长文/加载空错误失权提交未知等全部有证据；五入口侧栏正确、中文可达无假成功，用户确认具体基准摘要，不能网页代原生。 V19A全部实际入口的组件/按audience合法播放输入、双端模拟器网络条件/帧/音量状态/语义焦点与当前权限；截图不证明播放。 I3 App方法/更新与I4分享默认/页面状态分源；V12B的零私人读取/同步和DB未变须有实际报告。
 
-**实现前置**：foundation、all-stories-UI-implementation（见依赖表）。**完整验收前置**：全部故事实际页面与适用状态＋必要物理端＋本人具体基准确认；公共工具可提前。
+**实现前置**：foundation、all-stories-UI-implementation（见依赖表）。**完整验收前置**：全部故事实际页面与适用状态＋最低/当前OS原生模拟器＋本人具体基准确认；公共工具可提前。
 
 ### Tests — 先写目标断言
 
 - [ ] T262 [P] [US16] 编写 `tests/contract/visual/page-matrix.spec.ts`、`tests/security/visual/baseline-consent.spec.ts`，UI-SPEC§6及资料管理预览发布/条款隐私规则告知帮助/本人适用记录与插件三端全页面状态映射、0.5%告警与独立交互硬断言；无首次基准用design_reference、未本人确认/自动更新/遮罩隐藏权限状态拒绝（FR-125–129,FR-101,QR-005–007）。
 - [ ] T263 [P] [US16] 编写 `tests/e2e/ios/NativeAccessibilityTests.swift`、`tests/e2e/android/NativeAccessibilityTest.kt`、`tests/e2e/web/accessibility.spec.ts`，五入口头像侧栏/图标文字与读屏名、真实最低当前OS/320pt或360dp/大字键盘长文窄屏/焦点触区/安全区，注册发布评论DM举报处罚申诉/播放/插件错误全流程（FR-125–129）。
 - [ ] T264 [P] [US16] 编写 `tests/contract/production/content-boundaries.spec.ts`，按实际用途检查生产源码注释资源/中文文案alt/runtime无AI自评开发对话任务测试过程/假认证假能力假系统栏；保护必要maintenance注释/测试标识/真实业务反馈与独立证据，禁止简单关键词误删（QR-010,FR-127–129）。
-- [ ] T265 [P] [US16] 编写 `tests/e2e/media/entry-matrix.spec.ts`、`tests/e2e/ios/PhysicalMediaTests.swift`、`tests/e2e/android/PhysicalMediaTest.kt`，按quickstart V19A逐条件与US3预览/详情、US2设置/主页、US6流/搜索/收藏、US4评论GIF、US7私信GIF、US9分享、US10后台、US12实际Host登记适用类型/真实组件/按audience合法播放输入来源/行为用例；Actions双端及必要物理设备实际Wi-Fi/蜂窝/音量/系统省流量/减少动效/视区/取消预取/Range字节与帧/读屏操作，适用网页逐浏览器点击回退；缺入口、仅截图或策略单元不得算FR-113覆盖；I3 App部分PATCH/PUT拒绝/CAS幂等与V12B分享匿名/登录默认、相反账号值、页面控件不读写账号分别验；分享不列为账号偏好consumer，记录请求/SSR响应/DB未变与实际交互证据（FR-113,FR-108–110,FR-125–129,QR-004–007,FR-091–092）。
+- [ ] T265 [P] [US16] 编写 `tests/e2e/media/entry-matrix.spec.ts`、`tests/e2e/ios/SimulatorMediaTests.swift`、`tests/e2e/android/SimulatorMediaTest.kt`，按quickstart V19A逐条件与US3预览/详情、US2设置/主页、US6流/搜索/收藏、US4评论GIF、US7私信GIF、US9分享、US10后台、US12实际Host登记适用类型/真实组件/按audience合法播放输入来源/行为用例；Actions双端模拟器实际播放器及受控网络类型/音量状态/系统省流量/减少动效/视区/取消预取/Range字节与帧/语义焦点操作，注明各条件控制方式和ED-14硬件排除，适用网页逐浏览器点击回退；缺入口、仅截图或策略单元不得算FR-113覆盖；I3 App部分PATCH/PUT拒绝/CAS幂等与V12B分享匿名/登录默认、相反账号值、页面控件不读写账号分别验；分享不列为账号偏好consumer，记录请求/SSR响应/DB未变与实际交互证据（FR-113,FR-108–110,FR-125–129,QR-004–007,FR-091–092）。
 ### Actions Red — 读取真实失败后才实现
 
 - [ ] T266 [US16] 通过 `.github/workflows/tdd-cycle.yml` 为US16矩阵/基准拒绝/新原生可用行为先测试健康云端 S_R并阅读，红链存私有 `ci/tdd-cycles/us16/`；基础设施先行后可早实施本故事采集与共享修复，全页面Green等真实页面齐全；T265新增媒体行为先有真实有效Red，既有已通过播放行为仅做同oracle回归，不制造Red；包含I3/I4新增矩阵行为的有效Red链，App与分享按各自合法输入求oracle，不能以已保存账号值作为分享期望（FR-125–129,QR-003,QR-005–007,FR-113）。
@@ -703,11 +703,11 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T269 [US16] 完善 `apps/admin/src/components/AccessibleLayout.tsx`、`apps/share/src/components/AccessibleReading.tsx`、`packages/design/src/semantic-tokens.ts`，同内容优先/中性层次低饱和紫/留白圆角细描边语义和各端密度，真实焦点键盘读屏/文字错误失权不兼容反馈；浅深主题本机选择不新增账号同步（FR-125–129）。
 - [ ] T270 [US16] 实现 `tools/ci/visual/capture.ts`、`tools/ci/visual/compare.ts`、`.github/workflows/native-visual.yml`，Actions真实各端运行取全图/必要裁图before-after-diff/交互轨迹/原生控件审计，固定设备OS字体/预登记合法动态遮罩；0.5%只告警、布局业务状态独立硬断言，不update-snapshots/重拍择优/只看截图（QR-004–007,FR-129）。
 - [ ] T271 [US16] 实现 `tools/ci/visual/baseline-manifest.ts`、`supabase/functions/core/release/baseline-confirmation.ts`，从Actions实际产品页面候选绑定设计/token/矩阵/设备/截图摘要/AI报告/交互证据，由已确定用户本人审具体批次首次或必要变更；未确认awaiting_confirmation/非visual passed，保旧图原失败及实质改变用户决定，不拿bootstrap壳作基准（QR-005–007,FR-129）。
-- [ ] T272 [US16] 在 `.github/workflows/cloud-device.yml`、`tools/ci/device/collect.ts` 接入用户届时提供的Actions专用云设备授权，真实iOS VoiceOver/Android TalkBack/硬键盘IME/媒体播放/推送及最低当前OS；对应受控服务和同SHA产物/轨迹可追，模拟器审计不代物理读屏、缺设备保未通过并索取最小资源；接入T265必要物理播放的实际系统设置、网络/音量/帧/读屏与可视焦点轨迹及媒体gate字节报告，iOS/Android分别归当前SHA（FR-125–129,QR-004–006,QR-008,FR-113）。
+- [ ] T272 [US16] 在 `.github/workflows/simulator-accessibility.yml`、`tools/ci/device/collect.ts` 接入GitHub-hosted双端最低/当前OS模拟器，按ED-14及 `contracts/simulator-validation.md` 实测原生语义标签/角色/状态/顺序、焦点/键盘IME/媒体播放/支持的推送与辅助技术；可用系统audit另保原报告，不把语义树命名为已执行VoiceOver/TalkBack；接入T265实际系统设置、受控网络条件/音量状态/帧/操作及可视焦点轨迹和媒体gate字节报告，iOS/Android分别绑定当前SHA；不支持的硬件流程明确not_applicable/平台限制/未验证风险，可执行必需项缺失仍未通过，不索取未来真机服务（FR-125–129,QR-004–006,QR-008,FR-113）。
 - [ ] T273 [US16] 按生产内容测试与真实页面报告修正 `apps/mobile/src/locales/zh-CN.json`、`apps/admin/src/locales/zh-CN.json`、`apps/share/src/locales/zh-CN.json`、`packages/design/src/content-policy.ts` 和实际被报告源码资源；开发资料留docs/测试/证据区，必要标签/维护注释不误删，每处清理后云端影响回归、实质产品文案变更先宪法九决定（QR-010,FR-127–129）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T274 [US16] 通过 `.github/workflows/verify-release.yml` 对US16所有适用实际页面/状态/设备主题矩阵、物理读屏交互/大字键盘播放/中文内容与完整基准确认跑当前S_G及回归，执行独立真实图像AI审查逐状态处置并重审，读final SHA原报告存私有 `completion-records/us16/`；漏图漏状态未确认基准不通过；T265完整V19A入口/策略矩阵及实际物理播放/网络/音量/字节报告齐全，App个人设置与获准App消费者行为一致，分享依ED-10核默认/页面状态；截图或一般可访问性检查不能证明播放通过；I3 App GET/PATCH及ED-10分享默认/页面操作各自V19A/V12B报告齐全，匿名/登录无个人读取／同步／DB写入及真实浏览器点击回退，分享不要求消费账号设置（FR-125–129,QR-003–010,FR-113,FR-091–092）。
+- [ ] T274 [US16] 通过 `.github/workflows/verify-release.yml` 对US16所有适用实际页面/状态/设备主题矩阵、模拟器原生语义焦点及适用辅助技术/大字键盘播放/中文内容与完整基准确认跑当前S_G及回归，执行独立真实图像AI审查逐状态处置并重审，读final SHA原报告存私有 `completion-records/us16/`；漏图漏状态未确认基准不通过；T265完整V19A入口/策略矩阵及实际模拟器播放/网络条件/音量状态/字节报告齐全，App个人设置与获准App消费者行为一致，分享依ED-10核默认/页面状态；截图或一般可访问性检查不能证明播放通过；I3 App GET/PATCH及ED-10分享默认/页面操作各自V19A/V12B报告齐全，匿名/登录无个人读取／同步／DB写入及真实浏览器点击回退，分享不要求消费账号设置（FR-125–129,QR-003–010,FR-113,FR-091–092）。
 
 **Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
@@ -731,7 +731,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T280 依据真实云端报告在 `supabase/functions/core/`、`services/core-worker/src/`、`services/plugin-runner/src/`、`modules/`、`packages/`、`apps/` 的明确被报告文件修复全量findings并记录 `docs/engineering/final-review-dispositions.md`；先定位/对应Red再改，每次新SHA重跑影响行为/适用回归与代码视觉审查，阻断/严重或未知留未完成，不删断言降范围（QR-003–007,QR-010）。
 ### Actions Green / Checkpoint — 当前版本证据与回归
 
-- [ ] T281 通过 `.github/workflows/verify-release.yml` 以full-release对同一final SHA/冻结产物完整执行quickstart所有必需云端jobs与55AC/AS/SC、两个A-B及八官方业务/四类更新/物理原生/真实AI/最新日志恢复/全部配置消费者；任何skip/取消超时缺资源unknown错版拒绝，原失败与完整Green证据均保留；完整V19A每项网络/视区/系统条件/声音/preload和合法媒体入口真实证据齐全，含C1双向并发与I1非空调用链，缺组件/缺消费不算全量通过；I3真实方法/部分PATCH/PUT拒绝/CAS幂等及V12B ED-10全部来源/页面操作/零私人读写/不泄漏/不假同步与当前媒体资格证据完整，缺报告仍未通过（FR-001–173,QR-001–010,SC-001–018）。
+- [ ] T281 通过 `.github/workflows/verify-release.yml` 以full-release对同一final SHA/冻结产物完整执行quickstart所有必需云端jobs与55AC/AS/SC、两个A-B及八官方业务/四类更新/双端原生模拟器/真实AI/最新日志恢复/全部配置消费者；任何skip/取消超时缺资源unknown错版拒绝，原失败与完整Green证据均保留；完整V19A每项网络/视区/系统条件/声音/preload和合法媒体入口真实证据齐全，含C1双向并发与I1非空调用链，缺组件/缺消费不算全量通过；I3真实方法/部分PATCH/PUT拒绝/CAS幂等及V12B ED-10全部来源/页面操作/零私人读写/不泄漏/不假同步与当前媒体资格证据完整，缺报告仍未通过（FR-001–173,QR-001–010,SC-001–018）。
 - [ ] T282 当前Codex依据 `tools/ci/review/code-review.md`、`tools/ci/review/visual-review.md` 在final SHA再次审全部修改／契约／真实测试报告和全端矩阵实际原图／基准／交互；私有记录摘要／覆盖／findings／处置并在Actions校验，修复后对应版本重审；未判／漏范围／缺图／未本人基准确认不通过，审查只用必要工程／合成数据（QR-005–007,QR-009–010）。
 - [ ] T283 根据 `contracts/release-evidence.md` 与 `contracts/cloud-validation.md` 从当前SHA冻结全集枚举所有run/attempt/job等待终态，按artifact_id下载校raw/archive摘要并实际阅读；写私有 `release-archives/` 与 `completion-records/final/`，记录read_by/read_at/版本环境清单摘要/审查处置基准确认，失败也归档/临时租约清理结果可查，公开仅脱敏索引（QR-006–009,FR-173）。
 - [ ] T284 仅在当前SHA全量证据验真和读取满足后，使用已实现 `tools/ci/bridge-transition.ps1` 云端可信结果更新 `.specify/superpowers-handoff.json` 并将满足的canonical `specs/001-agoraweave-v1/tasks.md`任务勾选；任何未提交修改/新SHA/清单漂移使旧完成无效，task-done与直接旧脚本不得假complete；本任务也是未来实施步骤，本轮不执行；checkbox或交接元数据若形成新提交，同样先对新SHA重验并读取再承认有效完成（QR-007–008）。
@@ -831,8 +831,8 @@ flowchart TD
 | US12 / T236–T249 | US11-implementation、US13-implementation、US14-implementation | US13生命周期、US14隔离发布恢复、US17数据保留与US16；从零闭环真实完成 |
 | US13 / T149–T163 | US1-implementation、US11-implementation | US12 SDK/三端样例、八个官方模块、US14生产拒绝、US17清理/US16；fixture包不代正式样例 |
 | US14 / T164–T177 | US1-implementation、US11-implementation、US13-implementation | 全部17故事最终适用AC51–53及Final冻结全量集合；同版验证不等生产授权 |
-| US15 / T250–T261 | US1-implementation、US2-implementation、US3-implementation、US4-implementation、US5-implementation、US7-implementation、US8-implementation、US10-implementation、US11-implementation、US6-implementation | 全部事件真实生产者、必要物理端测试推送、独立故障/停用/当前权限与US16 |
-| US16 / T262–T274 | 全部实际页面；公共工具可提前 | 全部故事实际页面与适用状态＋必要物理端＋本人具体基准确认；公共工具可提前 |
+| US15 / T250–T261 | US1-implementation、US2-implementation、US3-implementation、US4-implementation、US5-implementation、US7-implementation、US8-implementation、US10-implementation、US11-implementation、US6-implementation | 全部事件真实生产者、模拟器支持的实际推送测试、独立故障/停用/当前权限与US16 |
+| US16 / T262–T274 | 全部实际页面；公共工具可提前 | 全部故事实际页面与适用状态＋最低/当前OS原生模拟器＋本人具体基准确认；公共工具可提前 |
 | US17 / T178–T188 | US1-implementation、US3-implementation、US5-implementation、US7-implementation、US8-implementation、US13-implementation | 全部consumer与插件缺席恢复、最新安全watermark/对象、ED05实测及US16 |
 
 ### Within Each Story
@@ -885,7 +885,7 @@ flowchart TD
 
 ### FR-113 / V19A 行为与消费责任（G1）
 
-下表同时约束实现、每行为先Red、当前Green与consumer齐全后的完整回归；保存原生／浏览器／必要物理端实际网络、Range字节、播放器、帧、音量、视区、系统设置与交互证据，不以截图推断。原FR-113与MEDIA-06范围保持，无评论／私信视频；各行为已通过后只回归，新缺行为先取得有效Red。
+下表同时约束实现、每行为先Red、当前Green与consumer齐全后的完整回归；保存原生模拟器／浏览器实际网络条件、Range字节、播放器、帧、音量、视区、系统设置与交互证据，不以截图推断。原FR-113与MEDIA-06范围保持，无评论／私信视频；各行为已通过后只回归，新缺行为先取得有效Red。
 
 | 责任／实际入口 | 具体行为测试 → Red | 实现／消费者 | Green／完整回归 |
 | --- | --- | --- | --- |
@@ -898,7 +898,7 @@ flowchart TD
 | US10 获准后台媒体预览与当前操作边界 | T125 → T126 | T133的MediaPreview | T136 |
 | US12 实际移动/后台Host媒体binding与当前grant | T237 → T239 | T242依赖US3组件；T243媒体binding依赖US10组件 | T249；正式样例真实媒体与必要单端/跨端 |
 | US11 平台参数/旧值/回滚，App账号选择与分享默认分源 | T138、T139 → T140 | T144、T147及所有真实已激活consumer | T148；全部consumer完成后完整回归 |
-| US16 全入口、双端必要物理媒体/读屏/视觉 | T265、T263 → T266（仅新增缺行为Red） | T267矩阵、T272物理采集；既有实现受报告修复 | T274；T275/T278/T281最终full-release闭合 |
+| US16 全入口、双端模拟器媒体/可访问性/视觉 | T265、T263 → T266（仅新增缺行为Red） | T267矩阵、T272模拟器采集；既有实现受报告修复 | T274；T275/T278/T281最终full-release闭合 |
 
 ### I3 / I4（ED-10）契约与验证责任
 
@@ -1219,7 +1219,7 @@ I3沿用HTTP契约，App本人GET只读、PATCH仅列字段部分更新，base_v
 | US13 | 15 | V16插件隔离/生命周期/保留；完整条件见对应阶段与quickstart，缺必需证据不通过 |
 | US14 | 14 | V17同版交付/具体确认/灰度；完整条件见对应阶段与quickstart，缺必需证据不通过 |
 | US15 | 12 | V18真实事件/通知/独立故障；完整条件见对应阶段与quickstart，缺必需证据不通过 |
-| US16 | 13 | V19/V19A全端实际视觉/读屏/物理媒体/本人基准；完整条件见对应阶段与quickstart，缺必需证据不通过 |
+| US16 | 13 | V19/V19A全端实际视觉/原生可访问性/模拟器媒体/本人基准；完整条件见对应阶段与quickstart，缺必需证据不通过 |
 | US17 | 11 | V20分类清理/备份恢复/最新安全日志；完整条件见对应阶段与quickstart，缺必需证据不通过 |
 
 本次任务更新承接C1/I1/I2/G1及I3/I4（ED-10）规划输入：无向私信pair及当前事务约束、初始化可运行增量编排与核心接线、US1/US3→US2完整实现前置、FR-113播放器/设置/全部入口行为责任已入任务。I3统一GET/PATCH部分更新及CAS/幂等，I4分享仅默认/页面操作且无账号偏好读取同步；本次285个任务ID保持稳定。该记录仅说明文档分配，独立analyze及真实Actions实现/验收仍须后续执行。
