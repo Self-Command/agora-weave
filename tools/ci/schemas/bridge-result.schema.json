@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Authenticated cloud bridge transition",
+  "type": "object",
+  "required": ["state", "reason_codes", "actor", "feature", "target_sha", "contract_digest", "check_set_digest", "transition", "mode", "source", "runner_environment", "read_by", "read_at", "input_digests", "run_id", "attempt", "record_kind", "ci_ready", "feature_complete"],
+  "properties": {
+    "state": { "enum": ["passed", "blocked"] },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "actor": { "const": "codex" },
+    "feature": { "const": "specs/001-agoraweave-v1" },
+    "target_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "contract_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "check_set_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "transition": { "enum": ["start", "complete"] },
+    "mode": { "enum": ["bootstrap-only", "business-increment", "full-release"] },
+    "source": { "const": "github-actions" },
+    "runner_environment": { "const": "github-hosted" },
+    "read_by": { "type": "string", "minLength": 1 },
+    "read_at": { "type": "string", "format": "date-time" },
+    "input_digests": { "type": "object", "minProperties": 8, "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+    "run_id": { "type": "string", "pattern": "^[1-9][0-9]*$" },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "record_kind": { "enum": ["bootstrap_start_only", "business_start", "bootstrap_completion", "increment_completion"] },
+    "ci_ready": { "type": "boolean" },
+    "feature_complete": { "type": "boolean" },
+    "completion_record": { "type": "object", "required": ["target_sha", "mode", "actor", "feature", "contract_digest", "check_set_digest", "read_by", "read_at", "report_digests", "summary", "unresolved_items"], "properties": {
+      "read_by": { "type": "string", "minLength": 1 }, "read_at": { "type": "string", "format": "date-time" },
+      "report_digests": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+      "summary": { "type": "string", "minLength": 1 }, "unresolved_items": { "type": "array", "maxItems": 0 }
+    } }
+  }
+}

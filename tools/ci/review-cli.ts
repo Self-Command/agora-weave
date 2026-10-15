@@ -21,7 +21,8 @@ for (const kind of ['code', 'visual']) {
   const record = JSON.parse(bytes.toString());
   const schema = validateReviewSchema(kind, record);
   const result = schema.state === 'passed' ? bindReviewRecord(record, contexts[kind]) : schema;
-  assessments.push({ ...result, schema, review_kind: kind, record_digest: createHash('sha256').update(bytes).digest('hex') });
+  assessments.push({ ...result, schema, review_kind: kind, record_digest: createHash('sha256').update(bytes).digest('hex'),
+    read_by: record.reviewer, read_at: record.reviewed_at });
 }
 mkdirSync('review-output', { recursive: true });
 writeFileSync('review-output/validation.json', JSON.stringify({ target_sha: sha, source: 'github-actions',

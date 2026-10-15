@@ -163,6 +163,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
@@ -176,6 +177,34 @@ jobs:
           node --experimental-strip-types tools/ci/download-source.ts "codex-record-validation-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" review-output || true
           node --experimental-strip-types tools/ci/download-source.ts "private-source-receipts-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" private-receipts || true
           node --experimental-strip-types tools/ci/aggregate-cli.ts
+      - name: Privately preserve initialization readiness and completion records with exact readback
+        shell: bash
+        env:
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          umask 077
+          key="$RUNNER_TEMP/completion-key"
+          hosts="$RUNNER_TEMP/completion-hosts"
+          batch="$RUNNER_TEMP/completion-batch"
+          trap 'rm -f "$key" "$hosts" "$batch"' EXIT
+          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
+          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
+          user=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
+          host=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
+          sha=$(git rev-parse HEAD)
+          mkdir -p "$RUNNER_TEMP/completion-readback"
+          for kind in completion-records ci/readiness; do
+            if [ "$kind" = completion-records ]; then local_file="gate-output/completion-records/$sha.json"; else local_file=gate-output/readiness.json; fi
+            test -f "$local_file"
+            remote="/archive/ordinary/$kind/$sha-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.json"
+            printf -- '-mkdir /archive/ordinary/completion-records\n-mkdir /archive/ordinary/ci\n-mkdir /archive/ordinary/ci/readiness\nput %s %s\nget %s %s/record.json\n' "$local_file" "$remote" "$remote" "$RUNNER_TEMP/completion-readback" > "$batch"
+            sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host"
+            cmp "$local_file" "$RUNNER_TEMP/completion-readback/record.json"
+          done
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:

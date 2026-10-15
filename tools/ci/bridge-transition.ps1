@@ -55,8 +55,10 @@ try {
     }
     $taskZip = [System.IO.Compression.ZipFile]::OpenRead($taskZipPath)
     try {
-        if ($taskZip.Entries.Count -ne 1 -or $taskZip.Entries[0].FullName -ne 'bridge-admission.json' -or $taskZip.Entries[0].Length -gt 1048576) { throw 'Unexpected cloud bridge archive content' }
-        $taskReader = [System.IO.StreamReader]::new($taskZip.Entries[0].Open())
+        $taskAllowedEntries = @('bridge-admission.json')
+        if ($Transition -eq 'complete') { $taskAllowedEntries += "completion-records/$taskHead.json" }
+        if ($taskZip.Entries.Count -ne $taskAllowedEntries.Count -or @($taskZip.Entries | Where-Object { $_.FullName -notin $taskAllowedEntries -or $_.Length -gt 1048576 }).Count -ne 0) { throw 'Unexpected cloud bridge archive content' }
+        $taskReader = [System.IO.StreamReader]::new($taskZip.GetEntry('bridge-admission.json').Open())
         try { $taskReceipt = $taskReader.ReadToEnd() | ConvertFrom-Json } finally { $taskReader.Dispose() }
     } finally { $taskZip.Dispose() }
     if ($taskReceipt.target_sha -ne $taskHead -or $taskReceipt.actor -ne $Actor -or $taskReceipt.feature -ne $Feature -or

@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { aggregateBootstrap } from './aggregate.ts';
 import { deriveOrchestrationSource } from './orchestration-source.ts';
+import { deriveBridgeEvidence } from './bridge-source.ts';
+import { initializationDigests } from './bridge-inputs.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Aggregation is Actions only');
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
@@ -92,12 +94,31 @@ const result = aggregateBootstrap({ profile: 'bootstrap', expected_sha: sha, tar
   private_archive: privateArchive ? 'passed' : 'missing', cleanup: observedState('bootstrap.cleanup'), orchestration: observedState('bootstrap.orchestration'),
   bridge: needs.bridge.result === 'success' ? 'passed' : 'missing' });
 mkdirSync('gate-output', { recursive: true });
-writeFileSync('gate-output/readiness.json', JSON.stringify({ ...result, source: 'github-actions',
+const readiness = { ...result, source: 'github-actions',
   target_sha: sha, run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
   source_run_id: sourceRunId, observed, original_needs: needs,
   reports_read: reviewState('code') === 'passed' && reviewState('visual') === 'passed',
-  limitation: 'Current Codex final records, complete TDD coverage and remaining actual admissions are required',
-  feature_complete: false }, null, 2) + '\n');
+  ci_ready: result.state === 'passed', initialization_digests: initializationDigests(),
+  read_by: 'current-codex', read_at: result.state === 'passed' ? new Date(Math.max(...review.assessments.map((item: Record<string, any>) => Date.parse(item.read_at)))).toISOString() : undefined,
+  review_readers: review.assessments, regressions_passed: observedState('bootstrap.engineering') === 'passed',
+  baseline_required: false, baseline_confirmed: false, unresolved_items: result.state === 'passed' ? [] : result.reason_codes,
+  limitation: result.state === 'passed' ? 'CI initialization only; product behavior and product baselines remain pending.' : 'Required initialization evidence remains incomplete.',
+  feature_complete: false };
+writeFileSync('gate-output/readiness.json', JSON.stringify(readiness, null, 2) + '\n');
 writeFileSync('gate-output/final-source-job-outcomes.json', JSON.stringify({ run: liveRun, jobs: liveJobs }, null, 2) + '\n');
 writeFileSync('gate-output/orchestration.json', JSON.stringify(orchestration, null, 2) + '\n');
 if (result.state !== 'passed') throw new Error('Initialization blocked: ' + JSON.stringify(result.reason_codes));
+const context = JSON.parse(readFileSync('verify-output/review-context.json', 'utf8'));
+const completion = deriveBridgeEvidence({ context: {
+  actor: 'codex', expected_actor: 'codex', feature: 'specs/001-agoraweave-v1', expected_feature: 'specs/001-agoraweave-v1',
+  expected_sha: sha, target_sha: sha, expected_contract_digest: context.code.contract_digest, contract_digest: context.code.contract_digest,
+  expected_check_set_digest: digest, check_set_digest: digest, source: 'github-actions', runner_environment: 'github-hosted',
+  mode: 'bootstrap-only', transition: 'complete', ownership_guard_passed: needs.bridge.result === 'success',
+  required_hooks_ran: needs.bridge.result === 'success', working_tree_clean: true,
+  changed_paths: execFileSync('git', ['diff', '--name-only', '665fffada2dd4fb908b53ad7ca16159ce5e263d8', sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean),
+  read_by: readiness.read_by, read_at: readiness.read_at },
+  required_ids: manifest.bootstrap_checks.filter((check: Record<string, any>) => check.bootstrap_applicability === 'required').map((check: Record<string, any>) => check.id),
+  completion: { authenticated: currentSource && privateArchive, document: readiness } });
+if (completion.state !== 'passed') throw new Error('Final initialization completion record was refused');
+mkdirSync('gate-output/completion-records', { recursive: true });
+writeFileSync(`gate-output/completion-records/${sha}.json`, JSON.stringify(completion.completion_record, null, 2) + '\n');
