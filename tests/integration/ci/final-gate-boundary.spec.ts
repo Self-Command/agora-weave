@@ -46,3 +46,37 @@ test('FG02: top-level final gate runs after failed planning and rejects incomple
     assert.equal(report.validation_intent, needs.plan.outputs.validation_intent || 'invalid_or_missing');
   }
 });
+
+test('FG03: the forwarding workflow also publishes only named technical indexes', () => {
+  const workflow = readFileSync('.github/workflows/ci-bootstrap.yml', 'utf8');
+  const upload = workflow.split('name: bootstrap-readiness-')[1];
+  const path = upload?.split('path:')[1]?.split('if-no-files-found:')[0] || '';
+  assert.ok(!/^\s*gate-output\/\s*$/m.test(path), 'Forwarded completion records must not become public');
+  assert.ok(path.includes('gate-output/readiness.json'));
+  assert.ok(!path.includes('completion-records'));
+});
+
+test('FG04: public bridge receipts omit full completion/source documents and bind a verified private copy', async () => {
+  const source = readFileSync('tools/ci/bridge-gate.ts', 'utf8');
+  assert.match(source, /publicBridgeReceipt\(record,/,
+    'The real bridge writer must publish the controlled technical receipt, not its full record');
+  const { publicBridgeReceipt } = await import('../../../tools/ci/bridge-public.ts');
+  const input = { state: 'passed', transition: 'complete', target_sha: 'a'.repeat(40),
+    completion_record: { summary: 'private-review-body' }, completion_source: { document: { private: true } },
+    initialization_source: { document: { private: true } }, development_source: { document: { private: true } } };
+  const privateCopy = { path: '/archive/ordinary/bridge-admission/record.json', sha256: 'b'.repeat(64),
+    state: 'archived_and_readback_verified', temporary_key_files_removed: true };
+  const receipt = publicBridgeReceipt(input, privateCopy);
+  for (const field of ['completion_record', 'completion_source', 'initialization_source', 'development_source']) {
+    assert.ok(!(field in receipt), 'A public receipt cannot contain ' + field);
+  }
+  assert.deepEqual(receipt.private_record, privateCopy);
+  assert.throws(() => publicBridgeReceipt(input, { ...privateCopy, state: 'missing' }));
+  const workflow = readFileSync('.github/workflows/bridge-admission.yml', 'utf8');
+  const path = workflow.split('name: bridge-admission-')[1]?.split('path:')[1]?.split('if-no-files-found:')[0] || '';
+  assert.match(path, /bridge-output\/bridge-admission.json/);
+  assert.ok(!/^\s*bridge-output\/\s*$/m.test(path), 'Raw bridge completion records cannot be public');
+  const reader = readFileSync('tools/ci/bridge-transition.ps1', 'utf8');
+  assert.match(reader, /private_record/);
+  assert.match(reader, /archived_and_readback_verified/);
+});
