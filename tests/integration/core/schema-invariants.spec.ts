@@ -81,7 +81,7 @@ test('DB06: registered configuration keys are globally unique and an immutable b
   present('config_definition', 'config_bundle', 'config_activation');
   transaction(`
     INSERT INTO core.config_definition(key,owner,schema,default_value,range,scopes,priority,permissions,dependencies,effect_mode,existing_policy,evidence_refs)
-      VALUES ('fixture.page','core','{"type":"integer"}',20,'{"minimum":1,"maximum":50}',ARRAY['global'],0,ARRAY['config.read'],ARRAY[]::text[],'immediate','new_operations',ARRAY['synthetic']);
+      VALUES ('fixture.page','core','{"type":"integer"}','20'::jsonb,'{"minimum":1,"maximum":50}',ARRAY['global'],0,ARRAY['config.read'],ARRAY[]::text[],'immediate','new_operations',ARRAY['synthetic']);
     ${reject(`INSERT INTO core.config_definition(key,owner,schema,default_value,range,scopes,priority,permissions,dependencies,effect_mode,existing_policy,evidence_refs) SELECT key,'other',schema,default_value,range,scopes,priority,permissions,dependencies,effect_mode,existing_policy,evidence_refs FROM core.config_definition WHERE key='fixture.page'`, 'unique_violation')}
     INSERT INTO core.config_bundle(version,scoped_values,schema_version,compat,state,preview_digest)
       VALUES ('fixture-v1','{"global":{"fixture.page":20}}',1,'{}','draft','${'c'.repeat(64)}');
