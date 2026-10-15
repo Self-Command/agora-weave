@@ -1,5 +1,6 @@
 import { principal } from './identity.ts';
 import { database } from './database.ts';
+import { admittedResource } from './admission.ts';
 
 const messages: Record<string, string> = { SESSION_INVALID: '登录已失效，请重新登录',
   NOT_FOUND: '内容不可用', FORBIDDEN: '当前入口不支持此操作', METHOD_NOT_ALLOWED: '不支持此操作',
@@ -28,9 +29,6 @@ Deno.serve(async (request: Request) => {
     const target = path.match(/^\/posts\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
     if (!target) return failure('NOT_FOUND', 404);
     if (request.method !== 'GET') return failure('METHOD_NOT_ALLOWED', 405);
-    const [row] = await sql`SELECT core.read_resource_result(${actor?.account ?? null}::uuid,
-      ${actor?.session ?? null}::uuid,${target[1]}::uuid) AS result`;
-    if (row.result.code !== 'OK') return failure(row.result.code, row.result.code === 'SESSION_INVALID' ? 401 : 404);
-    return Response.json({ data: row.result.data }, { headers: { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+    return await admittedResource(request, target[1], failure);
   } catch { return failure('SERVICE_UNAVAILABLE', 503); }
 });
