@@ -2885,7 +2885,21 @@
       "files": [
         "tests/integration/ci/core-service-pipeline.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-execution-integrity",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/core-execution-integrity.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.private-bridge-storage-layout",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/private-bridge-storage-layout.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 221
+  "engineering_case_count": 225
 }
