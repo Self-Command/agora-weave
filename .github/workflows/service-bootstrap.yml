@@ -89,7 +89,8 @@ jobs:
           edge_image=$(node -e 'const v=JSON.parse(require("fs").readFileSync("infra/ci/images.lock.json"));process.stdout.write(v.images.find(i=>i.reference.startsWith("supabase/edge-runtime:")).repo_digests[0])')
           docker volume create "${COMPOSE_PROJECT_NAME}_deno-cache" > /dev/null
           docker run -d --name agoraweave-import-cache \
-            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions:/home/deno/functions:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/main:/home/deno/functions/main:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/deno.jsonc:/home/deno/functions/deno.jsonc:ro" \
             -v "$GITHUB_WORKSPACE/supabase/functions/core:/home/deno/functions/core:ro" \
             -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
             "$edge_image" start --main-service /home/deno/functions/main > /dev/null
