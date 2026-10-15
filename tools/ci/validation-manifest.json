@@ -2452,7 +2452,28 @@
         "tests/security/ci/review-binding.spec.ts"
       ],
       "id": "ci.review-binding"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/tdd-source.spec.ts"
+      ],
+      "id": "ci.tdd-source"
+    },
+    {
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/legacy-transition.spec.ts"
+      ],
+      "id": "ci.legacy-transition"
+    },
+    {
+      "command": "ci:contracts",
+      "id": "ci.bootstrap-raw",
+      "files": [
+        "tests/integration/ci/bootstrap-reports.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 104
+  "engineering_case_count": 114
 }
