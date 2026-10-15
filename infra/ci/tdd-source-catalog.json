@@ -1158,6 +1158,29 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-15T01:49:28Z",
       "cause_summary": "Read both original RV assertion blocks before adding bounded private-record arrival. Late current records arrive; stale, partial, empty and failed transfers time out without satisfying availability. All 159 assertions pass in Green; typecheck and lint also pass after preserving the primary failure during credential cleanup."
+    },
+    {
+      "cycle_id": "ci-visual-image-inventory-001",
+      "behavior_id": "ci.visual-image-inventory",
+      "case_ids": ["RI01", "RI02"],
+      "requirements": ["QR-005", "QR-007", "QR-010"],
+      "test_file": "tests/security/ci/review-image-inventory.spec.ts",
+      "fixture_file": "tests/security/ci/review-image-inventory.spec.ts",
+      "red": {
+        "sha": "981c3dcda69f4f3f6c75bb9f7c0eafe4e08e7658",
+        "run_id": "38670041686",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "0df9b735ae54f7b7fec87782bd04b26c02b963e6",
+        "run_id": "38670216209",
+        "attempt": 1
+      },
+      "implementation_sha": "0df9b735ae54f7b7fec87782bd04b26c02b963e6",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T02:17:30Z",
+      "cause_summary": "Read both complete original RI assertion blocks before implementation: schema-valid wrong image digests and omitted, duplicate or invented image IDs were accepted despite the authenticated shared input inventory. Green executed all 161 assertions with zero failed, cancelled, skipped or todo; typecheck and independent lint also passed."
     }
   ]
 }
