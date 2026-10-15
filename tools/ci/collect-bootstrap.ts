@@ -94,7 +94,7 @@ for (const item of catalog) {
       identity = parse(root, 'bridge-admission.json'); raw = { admission: identity };
     } else if (name.startsWith('tdd-journal-')) {
       kind = 'tdd'; ids = ['bootstrap.tdd']; jobPattern = ' / tdd / journal';
-      identity = parse(root, 'journal.json'); raw = { journal: identity };
+      identity = parse(root, 'journal.json'); raw = { journal: identity, manifest };
     } else if (name.startsWith('bootstrap-services-')) {
       kind = 'service'; identity = parse(root, 'configuration.json'); ids = [`bootstrap.${identity.environment}-services`];
       jobPattern = ` / service / Official Compose (${identity.environment},`;

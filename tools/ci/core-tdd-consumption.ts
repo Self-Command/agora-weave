@@ -1,10 +1,122 @@
-/** Select the original executor stream for a catalog cycle; unknown sources remain closed. */
-export function selectTddExecutorSource(_input: unknown): Record<string, unknown> {
-  return { state: 'blocked', reason_codes: ['executor_source_not_bound'] };
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { selectEngineeringSource } from './source-run-selection.ts';
+import { deriveTddCycle } from './tdd-cycle.ts';
+import { assessTddCoverage } from './tdd-coverage.ts';
+import { normalizeExecution } from './run-check-set.ts';
+import { selectTddCases } from './tdd-cases.ts';
+
+type Fields = Record<string, any>;
+const object = (value: unknown): value is Fields => !!value && typeof value === 'object' && !Array.isArray(value);
+const hash = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
+const git = (sha: string, file: string) => execFileSync('git', ['show', `${sha}:${file}`], { stdio: ['ignore', 'pipe', 'ignore'] });
+const deny = (reason: string) => ({ state: 'blocked', coverage: 'partial', reason_codes: [reason],
+  readiness: 'not_evaluated', task_complete: false });
+const commands = ['ci:core:contracts', 'ci:service', 'ci:security', 'ci:concurrency', 'ci:recovery'];
+
+/** Select from authenticated metadata while preserving the event and repository boundary. */
+export function selectTddExecutorSource(input: unknown): Record<string, unknown> {
+  if (!object(input) || !object(input.cycle)) return deny('executor_source_not_bound');
+  const executor = input.cycle.executor;
+  if (executor === undefined || object(executor) && executor.kind === 'engineering') {
+    const selected = selectEngineeringSource(input);
+    return selected.state === 'selected' ? { ...selected, workflow_path: '.github/workflows/ci-bootstrap.yml',
+      artifact_name: `bootstrap-transport-${selected.run_id}-${selected.attempt}`, report_name: 'engineering.tap' } : selected;
+  }
+  if (!object(executor) || executor.kind !== 'core' || !['dev', 'test'].includes(executor.environment) ||
+      !commands.includes(executor.command) || !object(input.manifest) || !Array.isArray(input.manifest.core_targets) ||
+      !input.manifest.core_targets.some((target: Fields) => target.command === executor.command &&
+        Array.isArray(target.files) && target.files.includes(input.cycle.test_file)) || !Array.isArray(input.runs)) {
+    return deny('unregistered_core_executor');
+  }
+  const selected = selectEngineeringSource({ ...input, runs: input.runs.filter((run: unknown) =>
+    object(run) && run.path === '.github/workflows/verify-release.yml').map((run: Fields) =>
+    ({ ...run, path: '.github/workflows/ci-bootstrap.yml' })) });
+  return selected.state === 'selected' ? { ...selected, workflow_path: '.github/workflows/verify-release.yml',
+    artifact_name: `core-services-${executor.environment}-${selected.run_id}-${selected.attempt}`,
+    health_artifact_name: `bootstrap-services-${executor.environment}-${selected.run_id}-${selected.attempt}`,
+    report_name: `${executor.command.replaceAll(':', '-')}.tap` } : selected;
 }
 
-/** Consume authenticated core executions without granting development or release admission. */
-export function assessCoreTddJournal(_input: unknown): Record<string, unknown> {
-  return { state: 'blocked', coverage: 'partial', reason_codes: ['core_cycles_not_bound'],
-    readiness: 'not_evaluated', task_complete: false };
+/** Frozen dependencies come from Red; later unrelated fixtures do not rewrite that cycle. */
+export function coreCycleFixtureFiles(cycle: Fields): string[] {
+  const sourceManifest = JSON.parse(git(String(cycle.red.sha), 'tools/ci/validation-manifest.json').toString());
+  const registered = sourceManifest.core_fixture_files;
+  const files = cycle.fixture_files ?? registered;
+  if (!Array.isArray(registered) || !Array.isArray(files) || !files.length || new Set(files).size !== files.length ||
+      files.some(file => typeof file !== 'string' || !registered.includes(file) || !/^tests\/fixtures\/core\/[\w./-]+$/.test(file) || file.includes('..')) ||
+      !files.includes('tests/fixtures/core/seed.sql') || !files.includes(cycle.fixture_file)) throw new Error('Core fixture set is not registered at Red');
+  const target = sourceManifest.core_targets?.find((item: Fields) => item.command === cycle.executor.command && item.files?.includes(cycle.test_file));
+  if (!target || cycle.fixture_files !== undefined && JSON.stringify(files) !== JSON.stringify(target.fixture_files ?? registered)) {
+    throw new Error('Core fixture dependencies differ from the frozen target');
+  }
+  return files;
+}
+
+/** Consume complete original streams; observations alone never authorize completion. */
+export function assessCoreTddJournal(input: unknown): Record<string, unknown> {
+  if (!object(input) || input.source_authenticated !== true || !/^[a-f0-9]{40}$/.test(input.target_sha) ||
+      !object(input.manifest) || !Array.isArray(input.manifest.core_targets) || !input.manifest.core_targets.length ||
+      !Array.isArray(input.groups)) return deny('core_cycles_not_bound');
+  try {
+    const bytes = git(input.target_sha, 'tools/ci/validation-manifest.json');
+    if (hash(bytes) !== input.check_set_digest || JSON.stringify(JSON.parse(bytes.toString())) !== JSON.stringify(input.manifest)) {
+      return deny('core_manifest_differs_from_commit');
+    }
+    const targets = input.manifest.core_targets;
+    if (targets.some((target: Fields) => !commands.includes(target.command) || !Array.isArray(target.files) || !target.files.length ||
+        !Number.isInteger(target.case_count) || target.case_count < 1) ||
+        targets.reduce((sum: number, target: Fields) => sum + target.case_count, 0) !== input.manifest.core_case_count) return deny('core_inventory_incomplete');
+    const active = [...new Set<string>(targets.map((target: Fields) => target.command))];
+    if (input.groups.length !== 2 * active.length) return deny('core_streams_missing');
+    const groups: Fields[] = [];
+    for (const environment of ['dev', 'test']) for (const command of active) {
+      const matches = input.groups.filter((group: unknown) => object(group) && group.environment === environment && group.command === command);
+      if (matches.length !== 1) return deny('core_streams_missing_or_duplicated');
+      const group = matches[0], selectedTargets = targets.filter((target: Fields) => target.command === command);
+      const expected = selectedTargets.reduce((sum: number, target: Fields) => sum + target.case_count, 0);
+      if (group.target_sha !== input.target_sha || group.source_authenticated !== true || group.expected_count !== expected ||
+          !Array.isArray(group.records) || !group.records.length) return deny('core_group_not_bound');
+      const records: Fields[] = [];
+      for (const cycle of group.records) {
+        if (!object(cycle) || !object(cycle.executor) || cycle.executor.kind !== 'core' || cycle.executor.environment !== environment ||
+            cycle.executor.command !== command || !selectedTargets.some((target: Fields) => target.files.includes(cycle.test_file))) return deny('core_cycle_executor_differs');
+        const fixturePaths = coreCycleFixtureFiles(cycle);
+        for (const phase of ['red', 'green', 'final']) {
+          const execution = cycle[phase];
+          if (!object(execution) || !/^[a-f0-9]{40}$/.test(execution.sha) || execution.environment !== environment || execution.command !== command ||
+              ['health', 'migration_state', 'seed_state', 'cleanup_state'].some(key => execution[key] !== 'passed')) return deny('core_execution_unhealthy');
+          const sourceBytes = git(execution.sha, 'tools/ci/validation-manifest.json');
+          const sourceManifest = JSON.parse(sourceBytes.toString());
+          const sourceTargets = sourceManifest.core_targets.filter((target: Fields) => target.command === command);
+          const files = sourceTargets.flatMap((target: Fields) => target.files);
+          const fixtures = fixturePaths.map(path => ({ path, sha256: hash(git(execution.sha, path)) }));
+          if (!sourceTargets.some((target: Fields) => target.files.includes(cycle.test_file)) ||
+              fixturePaths.some(path => !sourceManifest.core_fixture_files?.includes(path)) || execution.check_set_digest !== hash(sourceBytes) ||
+              JSON.stringify(execution.fixture_files) !== JSON.stringify(fixtures) || execution.fixture_digest !== hash(JSON.stringify(fixtures)) ||
+              execution.test_digest !== hash(git(execution.sha, cycle.test_file)) || execution.oracle_digest !== execution.test_digest ||
+              JSON.stringify(execution.executed_files) !== JSON.stringify(files.map((path: string) => ({ path, sha256: hash(git(execution.sha, path)) }))) ||
+              typeof execution.raw_tap !== 'string' || execution.raw_report_digest !== hash(execution.raw_tap) ||
+              JSON.stringify(execution.selected_assertions) !== JSON.stringify(selectTddCases(execution.raw_tap, cycle))) return deny('core_original_inputs_differ');
+          const normalized = normalizeExecution({ format: 'tap', raw: execution.raw_tap,
+            expected_count: sourceTargets.reduce((sum: number, target: Fields) => sum + target.case_count, 0), exit_code: execution.exit_code });
+          if ((normalized.reason_codes as string[]).some(reason => phase !== 'red' || reason !== 'execution_not_passed') ||
+              ['skipped', 'cancelled', 'todo'].some(key => normalized[key] !== 0) ||
+              (phase === 'red' && (!execution.selected_assertions.length || execution.selected_assertions.some((assertion: Fields) => !assertion.failed)))) {
+            return deny('core_execution_incomplete');
+          }
+        }
+        const assessment = deriveTddCycle(cycle);
+        if (assessment.state !== 'passed') return deny('core_cycle_not_verified');
+        records.push({ ...cycle, assessment });
+      }
+      const coverage = assessTddCoverage({ ...group, records });
+      if (coverage.state !== 'passed') return deny('core_actual_assertions_not_covered');
+      groups.push({ ...group, records, coverage_assessment: coverage });
+    }
+    return { ...input, groups, state: 'recorded_cycles_verified', coverage: 'complete', reason_codes: [],
+      readiness: 'not_evaluated', task_complete: false };
+  } catch {
+    return deny('core_original_inputs_unavailable');
+  }
 }

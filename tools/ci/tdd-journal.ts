@@ -7,12 +7,16 @@ import { selectTddCases } from './tdd-cases.ts';
 import { selectEngineeringSource } from './source-run-selection.ts';
 import { assessTddCoverage } from './tdd-coverage.ts';
 import { resolveTddSourcePurpose } from './tdd-purpose.ts';
+import { selectTddExecutorSource, assessCoreTddJournal, coreCycleFixtureFiles } from './core-tdd-consumption.ts';
+import { readCoreTddSource } from './core-tdd-source.ts';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('TDD journal requires GitHub-hosted Actions');
 const repository = process.env.GITHUB_REPOSITORY!;
 const token = process.env.GH_TOKEN!;
 const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const catalog = JSON.parse(readFileSync('infra/ci/tdd-source-catalog.json', 'utf8'));
+const manifestBytes = readFileSync('tools/ci/validation-manifest.json');
+const manifest = JSON.parse(manifestBytes.toString());
 const hash = (data: string | Buffer) => createHash('sha256').update(data).digest('hex');
 async function metadata(suffix: string): Promise<Record<string, any>> {
   const response = await fetch(`https://api.github.com/repos/${repository}${suffix}`, { headers: {
@@ -28,9 +32,46 @@ if (selected.state !== 'selected') throw new Error('Unique current event-bound e
 const finalSource = { sha, run_id: String(selected.run_id), attempt: Number(selected.attempt) };
 mkdirSync('tdd-output', { recursive: true });
 const records: Record<string, unknown>[] = [];
+const coreRecords: Record<string, any>[] = [];
+const coreSources = new Map<string, Promise<Record<string, any>>>();
+const coreGroups = new Map<string, Record<string, any>>();
+function coreSource(source: Record<string, any>) {
+  const key = `${source.run_id}-${source.attempt}`;
+  if (!coreSources.has(key)) coreSources.set(key, readCoreTddSource({ repository, token,
+    run_id: source.run_id, expected_sha: source.sha }, `tdd-output/core-sources/${key}`, source.attempt));
+  return coreSources.get(key)!;
+}
 let finalRaw: string | undefined;
 for (const cycle of catalog.cycles) {
+  if (typeof cycle.cycle_id !== 'string' || !/^[a-zA-Z0-9_.-]+$/.test(cycle.cycle_id)) throw new Error('Invalid cycle path');
+  const isCore = cycle.executor?.kind === 'core';
+  const selectedFinal = selectTddExecutorSource({ target_sha: sha, repository, event: process.env.GITHUB_EVENT_NAME,
+    branch: process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME, manifest, cycle, runs: listing.workflow_runs });
+  if (selectedFinal.state !== 'selected') throw new Error('Unique original TDD executor required');
+  const cycleFinal = { sha, run_id: String(selectedFinal.run_id), attempt: Number(selectedFinal.attempt) };
   async function execution(source: Record<string, any>, label: string) {
+    if (isCore) {
+      const original = await coreSource(source);
+      const streams = original.streams.filter((stream: Record<string, any>) => stream.environment === cycle.executor.environment && stream.command === cycle.executor.command);
+      if (streams.length !== 1) throw new Error('Original core stream unavailable');
+      const stream = streams[0], raw = stream.raw_tap;
+      const assertions = selectTddCases(raw, cycle);
+      if (!assertions.length) throw new Error('Core TDD target discovery incomplete');
+      const failed = assertions.filter(item => item.failed).length;
+      const test = execFileSync('git', ['show', `${source.sha}:${cycle.test_file}`]);
+      const fixtures = coreCycleFixtureFiles(cycle).map(path => ({ path,
+        sha256: hash(execFileSync('git', ['show', `${source.sha}:${path}`])) }));
+      if (label === 'final') {
+        const key = `${stream.environment}:${stream.command}`;
+        if (coreGroups.has(key) && hash(coreGroups.get(key)!.raw_tap) !== hash(raw)) throw new Error('Core final bytes differ');
+        coreGroups.set(key, { ...stream, records: [] });
+      }
+      return { ...source, ...stream, sha: source.sha, source: 'github-actions', discovered: assertions.length,
+        executed: assertions.length, failed, state: failed ? 'failed' : 'passed',
+        regressions_passed: stream.normalized.state === 'passed', test_digest: hash(test), oracle_digest: hash(test),
+        fixture_files: fixtures, fixture_digest: hash(JSON.stringify(fixtures)), selected_assertions: assertions,
+        raw_report_digest: hash(raw), ...resolveTddSourcePurpose({ source, cycle, label, raw }) };
+    }
     const result = await collectEvidence({ repository, token, run_id: source.run_id, expected_sha: source.sha,
       expected_attempt: source.attempt, workflow_path: '.github/workflows/ci-bootstrap.yml',
       artifact_name: `bootstrap-transport-${source.run_id}-${source.attempt}` });
@@ -65,24 +106,33 @@ for (const cycle of catalog.cycles) {
   }
   const red = await execution(cycle.red, 'red');
   const green = await execution(cycle.green, 'green');
-  const final = await execution(finalSource, 'final');
+  const final = await execution(cycleFinal, 'final');
   const ancestors = Object.fromEntries([cycle.implementation_sha, cycle.green.sha, sha].map(target => [target,
     execFileSync('git', ['rev-list', target], { encoding: 'utf8' }).trim().split('\n').slice(1)]));
   const source = { ...cycle, target_sha: sha, require_authenticated_purpose: true, red: { ...red, failure_kind: 'assertion', cause: cycle.cause,
     implementation_present: false, cause_read_by: cycle.cause_read_by, cause_read_at: cycle.cause_read_at },
     green, final, history: { source: 'git-objects', ancestors }, raw_red_preserved: true };
   const assessment = deriveTddCycle(source);
-  records.push({ ...source, assessment, feature_complete: false });
+  if (isCore) coreRecords.push({ ...source, assessment, feature_complete: false });
+  else records.push({ ...source, assessment, feature_complete: false });
 }
-const passed = records.length > 0 && records.every(record => (record.assessment as Record<string, unknown>).state === 'passed');
+for (const record of coreRecords) {
+  const group = coreGroups.get(`${record.executor.environment}:${record.executor.command}`);
+  if (!group) throw new Error('Core final stream missing');
+  group.records.push(record);
+}
+const core = manifest.core_targets?.length ? assessCoreTddJournal({ target_sha: sha, check_set_digest: hash(manifestBytes),
+  manifest, source_authenticated: true, groups: [...coreGroups.values()] }) : undefined;
+const passed = records.length > 0 && records.every(record => (record.assessment as Record<string, unknown>).state === 'passed') &&
+  (core === undefined || core.state === 'recorded_cycles_verified');
 const coverage = assessTddCoverage({ ...finalSource, target_sha: sha, source_authenticated: true, records, raw_tap: finalRaw,
-  expected_count: JSON.parse(readFileSync('tools/ci/validation-manifest.json', 'utf8')).engineering_case_count });
+  expected_count: manifest.engineering_case_count });
 writeFileSync('tdd-output/journal.json', JSON.stringify({ source: 'github-actions', target_sha: sha,
   checkout_sha: sha, runner_environment: process.env.RUNNER_ENVIRONMENT,
   check_set_digest: hash(readFileSync('tools/ci/validation-manifest.json')),
   toolchain_digest: hash(readFileSync('infra/ci/toolchain-lock.json')),
-  run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT), records,
-  state: passed ? 'recorded_cycles_verified' : 'blocked', coverage: coverage.coverage, coverage_assessment: coverage,
+  run_id: process.env.GITHUB_RUN_ID, attempt: Number(process.env.GITHUB_RUN_ATTEMPT), records, core,
+  state: passed ? 'recorded_cycles_verified' : 'blocked', coverage: passed ? coverage.coverage : 'partial', coverage_assessment: coverage,
   declared_coverage: catalog.coverage,
   readiness: 'not_evaluated', feature_complete: false }, null, 2) + '\n');
 if (!passed) throw new Error('Authenticated TDD cycle did not pass');

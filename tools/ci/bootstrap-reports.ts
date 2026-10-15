@@ -1,5 +1,6 @@
 import { normalizeExecution } from './run-check-set.ts';
 import { assessBridgeGate } from './gates.ts';
+import { assessCoreTddJournal } from './core-tdd-consumption.ts';
 
 type Document = Record<string, unknown>;
 const record = (value: unknown): value is Document => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -247,6 +248,12 @@ export function assessBootstrapRaw(input: unknown): Document {
       if (!record(journal) || journal.coverage !== 'complete' || journal.target_sha !== input.target_sha || journal.state !== 'recorded_cycles_verified' ||
           !Array.isArray(journal.records) || !journal.records.length || journal.records.some(item => !record(item) || !record(item.assessment) ||
             item.assessment.state !== 'passed' || item.target_sha !== input.target_sha || !text(item.cycle_id))) return deny('tdd_coverage_incomplete');
+      if (record(raw.manifest) && Array.isArray(raw.manifest.core_targets) && raw.manifest.core_targets.length) {
+        if (!record(journal.core) || journal.core.target_sha !== input.target_sha || journal.core.check_set_digest !== input.check_set_digest ||
+            journal.core.state !== 'recorded_cycles_verified' || journal.core.coverage !== 'complete' ||
+            JSON.stringify(journal.core.manifest) !== JSON.stringify(raw.manifest) ||
+            assessCoreTddJournal(journal.core).state !== 'recorded_cycles_verified') return deny('core_tdd_coverage_incomplete');
+      }
       return accept(journal.records.map(item => String((item as Document).cycle_id)));
     }
     case 'tooling': {
