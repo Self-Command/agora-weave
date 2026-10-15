@@ -51,3 +51,7 @@
 ## ED-17：批准 Actions 临时 HTTPS 隧道与一次性认证
 
 用户对[非生产 HTTPS 方案 A](../../../docs/engineering/nonprod-https-options.md)明确回复：“批准方案 A，继续实施”。允许在 GitHub-hosted Actions 为本次 dev/test 官方 Compose 增加固定工具的 Cloudflare 临时 HTTPS 隧道及一次性认证网关，只传合成非生产数据、不购买付费资源；运行结束关闭入口并核验资源及临时凭据清理。工程负责创建专用 secret、实现与实际正向/拒绝/跨环境验证。证据服务器仍仅存证据，生产部署与真实用户/消息不在该授权内。
+
+## ED-18：Android7 实际省电系统警示栏的受限例外
+
+用户对[系统警示栏方案A](../../../docs/engineering/android7-system-chrome-decision.md)明确答复：“批准方案 A，继续完成阶段验收”。仅允许将 API24、实际省电开启、实际深色捕获的系统自有警示栏登记为 `not_applicable`，保留原始失败、实测对比度、图像及风险；不得把3.08写成满足4.5。应用内容、浅色、其他系统版本及缺少实际证据仍适用原标准。门禁逐项核实准确平台、主题、省电状态和像素／原图绑定，新增云端Red／Green验证越界拒绝，最终新SHA完整重验。该例外不授权改变automatic主题策略、隐藏系统栏、修改模拟器系统颜色或放宽业务可读性。
