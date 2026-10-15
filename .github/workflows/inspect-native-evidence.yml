@@ -8,7 +8,7 @@ permissions:
 jobs:
   inspect:
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 20
     steps:
       - name: Authenticate original ZIPs and extract bounded diagnostic inputs
         env:
@@ -17,9 +17,18 @@ jobs:
         run: |
           mkdir -p native-inspection
           python3 - <<'PY'
-          import hashlib, io, json, os, pathlib, subprocess, zipfile
+          import hashlib, io, json, os, pathlib, subprocess, time, zipfile
           root = pathlib.Path('native-inspection')
-          for artifact_id in [11944221043, 11944131721]:
+          repo = 'repos/Self-Command/agora-weave'
+          for attempt in range(80):
+              listing = json.loads(subprocess.check_output(['gh', 'api', f'{repo}/actions/runs/38672314073/artifacts?per_page=100']))
+              selected = [item for item in listing['artifacts'] if item['name'].startswith(('bootstrap-ios-', 'bootstrap-android-'))]
+              if len(selected) == 4:
+                  break
+              time.sleep(10)
+          if len(selected) != 4:
+              raise RuntimeError('Original native diagnostic artifacts are incomplete')
+          for artifact_id in [item['id'] for item in selected]:
               repo = 'repos/Self-Command/agora-weave'
               metadata = json.loads(subprocess.check_output(['gh', 'api', f'{repo}/actions/artifacts/{artifact_id}']))
               archive = subprocess.check_output(['gh', 'api', f'{repo}/actions/artifacts/{artifact_id}/zip'])
@@ -32,7 +41,7 @@ jobs:
               with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
                   expanded = sum(entry.file_size for entry in zipped.infolist())
                   for entry in zipped.infolist():
-                      if entry.is_dir() or '.xcresult/' in entry.filename or entry.filename == 'ios-build.log':
+                      if entry.is_dir() or '.xcresult/' in entry.filename or entry.filename in ['ios-build.log', 'android-build.log']:
                           continue
                       if not entry.filename.endswith(('.json', '.log', '.txt', '.xml', '.png')):
                           continue
