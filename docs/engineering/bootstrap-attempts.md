@@ -38,3 +38,9 @@ TDD完整性审查仍有阻塞：archive的A01–A06、原始bootstrap的BR01–
 
 18c36eef／共享run38646401455的Web原作业实际16pass，当前Codex读取其16张原始全图；但JSON报告落在配置目录下，未进入上传的web-output，不能据此给原始报告准入通过。[固定Playwright1.64.1源码](https://github.com/microsoft/playwright/blob/v1.64.1/packages/playwright/src/reporters/base.ts)确认outputFile按configDir解析。33f7b2af／run38647801188以真实已安装CLI执行原16项发现，健康成功且WR01明确交接文件缺失，139pass／1fail；当前Codex读取后，于22:29:44Z记录因果，再只修正reporter目标路径。fcbdb0fb／run38648045010在原WR01与Web fixture不变时140项全通过，类型／lint／镜像冻结通过，实际浏览器原JSON进入归档目录且16pass、0unexpected／flaky／skipped。发现探针不替代浏览器运行；最终SHA仍重跑所有适用初始化节点，历史TDD缺口和物理／联通资源阻塞保留。
 
+
+## ED-15 clean rebuild (2026-10-15)
+
+The first trial branch was not accepted as authoritative: it restored implementations during cherry-pick/merge repair and included an invalid ED-14 change detector. Its failures, commits and runs are preserved; cancelled redundant runs are not counted as passes. The clean branch `codex/agoraweave-tdd-rebuild-clean` starts at actual pre-implementation commit `1839242dff1658e6f877f0716ad2313840eb29ed`, where the archive had a stub and report/review modules were absent. Unaffected code and unchanged canonical engineering oracles were restored before Red.
+
+Actual Red `24176df`, run38662544092: all140 assertions executed;115 passed and25 semantic assertions failed,0skipped/cancelled. CurrentCodex separately read every failed block before implementing `9b2ed5a`. Actual Green run38662838190 executed all140 with140passes and0failures/skips/cancellations. The original branch ancestry was merged only after observing that Green, preserving old histories and unaffected source cycles; it does not make legacy unqualified chains compliant. Five new source cycles cover archive A01–A06/XA01, raw report BR01–BR10/TO01 and review RB01–RB07. Final coverage and admission still need actual authenticated journal, final regression, native HTTPS/accessibility results and currentCodex review. No canonical task completion is inferred here.

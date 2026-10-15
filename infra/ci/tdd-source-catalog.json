@@ -624,8 +624,15 @@
     {
       "cycle_id": "ci-original-xcresult-paths-001",
       "behavior_id": "ci.original-xcresult-paths",
-      "case_titles": ["XA01: original XCTest data names retain their bytes and remain within the private archive boundary"],
-      "requirements": ["QR-003", "QR-006", "QR-007", "QR-009"],
+      "case_titles": [
+        "XA01: original XCTest data names retain their bytes and remain within the private archive boundary"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-009"
+      ],
       "test_file": "tests/integration/ci/xcresult-archive.spec.ts",
       "fixture_file": "tests/integration/ci/xcresult-archive.spec.ts",
       "red": {
@@ -647,8 +654,14 @@
     {
       "cycle_id": "ci-event-bound-source-001",
       "behavior_id": "ci.event-bound-source",
-      "case_titles": ["SR01: push and pull request sources at one SHA bind their own event and branch without borrowing a different execution"],
-      "requirements": ["QR-003", "QR-006", "QR-007"],
+      "case_titles": [
+        "SR01: push and pull request sources at one SHA bind their own event and branch without borrowing a different execution"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
       "test_file": "tests/integration/ci/source-run-selection.spec.ts",
       "fixture_file": "tests/integration/ci/source-run-selection.spec.ts",
       "red": {
@@ -670,8 +683,15 @@
     {
       "cycle_id": "ci-installed-tooling-admission-001",
       "behavior_id": "ci.installed-tooling-admission",
-      "case_titles": ["TO01: installed native tooling maps every canonical task and retains the same-head completion refusal before admission"],
-      "requirements": ["QR-003", "QR-006", "QR-007", "QR-008"],
+      "case_titles": [
+        "TO01: installed native tooling maps every canonical task and retains the same-head completion refusal before admission"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
       "test_file": "tests/integration/ci/tooling-admission.spec.ts",
       "fixture_file": "tests/integration/ci/tooling-admission.spec.ts",
       "red": {
@@ -693,8 +713,15 @@
     {
       "cycle_id": "ci-original-legacy-completion-001",
       "behavior_id": "ci.original-legacy-completion",
-      "case_titles": ["LB01: direct legacy complete cannot change effective handoff without authenticated cloud completion"],
-      "requirements": ["QR-003", "QR-006", "QR-007", "QR-008"],
+      "case_titles": [
+        "LB01: direct legacy complete cannot change effective handoff without authenticated cloud completion"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007",
+        "QR-008"
+      ],
       "test_file": "tests/security/ci/legacy-transition.spec.ts",
       "fixture_file": "tests/security/ci/legacy-transition.spec.ts",
       "red": {
@@ -716,8 +743,15 @@
     {
       "cycle_id": "ci-original-web-report-handoff-001",
       "behavior_id": "ci.original-web-report-handoff",
-      "case_titles": ["WR01: installed Playwright writes the approved discovery report inside the archived Web handoff"],
-      "requirements": ["QR-003", "QR-004", "QR-006", "QR-007"],
+      "case_titles": [
+        "WR01: installed Playwright writes the approved discovery report inside the archived Web handoff"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-004",
+        "QR-006",
+        "QR-007"
+      ],
       "test_file": "tests/integration/ci/web-report-handoff.spec.ts",
       "fixture_file": "tests/e2e/bootstrap/web-shell.spec.ts",
       "red": {
@@ -735,6 +769,171 @@
       "cause_read_by": "current-codex",
       "cause_read_at": "2026-10-14T22:29:44Z",
       "cause_summary": "On healthy transport the actual installed Playwright CLI discovered all 16 approved cases but wrote no JSON at the archive handoff, producing the sole failure with 139 existing assertions passed. After that failure was read, only the reporter output path changed. All 140 unchanged assertions, type/lint and frozen image checks passed; the actual browser runtime also emitted the original JSON with 16 passed and zero unexpected, flaky or skipped cases. Discovery is not claimed as runtime acceptance."
+    },
+    {
+      "cycle_id": "ci-clean-rebuild-archive-002",
+      "behavior_id": "ci.clean-rebuild-archive",
+      "case_titles": [
+        "A01: failed source remains failed in a private archive with separate raw and ZIP digests",
+        "A02: formal evidence retains one year; sensitive evidence requires its earlier explicit deadline",
+        "A03: missing authenticated source, unknown identity or raw digest cannot enter the archive index",
+        "A04: path escape, duplicate files, secrets and retained temporary credentials are rejected",
+        "A05: verified private readback must bind the same archive, index and every raw file",
+        "A06: nested unregistered fields cannot copy credentials into the private index"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/archive.spec.ts",
+      "fixture_file": "tests/integration/ci/archive.spec.ts",
+      "red": {
+        "sha": "24176dfd9bd1c9b3d53a5e6ddac4223af096b004",
+        "run_id": "38662544092",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+        "run_id": "38662838190",
+        "attempt": 1
+      },
+      "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
+    },
+    {
+      "cycle_id": "ci-clean-rebuild-raw-reports-002",
+      "behavior_id": "ci.clean-rebuild-raw-reports",
+      "case_titles": [
+        "BR01: engineering state is recomputed from exact raw TAP rather than a summary claim",
+        "BR02: real Playwright results require all cases, no retries, skips, flaky or global errors",
+        "BR03: official service report needs every container, isolated ports, schema seed repeat and successful cleanup",
+        "BR04: Android parser needs actual light/dark instrumentation, foreground hierarchy and both images",
+        "BR07: a named dark capture with a light or absent actual configuration is rejected",
+        "BR05: failed original job or different checkout/digests never passes from green-looking raw data",
+        "BR06: both original XCTest summaries and all launch/resume images are required",
+        "BR08: bridge admission is recomputed from the bound original record and rejects a forged passed state",
+        "BR09: cleanup requires observed zero residual resources and removed temporary files in both environments",
+        "BR10: a partial TDD catalog never satisfies full bootstrap coverage despite individually green cycles"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/bootstrap-reports.spec.ts",
+      "fixture_file": "tests/integration/ci/bootstrap-reports.spec.ts",
+      "red": {
+        "sha": "24176dfd9bd1c9b3d53a5e6ddac4223af096b004",
+        "run_id": "38662544092",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+        "run_id": "38662838190",
+        "attempt": 1
+      },
+      "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
+    },
+    {
+      "cycle_id": "ci-clean-rebuild-review-binding-002",
+      "behavior_id": "ci.clean-rebuild-review-binding",
+      "case_titles": [
+        "RB01: a review binds required coverage and image bytes from authenticated source context",
+        "RB02: self-declared verification cannot conceal a different actual input digest",
+        "RB03: a reviewer cannot shrink required coverage or hide a required source image",
+        "RB04: raw passed claims cannot replace failed or unavailable actual interaction results",
+        "RB05: unconfirmed authoritative baseline rejects a self-approved confirmed record",
+        "RB06: unauthenticated, local, stale target and empty required input contexts reject",
+        "RB07: code record validation binds actual contracts independently of physical accessibility admission"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/security/ci/review-binding.spec.ts",
+      "fixture_file": "tests/security/ci/review-binding.spec.ts",
+      "red": {
+        "sha": "24176dfd9bd1c9b3d53a5e6ddac4223af096b004",
+        "run_id": "38662544092",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+        "run_id": "38662838190",
+        "attempt": 1
+      },
+      "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
+    },
+    {
+      "cycle_id": "ci-clean-rebuild-tooling-report-002",
+      "behavior_id": "ci.clean-rebuild-tooling-report",
+      "case_titles": [
+        "TO01: installed native tooling maps every canonical task and retains the same-head completion refusal before admission"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/tooling-admission.spec.ts",
+      "fixture_file": "tests/integration/ci/tooling-admission.spec.ts",
+      "red": {
+        "sha": "24176dfd9bd1c9b3d53a5e6ddac4223af096b004",
+        "run_id": "38662544092",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+        "run_id": "38662838190",
+        "attempt": 1
+      },
+      "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
+    },
+    {
+      "cycle_id": "ci-clean-rebuild-xcresult-archive-002",
+      "behavior_id": "ci.clean-rebuild-xcresult-archive",
+      "case_titles": [
+        "XA01: original XCTest data names retain their bytes and remain within the private archive boundary"
+      ],
+      "requirements": [
+        "QR-003",
+        "QR-006",
+        "QR-007"
+      ],
+      "test_file": "tests/integration/ci/xcresult-archive.spec.ts",
+      "fixture_file": "tests/integration/ci/xcresult-archive.spec.ts",
+      "red": {
+        "sha": "24176dfd9bd1c9b3d53a5e6ddac4223af096b004",
+        "run_id": "38662544092",
+        "attempt": 1
+      },
+      "green": {
+        "sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+        "run_id": "38662838190",
+        "attempt": 1
+      },
+      "implementation_sha": "9b2ed5a5f7b722d191228c199c535390ba1c67c8",
+      "cause": "missing_behavior",
+      "cause_read_by": "current-codex",
+      "cause_read_at": "2026-10-15T00:54:00Z",
+      "cause_summary": "Read all original assertion failure blocks separately before fresh implementation; all 140 executed, 115 passed and these 25 returned unknown or missing values. Genuine pre-implementation base 1839242; trials remain diagnostic only. Tests and fixtures unchanged through Green."
     }
   ]
 }
