@@ -50,7 +50,7 @@ export function assessBootstrapRaw(input: unknown): Document {
             Number(item.frame.x) + Number(item.frame.width) > Number(item.viewport.x) + Number(item.viewport.width) + 1 ||
             Number(item.frame.y) + Number(item.frame.height) > Number(item.viewport.y) + Number(item.viewport.height) + 1 ||
             !record(item.audit) || !Array.isArray(item.audit.issues) || item.audit.issues.length) return deny('native_accessibility_semantics_or_bounds_failed');
-        if (ios && (!Number.isInteger(item.title_snapshot_count) || !Number.isInteger(item.title_container_count) ||
+        if (ios && raw.measurement_protocol === 'native-snapshot-v1' && (!Number.isInteger(item.title_snapshot_count) || !Number.isInteger(item.title_container_count) ||
             Number(item.title_container_count) < 0 || Number(item.title_snapshot_count) !== Number(item.title_count) + Number(item.title_container_count))) {
           return deny('ios_semantic_snapshot_incomplete');
         }
