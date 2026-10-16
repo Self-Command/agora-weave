@@ -55,6 +55,27 @@ if (action === 'all' || action === 'batch') {
   }
 } else if (action === 'migrate') {
   const migrations: { file: string; depends_on: string[] }[] = manifest.core_migrations || [];
+  if (migrations.some(entry => entry.file.endsWith('/0011_independent_security_journal.sql'))) {
+    // Provision outside the migration transaction; dblink commits the independent
+    // archive before business writes. The password remains in an owner-only mapping.
+    const variables = Object.fromEntries(readFileSync(coreEnvironmentFile(),'utf8').split(/\r?\n/)
+      .filter(line => /^[A-Z][A-Z0-9_]*=/.test(line)).map(line => [line.slice(0,line.indexOf('=')),line.slice(line.indexOf('=')+1)]));
+    const literal = (value: string) => "'"+value.replaceAll("'","''")+"'";
+    try {
+      sql('CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA extensions;');
+      if (sql("SELECT 1 FROM pg_database WHERE datname='agoraweave_security';").trim()!=='1') {
+        const password = variables.POSTGRES_PASSWORD;
+        if (!password) throw new Error('Missing isolated database credential');
+        const dsn = `host=127.0.0.1 dbname=postgres user=postgres password='${password.replaceAll('\\','\\\\').replaceAll("'","\\'")}'`;
+        sql(`SELECT extensions.dblink_exec(${literal(dsn)},'CREATE DATABASE agoraweave_security');`);
+      }
+      sql(`CREATE SERVER IF NOT EXISTS core_security FOREIGN DATA WRAPPER dblink_fdw
+        OPTIONS(host '127.0.0.1',dbname 'agoraweave_security');
+        CREATE USER MAPPING IF NOT EXISTS FOR postgres SERVER core_security OPTIONS(user 'postgres',password ${literal(variables.POSTGRES_PASSWORD)});
+        ALTER USER MAPPING FOR postgres SERVER core_security OPTIONS(SET password ${literal(variables.POSTGRES_PASSWORD)});
+        REVOKE ALL ON FOREIGN SERVER core_security FROM PUBLIC,anon,authenticated,service_role,core_runtime;`);
+    } catch { throw new Error('Independent journal provisioning failed; credentials are omitted from diagnostics'); }
+  }
   const inventory = existsSync('supabase/migrations') ? readdirSync('supabase/migrations').filter(file => file.endsWith('.sql')).map(file => `supabase/migrations/${file}`).sort() : [];
   if (JSON.stringify([...migrations.map(entry => entry.file)].sort()) !== JSON.stringify(inventory) || new Set(inventory).size !== migrations.length) {
     throw new Error('Every actual migration requires one explicit dependency registration');
