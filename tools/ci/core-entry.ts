@@ -44,8 +44,7 @@ if (action === 'all' || action === 'batch') {
     execute('migrate');
     execute('seed');
     let failed = false;
-    const invocations = action === 'batch' ? selectedTargets.map(target => ['target', target.id]) :
-      commands.filter(command => targets.some(target => target.command === command)).map(command => ['suite', command]);
+    const invocations = selectedTargets.map(target => ['target', target.id]);
     for (const args of invocations) {
       try { execute(...args); } catch { failed = true; }
     }
@@ -94,7 +93,7 @@ if (action === 'all' || action === 'batch') {
   const args = ['--experimental-strip-types', '--test', '--test-reporter=tap', '--test-concurrency=1', ...files];
   const started_at = new Date().toISOString();
   const execution = spawnSync(process.execPath, args,
-    { encoding: 'utf8', timeout: 150000, maxBuffer: 16 * 1024 * 1024 });
+    { encoding: 'utf8', timeout: selected.length > 1 ? 600000 : 150000, maxBuffer: 16 * 1024 * 1024 });
   const raw = execution.stdout || '';
   const expected = selected.reduce((count, target) => count + target.case_count, 0);
   const result = normalizeExecution({ format: 'tap', raw, exit_code: execution.status, expected_count: expected });
@@ -103,5 +102,6 @@ if (action === 'all' || action === 'batch') {
   writeFileSync(`${directory}/${name}.stderr`, execution.stderr || '');
   save(name, { ...result, command, invocation: [process.execPath, ...args], started_at, finished_at: new Date().toISOString(),
     executed_files: files.map(path => ({ path, sha256: hash(readFileSync(path)) })), raw_report_sha256: hash(raw) });
+  console.log(`${name}: ${result.state} (${result.passed ?? 0}/${expected} tests)`);
   if (result.state !== 'passed') throw new Error('Core target assertions did not pass');
 } else throw new Error('Unknown core execution action');
