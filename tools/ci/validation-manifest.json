@@ -1091,6 +1091,12 @@
         "supabase/migrations/0007_documents.sql",
         "supabase/migrations/0006_configuration.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0015_effective_config_compat.sql",
+      "depends_on": [
+        "supabase/migrations/0014_read_gateways.sql"
+      ]
     }
   ],
   "core_fixture_files": [
