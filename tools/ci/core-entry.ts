@@ -69,7 +69,8 @@ if (action === 'all' || action === 'batch') {
     if (previous && previous !== digest) throw new Error('An applied migration was mutated');
     if (!previous) {
       const statement = `BEGIN;\n${readFileSync(next.file, 'utf8')}\nINSERT INTO ci_control.migrations(file,digest) VALUES ('${next.file}','${digest}');\nCOMMIT;`;
-      if (['supabase/migrations/0011_independent_security_journal.sql','supabase/migrations/0021_journal_unknown_and_restriction_facts.sql'].includes(next.file)) {
+      if (['supabase/migrations/0011_independent_security_journal.sql','supabase/migrations/0021_journal_unknown_and_restriction_facts.sql',
+        'supabase/migrations/0022_restore_watermark_guard.sql'].includes(next.file)) {
         compose(['exec','-T','db','psql','-X','-qAt','-U','supabase_admin','-d','postgres','-v','ON_ERROR_STOP=1'],statement);
       } else sql(statement);
     }
