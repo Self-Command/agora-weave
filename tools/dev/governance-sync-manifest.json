@@ -335,6 +335,9 @@
     "tools/ci/write-development-readiness.ts",
     "tools/ci/write-validation-plan.ts",
     ".gitmodules",
-    "superpowers-v7"
+    "superpowers-v7",
+    "tests/fixtures/bootstrap/evidence.ts",
+    "tests/fixtures/bootstrap/gates.ts",
+    "tests/fixtures/bootstrap/health.json"
   ]
 }
