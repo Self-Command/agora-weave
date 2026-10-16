@@ -8,10 +8,10 @@ export function deriveTaskAdapter(tasks: string) {
   const mapping = pending.map((item, index) => ({ id: item.match![2], task: index + 1 }));
   const context = ['.specify/memory/constitution.md', 'specs/001-agoraweave-v1/spec.md',
     'specs/001-agoraweave-v1/plan.md', 'specs/001-agoraweave-v1/tasks.md'];
-  const adapter = '# Disposable native tool compatibility probe\n\nCanonical inputs: ' + context.join(', ') +
-    '\nAll project execution is GitHub-hosted Actions only. This synthetic probe completes no canonical task.\n\n' +
+  const adapter = '# Disposable Spec Kit execution adapter\n\nCanonical inputs: ' + context.join(', ') +
+    '\nConstitution 4.0.0 and ED-21 govern: real local TDD feedback, independent Actions checkpoints and formal acceptance. Never fabricate runner identity. Canonical full task completion requires its applicable evidence.\n\n' +
     pending.map((item, index) => `### Task ${index + 1}: ${mapping[index].id}\n\n${item.line}\n\n` +
-      'Expected: current same-SHA Actions evidence; missing evidence refuses completion.\n' +
+      'Expected: source-bound local development feedback and current same-SHA Actions evidence at the applicable acceptance checkpoint; missing required evidence refuses completion.\n' +
       'Interface checks: actual reports, digests and applicable contract.\n' +
       'Overall regression: every activated required target.\n').join('\n');
   return { state: 'mapped', mapping, adapter };

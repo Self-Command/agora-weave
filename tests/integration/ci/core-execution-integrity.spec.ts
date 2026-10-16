@@ -13,7 +13,7 @@ test('CW06: a zero-exit substituted suite script cannot certify an unexecuted co
     writeFileSync(join(root, path), typeof value === 'string' ? value : JSON.stringify(value));
   };
   try {
-    for (const name of ['core-entry.ts', 'core-database.ts', 'run-check-set.ts', 'discover-targets.ts']) {
+    for (const name of ['core-entry.ts', 'core-database.ts', 'run-check-set.ts', 'discover-targets.ts', 'local-services.ts', 'execution-context.ts']) {
       mkdirSync(join(root, 'tools/ci'), { recursive: true });
       copyFileSync(`tools/ci/${name}`, join(root, 'tools/ci', name));
     }

@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { account, session, rows, sql } from '../../fixtures/core/runtime.ts';
+import { account as fixtureAccount, session as fixtureSession, rows, sql } from '../../fixtures/core/runtime.ts';
+
+// These transactional subjects remain separate from persistent policy fixtures.
+const account = (number: number) => fixtureAccount(number + 9);
+const session = (number: number) => fixtureSession(number + 9);
 
 const id = (number: number) => `30000000-0000-4000-8000-${String(number).padStart(12, '0')}`;
 function present(...tables: string[]) {

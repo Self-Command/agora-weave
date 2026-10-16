@@ -16,7 +16,7 @@ function checkout() {
   for (const directory of ['tests/contract/ci', 'tests/integration/ci', 'tests/security/ci', 'tools/ci', 'infra/ci']) {
     mkdirSync(path.join(root, directory), { recursive: true });
   }
-  for (const file of ['discover-targets.ts', 'run-check-set.ts', 'test-harness.ts']) {
+  for (const file of ['discover-targets.ts', 'run-check-set.ts', 'test-harness.ts', 'execution-context.ts']) {
     copyFileSync(`tools/ci/${file}`, path.join(root, 'tools/ci', file));
   }
   const approved = 'tests/contract/ci/approved.spec.ts';

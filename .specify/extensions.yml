@@ -40,7 +40,7 @@ hooks:
     enabled: true
     optional: false
     priority: 5
-    description: Authenticate the exact cloud bootstrap or business start admission
+    description: Authenticate current source-bound local development or cloud start admission
     condition: null
   - extension: speckit-superpowers-bridge
     command: speckit.speckit-superpowers-bridge.guard

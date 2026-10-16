@@ -1,12 +1,8 @@
 import { spawn } from 'node:child_process';
-import { requireCoreEnvironment } from '../../../tools/ci/core-database.ts';
+import { coreComposeArguments } from '../../../tools/ci/core-database.ts';
 import { environment, token } from './runtime.ts';
 
-const base = () => {
-  requireCoreEnvironment();
-  return ['compose', '--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
-    '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml', '-f', `${process.env.RUNNER_TEMP}/agoraweave-images.json`];
-};
+const base = coreComposeArguments;
 export function asynchronousCompose(args: string[], input: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const child = spawn('docker', [...base(), ...args], { stdio: ['pipe', 'pipe', 'pipe'], timeout: 20000 });

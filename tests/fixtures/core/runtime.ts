@@ -1,12 +1,12 @@
 import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { compose, sql } from '../../../tools/ci/core-database.ts';
+import { compose, coreEnvironmentFile, sql } from '../../../tools/ci/core-database.ts';
 
 export { sql };
 export const account = (number = 1) => `10000000-0000-4000-8000-${String(number).padStart(12, '0')}`;
 export const session = (number = 1) => `20000000-0000-4000-8000-${String(number).padStart(12, '0')}`;
 export function environment(): Record<string, string> {
-  return Object.fromEntries(readFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, 'utf8').split(/\r?\n/)
+  return Object.fromEntries(readFileSync(coreEnvironmentFile(), 'utf8').split(/\r?\n/)
     .filter(line => /^[A-Z][A-Z0-9_]*=/.test(line)).map(line => { const split = line.indexOf('='); return [line.slice(0, split), line.slice(split + 1)]; }));
 }
 export function token(number = 1, patch: Record<string, unknown> = {}): string {
@@ -23,6 +23,7 @@ export function request(path: string, options: { method?: string; token?: string
   const url = options.auth ? `http://auth:9999${path}` : `http://api-gw:8000/functions/v1/core/api/v1${path}`;
   const config = [`url = ${JSON.stringify(url)}`, `request = ${JSON.stringify(options.method || 'GET')}`,
     'silent', 'show-error', 'max-time = 20', 'write-out = "\\n%{http_code}"'];
+  if (options.method === 'HEAD') config.push('head');
   const headers = { apikey: env.ANON_KEY, ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}), ...options.headers };
   for (const [name, value] of Object.entries(headers)) config.push(`header = ${JSON.stringify(`${name}: ${value}`)}`);
   if (options.body !== undefined) config.push('header = "Content-Type: application/json"', `data = ${JSON.stringify(JSON.stringify(options.body))}`);

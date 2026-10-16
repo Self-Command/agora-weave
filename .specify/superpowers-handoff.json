@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-16T00:25:40.3098191Z",
+  "updated_at": "2026-10-16T01:53:55.6285208Z",
   "feature_directory": "specs/001-agoraweave-v1",
   "source_of_truth": {
     "constitution": ".specify/memory/constitution.md",
@@ -11,7 +11,7 @@
   "supersedes": [
     "speckit.implement"
   ],
-  "executor": "speckit",
+  "executor": "superpowers",
   "capabilities": [
     "executing-plans",
     "test-driven-development",
@@ -19,11 +19,16 @@
     "requesting-code-review",
     "finishing-a-development-branch"
   ],
-  "status": "ready",
+  "status": "executing",
   "blocked_reason": null,
   "artifact_owner": "codex",
   "review_only_agents": [],
   "notes": null,
-  "last_snapshot_id": "20261016T0025402917458Z-ready",
-  "instructions": "Use /speckit-superpowers-bridge (Claude Code) or $speckit-superpowers-bridge (Codex). The bridge orchestrates native Superpowers skills against tasks.md; do not run speckit.implement and do not invoke superpowers:writing-plans / :brainstorming for an active Spec Kit feature."
+  "last_snapshot_id": "20261016T0153556051954Z-executing",
+  "instructions": "Use /speckit-superpowers-bridge (Claude Code) or $speckit-superpowers-bridge (Codex). The bridge orchestrates native Superpowers skills against tasks.md; do not run speckit.implement and do not invoke superpowers:writing-plans / :brainstorming for an active Spec Kit feature.",
+  "artifacts_sha256": {
+    "spec.md": "cb4b074c0adc675ba0f22ab72d07100b6ec2e04859032a418bc76d05628abe40",
+    "plan.md": "628b8c9fd288ac29f9e5ab316052959c8ae424733228ce04988a0b811c297be8",
+    "tasks.md": "e0cc5d844dea95a2e70547977ae0d1d2498e4e8026e00f51cf67e600bae21b3d"
+  }
 }

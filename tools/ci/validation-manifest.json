@@ -2920,9 +2920,37 @@
       "files": [
         "tests/integration/ci/core-tdd-consumption.spec.ts"
       ]
+    },
+    {
+      "id": "ci.core-baseline-consumption",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/core-baseline-consumption.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.local-execution",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/local-execution.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.local-services",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/local-services.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.local-admission",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/local-admission.spec.ts"
+      ]
     }
   ],
-  "engineering_case_count": 231,
+  "engineering_case_count": 249,
   "core_targets": [
     {
       "id": "core.http",
@@ -2930,7 +2958,8 @@
       "files": [
         "tests/contract/core/http.spec.ts"
       ],
-      "case_count": 5
+      "case_count": 5,
+      "requires_services": true
     },
     {
       "id": "core.events",
@@ -2938,7 +2967,8 @@
       "files": [
         "tests/contract/core/events.spec.ts"
       ],
-      "case_count": 2
+      "case_count": 2,
+      "requires_services": false
     },
     {
       "id": "core.graphemes",
@@ -2946,7 +2976,8 @@
       "files": [
         "tests/contract/contracts/graphemes.spec.ts"
       ],
-      "case_count": 2
+      "case_count": 2,
+      "requires_services": false
     },
     {
       "id": "core.schema-config",
@@ -2954,7 +2985,8 @@
       "files": [
         "tests/integration/core/schema-config.spec.ts"
       ],
-      "case_count": 29
+      "case_count": 29,
+      "requires_services": true
     },
     {
       "id": "core.schema-invariants",
@@ -2962,7 +2994,8 @@
       "files": [
         "tests/integration/core/schema-invariants.spec.ts"
       ],
-      "case_count": 7
+      "case_count": 7,
+      "requires_services": true
     },
     {
       "id": "core.current-policy",
@@ -2970,7 +3003,8 @@
       "files": [
         "tests/security/core/current-policy.spec.ts"
       ],
-      "case_count": 8
+      "case_count": 8,
+      "requires_services": true
     },
     {
       "id": "core.admission-concurrency",
@@ -2978,7 +3012,8 @@
       "files": [
         "tests/concurrency/core/admission.spec.ts"
       ],
-      "case_count": 2
+      "case_count": 2,
+      "requires_services": true
     },
     {
       "id": "core.configuration-resolution",
@@ -2986,10 +3021,20 @@
       "files": [
         "tests/contract/core/configuration.spec.ts"
       ],
-      "case_count": 5
+      "case_count": 5,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-sessions",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/auth/routes.spec.ts"
+      ],
+      "case_count": 5,
+      "requires_services": true
     }
   ],
-  "core_case_count": 60,
+  "core_case_count": 65,
   "core_migrations": [
     {
       "file": "supabase/migrations/0001_identity.sql",

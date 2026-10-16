@@ -5,7 +5,7 @@ type Document = Record<string, any>;
 const record = (value: unknown): value is Document => !!value && typeof value === 'object' && !Array.isArray(value);
 const deny = (reason: string, missing: string[] = []) => ({ state: 'blocked', coverage: 'partial', reason_codes: [reason], missing_titles: missing });
 
-export function assessTddCoverage(input: unknown): Record<string, unknown> {
+export function assessTddCoverage(input: unknown, verifiedBaselineTitles: string[] = []): Record<string, unknown> {
   if (!record(input) || input.source_authenticated !== true || typeof input.target_sha !== 'string' ||
       !/^[a-f0-9]{40}$/.test(input.target_sha) || typeof input.run_id !== 'string' || !/^\d+$/.test(input.run_id) ||
       !Number.isInteger(input.attempt) || input.attempt < 1 || !Array.isArray(input.records) || !input.records.length ||
@@ -16,6 +16,8 @@ export function assessTddCoverage(input: unknown): Record<string, unknown> {
   const titles = [...String(input.raw_tap).matchAll(/^ok \d+ - (.+)\r?$/gm)].map(match => match[1].replace(/\r$/, ''));
   if (new Set(titles).size !== titles.length) return deny('ambiguous_actual_titles');
   const rawDigest = createHash('sha256').update(input.raw_tap).digest('hex');
+  if (!Array.isArray(verifiedBaselineTitles) || new Set(verifiedBaselineTitles).size !== verifiedBaselineTitles.length ||
+      verifiedBaselineTitles.some(title => !titles.includes(title))) return deny('baseline_assertion_not_actual');
   const covered = new Set<string>(), cycles = new Set<string>();
   for (const cycle of input.records) {
     const final = cycle.final;
@@ -29,9 +31,13 @@ export function assessTddCoverage(input: unknown): Record<string, unknown> {
     if (new Set(selected.map(item => item.title)).size !== selected.length || selected.some(item => item.failed !== false || !titles.includes(item.title))) {
       return deny('covering_assertion_not_actual');
     }
+    if (selected.some(item => verifiedBaselineTitles.includes(item.title))) return deny('baseline_hides_business_assertion');
     selected.forEach(item => covered.add(item.title));
   }
+  const business_count = covered.size;
+  verifiedBaselineTitles.forEach(title => covered.add(title));
   const missing = titles.filter(title => !covered.has(title));
   return missing.length ? deny('actual_assertions_not_covered', missing) :
-    { state: 'passed', coverage: 'complete', reason_codes: [], missing_titles: [], actual_count: titles.length, covered_count: covered.size };
+    { state: 'passed', coverage: 'complete', reason_codes: [], missing_titles: [], actual_count: titles.length, covered_count: covered.size,
+      business_count, baseline_count: verifiedBaselineTitles.length };
 }

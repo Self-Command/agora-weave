@@ -1,8 +1,11 @@
 param(
     [ValidateSet('start', 'complete')][string]$Transition = 'start',
-    [ValidateSet('bootstrap-only', 'business-increment', 'full-release')][string]$Mode = 'bootstrap-only',
+    [ValidateSet('bootstrap-only', 'business-increment', 'full-release', 'local-development')][string]$Mode = 'bootstrap-only',
     [string]$Actor = 'codex',
-    [string]$Feature = 'specs/001-agoraweave-v1'
+    [string]$Feature = 'specs/001-agoraweave-v1',
+    [ValidateSet('github-actions', 'local')][string]$ExecutionSource = 'github-actions',
+    [string]$Target = '',
+    [string]$NodePath = 'node'
 )
 $ErrorActionPreference = 'Stop'
 $taskRepository = 'Self-Command/agora-weave'
@@ -12,6 +15,19 @@ $taskRoot = [System.IO.Path]::GetFullPath($taskRoot.Trim())
 $taskHead = (& git rev-parse HEAD 2>$null)
 if ($LASTEXITCODE -ne 0 -or $taskHead -notmatch '^[a-f0-9]{40}$') { throw 'Missing current committed target; raw status is ineffective' }
 $taskHead = $taskHead.Trim()
+if ($ExecutionSource -eq 'local') {
+    if ($Transition -ne 'start' -or $Mode -ne 'local-development') { throw 'Local evidence authorizes start only; complete and full release require cloud evidence' }
+    if ($Feature -ne 'specs/001-agoraweave-v1' -or $Actor -ne 'codex' -or -not $Target) { throw 'Local start requires the current authorized feature, actor and target' }
+    $taskPriorSource = $env:AGORAWEAVE_EXECUTION_SOURCE
+    try {
+        $env:AGORAWEAVE_EXECUTION_SOURCE = 'local'
+        & $NodePath --experimental-strip-types (Join-Path $taskRoot 'tools/ci/local-admission.ts') --target $Target
+        if ($LASTEXITCODE -ne 0) { throw 'Local development start preconditions failed; handoff is unchanged' }
+        return
+    }
+    finally { $env:AGORAWEAVE_EXECUTION_SOURCE = $taskPriorSource }
+}
+if ($Mode -eq 'local-development') { throw 'Local-development mode cannot consume a cloud receipt' }
 if ((& git status --porcelain --untracked-files=all)) { throw 'Uncommitted inputs invalidate the cloud transition' }
 if ($Transition -eq 'complete') {
     if ($Mode -ne 'full-release') { throw 'Raw feature complete requires full-release evidence; bootstrap readiness never completes the feature' }

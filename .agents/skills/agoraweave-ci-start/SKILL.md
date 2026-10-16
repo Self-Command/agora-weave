@@ -1,14 +1,18 @@
 ---
 name: agoraweave-ci-start
-description: Run the mandatory AgoraWeave bridge start hook against an authenticated cloud receipt for the current commit.
+description: Use for the mandatory AgoraWeave before_implement start admission.
 ---
 
-Read `.specify/memory/constitution.md` and the active handoff. This command is the project's `before_implement` hook.
+Read `.specify/memory/constitution.md`, the active handoff and authorized task scope. Constitution 4.0.0 and ED-21 govern local feedback and independent Actions acceptance.
 
-Use the session's authorized implementation scope and constitution v3.1.0. Before an authenticated development-ready foundation exists, only `bootstrap-only` is admitted. Development-ready binds actual Actions installation/build, nonempty tests and required isolated service reports to source SHA/run/attempt, ancestry and unchanged foundation digests. It permits dependent business TDD without declaring T027 ci-ready or any task complete. Invoke the metadata transition reader from the repository root:
+For a local target, invoke the existing reader with the fixed Node executable and one active target ID from `tools/ci/validation-manifest.json`:
 
 ```powershell
-& ./tools/ci/bridge-transition.ps1 -Transition start -Mode bootstrap-only -Actor codex
+& ./tools/ci/bridge-transition.ps1 -Transition start -Mode local-development -ExecutionSource local -Target <registered-target-id> -NodePath <fixed-node-executable> -Actor codex
 ```
 
-For an authorized business increment use `-Mode business-increment`; the exact receipt must authorize that mode using a verified development source or full initialization evidence. Incomplete unrelated full-CI evidence may be repaired in parallel; unhealthy foundations, unauthenticated target results or unknown security boundaries pause dependent work. The reader uses Git and the GitHub control plane only. Do not run project checks locally or replace a missing receipt with a declaration. Wait for the command's actual result. A refusal leaves the handoff unchanged and pauses the dependent transition. Bootstrap authoring before the first cloud receipt remains governed by the explicit bootstrap exception in `contracts/cloud-validation.md` §3. Every new behavior still needs cloud Red, cause reading, implementation and same-oracle Green with affected tests and necessary regressions. Merge, stage acceptance and release retain all applicable same-final-SHA evidence.
+The reader executes fixed tool/dependency checks, typecheck, nonempty discovery and the target. Service-dependent targets also require `AGORAWEAVE_LOCAL_ENVIRONMENT=dev|test`, prepared official isolated services, actual health, migration and controlled seed. It records `source=local`, exact workspace tree, commands/exits/reports and current contract digests. Never set fake `GITHUB_*` or `RUNNER_*` variables. Refusal leaves handoff unchanged and pauses the dependent transition; it is not business Red. Explicitly authorized T033 migration may repair an unavailable executor without declaring business admission.
+
+Wait for the actual result before transitioning handoff to executing, then read back its real status. Every new behavior needs semantic Red, cause reading, same-oracle/fixture Green and affected regressions. Local start completes no canonical task and certifies no cloud readiness.
+
+Cloud checkpoints retain `-Mode bootstrap-only|business-increment` and default `-ExecutionSource github-actions`; the reader authenticates the exact clean committed receipt. Complete, stage acceptance, merge and release retain every applicable same-final-SHA Actions result. Local evidence cannot authorize complete.

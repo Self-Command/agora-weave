@@ -66,3 +66,17 @@
 
 {"timestamp":"2026-10-16T00:25:40.3231572Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0025402917458Z-ready"}
 
+{"timestamp":"2026-10-16T00:45:14.0018488Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
+
+{"timestamp":"2026-10-16T01:20:44.3486371Z","action":"handoff","status":"executing","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0120442792678Z-executing"}
+
+{"timestamp":"2026-10-16T01:20:44.4850731Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
+
+{"timestamp":"2026-10-16T01:21:11.8606874Z","action":"handoff","status":"executing","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0121118178049Z-executing"}
+
+{"timestamp":"2026-10-16T01:21:11.9761969Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
+
+{"timestamp":"2026-10-16T01:53:55.6685021Z","action":"handoff","status":"executing","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0153556051954Z-executing"}
+
+{"timestamp":"2026-10-16T01:53:55.8042495Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
+

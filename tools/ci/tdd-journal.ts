@@ -122,7 +122,7 @@ for (const record of coreRecords) {
   group.records.push(record);
 }
 const core = manifest.core_targets?.length ? assessCoreTddJournal({ target_sha: sha, check_set_digest: hash(manifestBytes),
-  manifest, source_authenticated: true, groups: [...coreGroups.values()] }) : undefined;
+  manifest, source_authenticated: true, baseline_declarations: catalog.core_baselines || [], groups: [...coreGroups.values()] }) : undefined;
 const passed = records.length > 0 && records.every(record => (record.assessment as Record<string, unknown>).state === 'passed') &&
   (core === undefined || core.state === 'recorded_cycles_verified');
 const coverage = assessTddCoverage({ ...finalSource, target_sha: sha, source_authenticated: true, records, raw_tap: finalRaw,

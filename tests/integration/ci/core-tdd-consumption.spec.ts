@@ -21,7 +21,6 @@ const manifest = { schema_version: 1, engineering_case_count: 1, core_case_count
 
 /** Real Node TAP and Git objects, with synthetic transport envelopes at the already-authenticated reader boundary. */
 function historyFixture() {
-  assert.equal(process.env.RUNNER_ENVIRONMENT, 'github-hosted');
   const directory = mkdtempSync(join(tmpdir(), 'aw-core-cycle-'));
   const gitEnvironment = { ...process.env, GIT_INDEX_FILE: join(directory, 'index') };
   const childEnvironment = { ...process.env };

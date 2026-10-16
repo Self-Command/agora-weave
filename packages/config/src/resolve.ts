@@ -60,7 +60,7 @@ export function resolveConfiguration(input: unknown): Record<string, unknown> {
         }
       }
     }
-    const values: Fields = Object.create(null);
+    const values: Fields = {};
     for (const [key,definition] of definitions) {
       if ((definition.dependencies as string[]).some(dependency => !definitions.has(dependency)) ||
           (definition.conflicts as string[]).some(conflict => layers.has(conflict) && layers.has(key))) return blocked();

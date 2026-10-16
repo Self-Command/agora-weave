@@ -10,6 +10,10 @@ apps/mobile/ios/
 **/.env.local
 **/.env.*.local
 bootstrap-output/
+check-output/
+core-output/
+service-output/
+lint-output/
 freeze-output/
 playwright-report/
 test-results/

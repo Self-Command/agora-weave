@@ -7,7 +7,7 @@
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "ci:contracts": "node --experimental-strip-types --test tests/contract/ci/*.spec.ts tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts",
-    "ci:typecheck": "tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --allowImportingTsExtensions --skipLibCheck tools/ci/*.ts && npm run typecheck --workspaces",
+    "ci:typecheck": "tsc -p tools/ci/tsconfig.json && npm run typecheck --workspaces",
     "ci:build:web": "npm run build --workspace apps/admin && npm run build --workspace apps/share",
     "ci:e2e:web": "playwright test --config tests/e2e/bootstrap/playwright.config.ts",
     "ci:install": "npm ci --no-audit --no-fund",

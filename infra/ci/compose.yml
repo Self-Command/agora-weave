@@ -23,8 +23,9 @@ services:
       SUPABASE_SERVICE_ROLE_KEY: ''
       SUPABASE_DB_URL: postgresql://core_runtime:${CORE_DATABASE_PASSWORD}@db:5432/postgres
       CORE_JWT_ISSUER: http://api-gw:8000/auth/v1
+      CORE_ENVIRONMENT: ${AGORAWEAVE_LOCAL_ENVIRONMENT:-${CI_ENVIRONMENT}}
     volumes:
-      - ${GITHUB_WORKSPACE}/supabase/functions/core:/home/deno/functions/core:ro
+      - ${AGORAWEAVE_WORKSPACE:-${GITHUB_WORKSPACE}}/supabase/functions/core:/home/deno/functions/core:ro
 networks:
   default:
     internal: true
