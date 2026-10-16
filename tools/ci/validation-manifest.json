@@ -878,9 +878,18 @@
       ],
       "case_count": 2,
       "requires_services": true
+    },
+    {
+      "id": "core.foundation",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/foundation.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
     }
   ],
-  "core_case_count": 105,
+  "core_case_count": 109,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1021,6 +1030,12 @@
         "supabase/migrations/0001_identity.sql",
         "supabase/migrations/0003_effects.sql",
         "supabase/migrations/0007_documents.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0010_foundation_constraints.sql",
+      "depends_on": [
+        "supabase/migrations/0009_output_admission.sql"
       ]
     }
   ],
