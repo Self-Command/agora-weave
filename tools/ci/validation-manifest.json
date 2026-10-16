@@ -1068,6 +1068,12 @@
         "supabase/migrations/0011_independent_security_journal.sql",
         "supabase/migrations/0104_session_commands.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0013_effect_claim_binding.sql",
+      "depends_on": [
+        "supabase/migrations/0012_reliable_effects.sql"
+      ]
     }
   ],
   "core_fixture_files": [
