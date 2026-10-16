@@ -732,7 +732,7 @@
       "files": [
         "tests/contract/contracts/graphemes.spec.ts"
       ],
-      "case_count": 3,
+      "case_count": 4,
       "requires_services": false
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 134,
+  "core_case_count": 135,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
