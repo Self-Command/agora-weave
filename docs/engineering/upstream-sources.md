@@ -1,5 +1,7 @@
 # 初始化来源
 
+> 历史资料：本文保留所记日期／提交的决定、结果或资源事实，不作为当前开发入口。现行执行见宪法5.0.0、[ED-22](business-first-development-decision.md)及[执行政策](execution-policy.md)；旧状态不能推断当前或其他分支已通过。
+
 移动依赖来自 Expo 官方 commit `58da4edafcb043872c3ed9bf8f5957e6544d0a9c` 的默认模板与 bundledNativeModules，保留 Expo57.0.28／React19.2.3／RN0.86.3 关联组合。无业务壳只提供可加载入口；不能作为已完成产品页面或视觉基准。
 
 后台固定 Kiranism/next-shadcn-dashboard-starter commit `7705dfc0d13889e45c26a55ad5908da6a7a9a605`。保留其 MIT LICENSE、components.json、TypeScript配置、shadcn Button和cn工具；删除无关formatBytes，按src目录修正components CSS路径。仅带入当前必要依赖，不带Clerk、演示身份、数据和业务。React19.2.4和TS5.7.2保持该端版本，移动单独解析。分享是独立只读Next表面。

@@ -9,6 +9,8 @@ metadata:
 
 # Bridge Execute
 
+Project override (ED-22): Follow constitution5.0.0 and docs/engineering/execution-policy.md. Continue SP implementation, debugging, batch review and real verification. Per-behavior TDD is discretionary; key permissions, security, data integrity and bug fixes require effective tests. Disabled project receipt hooks stay disabled. Historical Red certification, repeated report checks and archive readback are not daily prerequisites. Record partial progress honestly; do not require all shared infrastructure before consumers.
+
 Execute the active Spec Kit feature through Superpowers without running `speckit.implement`.
 
 ## Behavior
@@ -157,7 +159,7 @@ checked; continue the core lifecycle normally. A missing registry is skipped.
 
 Use Superpowers execution skills only against the disposable adapter derived from Spec Kit `tasks.md`:
 
-- `superpowers:test-driven-development` before each code-modifying task.
+- `superpowers:test-driven-development` when chosen for the current behavior; ED-22 governs batch test scope.
 - `superpowers:systematic-debugging` before fixing any failure or unexpected behavior.
 - `superpowers:verification-before-completion` before marking a phase complete.
 - `superpowers:requesting-code-review` before final completion.
