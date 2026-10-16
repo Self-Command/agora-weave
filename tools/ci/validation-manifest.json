@@ -885,7 +885,7 @@
       "files": [
         "tests/integration/core/foundation.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 5,
       "requires_services": true
     },
     {
@@ -894,7 +894,7 @@
       "files": [
         "tests/recovery/core/security-journal.spec.ts"
       ],
-      "case_count": 6,
+      "case_count": 7,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 137,
+  "core_case_count": 139,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1174,6 +1174,19 @@
       "file": "supabase/migrations/0022_restore_watermark_guard.sql",
       "depends_on": [
         "supabase/migrations/0021_journal_unknown_and_restriction_facts.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0023_archive_failure_closes_output.sql",
+      "depends_on": [
+        "supabase/migrations/0022_restore_watermark_guard.sql",
+        "supabase/migrations/0012_reliable_effects.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0024_foundation_state_guards.sql",
+      "depends_on": [
+        "supabase/migrations/0023_archive_failure_closes_output.sql"
       ]
     }
   ],
