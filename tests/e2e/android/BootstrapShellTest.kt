@@ -19,6 +19,7 @@ import android.text.TextPaint
 import android.text.style.MetricAffectingSpan
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityManager
+import android.view.inputmethod.InputMethodManager
 import android.accessibilityservice.AccessibilityServiceInfo
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
@@ -26,6 +27,8 @@ import androidx.test.runner.lifecycle.Stage
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -146,6 +149,33 @@ class BootstrapShellTest {
     device.waitForIdle(5000)
     InstrumentationRegistry.getInstrumentation().waitForIdleSync()
     assertEquals(targetPackage, device.currentPackageName)
+    // Exercise the actual existing login page without SMS, fake identity or a replacement shell.
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("手机号登录")), 10000))
+    val phone = device.findObject(By.pkg(targetPackage).desc("手机号"))
+    assertNotNull("Actual phone input must be exposed", phone)
+    phone.text = "123"
+    assertEquals("123", phone.text)
+    phone.text = ""
+    instrumentation.runOnMainSync {
+      val activity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).single()
+      activity.currentFocus?.let { focused ->
+        (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(focused.windowToken, 0)
+        focused.clearFocus()
+      }
+    }
+    device.waitForIdle(3000)
+    val pageScroll = UiScrollable(UiSelector().packageName(targetPackage).scrollable(true))
+    if (!device.hasObject(By.pkg(targetPackage).text("获取验证码"))) {
+      assertTrue("Get-code action must be reachable by actual page scrolling", pageScroll.scrollIntoView(UiSelector().text("获取验证码")))
+    }
+    val getCode = device.findObject(By.pkg(targetPackage).text("获取验证码"))
+    assertNotNull("Actual get-code control must be exposed", getCode)
+    getCode.click()
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号，境外号码请加国家区号")), 5000))
+    assertTrue(device.hasObject(By.pkg(targetPackage).text("手机号登录")))
+    assertTrue("Invalid empty phone must not enter the OTP step", !device.hasObject(By.pkg(targetPackage).desc("短信验证码")))
+    if (pageScroll.exists()) pageScroll.scrollToBeginning(10)
+    device.waitForIdle(3000)
     val captureRoot = context.getExternalFilesDir(null)!!
     File(captureRoot, "bootstrap-theme.txt").writeText("$theme:${context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
     device.dumpWindowHierarchy(File(captureRoot, "bootstrap-ui.xml"))
@@ -153,15 +183,19 @@ class BootstrapShellTest {
     assertTrue(device.takeScreenshot(capture))
     val bitmap = BitmapFactory.decodeFile(capture.absolutePath)
     assertNotNull("Actual runtime capture must decode", bitmap)
-    val background = bitmap.getPixel(bitmap.width / 2, bitmap.height / 4)
+    // Sample the actual safe-area edge above content rather than a coordinate now occupied by form text.
+    val root = instrumentation.uiAutomation.rootInActiveWindow
+    assertNotNull("Actual native semantic tree is required", root)
+    val appBounds = Rect()
+    root.getBoundsInScreen(appBounds)
+    val background = bitmap.getPixel((appBounds.left + 2).coerceIn(0, bitmap.width - 1),
+      (appBounds.top + appBounds.height() / 2).coerceIn(0, bitmap.height - 1))
     val expected = if (theme == "dark") Color.rgb(17, 17, 19) else Color.WHITE
     File(captureRoot, "bootstrap-background.txt").writeText("$theme:${Color.red(background)},${Color.green(background)},${Color.blue(background)}")
     assertTrue("Rendered background must match the named theme; actual RGB=${Color.red(background)},${Color.green(background)},${Color.blue(background)}",
       kotlin.math.abs(Color.red(background) - Color.red(expected)) <= 3 &&
       kotlin.math.abs(Color.green(background) - Color.green(expected)) <= 3 &&
       kotlin.math.abs(Color.blue(background) - Color.blue(expected)) <= 3)
-    val root = instrumentation.uiAutomation.rootInActiveWindow
-    assertNotNull("Actual native semantic tree is required", root)
     val titles = root.findAccessibilityNodeInfosByText("AgoraWeave").filter {
       it.text?.toString() == "AgoraWeave" && it.packageName?.toString() == targetPackage
     }
@@ -187,8 +221,8 @@ class BootstrapShellTest {
       for (index in 0 until node.childCount) node.getChild(index)?.let { visit(it) }
     }
     visit(root)
-    assertEquals(0, interactiveCount)
-    assertEquals(0, editableCount)
+    assertTrue("Actual login must expose actions", interactiveCount > 0)
+    assertTrue("Actual login must expose an editable phone field", editableCount > 0)
     val bounds = Rect()
     title.getBoundsInScreen(bounds)
     var measuredFontPixels = 0f
@@ -215,7 +249,8 @@ class BootstrapShellTest {
       assertTrue(sizes.isNotEmpty())
       measuredFontPixels = sizes.first()
       assertTrue("Every title character must use the measured rendered size", sizes.all { kotlin.math.abs(it - measuredFontPixels) <= 0.01f })
-      expectedFontPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 23f, textView.resources.displayMetrics)
+      // AuthScreen brand is currently 24sp; this is a scaling check, not prototype approval.
+      expectedFontPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 24f, textView.resources.displayMetrics)
       File(captureRoot, "bootstrap-font-diagnostic.json").writeText(JSONObject()
         .put("measured_px", measuredFontPixels.toDouble()).put("expected_px", expectedFontPixels.toDouble())
         .put("base_px", baseFontPixels.toDouble()).put("method", "metric-affecting-spans")
@@ -305,6 +340,7 @@ class BootstrapShellTest {
       .put("status_bar_power_save", systemPowerSave).put("status_bar_power_source", "android-power-manager")
       .put("home_package", homePackage).put("observed_home_package", observedHomePackage).put("home_resolution_source", "shell-package-manager")
       .put("interactive_count", interactiveCount).put("editable_count", editableCount).put("frame", rect(bounds)).put("viewport", rect(viewport))
+      .put("scope", "existing-login-empty-phone-validation-only").put("full_account_journey_verified", false)
       .put("tree_sha256", hash(File(captureRoot, "bootstrap-ui.xml").readBytes())).put("screenshot_sha256", hash(capture.readBytes()))
       .put("audit", JSONObject().put("method", "native-semantic-focus").put("executed", true).put("issues", JSONArray()))
     if (systemWarningLimitation) measurement.put("status_bar_limitation", JSONObject()

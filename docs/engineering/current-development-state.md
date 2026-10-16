@@ -1,5 +1,27 @@
 # 项目源码检查点与实际范围
 
+## 2026-10-17 当前交接状态（ED-24）
+
+源码分支 `codex/agoraweave-tdd-rebuild-clean`，现有Phase2 T028–T051成果仍含未提交业务：Git状态55个路径，展开64个实际文件。
+父agent已保存原文件SHA256于H盘reports/workflow-optimization-existing-business.json；本轮流程优化不修改或夹带这些业务文件。
+规范同步保持各树规则一致，不代表其他分支已具相同业务源码或通过本分支验证。保留285任务ID和27项历史勾选，Phase2未完成。
+
+当前manifest登记27个core targets、139个core cases、37个core migrations。最近完整139仍有2失败（phase2-core-full-2.log）；
+随后effects夹具事务屏障修复目标4/4通过（phase2-effects-worker-barrier.log），配置完整性5+网关4+生效配置4共13通过
+（phase2-config-completeness-green.log），真实Deno独立归档7/7通过（phase2-archive-deno.log）。这些均为局部结果，尚未重新完整139或云端dev/test。
+typecheck5与lint5通过；Unicode Node/Deno/本地Android Hermes的766向量分别实际通过，云端Hermes未执行，不冒充跨环境完成。
+以上日志位于H:/Projects/AgoraWeave/development/reports，以实际源版本和原日志为准。
+
+完整账号r2原型未获人明确批准；仅Phase2基础组件预览图曾获用户“通过，按此视觉实现”，独立于账号整页。
+App生产页面不能按基础组件批准重做；可继续原型和独立后端。后台当前仍是h1入口，完整Kiranism官方模板待恢复，未声称已恢复。
+真实SMS及公有challenge/verify继续暂缓/未完成；完整账号原生旅程、整页视觉、iOS及正式产品验收未完成。
+
+本轮只落实宪法6.0.0/ED-24、轻量页面绑定、内容增量运行同步及原生旧壳断言适配；新增工具目标测试6/6通过（runtime增量/边界2项，UI绑定/阶段/CLI4项）；目标TypeScript及ESLint检查通过，页面清单structure通过。原生测试仅代码适配，未云运行。
+未运行完整139DB、云端dev/test、云端Hermes、完整原生构建/矩阵，未开发产品业务。父agent最终复检/同步/发布结果以最终交付为准。
+下一窗口先核现有Phase2源码和后端剩余范围，复用健康成果，按后端→获批UI集中实现→阶段集中复检继续。
+
+## 2026-10-16 历史检查点（以下仅证明所记版本）
+
 观察日期：2026-10-16（Asia/Shanghai）。源分支codex/agoraweave-tdd-rebuild-clean；原批次业务b4c825c及操作恢复／登录绑定3486fe2已提交，并在607def1合入已发布规范历史。恢复申请批次在该分支继续提交；规范同步不自动同步业务实现，也不表示其他分支测试通过。
 
 2026-10-16 最新执行状态：已按 ED-23 清理 SP 插件及其 marketplace、SK–SP 桥接、强制 hook、子模块和纯流程认证／收据平台；由 Codex 直接使用现有 SK 资料推进。原 285 个任务 ID 和 27 个历史勾选保留，业务代码与既有核心测试未因清理删除。旧未提交 bridge 事件及私有运行资料保存在 H 盘 private-backups/sp-removal-20261016，不是现行入口。

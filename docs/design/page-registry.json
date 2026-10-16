@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "note": "CI只检查记录与来源，不验证人的同意或美观；外部已批准预览以原图SHA256标识。新增实际页面须局部补齐本清单。",
+  "entries": [
+    {
+      "id": "account-login",
+      "kind": "page",
+      "surface": "mobile-app",
+      "title": "手机号登录",
+      "states": [
+        "正常",
+        "校验错误",
+        "服务不可用",
+        "请求过频",
+        "处理中"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "design_source": "docs/design/prototype/index.html → 页面=login；状态选择器",
+      "design_version": "account-r2",
+      "design_files": [
+        "docs/design/prototype/index.html",
+        "docs/design/prototype/account-pages.css",
+        "docs/design/prototype/account-pages.js",
+        "docs/design/design-tokens.json"
+      ],
+      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/mobile/app/(auth)/index.tsx",
+      "component_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ],
+      "navigation": "App启动 → 登录；按页面切换加入或验证码",
+      "implementation": "existing-partial-unreviewed",
+      "reviews": []
+    },
+    {
+      "id": "account-register",
+      "kind": "page",
+      "surface": "mobile-app",
+      "title": "邀请加入",
+      "states": [
+        "正常",
+        "校验错误",
+        "邀请码无效",
+        "条款加载中",
+        "条款加载失败",
+        "条款已更新",
+        "服务不可用",
+        "处理中"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "design_source": "docs/design/prototype/index.html → 页面=register；状态选择器",
+      "design_version": "account-r2",
+      "design_files": [
+        "docs/design/prototype/index.html",
+        "docs/design/prototype/account-pages.css",
+        "docs/design/prototype/account-pages.js",
+        "docs/design/design-tokens.json"
+      ],
+      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/mobile/app/(auth)/index.tsx",
+      "component_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ],
+      "navigation": "App启动 → 登录；按页面切换加入或验证码",
+      "implementation": "existing-partial-unreviewed",
+      "reviews": []
+    },
+    {
+      "id": "account-otp",
+      "kind": "page",
+      "surface": "mobile-app",
+      "title": "验证码",
+      "states": [
+        "正常",
+        "验证码错误",
+        "验证码过期",
+        "错误次数用尽",
+        "重发倒计时",
+        "请求过频",
+        "条款已更新",
+        "服务不可用",
+        "验证中"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "design_source": "docs/design/prototype/index.html → 页面=otp；状态选择器",
+      "design_version": "account-r2",
+      "design_files": [
+        "docs/design/prototype/index.html",
+        "docs/design/prototype/account-pages.css",
+        "docs/design/prototype/account-pages.js",
+        "docs/design/design-tokens.json"
+      ],
+      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/mobile/app/(auth)/index.tsx",
+      "component_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ],
+      "navigation": "App启动 → 登录；按页面切换加入或验证码",
+      "implementation": "existing-partial-unreviewed",
+      "reviews": []
+    },
+    {
+      "id": "account-security",
+      "kind": "page",
+      "surface": "mobile-app",
+      "title": "账号安全",
+      "states": [
+        "正常",
+        "加载中",
+        "网络失败",
+        "仅当前设备",
+        "撤销中",
+        "结果未确认",
+        "撤销完成",
+        "会话失效"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "design_source": "docs/design/prototype/index.html → 页面=security；状态选择器",
+      "design_version": "account-r2",
+      "design_files": [
+        "docs/design/prototype/index.html",
+        "docs/design/prototype/account-pages.css",
+        "docs/design/prototype/account-pages.js",
+        "docs/design/design-tokens.json"
+      ],
+      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/mobile/app/(auth)/index.tsx",
+      "component_paths": [
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ],
+      "navigation": "登录后 → 账号安全",
+      "implementation": "existing-partial-unreviewed",
+      "reviews": []
+    },
+    {
+      "id": "account-recovery",
+      "kind": "page",
+      "surface": "mobile-app",
+      "title": "恢复申请",
+      "states": [
+        "正常",
+        "可信资格不足",
+        "保护期",
+        "提交中",
+        "服务不可用",
+        "结果未确认",
+        "已受理",
+        "核验中",
+        "需补证",
+        "已拒绝",
+        "已批准待执行",
+        "会话失效"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "design_source": "docs/design/prototype/index.html → 页面=recovery；状态选择器",
+      "design_version": "account-r2",
+      "design_files": [
+        "docs/design/prototype/index.html",
+        "docs/design/prototype/account-pages.css",
+        "docs/design/prototype/account-pages.js",
+        "docs/design/design-tokens.json"
+      ],
+      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/mobile/app/(auth)/index.tsx",
+      "component_paths": [
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ],
+      "navigation": "账号安全 → 恢复申请",
+      "implementation": "existing-partial-unreviewed",
+      "reviews": []
+    },
+    {
+      "id": "phase2-shared-components",
+      "kind": "component",
+      "surface": "shared-ui",
+      "title": "Phase2基础组件（独立于账号r2）",
+      "states": [
+        "normal",
+        "loading",
+        "empty",
+        "error",
+        "forbidden",
+        "unavailable",
+        "pending",
+        "incompatible"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "android",
+        "ios",
+        "admin-browser",
+        "share-browser"
+      ],
+      "design_source": "H:/Projects/AgoraWeave/development/reports/phase2-components-preview.png；用户：通过，按此视觉实现",
+      "design_version": "phase2-components-preview-2026-10-16",
+      "design_files": [],
+      "design_digest": "c3d3526b64162663f00c5bbf61f7c9ceee29f6f5f6449b14998cccf6f0fd33d1",
+      "approval": {
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-16",
+        "reference": "用户在基础组件视觉展示后明确：通过，按此视觉实现；仅覆盖该预览组件",
+        "design_version": "phase2-components-preview-2026-10-16",
+        "design_digest": "c3d3526b64162663f00c5bbf61f7c9ceee29f6f5f6449b14998cccf6f0fd33d1"
+      },
+      "production_entry": "apps/mobile/src/components/Screen.tsx",
+      "component_paths": [
+        "apps/mobile/src/components/Screen.tsx",
+        "apps/mobile/src/components/BusinessState.tsx",
+        "apps/mobile/src/features/account/components.tsx",
+        "apps/admin/src/components/business-state.tsx",
+        "apps/share/src/components/ReadingState.tsx",
+        "apps/admin/src/app/globals.css",
+        "apps/share/src/app/globals.css",
+        "packages/design/src/tokens.ts",
+        "packages/design/src/states.ts"
+      ],
+      "navigation": "基础组件在真实业务页中使用；无产品演示页",
+      "implementation": "existing-components-not-whole-page-approved",
+      "reviews": []
+    },
+    {
+      "id": "admin-official-template",
+      "kind": "page",
+      "surface": "management-admin",
+      "title": "Kiranism官方后台基准（待恢复）",
+      "states": [
+        "template-baseline"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "admin-browser"
+      ],
+      "design_source": "https://github.com/Kiranism/next-shadcn-dashboard-starter/tree/7705dfc0d13889e45c26a55ad5908da6a7a9a605",
+      "design_version": "Kiranism-7705dfc0d13889e45c26a55ad5908da6a7a9a605",
+      "design_files": [],
+      "design_digest": "da6cb6abe55c8c35d6469f748bbf68e2cdbf28857cd5855b498f61b1a4b85696",
+      "approval": {
+        "state": "approved-from-user-directive",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "ED-24：完整官方模板直接作为后台设计基准；不是业务功能或实际页面验收",
+        "design_version": "Kiranism-7705dfc0d13889e45c26a55ad5908da6a7a9a605",
+        "design_digest": "da6cb6abe55c8c35d6469f748bbf68e2cdbf28857cd5855b498f61b1a4b85696"
+      },
+      "production_entry": "apps/admin/src/app/page.tsx",
+      "component_paths": [
+        "apps/admin/src/app/page.tsx",
+        "apps/admin/src/app/layout.tsx"
+      ],
+      "navigation": "管理后台 /；当前仅h1入口，完整模板和业务尚待恢复/实现",
+      "implementation": "template-not-restored-business-not-complete",
+      "reviews": []
+    },
+    {
+      "id": "share-reading",
+      "kind": "page",
+      "surface": "share-web",
+      "title": "只读分享页（当前仅基础入口）",
+      "states": [
+        "readable",
+        "restricted",
+        "deleted",
+        "unavailable"
+      ],
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "platforms": [
+        "share-browser"
+      ],
+      "design_source": "docs/design/UI-SPEC.md §6/7；对应HTML页面尚待绘制和用户批准",
+      "design_version": "share-page-unapproved",
+      "design_files": [],
+      "design_digest": "547f5b9bab0a183451509e602b45e0a3624b5645e41eab64300495020a64dc5e",
+      "approval": {
+        "state": "pending"
+      },
+      "production_entry": "apps/share/src/app/page.tsx",
+      "component_paths": [
+        "apps/share/src/app/page.tsx",
+        "apps/share/src/app/layout.tsx"
+      ],
+      "navigation": "分享Web /；真实分享对象路由尚待实现",
+      "implementation": "existing-heading-only",
+      "reviews": []
+    }
+  ]
+}

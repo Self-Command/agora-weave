@@ -1,6 +1,19 @@
 name: Full current validation
 on:
   workflow_dispatch:
+    inputs:
+      ui_base_ref:
+        description: Base commit for actual UI changes (empty defaults to previous commit)
+        type: string
+        default: ''
+      ui_stage_ids:
+        description: Comma-separated applicable page/component IDs for stage or release acceptance (empty checks records/changes only)
+        type: string
+        default: ''
+      ui_source_revision:
+        description: Actual implementation commit for selected stage records; unchanged page source may survive governance-only commits
+        type: string
+        default: ''
 permissions:
   contents: read
   actions: read
@@ -10,6 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
@@ -19,6 +33,19 @@ jobs:
       - run: npm run ci:typecheck
       - run: npm run ci:lint
       - run: npm run ci:contracts
+      - name: Check UI bindings for actual changes and selected completion scope
+        env:
+          UI_BASE_REF: ${{ inputs.ui_base_ref }}
+          UI_STAGE_IDS: ${{ inputs.ui_stage_ids }}
+          UI_SOURCE_REVISION: ${{ inputs.ui_source_revision }}
+        run: |
+          node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode structure
+          node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode changes --base "${UI_BASE_REF:-HEAD^}"
+          if [ -n "$UI_STAGE_IDS" ]; then
+            node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode stage --ids "$UI_STAGE_IDS" --source-revision "$UI_SOURCE_REVISION"
+          else
+            echo 'No page completion claim: only binding records and actual changed UI were checked.'
+          fi
   services:
     uses: ./.github/workflows/service-bootstrap.yml
     with:

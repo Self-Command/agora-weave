@@ -6,9 +6,29 @@ on:
         description: Comma-separated registered core targets; empty runs current core suite
         type: string
         default: ''
+      ui_base_ref:
+        description: Base commit for actual production UI changes (empty defaults to the previous commit)
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
+  ui_bindings:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Check binding records and actual changed production UI paths
+        env:
+          UI_BASE_REF: ${{ inputs.ui_base_ref }}
+        run: |
+          node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode structure
+          node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode changes --base "${UI_BASE_REF:-HEAD^}"
   services:
     uses: ./.github/workflows/service-bootstrap.yml
     with:

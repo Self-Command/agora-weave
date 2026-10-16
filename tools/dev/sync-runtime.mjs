@@ -18,21 +18,34 @@ if (previous && previous.source !== source && commonDirectory(previous.source) !
   throw new Error('Runtime belongs to another repository');
 }
 if (!previous && git(['status', '--porcelain'], destination)) throw new Error('Existing runtime has unowned changes');
-if (!previous) writeFileSync(marker, JSON.stringify({ source, source_head: head, files: [] }) + '\n');
 // This runtime is disposable; preserve source HEAD identity while copying its actual working files.
-git(['fetch', '--quiet', source, head], destination);
-git(['reset', '--mixed', '--quiet', head], destination);
+if (git(['rev-parse', 'HEAD'], destination) !== head) {
+  git(['fetch', '--quiet', source, head], destination);
+  git(['reset', '--mixed', '--quiet', head], destination);
+}
+const protectedPath = file => file.replaceAll('\\', '/').split('/').some(part =>
+  ['.git', '.agoraweave', 'node_modules', '.runtime-sync.json'].includes(part));
 const files = [...new Set(execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: source, encoding: 'utf8' })
-  .split('\0').filter(Boolean))].filter(file => existsSync(resolve(source, file)));
+  .split('\0').filter(Boolean))].filter(file => !protectedPath(file) && existsSync(resolve(source, file))).sort();
 const contained = file => {
   const path = resolve(destination, file), child = relative(destination, path);
   if (!child || child.startsWith('..') || isAbsolute(child)) throw new Error('Unsafe runtime path');
+  let parent = path;
+  while (parent !== destination) {
+    if (existsSync(parent) && lstatSync(parent).isSymbolicLink()) throw new Error('Runtime path traverses a symbolic link: ' + file);
+    parent = dirname(parent);
+  }
   return path;
 };
 const current = new Set(files);
+let copied = 0, removed = 0;
 for (const file of previous?.files || git(['ls-files'], destination).split('\n').filter(Boolean)) {
   // Removed gitlinks can be directories; contained() checks the disposable workspace boundary.
-  if (!current.has(file)) rmSync(contained(file), { force: true, recursive: true });
+  if (protectedPath(file)) continue;
+  if (!current.has(file)) {
+    const target = contained(file);
+    if (existsSync(target)) { rmSync(target, { force: true, recursive: true }); removed++; }
+  }
 }
 for (const file of files) {
   const original = resolve(source, file), target = contained(file);
@@ -44,10 +57,16 @@ for (const file of files) {
     continue;
   }
   if (!lstatSync(original).isFile()) throw new Error('Runtime sync accepts regular source files or Git submodules only: ' + file);
+  // Compare actual bytes: size/mtime alone miss equal-length edits with preserved timestamps.
+  if (existsSync(target) && lstatSync(target).isFile() && readFileSync(original).equals(readFileSync(target))) continue;
   mkdirSync(dirname(target), { recursive: true });
   copyFileSync(original, target);
+  copied++;
 }
-writeFileSync(marker, JSON.stringify({ source, source_head: head, files, synced_at: new Date().toISOString() }, null, 2) + '\n');
+if (!previous || previous.source !== source || previous.source_head !== head ||
+  JSON.stringify(previous.files) !== JSON.stringify(files) || copied || removed) {
+  writeFileSync(marker, JSON.stringify({ source, source_head: head, files, synced_at: new Date().toISOString() }, null, 2) + '\n');
+}
 const exclude = resolve(destination, '.git/info/exclude');
 if (!readFileSync(exclude, 'utf8').includes('/.runtime-sync.json')) writeFileSync(exclude, readFileSync(exclude, 'utf8') + '\n/.runtime-sync.json\n');
-process.stdout.write(`Synced ${files.length} source files to ${destination}\n`);
+process.stdout.write(`Synced ${files.length} source files to ${destination}; copied=${copied}, removed=${removed}\n`);
