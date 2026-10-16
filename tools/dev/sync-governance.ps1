@@ -1,4 +1,4 @@
-param([string]$SourceRoot = '', [switch]$AllBranches, [switch]$Verify, [switch]$Publish)
+param([string]$SourceRoot = '', [switch]$AllBranches, [switch]$Verify, [switch]$Publish, [switch]$GitHubApi)
 $ErrorActionPreference = 'Stop'
 $taskSource = if ($SourceRoot) { [IO.Path]::GetFullPath($SourceRoot) } else { (& git rev-parse --show-toplevel).Trim() }
 $taskPolicy = Get-Content -LiteralPath (Join-Path $taskSource 'infra/development/policy.json') -Raw | ConvertFrom-Json
@@ -8,6 +8,9 @@ $taskArguments = @((Join-Path $taskSource 'tools/dev/governance-sync.mjs'), $tas
 if ($Verify) { $taskArguments += '--verify' }
 elseif ($AllBranches) { $taskArguments += '--sync' }
 else { throw 'Select -Verify or -AllBranches' }
-if ($Publish) { $taskArguments += '--publish' }
+if ($Publish -and -not $GitHubApi) { $taskArguments += '--publish' }
 & $taskNode @taskArguments
+if ($LASTEXITCODE -eq 0 -and $Publish -and $GitHubApi) {
+    & $taskNode (Join-Path $taskSource 'tools/dev/governance-sync.mjs') $taskSource --publish-api
+}
 exit $LASTEXITCODE
