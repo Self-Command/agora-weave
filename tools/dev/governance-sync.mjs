@@ -118,7 +118,7 @@ export function synchronize(source, publish = false) {
     const isolated = { ...env, GIT_INDEX_FILE: index };
     try {
       git(root, ['read-tree', parent], { env: isolated });
-      const lines = [...blobs].map(([file, blob]) => `100644 ${blob}\t${file}\0`);
+      const lines = [...blobs].map(([file, blob]) => `${file.startsWith('.githooks/') ? '100755' : '100644'} ${blob}\t${file}\0`);
       for (const file of obsolete) lines.push(`0 ${'0'.repeat(40)}\t${file}\0`);
       git(root, ['update-index', '-z', '--index-info'], { env: isolated, input: lines.join('') });
       const tree = git(root, ['write-tree'], { env: isolated }).trim();
@@ -145,9 +145,54 @@ export function synchronize(source, publish = false) {
   writeFileSync(resolve(backup, 'result.json'), JSON.stringify(report, null, 2) + '\n');
   process.stdout.write(`Governance backups: ${backup}\n`); return report;
 }
+export function publishViaGitHub(source) {
+  const root = resolve(source), config = configuration(root), repository = 'Self-Command/agora-weave';
+  const api = (endpoint, method = 'GET', body) => JSON.parse(execFileSync('gh', ['api', `repos/${repository}/${endpoint}`, '--method', method,
+    ...(body ? ['--input','-'] : [])], { encoding:'utf8', input:body ? JSON.stringify(body) : undefined, maxBuffer:32*1024*1024, env:cleanEnvironment() }));
+  const remoteRefs = api('git/matching-refs/heads/');
+  const expected = new Map(config.files.map(file => {
+    const bytes = normalized(readFileSync(resolve(root,file)));
+    if (!Buffer.from(bytes.toString('utf8')).equals(bytes)) throw new Error('GitHub text tree requires a binary blob uploader: ' + file);
+    return [file, { path:file, mode:file.startsWith('.githooks/') ? '100755' : '100644', type:'blob', content:bytes.toString('utf8'),
+      digest:git(root,['hash-object','--stdin'],{input:bytes}).trim() }];
+  }));
+  const reports = [];
+  for (const ref of remoteRefs) {
+    const parent = ref.object.sha, original = api(`git/commits/${parent}`), originalTree = api(`git/trees/${original.tree.sha}?recursive=1`);
+    if (originalTree.truncated) throw new Error('Remote tree is truncated: ' + ref.ref);
+    const previous = new Map(originalTree.tree.map(entry => [entry.path,entry]));
+    const delta = [...expected].filter(([file,value]) => previous.get(file)?.sha !== value.digest || previous.get(file)?.mode !== value.mode)
+      .map(([,value]) => { const {digest,...entry} = value; return entry; });
+    for (const entry of originalTree.tree) if (entry.type === 'blob' && config.manages(entry.path) && !expected.has(entry.path)) {
+      delta.push({path:entry.path,mode:entry.mode,type:'blob',sha:null});
+    }
+    let final = parent;
+    if (delta.length) {
+      const created = api('git/trees','POST',{base_tree:original.tree.sha,tree:delta});
+      const complete = api(`git/trees/${created.sha}?recursive=1`);
+      if (complete.truncated) throw new Error('Created remote tree is truncated');
+      const after = new Map(complete.tree.map(entry => [entry.path,entry]));
+      for (const [file,value] of expected) if (after.get(file)?.sha !== value.digest) throw new Error('Remote rule mismatch: ' + file);
+      for (const entry of originalTree.tree) if (entry.type !== 'tree' && !config.manages(entry.path) && after.get(entry.path)?.sha !== entry.sha) {
+        throw new Error('Non-governance content changed: ' + entry.path);
+      }
+      const commit = api('git/commits','POST',{message:'chore(governance): synchronize approved current specification',tree:created.sha,parents:[parent]});
+      api(`git/refs/${ref.ref.slice('refs/'.length)}`,'PATCH',{sha:commit.sha,force:false}); final=commit.sha;
+    }
+    const readback = api(`git/ref/${ref.ref.slice('refs/'.length)}`);
+    if (readback.object.sha !== final) throw new Error('Remote reference changed during synchronization: ' + ref.ref);
+    reports.push({branch:ref.ref,parent,commit:final,changed_files:delta.length,non_governance_tree_preserved:true});
+    process.stdout.write(`Verified remote ${ref.ref}: ${final}\n`);
+  }
+  const policy=JSON.parse(readFileSync(resolve(root,'infra/development/policy.json'),'utf8'));
+  const report={state:'passed',files:expected.size,remote_branches:reports.length,branches:reports};
+  writeFileSync(resolve(policy.runtime_root,'reports','governance-remote-sync.json'),JSON.stringify(report,null,2)+'\n');
+  return report;
+}
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   try {
-    if (process.argv.includes('--sync')) synchronize(process.argv[2] || process.cwd(), process.argv.includes('--publish'));
+    if (process.argv.includes('--publish-api')) publishViaGitHub(process.argv[2] || process.cwd());
+    else if (process.argv.includes('--sync')) synchronize(process.argv[2] || process.cwd(), process.argv.includes('--publish'));
     else verify(process.argv[2] || process.cwd());
   } catch (error) { process.stderr.write(error.message + '\n'); process.exitCode = 1; }
 }
