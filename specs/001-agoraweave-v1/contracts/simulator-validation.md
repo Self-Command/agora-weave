@@ -1,6 +1,6 @@
 # 模拟器验收范围（ED-14）
 
-批准依据：[ED-14](../reviews/execution-decisions-2026-10-15.md)。今后只有 GitHub Actions 云端 iOS Simulator／Android Emulator 设备层，不要求未来真机。宪法、产品功能与读屏适配要求仍有效；原生结论必须来自对应原生产物的真实模拟器运行，网页或策略单元不能替代。
+批准依据：ED-14、ED-20及[ED-21](../../../docs/engineering/local-cloud-responsibility-decision.md)。开发期可在本地Android模拟器进行真实日常交互和反馈，标清实际环境；正式验收仍由Actions云端iOS Simulator/Android Emulator独立执行，不要求未来真机。iOS在后续跨平台阶段恢复验证，既定系统范围不删。原生结论须来自对应原生产物实际模拟器运行，网页/策略单元或本地演示不能替代正式云端验收。
 
 | 范围 | 必需证据 |
 | --- | --- |

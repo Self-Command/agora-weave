@@ -1,7 +1,6 @@
 name: Inspect preserved native evidence
 on:
-  push:
-    paths: ['.github/workflows/inspect-native-evidence.yml']
+  workflow_dispatch:
 permissions:
   contents: read
   actions: read
