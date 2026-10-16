@@ -39,7 +39,8 @@
     "tools/ci/validation-manifest.json",
     "package.json",
     ".gitignore",
-    "tests/integration/ci/local-services.spec.ts"
+    "tests/integration/ci/local-services.spec.ts",
+    "tools/ci/https-wait-native.ts"
   ],
   "directories": [
     ".agents/skills",
