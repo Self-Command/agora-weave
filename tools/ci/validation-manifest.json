@@ -1103,6 +1103,12 @@
       "depends_on": [
         "supabase/migrations/0015_effective_config_compat.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0017_output_restore_admission.sql",
+      "depends_on": [
+        "supabase/migrations/0016_gateway_binding_fixes.sql"
+      ]
     }
   ],
   "core_fixture_files": [
