@@ -1,20 +1,44 @@
 name: Cloud bootstrap bridge admission
 on:
-  push:
-    paths:
-      - '.github/workflows/bridge-admission.yml'
-      - 'tools/ci/bridge-gate.ts'
-      - 'tools/ci/bridge-transition.ps1'
-      - '.specify/extensions.yml'
-  pull_request:
-    paths:
-      - '.github/workflows/bridge-admission.yml'
-      - 'tools/ci/bridge-gate.ts'
-      - 'tools/ci/bridge-transition.ps1'
-      - '.specify/extensions.yml'
   workflow_call:
+    inputs:
+      mode:
+        type: string
+        default: bootstrap-only
+      transition:
+        type: string
+        default: start
+      initialization_run_id:
+        type: string
+        default: ''
+      completion_run_id:
+        type: string
+        default: ''
+      development_run_id:
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [bootstrap-only, business-increment, full-release]
+        default: bootstrap-only
+      transition:
+        type: choice
+        options: [start, complete]
+        default: start
+      initialization_run_id:
+        type: string
+        default: ''
+      completion_run_id:
+        type: string
+        default: ''
+      development_run_id:
+        type: string
+        default: ''
 permissions:
   contents: read
+  actions: read
 jobs:
   scope:
     runs-on: ubuntu-24.04
@@ -28,6 +52,12 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Install frozen result-schema validator
+        run: npm run ci:install
       - name: Execute actual native ownership pre-hook
         id: ownership
         shell: pwsh
@@ -39,11 +69,21 @@ jobs:
         env:
           ACTUAL_PRE_HOOK: ${{ steps.ownership.outcome }}
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}
+          BRIDGE_MODE: ${{ inputs.mode || 'bootstrap-only' }}
+          BRIDGE_TRANSITION: ${{ inputs.transition || 'start' }}
+          INITIALIZATION_RUN_ID: ${{ inputs.initialization_run_id }}
+          COMPLETION_RUN_ID: ${{ inputs.completion_run_id }}
+          DEVELOPMENT_RUN_ID: ${{ inputs.development_run_id }}
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
         run: node --experimental-strip-types tools/ci/bridge-gate.ts
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: bridge-admission-${{ github.run_id }}-${{ github.run_attempt }}
-          path: bridge-output/
+          path: bridge-output/bridge-admission.json
           if-no-files-found: error
           retention-days: 7
