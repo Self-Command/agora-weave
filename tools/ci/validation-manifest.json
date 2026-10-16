@@ -887,9 +887,18 @@
       ],
       "case_count": 4,
       "requires_services": true
+    },
+    {
+      "id": "core.security-journal",
+      "command": "ci:recovery",
+      "files": [
+        "tests/recovery/core/security-journal.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
     }
   ],
-  "core_case_count": 109,
+  "core_case_count": 112,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1036,6 +1045,12 @@
       "file": "supabase/migrations/0010_foundation_constraints.sql",
       "depends_on": [
         "supabase/migrations/0009_output_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0011_independent_security_journal.sql",
+      "depends_on": [
+        "supabase/migrations/0010_foundation_constraints.sql"
       ]
     }
   ],
