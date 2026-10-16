@@ -1,10 +1,12 @@
-# 阶段一工程交接（ED-20）
+# 当前工程续接（ED-21；保留ED-20历史证据）
+
+2026-10-16：现行依据[ED-21](local-cloud-responsibility-decision.md)与宪法4.0.0。本地高频开发、Actions独立复验及正式验收；本次治理资料已同步，执行器/来源/bridge本地准入迁移由未完成T033承接。既有云端链证明原提交，不因新文档继承正式通过。
 
 当前分支：`codex/agoraweave-tdd-rebuild-clean`。工程工作树：`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`。以该分支最新干净HEAD为检查点，勿在旧Desktop根的过时副本继续。
 
 ## 结果与暂停边界
 
-T001–T027按ED-20的Android开发准备要求完成，T028–T285共258项保持未完成。本轮交接后暂停，不实现下一批业务、不继续扩展CI。handoff保持ready而非feature complete；Draft PR不授合并或生产许可。
+T001–T027按ED-20的Android开发准备要求完成，T028–T285共258项保持未完成。原阶段一交接的暂停已被用户后续继续开发取代；本次文档修订后handoff ready仅表示新资料可供执行，不表示本地适配已实现或feature complete；Draft PR不授合并或生产许可。
 
 Plan、tasks、cloud-validation、release-evidence与execution-policy已逐条同步：当前Phase1退出读取真实development-readiness，五项必需基础集合通过并绑定当前SHA/check_set/foundation。iOS与完整全平台正式链后置，不计已执行；现有正式ci-gate对非completion仍拒绝，不能把workflow总failure误作五项开发通道失败或冒称正式通过。
 
@@ -20,8 +22,8 @@ Plan、tasks、cloud-validation、release-evidence与execution-policy已逐条�
 
 ## 下一轮入口
 
-先读本工作树AGENTS与宪法、当前tasks，再读[下一批Android功能/真实基础依赖/T051局部拆分提案](android-next-batch.md)。建议从邀请码＋手机号OTP＋条款/年龄明确动作、注册/登录及会话撤销的Android纵向切片开始。身份、当前授权、RLS、环境隔离、最小审计和耐久撤销等依赖保留；其他共享核心按消费者激活，T051完整验收责任保留。该提案本轮不实施、不擅改原DAG。
+先读本工作树AGENTS与宪法、当前tasks，再读[下一批Android功能/真实基础依赖与T051拆分](android-next-batch.md)。从邀请码＋手机号OTP＋条款/年龄明确动作、注册/登录及会话撤销的Android纵向切片推进。身份、当前授权、RLS、环境隔离、最小审计和耐久撤销等依赖保留；其他共享核心按消费者激活，T051完整验收责任保留。该依赖拆分已由ED-21批准并同步plan/tasks；各故事直接依赖不删。
 
-T033完整业务目标接线仍未完成。下一轮只接当前行为的迁移/fixture/真实目标执行与报告，取得其云端Red后实现；不能把初始化218项工程测试当业务Green。若handoff ready需恢复执行，先由既有bootstrap start云端收据与metadata reader转executing，再使用与当前foundation匹配的development源申请business-increment；不手填complete或绕过真实准入。阶段一交接不需要提前启动业务。
+T033完整接线仍未完成；下一步先为当前切片迁移合法本地入口、local证据和开发准入，再本地取得有效Red/Green，功能检查点Actions独立复验。runner-only脚本未适配前不伪造CI变量，正式完成仍核真实Actions门禁。优先闭合现有配置/核心验证工作，不再以完整T051阻塞无关消费者；远端特有行为真实云端复验。
 
 [非阻塞后续工程事项](phase1-follow-ups.md)单列保留，按实际消费者或正式验收节点处理。本轮没有全平台ci-ready、产品基准确认、可合并、已发行或生产批准结论。

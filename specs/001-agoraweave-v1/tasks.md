@@ -1,26 +1,26 @@
 ---
-description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制验收"
+description: "AgoraWeave 完整首版：本地高频反馈、Actions 独立复验与强制验收"
 ---
 
 # Tasks: AgoraWeave v1 — 完整首版
 
-**当前执行口径**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+**当前执行口径**：ED-20的Android开发准备历史已收口；[ED-21](../../docs/engineering/local-cloud-responsibility-decision.md)批准本地高频真实开发/TDD、Actions检查点独立复验与正式验收。iOS仍在后续跨平台阶段验证，首版覆盖不删。T051保留完整共享核心收口，不再作为所有故事实现的无条件前置。当前文档不设置全平台ci-ready、feature complete、合并或生产批准。
 
-**更新日期**：2026-10-15。当前工程工作树为`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`，分支`codex/agoraweave-tdd-rebuild-clean`。历史规划起点为`665fffada2dd4fb908b53ad7ca16159ce5e263d8`。
+**更新日期**：2026-10-16（ED-21）。当前工程工作树为`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`，分支`codex/agoraweave-tdd-rebuild-clean`。历史规划起点为`665fffada2dd4fb908b53ad7ca16159ce5e263d8`。
 
-**Input / Prerequisites**：已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v3.1.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
+**Input / Prerequisites**：已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v4.0.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
 
 **Contracts**：[HTTP](contracts/http-api.md)、[授权／事件](contracts/authorization-events.md)、[AI](contracts/ai-tools.md)、[配置](contracts/configuration.md)、[SDK](contracts/plugin-sdk.md)、[manifest schema](contracts/plugin-manifest.schema.json)、[发行证据](contracts/release-evidence.md)、[云端验证](contracts/cloud-validation.md) 与 [目录](contracts/README.md)。
 
 **阶段一进度**：T001–T027按ED-20现行要求完成；其余258项保持未勾选。本次勾选依据工程实现及目标Red/Green、`eb9daaa`的真实五项development-ready原报告（run38749332496/1，已核ZIP并读取）。本检查点提交后对其最终SHA再核同集合，最终外部记录以该SHA为准，未取得时不宣称最终核验通过。详细边界见[交接](../../docs/engineering/bridge-next-window.md)。
 
-**本次 I3/I4**：App本人偏好统一`GET/PATCH /me/preferences`，PATCH部分更新保未列字段及CAS／幂等，错误PUT拒绝。ED-10明确匿名／登录分享仅取合法平台默认与当前页面操作，账号设置仍由App管理；不新增账号偏好投影、读取或同步路径。现有285个任务ID和全部故事／首版范围保留，T001–T027按ED-20工程口径更新；其余为后续Actions实现/验证责任，未实现业务不计通过。
+**本次 I3/I4**：App本人偏好统一`GET/PATCH /me/preferences`，PATCH部分更新保未列字段及CAS／幂等，错误PUT拒绝。ED-10明确匿名／登录分享仅取合法平台默认与当前页面操作，账号设置仍由App管理；不新增账号偏好投影、读取或同步路径。现有285个任务ID和全部故事／首版范围保留，T001–T027按ED-20工程口径更新；其余为后续本地开发及Actions复验/验收责任，未实现业务不计通过。
 
-**Tests**：用户明确要求CI先行与Actions云端TDD。功能、契约、授权安全、并发、集成、真实端到端、视觉／原生／读屏、回归、恢复及测量均按适用范围强制执行。每行为先测试，S_R云端真实缺行为／缺陷断言失败并读因果后才实现；开发S_G同oracle/fixture、受影响套件及必要回归，正式验收最终SHA再执行完整适用集合。编译、导入、环境、网络、凭据失败不算Red；不能删断言或改oracle换绿。
+**Tests**：按ED-21本地高频反馈、Actions独立复验与正式验收分层。功能、契约、授权安全、并发、集成、真实端到端、视觉／原生／读屏、回归、恢复及测量均按适用范围强制执行。每行为先测试，本地健康通道取得S_R真实缺行为／缺陷断言失败并读因果后才实现；Actions在检查点独立复现；开发S_G同oracle/fixture、受影响套件及必要回归，正式验收最终SHA再执行完整适用集合。编译、导入、环境、网络、凭据失败不算Red；不能删断言或改oracle换绿。
 
 **Organization**：Setup → Foundational → 17故事（P1再P2，各组按US编号）→全量封口。编号是清单引用顺序；执行服从下方实现依赖DAG。P2作为P1真实依赖须提前实施，优先级不删减首版。
 
-**最新执行决定**：按[ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)同步当前Codex代码和真实云端图像审查、用户服务器私有存储；285个任务ID、真实Actions执行／TDD／基准确认要求不变。
+**最新执行决定**：[ED-21](../../docs/engineering/local-cloud-responsibility-decision.md)更新开发地点与直接依赖；ED-11/12的当前Codex正式代码/图像审查与私有存储保留。285个ID、测试先行、真实Actions独立复验/正式验收及本人基准确认要求不变，16条改进按ED-21责任表落实。
 
 **历史生成边界**：初始生成本清单时全部任务未勾选，路径均为拟实施目标。当前进度按真实证据及最新ED-20维护；`ready`仅表示交接资料齐全，任务勾选范围以所在阶段现行条款为准，不表示未实现业务、全平台正式验收或生产批准。
 
@@ -32,7 +32,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 - 每任务格式为`- [ ] Tnnn [P?] [USn?] 动作＋具体路径`，已完成用`[x]`；Setup/Foundational/Final无US标签，故事任务必有。
 - `[P]`只表示同一波前置全部满足后的不同文件任务可并行；不能跨Red／Green并行，也不要求自动委派。
-- 本地仅编辑／阅读文件、Git及调度／等待／下载读取Actions。项目静态检查、编译构建测试运行和验收全部Actions；“通过工作流”是未来云端调度任务，不在本地执行npm／工具脚本。
+- 本地可执行已合法适配的安装/构建/检查/测试/调试入口，记录source=local；Actions负责独立复验与正式验收。“通过工作流”指真实云端调度，runner-only脚本须先迁移本地入口，不伪造CI变量或把本地结果当Actions。
 - 一个汇总Red任务须为每个实现行为分别记录红链，不代表阶段内任意实现可以共用无关Red。每个行为的开发S_G须同oracle／fixture、受影响套件及必要回归；实现任务勾选前另须该任务当前适用必需集合、报告读取与审查，不能最后才补TDD或以开发Green代验收。
 - 缺资源按ED-07在实际需用时说明用途、最小权限及对象后索取。public仓库、当前Codex审查方式（ED-11）、阿里云短信、本人基准确认人及用户负责预算资源运营的决定不重问。
 - 新实质冲突或既定目标实测不满足按宪法九说明影响与选项并等明确决定；仅暂停依赖工作，不降范围、暗换服务、放宽权限或改本地验收。
@@ -66,14 +66,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [x] T005 扩充 `.github/workflows/ci-bootstrap.yml` 的首次云端冻结步骤并产出 `package-lock.json`、`infra/ci/toolchain-lock.json`、`infra/ci/images.lock.json`；用 research 固定来源，首次核官方工具／action SHA与 digest，回传受审形成新提交后 immutable install 重跑；移动与后台 React 补丁分别锁定；依赖缓存键含lock、Node／包管理器／工具链、OS／架构；原生构建另含源码／配置及SDK／Xcode／Gradle／目标平台输入，错误命中拒绝，仍immutable install及真实测试（QR-001,QR-006）。
 - [x] T006 在 `tools/ci/test-harness.ts`、`tests/fixtures/bootstrap/health.json` 只建立目标发现／可调用接口壳／健康与报告通道，云端安装选定测试工具并记录版本；零用例、导入／编译／缺凭据等故障单列，不用 --if-present 或总成功壳掩盖缺行为（QR-003,QR-004,QR-007）。
 - [x] T007 在 `.github/workflows/ci-bootstrap.yml`、`tests/e2e/bootstrap/web-shell.spec.ts`、`tests/e2e/ios/BootstrapShellTests.swift`、`tests/e2e/android/BootstrapShellTest.kt` 建立后台与分享真实页面及加速Android壳安装／运行／服务联通／交互探针，保留已有实际壳证据；iOS探针实现保留、当前不再执行，后续跨平台验证；最低OS后续产品验收仍独立覆盖，无业务截图不作基准（QR-001,QR-004,QR-005）。
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [x] T008 [P] 编写 `tests/contract/ci/evidence.spec.ts`、`tests/integration/ci/aggregate.spec.ts`，先断言证据状态／摘要／全必需集合／全部attempt与始终聚合；覆盖缺脚本、零用例、skip／neutral、前置失败、错误 SHA／artifact、只等一个 run、清单缩减和取消／超时；额外断言冻结Node/Expo关联组/平台React隔离/官方Compose及action-image-tool摘要一致，当前开发基础集合与完整正式三端集合分层，错误或缺其适用真实运行报告拒绝；新增错锁／工具链／平台构建缓存、跨run／attempt／SHA artifact复用、损坏archive或raw索引及缺收据的语义拒绝断言；缓存不能产生passed（QR-006,QR-007,QR-001,QR-004）。
 - [x] T009 [P] 编写 `tests/integration/ci/verify-orchestration.spec.ts`，断言实际verify事件／dispatch与共享job的SHA/profile/check_set、安装→真实服务→非空发现→各端执行→原报告→当前Codex代码／视觉审查记录→始终聚合调用边；注入聚合存在而服务/端job缺失、调用依赖缺边、空矩阵、缺npm脚本、零用例、报告缺失和核心激活未接线均拒绝，绿路径必须真实非空运行；按cloud-validation §2.2断言独立原生与共享链、push／PR同目标去重及不同HTTPS／head／merge不可混用；覆盖feedback冒充正式Green／完成、未知或清单／门禁／依赖／测试改动误分类、并行缺健康前置和受保护Red／必要验收／归档被误取消（QR-002–007,QR-010）。
 - [x] T010 [P] 编写 `tests/integration/ci/tdd-cycle.spec.ts`，断言 S_R 先于实现、真实缺行为断言失败／报告读取、S_G同 oracle 和适用回归、final新Green；环境故障假Red、删断言换绿和oracle实质变化未重建链均拒绝；断言中间feedback即使通过也不可记S_G、task done或ci-ready，正式S_G仍同oracle及当前全部适用激活套件／必要回归，取消／缺失／旧SHA不得晋级（QR-003,QR-007）。
 - [x] T011 [P] 编写 `tests/security/ci/bridge-gate.spec.ts`，覆盖 bootstrap-only含业务、缺真实development-ready开始业务、开发准入冒充ci-ready／formal complete及foundation漂移、hook未执行／被过滤、旧SHA／未读报告／未提交修改／直接旧脚本complete／task-done exit0假完成；检查 raw桥接状态不能充有效完成证据；拒绝本地项目执行／本地runner代验标记和未获准的业务执行，云端调度身份与实际environment来源一致；新增取消前身份／替代关系／取证状态核验、唯一未读Red及归档清理保护和取消仍阻塞的拒绝探针，禁止按所有push无条件自动取消（QR-007,QR-008,QR-002）。
 - [x] T012 [P] 编写 `tests/security/ci/review-baseline.spec.ts`，断言当前Codex审查记录与实际代码／图像／报告摘要、当前SHA、覆盖／处置绑定，拒绝假报告、截断、漏图、秘密外发、未确认首基准／自批／自动更新基准及低像素差异掩盖交互错误；全部执行和采集仍只在Actions，审查只用必要工程／合成截图，无生产用户或秘密；断言命中已下载图像仅复用校验字节，不继承旧SHA审查结论；最终漏读必需报告／失败明细／原图继续拒绝，ED-14与ED-18边界不扩大（QR-005,QR-007,QR-010,QR-009）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
 - [x] T013 通过 `.github/workflows/ci-bootstrap.yml` 将以上工程行为逐项只提交目标测试 S_R，在 Actions 实际执行并读取缺行为断言与前置健康；按 `contracts/cloud-validation.md` §4 将 red_observed 及完整红链登记到受控证据库 `ci/tdd-cycles/`，每个对应实现前均须有合格Red（QR-003,QR-006）。
 ### Implementation — 服务、接口与真实客户端
@@ -90,7 +90,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [x] T023 在 `tools/ci/bridge-transition.ps1`、`.specify/extensions.yml` 注册非bridge命名空间、mandatory且无condition的 before_implement／after_implement，并对 `.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1` 的complete建立项目兼容拒绝入口；本地只读取可信当前云端结果后转换元数据，旧脚本／手填字段／被过滤钩子不得绕过，ready不等业务准入（QR-007,QR-008）。
 - [x] T024 编写 `docs/engineering/superpowers-execution.md`、`tools/ci/superpowers-adapter.md`，云端探针核当前SK1.0.12／SP7／桥接的任务提取、ID→Task N、真实远端task-done与Expected/接口/整体回归字段；测试命令仅调度读取Actions，临时adapter派生canonical tasks，不另做brainstorm／writing-plans；不兼容如实阻塞不暗升级（QR-008）。
 - [x] T025 在 `infra/ci/device-matrix.json`、`docs/engineering/resource-admission.md` 保留Android7/API24与当前API36模拟器准入和实际壳运行证据、辅助能力及最小临时服务凭据；按ED-20当前Android优先，iOS资源/构建/测试/图像审查后置到跨平台阶段，不再阻塞本轮工程开发准备；硬件能力与ED-14/18/19边界仍见 `contracts/simulator-validation.md`，业务激活时执行适用Android目标测试（QR-004,QR-005,QR-008）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [x] T026 按ED-20通过 `.github/workflows/ci-bootstrap.yml` 与T021共享的 `verify-development.yml` 在当前目标SHA执行固定依赖/类型/lint、非空工程测试及必要回归、隔离dev/test服务与Web基础交互，读取实际原报告并核当前foundation；工程拒绝探针保原失败与观察事实。当前开发请求显式 `development_platform=android`，不启动iOS或全平台原生验收矩阵；已实现的完整审查/归档/门禁能力保留，原完整跨平台验收链后置，未执行项不计passed（QR-001,QR-003,QR-007）。
 - [x] T027 依据ED-20等待当前Android开发准备必需结果，下载校验读取原报告，核对同目标SHA/attempt/清单/当前foundation及真实 `development-ready`，将完成依据写外部私有工程记录，维护T001–T027勾选和干净工作区/交接；本轮Phase1完成只准入Phase2与Android业务TDD，不设置全平台ci-ready、feature complete或生产批准。iOS验证与完整跨平台正式验收后置；新增业务仍沿原DAG执行目标Red/Green、必要回归及正式Android产品验收（QR-006,QR-007）。
@@ -99,13 +99,13 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 ## Phase 2: Foundational — 持续有效核心
 
-**Goal / Purpose**：取得development-ready后以云端TDD完成全部故事共享的身份／当前授权、基础配置、最小审计、可靠效果、媒体／数据义务和原生组件能力；业务管理流程仍在相应故事。完整初始化证据可并行闭合，不能以开发准入替任务验收。
+**Goal / Purpose**：取得本地健康通道后按直接依赖以分层TDD完成故事共享的身份／当前授权、基础配置、最小审计、可靠效果、媒体／数据义务和原生组件能力；业务管理流程仍在相应故事。完整初始化证据可并行闭合，不能以开发准入替任务验收。
 
 **Independent Test**：真实 Compose 中以合成账号／资源检验主库资格、RLS、旧JWT与字节／实时输出、耐久拒绝事实和同版配置。基础完备只允许故事开始，不替任何尚未实施页面的验收。
 
-**CRITICAL**：本阶段开始须真实development-ready及目标所需服务／执行器健康，不要求先完成完整正式ci-ready；T051及下表原故事实现依赖暂保留，局部拆分提案见[下一批Android交接](../../docs/engineering/android-next-batch.md)，本轮不执行。后续产品完整验收、合并仍须当时全部适用证据；T027仅按ED-20工程收口勾选。
+**CRITICAL**：本阶段按功能直接依赖推进；本地健康通道可准入切片开发，不要求T051先作为所有故事的无条件前置。T051仍负责完整共享核心收口及Actions全适用验收；首个Android注册登录切片先具备身份会话、当前授权/RLS、环境隔离、必要审计耐久撤销、幂等可靠写入、条款及必要组件，媒体/Realtime/完整配置随消费者激活。后续产品完整验收、合并仍须当时全部适用证据；T027仅按ED-20工程收口勾选。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T028 [P] 编写 `tests/contract/core/http.spec.ts`、`tests/contract/core/events.spec.ts`，锁HTTP DTO/错误/CAS/operation/cursor、完整事件白名单/schema、audience默认拒绝与无秘密投影；含管理/恢复/证据不授普通阅读或AI的约束；偏好API激活时锁定HTTP契约与实际路由／客户端DTO的GET/PATCH、base_version／operation_id，错误PUT不得因测试与实现同时漂移而获准；分享用途仍先判白名单（FR-021,FR-044–047,FR-102,FR-106,FR-108–110,QR-003,FR-113,FR-091–092）。
 - [ ] T029 [P] 编写 `tests/security/core/current-policy.spec.ts`、`tests/concurrency/core/admission.spec.ts`，在健康真实DB上测试旧JWT／会话撤销、角色变化、撤权提交与后续新访问/Range/cache-hit/304/WS/SSE竞争及固定锁顺序，未经授权输出为0（FR-004,FR-044–047,FR-108–110,FR-122,QR-010）。
@@ -113,12 +113,12 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T031 [P] 编写 `tests/recovery/core/security-journal.spec.ts`、`tests/security/core/internal-boundaries.spec.ts`，注入拒绝意图持久化失败、结果未知／日志缺口、直连Storage/PostgREST/Realtime/Studio、秘密暴露及环境串用；安全未知保守拒绝（FR-108–110,FR-114–118,FR-139,FR-170,QR-010）。
 - [ ] T032 [P] 编写 `tests/contract/design/components.spec.ts`、`tests/contract/contracts/graphemes.spec.ts`，覆盖UAX29 rev47/Unicode17组合Emoji与换行，平台合法状态、图标文字、字体／触区／焦点／减少动效语义；各端实际断言接入已就绪云端壳（FR-125–129,QR-005）。
 
-### Implementation — 核心真实验证接线（先工程Red，业务目标Red前就绪）
+### Implementation — 核心真实验证接线（本地真实Red/Green，Actions复验）
 
-- [ ] T033 在既有 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`.github/workflows/tdd-cycle.yml`、`tools/ci/validation-manifest.json`、`tools/ci/discover-targets.ts`、`package.json` 接入当前核心ci:migrate/seed/contracts/service/security/concurrency/recovery及各端组件实际入口、健康前置／非空发现／产物报告与独立审查；每个接线行为先沿已就绪通道取得有效工程S_R并读后实现，业务目标缺实现以可调用接口的语义断言取得Red，不能导入不存在实现或用环境故障作Red；当前核心套件写入即激活、缺脚本／缺job／漏用例保拒绝，T034前实际目标Red调用链就绪，T051前全部已激活Green链完整可运行，不等待US14（QR-002–007,QR-010）。
-### Actions Red — 读取真实失败后才实现
+- [ ] T033 在既有 `.github/workflows/verify-release.yml`、`.github/workflows/verify-increment.yml`、`.github/workflows/tdd-cycle.yml`、`tools/ci/validation-manifest.json`、`tools/ci/discover-targets.ts`、`package.json` 为当前切片接通本地迁移/seed/contracts/service/security/concurrency/recovery及组件入口、非空发现、健康和原报告；迁移local来源schema、可重现S_R/工作区快照、TDD消费、合法本地开发准入与adapter，拒绝伪runner/空脚本/漏注册/混用计数；实际远端调用及Actions检查点独立复验入口按当前切片接通。新增工程行为先适用环境语义Red读因果再实现Green，远端行为在Actions实际复验；编译/导入/类型/环境/凭据故障非Red。按ED-21落实已有归档生产/消费契约、证据自动关联、等价去重/安全并行、有界网络重试与校验缓存，普通编辑不无条件调完整矩阵，PR必要check和正式验收不得跳过。T034前当前目标链就绪，T051前全部适用核心链齐全；文档批准不等迁移已完成，不等待US14（QR-002–007,QR-010）。
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T034 通过 `.github/workflows/tdd-cycle.yml` 为以上每个核心行为取得健康真实服务上的 S_R断言失败并读取原因，关联测试／fixture／oracle摘要和需求到私有 `ci/tdd-cycles/`；缺表/接口以行为断言证明，编译/导入失败先修环境而不计Red；依赖T033已接线真实核心目标发现／调用，按相同check_set/oracle保Red原失败，工程接线先Red的链与业务行为链分别可查（QR-003,QR-006）。
+- [ ] T034 本地健康服务为以上每个核心行为取得 S_R断言失败并读取原因，记录source=local、实际提交/差异、命令退出状态、fixture/oracle和环境摘要；Actions在功能检查点以可追溯来源独立复现并归档；缺表/接口以行为断言证明，编译/导入失败先修环境而不计Red；依赖T033已接线真实核心目标发现／调用，按相同check_set/oracle保Red原失败，工程接线先Red的链与业务行为链分别可查（QR-003,QR-006）。
 ### Models — 原字段与约束
 
 - [ ] T035 创建核心身份与操作范围表／最小RLS于 `supabase/migrations/0001_identity.sql`，禁止业务行直接授管理员或过期会话；索引和CAS按原模型逐字段落实；模型 `account`：必要字段原文「id→auth.users；status(active/cancelled)、phone_changed_at、sensitive_until、identity_epoch、registered_at」；约束原文「注销立即拒登录；临时/永久处罚单独建模，非等同注销；DEC-001时间权威计算」；模型 `session_registry`：必要字段原文「session_id→auth.sessions、account_id、device_label、trusted_at、revoked_at、epoch」；约束原文「当前有效Auth会话＋核心撤销两者核验，JWT历史有效不够；本人仅见必要会话信息」；模型 `admin_grant`：必要字段原文「account_id、role、operation_scopes、resource_scope、environment、expires_at、revoked_at」；约束原文「五类PRD角色；无角色自授，无默认私人原文权」；模型 `stepup_challenge`：必要字段原文「id、account/session、action_digest、aal、verified_at、expires_at、consumed_at」；约束原文「敏感动作一次使用，当前MFA/权限/DEC-001再核；不储可用验证码」（FR-004,FR-102–107）。
@@ -137,11 +137,11 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T046 实现 `supabase/functions/core/router.ts`、`supabase/functions/core/media/gateway.ts`、`supabase/functions/core/realtime/gateway.ts`：逐方法audience注册、每GET/HEAD/Range/conditional/cache-hit/流与事件当前核，拒绝不304／不重定向源站；游标只定位不授权，底层服务不公开；App偏好路由激活后注册GET/PATCH、不注册PUT；share-read对私人/me在方法结果前先用途拒绝，允许的config/effective仅分享UI／获准平台默认，不附账号选择（FR-044–047,FR-108–110,FR-122,FR-145,FR-091–092,FR-113）。
 - [ ] T047 实现 `supabase/functions/core/operations.ts`、`services/core-worker/src/outbox.ts`、`services/core-worker/src/inbox.ts`，同主体/动作/ID payload不同409、unknown当前查询、effect_key唯一与lease末端资格校验；重连/重试不重复业务或通知（FR-021,FR-068–069,FR-119,FR-122,FR-151）。
 - [ ] T048 实现 `packages/config/src/resolve.ts`、`supabase/functions/core/config/effective.ts`、`supabase/functions/core/documents/read.ts`，基础兼容bundle唯一解析与非敏感投影、当前发布资料及document_set_digest；同层冲突拒绝、个人选择不放宽、文档展示不构成consent；完整配置发布UI归US11（FR-130–135,FR-139,FR-002,FR-078）。
-- [ ] T049 实现 `tests/fixtures/core/seed.sql`、`tools/ci/seed.ts`：只在隔离Actions以受控身份建立A/B/C/D/访客／五角色、有效关系／通过资源／合成terms-notice-help版本和可控时钟；使用真实DB／对象／Auth，记录fixture版本，不造业务调用结果或复制生产私密数据；迁移目录按实际已实现依赖做云端干净库与增量库双验证，数值文件名只是规划标识，禁止用文件排序跳过schema依赖（QR-004,QR-009,FR-170）。
+- [ ] T049 实现 `tests/fixtures/core/seed.sql`、`tools/ci/seed.ts`：只在隔离本地与Actions各自在隔离非生产环境以受控身份建立A/B/C/D/访客／五角色、有效关系／通过资源／合成terms-notice-help版本和可控时钟；使用真实DB／对象／Auth，记录fixture版本，不造业务调用结果或复制生产私密数据；迁移目录按实际已实现依赖做云端干净库与增量库双验证，数值文件名只是规划标识，禁止用文件排序跳过schema依赖（QR-004,QR-009,FR-170）。
 - [ ] T050 实现 `packages/design/src/tokens.ts`、`packages/design/src/states.ts`、`apps/mobile/src/components/Screen.tsx`、`apps/admin/src/components/business-state.tsx`、`apps/share/src/components/ReadingState.tsx`，保UI-SPEC语义并记录原生适配；中文动态字／44pt/48dp／4.5:1／键盘焦点与图标名、真实错误保输入，必要跨端细节不硬统一React（FR-125–129）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
-- [ ] T051 通过 `.github/workflows/verify-release.yml` 执行核心同目标 S_G、当前已激活套件／接口／安全并发／恢复与各端组件交互、实际AI代码／视觉审查；读完原报告且findings闭环后写私有 `completion-records/foundation/`，新SHA重验，不把基础fixture或壳当后续全业务通过；前置T033已提供全部已激活迁移／seed／真实套件／各端组件入口和非空执行证据，依赖失败／缺脚本或调用边拒绝；不依赖US14首次创建验证器（QR-003–007,QR-010）。
+- [ ] T051 通过 `.github/workflows/verify-release.yml` 对完整共享核心在同最终SHA执行全部适用契约/迁移/接口/安全并发/恢复/组件交互、TDD链认证及当前代码/实际图像审查；缺失消费者责任不由缩激活清单豁免。读完原报告且findings闭环后写私有 `completion-records/foundation/`，新SHA重验，不把fixture/壳当后续业务通过。T033须提供全部适用实际入口/非空执行及来源认证，依赖失败/缺脚本/调用缺边拒绝；此完整核心收口不作为各故事开始实现的无条件前置，各切片直接安全/功能依赖仍须先验证，不等待US14首次创建验证器（QR-003–007,QR-010）。
 
 **Checkpoint**：匹配当前SHA的全部适用证据、TDD链、报告读取、当前Codex代码／视觉审查记录及必要具体基准确认齐全才确认相应增量；缺真实consumer的完整故事验收仍未完成。
 
@@ -153,15 +153,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation（见依赖表）。**完整验收前置**：US17分类清理及本人页面基准；注销即时拒绝先验，30天物理清理不能在US1记已完成。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T052 [P] [US1] 编写 `tests/contract/auth/routes.spec.ts`，覆盖 /auth/challenges-verify-refresh-logout 与 /me/sessions、phone-change、cancellation、recovery-cases；注册匹配当前terms版本且显式同意、invite/OTP/age三条件，已有登录不追加条款同意、无邮箱／密码入口（FR-001–008）。
 - [ ] T053 [P] [US1] 编写 `tests/security/auth/mfa-dec001.spec.ts`，覆盖初始化入口一次关闭／MFA恢复／五角色逐操作／旧会话与AS-03全部列明操作及合法例外；动作摘要一次stepup、24h跨会话／插件／回滚无旁路，未列操作不扩大限制（FR-004–006,FR-103–107）。
 - [ ] T054 [P] [US1] 编写 `tests/concurrency/auth/invitation-otp.spec.ts`、`tests/integration/auth/aliyun.spec.ts`，同码双兑换与条款版本切换保持原子准入，OTP有效期/重发/错误/手机号与IP限流／短信故障无假成功；真实阿里云测试前依ED-07索取签名模板凭据及获准接收对象（FR-001–003,FR-008）。
 - [ ] T055 [P] [US1] 编写 `tests/e2e/ios/AccountJourneyTests.swift`、`tests/e2e/android/AccountJourneyTest.kt`、`tests/e2e/web/admin-auth.spec.ts`，登记注册／登录／会话撤销／换号／受控恢复／注销与后台MFA页面状态、输入保留和真实结果（FR-001–008,FR-103–105）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T056 [US1] 通过 `.github/workflows/tdd-cycle.yml` 为US1各行为取得并读取真实 S_R断言失败与健康前置，登记原测试／fixture／oracle摘要于私有 `ci/tdd-cycles/us1/`；外部凭据不可用阻塞相应真实验证，不充Red（FR-001–008,FR-103–107）。
+- [ ] T056 [US1] 本地健康通道为US1各行为取得并读取真实 S_R断言失败与健康前置，登记原测试／fixture／oracle摘要于私有 `ci/tdd-cycles/us1/`；外部凭据不可用阻塞相应真实验证，不充Red（FR-001–008,FR-103–107）。
 ### Models — 原字段与约束
 
 - [ ] T057 [US1] 创建邀请兑换、准入／真实条款证明与恢复案件表于 `supabase/migrations/0101_admission_recovery.sql`；复用核心account/session/grants，事务失败无伪admission／consent，未注册临时资料沿认证期限清理；模型 `admission`：必要字段原文「account_id、invitation_id、phone_verified_at、age_declaration、terms_version→document_release、terms_receipt_id、admitted_at」；约束原文「新注册三条件同时成立；条款关联实际发布版本及本人明确同意记录；未准入Auth主体不成为社区账号；主动声明不冒称年龄核验」；模型 `invitation`：必要字段原文「token_hash、creator_id、expires_at、state、used_account_id/used_at、revoke_reason」；约束原文「unused→used或revoked/expired；锁定单次兑换，used不能再分配」；模型 `recovery_case`：必要字段原文「account_ref、mode(trusted/manual/mfa_emergency)、state、minimal_evidence_ref、reviewer、result、audit_ref」；约束原文「received→reviewing→approved/rejected/need_evidence；受控一次执行，核验不足不保证成功」（FR-002–003,FR-006）。
@@ -173,7 +173,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T061 [US1] 实现 `supabase/functions/core/routes/auth.ts`、`supabase/functions/core/routes/account-security.ts`、`supabase/functions/core/routes/admin-identity.ts` 的契约全部认证／会话／换号预览执行／恢复／注销及邀请码／角色／stepup动作，敏感permission逐action且无原秘密DTO，幂等真实unknown可查（FR-001–008,FR-102–107）。
 - [ ] T062 [P] [US1] 实现 `apps/mobile/app/(auth)/index.tsx`、`apps/mobile/src/features/account/AccountSecurityScreen.tsx`，手机号/邀请/age声明/真实terms展示同意／倒计时／多会话撤销／换号冷却／恢复申请／注销影响确认；secure storage、退出清受限缓存，失败保输入与合法重试（FR-001–008）。
 - [ ] T063 [P] [US1] 实现 `apps/admin/src/features/auth/AdminLogin.tsx`、`apps/admin/src/features/security/IdentityManagement.tsx`，替换模板假登录，真实手机号＋MFA、邀请／当前授权与恢复结果、敏感理由/挑战；普通OTP或过期角色不能显示为管理员成功（FR-003,FR-103–107）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T064 [US1] 通过 `.github/workflows/verify-release.yml` 在真实Auth/阿里云合格测试通道／DB／双端App及后台运行US1全部独立用例、当前目标Green／安全回归／AI代码视觉审查；读取同最终SHA报告并满足适用基准确认后存私有 `completion-records/us1/`，US17实际物理清理继续必需、不以注销UI代清理AC（FR-001–008,FR-103–107,QR-003–007）。
 
@@ -187,16 +187,16 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation（见依赖表）。**完整验收前置**：US4/US5/US10审核管理及后续消费者/US16；所有帖子组合首版必需。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T065 [P] [US3] 编写 `tests/contract/content/publish.spec.ts`、`tests/contract/content/drafts.spec.ts`，全部帖子类型/组合、2000/10000字符与AS-01、私人草稿CAS与访客显式导入、operation未知查询、当前权限和已成功附件复用，不支持类型明确拒绝（FR-018–025）。
 - [ ] T066 [P] [US3] 编写 `tests/concurrency/content/thread-batch.spec.ts`，首发／续写部分审核／附件失败、通过revision与后来编辑竞争、强关／丢响应／重复提交；仅作者、整体范围、head依赖／中间保序，不以旧串等待隐藏已通过批（FR-021–022,FR-026–027）。
 - [ ] T067 [P] [US3] 编写 `tests/security/content/uploads-preview.spec.ts`，JPEG/PNG/动态GIF/MP4 H264-AAC真实文件／伪格式／归属／图9×10MB视频1×200MB×300秒GIF1×15MB／不混排，SSRFi每跳DNS核私网metadata／5秒2MiB3跳，最多一预览卡失败不损普通链接（FR-018–019,FR-022,FR-112）。
 - [ ] T068 [P] [US3] 编写 `tests/e2e/ios/ComposerDraftTests.swift`、`tests/e2e/android/ComposerDraftTest.kt`，双端所有发布／草稿状态、媒体选择包括GIF不降首帧／HEIC成熟转换失败、断网输入／部分重试／串批次与真实后台结果（FR-018–027,FR-112–113）。
 - [ ] T069 [P] [US3] 编写 `tests/contract/media/playback-policy.spec.ts`、`tests/e2e/ios/MediaPlaybackTests.swift`、`tests/e2e/android/MediaPlaybackTest.kt`，Actions真实发布预览／内容详情视频与GIF按V19A逐项断言wifi_only默认且静音、Wi-Fi/蜂窝及always/wifi_only/never、明确开声再静音与列表复用、preload关闭无推测请求/取消在途预取而主动缓冲可用、Wi-Fi转蜂窝／视区／失焦／前后台、GIF可视播放与省流量/减少动效显式回退；保存真实网络、Range/字节、播放器/音频/帧/取消释放及交互时间线，关联当前授权撤回与离线拒绝；策略用例/截图不代双端原生模拟器实际播放（FR-113,FR-108–110,FR-125–129）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T070 [US3] 通过 `.github/workflows/tdd-cycle.yml` 按行为取得US3真实 S_R失败并阅读原因，绑定健康真实DB/Storage/上传夹具及oracle于私有 `ci/tdd-cycles/us3/`；对未完成投票／收录端到端消费保激活节点，不能假通过；包含T069全部V19A播放／预取／网络／声音行为，各项先真实S_R并读因果，缺设备或播放器环境不是Red；首次US2尚未实现设置时使用受控真实preferences事实，设置完成后完整消费者回归（FR-018–027,FR-112,FR-113）。
+- [ ] T070 [US3] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地按行为取得US3真实 S_R失败并阅读原因，绑定健康真实DB/Storage/上传夹具及oracle于私有 `ci/tdd-cycles/us3/`；对未完成投票／收录端到端消费保激活节点，不能假通过；包含T069全部V19A播放／预取／网络／声音行为，各项先真实S_R并读因果，缺设备或播放器环境不是Red；本地先取得有效Red，Actions检查点独立复现；首次US2尚未实现设置时使用受控真实preferences事实，设置完成后完整消费者回归（FR-018–027,FR-112,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T071 [US3] 创建内容revision与审核、draft及回复范围表于 `supabase/migrations/0301_content_revisions_drafts.sql`；审核只切指定revision，私人CAS不静默覆盖；模型 `content_revision`：必要字段原文「resource_id、revision_no、body、tags/mentions、alt_text、author、review_state、submitted_at」；约束原文「(resource,revision_no)唯一；编辑仅允许字段，媒体/引用关系不可替换；旧版当前权＋本人/具体治理权」；模型 `revision_review`：必要字段原文「revision_id、decision、reason、reviewer、decided_at、request_id」；约束原文「决定只作用具体revision，不能批准后来未审版本；独立整条处置优先」；模型 `draft`：必要字段原文「owner、body/metadata、local_origin、cloud_version、attachment_refs、last_saved」；约束原文「私人；CAS base_version不符返回冲突，本人选择版本；访客本机→云端需显式import」；模型 `reply_policy`：必要字段原文「post_id、scope(all_readers/author_follows/mentioned/closed)、epoch」；约束原文「每新回复取当前阅读＋回复交集；关闭不清历史」（FR-020,FR-023–025,FR-038,FR-043）。
@@ -211,7 +211,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T078 [US3] 实现 `apps/mobile/src/features/media/playback-policy.ts`、`apps/mobile/src/features/media/useMediaConditions.ts`，读取当前合法个人video_policy/preload与真实网络/可视区/页面焦点/前后台/系统省流量和减少动效；默认wifi_only、always两网自动、never两网点击、自动视频静音，Wi-Fi转蜂窝不再自动启动或预取未主动选择媒体；GIF仅可视自动且系统限制时静态预览/明确播放，失焦或离屏暂停释放或可测降耗，个人选择不授媒体资格；不新增未经指定的preload初始布尔决定；US2设置API尚未完成时组件接受当前合法偏好DTO，行为测试用真实preferences数据/受控fixture传入，不造假API；T201接口hook就绪后接入并复验当前保存值，不将fixture当全设置验收（FR-113,FR-108–110）。
 - [ ] T079 [US3] 实现 `apps/mobile/src/features/media/VideoMedia.tsx`、`apps/mobile/src/features/media/GifMedia.tsx`、`apps/mobile/src/features/content/ContentDetailScreen.tsx`，按T078策略用既定Expo/RN成熟媒体能力接入当前获权媒体、发布预览及正文详情；提供可读屏播放/暂停/开声/静音，新条目不继承上一条开声，关闭preload停止推测下载和在途预取、显式播放缓冲单列，视区/失焦/背景释放或量化降耗；所有新GET/Range/cache-hit走core当前媒体gate，撤权/退出/注销/断网真实状态，不用GIF静默首帧冒充播放（FR-113,FR-108–110,FR-125–129）。
 - [ ] T080 [US3] 实现 `apps/mobile/src/features/composer/ComposerScreen.tsx`、`apps/mobile/src/features/composer/ThreadEditor.tsx`、`apps/mobile/src/features/drafts/DraftsScreen.tsx`，全屏大输入/范围回复/媒体投票/AI用途和收录入口的合法创建值、链接/批次/上传/结果未知/审核/冲突选择真实反馈，无新增复杂文章编辑或多作者续串；发布预览实际接入T079视频/GIF组件及T078播放策略，预览成功／上传成功不代消费播放验证（FR-018–027,FR-112–113,FR-113）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T081 [US3] 通过 `.github/workflows/verify-release.yml` 执行US3真实接口/对象/并发/双端发布草稿与既有回归，同目标S_G及final新Green、当前AI审查与适用基准；读报告存私有 `completion-records/us3/`，US4完整投票与US9收录消费就绪后重跑关联AC，原AC摘要不替全文；对T069在双端原生产物的模拟器按V19A读实际网络/Range字节/播放音量/帧/视区/预取取消报告；US2偏好和各消费入口就绪后重跑同oracle及当前权限回归（FR-018–027,FR-112–113,QR-003–007,FR-113）。
 
@@ -225,15 +225,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US3-implementation、foundation（见依赖表）。**完整验收前置**：US2/4/6/7/8/9/12/13/15/17所有实际入口；完整跨入口验收最后闭合。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T082 [P] [US5] 编写 `tests/contract/content/edit-visibility-delete.spec.ts`，编辑字段及媒体/引用关系不可换、作者/本案治理历史与普通读分开、新revision待审/驳回最后通过版、visibility/reply policy、最近删除和10秒/30天精确边界（FR-041–045,FR-048–052）。
 - [ ] T083 [P] [US5] 编写 `tests/security/content/dependency-closure.spec.ts`、`tests/concurrency/content/revocation.spec.ts`，引用传递失效含附加文字、原帖评论／串head与中间占位分别判；撤权vs旧JWT/URL/Range/cache HIT/304/实时/SSE/复制/旧版，按实际新访问线性化记录0泄露（FR-044–047,FR-051–052,FR-108–110）。
 - [ ] T084 [P] [US5] 编写 `tests/recovery/content/deletion-impact.spec.ts`，首帖当次dependency_hide集恢复、独立删除/治理不复活、恢复子项不使失效root可读、保护唯一副本／共享权益、依赖隐藏不重算原删除时钟，未知结果不假恢复（FR-048–052,FR-111,FR-114–118）。
 - [ ] T085 [P] [US5] 编写 `tests/e2e/ios/ContentPrivacyTests.swift`、`tests/e2e/android/ContentPrivacyTest.kt`，多账号编辑／历史／整体范围放宽确认／最近删除／前台重开／离线受限拒绝与缓存清理、正文摘要附件同时退出（FR-041–052,FR-108–110）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T086 [US5] 通过 `.github/workflows/tdd-cycle.yml` 取得US5逐行为有效 S_R并阅读精确线性化／断言报告，将TDD链存私有 `ci/tdd-cycles/us5/`；后续分享/AI/通知/检索未实现入口保持后续必需，不用占位代完整AC（FR-041–052,FR-108–111）。
+- [ ] T086 [US5] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地取得US5逐行为有效 S_R并阅读精确线性化／断言报告，将TDD链存私有 `ci/tdd-cycles/us5/`；后续分享/AI/通知/检索未实现入口保持后续必需，不用占位代完整AC（FR-041–052,FR-108–111）。
 ### Implementation — 服务、接口与真实客户端
 
 - [ ] T087 [US5] 实现 `modules/content/src/edit.ts`、`modules/content/src/revisions.ts`：只改正文/标签/alt，投票锁语义独立，重复编辑与审批绑定revision、显示已编辑；作者及本案历史当前核/最小投影/审计，新版pending/rejected不改current_revision_id（FR-041–043）。
@@ -242,7 +242,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T090 [US5] 实现 `supabase/functions/core/routes/content-management.ts` 的允许编辑／本人历史／整串visibility/reply-policy／resource deletion-restore/recently-deleted，复用current政策与operations；管理/恢复不授普通/AI权，风险预览与错误不泄漏私人原因（FR-041–052）。
 - [ ] T091 [US5] 实现 `apps/mobile/src/features/content/ContentManagementScreen.tsx`、`apps/mobile/src/features/content/VisibilitySheet.tsx`、`apps/mobile/src/features/deletion/RecentlyDeletedScreen.tsx`、`apps/mobile/src/security/revalidate-display.ts`，展示真实新旧审核状态和截止、放宽确认／撤销／恢复；复制/导航/前台/离线重开重核并清受限内容和依赖回答（FR-041–052,FR-108–110）。
 - [ ] T092 [US5] 实现 `tests/integration/content/cross-entry-revocation.spec.ts`、`tools/ci/case-sets/us5.json`，注册所有流／搜索／通知／分享／AI／版本／媒体／插件后续真实入口和当前激活节点；每消费者接入时重跑共同撤权行为，正式验收每入口实际执行不可删减（FR-045–047,FR-051–052,FR-108–110,QR-003）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T093 [US5] 通过 `.github/workflows/verify-release.yml` 运行US5当前真实层的S_G/回归并阅读报告；全部消费者已可运行后执行完整跨入口AC及现版本AI审查/视觉确认，存私有 `completion-records/us5/`，依赖未执行不能勾此完整验收任务或称全撤权通过（FR-041–052,FR-108–111,QR-003–007）。
 
@@ -256,15 +256,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US1-implementation、US3-implementation、foundation（见依赖表）。**完整验收前置**：US2关系真实操作、US10举报、US15通知、US17共享保留及双端基准。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T094 [P] [US7] 编写 `tests/contract/messaging/routes.spec.ts`，全部eligibility/requests/actions/conversations/messages/access/listing/delivery/read/typing路径，DM正文4000/请求500可见字符AS-01、请求无链接／图片／GIF／追加，接收设置独立于关注审批；FR-065创建请求按规范化无向账号pair一pending，sender/recipient只决定动作权限；明确409竞争失败与同operation原结果复用（FR-061–066,FR-068–072,FR-065,FR-067）。
 - [ ] T095 [P] [US7] 编写 `tests/concurrency/messaging/request-merge.spec.ts`，真实DB同时提交A→B／B→A请求、同operation重试及与接受／到期／直接发送竞争，断言无向pair最多一pending、一initial及对应唯一通知，不覆盖／追加／自动接受原请求；在同pair锁内按服务端时间先转旧终态再判断新创建，30天期限与30/7分因冷却不变；S21/AC-54/AS-02接受原ID/原时点稳定插入、实际read与未读域迁移、跨端重连，一pair唯一正常会话，直接新消息不提前合入旧initial，不新增提醒不复活终态（FR-065–069）。
 - [ ] T096 [P] [US7] 编写 `tests/security/messaging/message-access.spec.ts`，关闭全部后请求可看删举报不可accept、拉黑优先、单条删除旧Range/分页/实时/会话重现/备份拒本人而对方独立；举报案证据不授普通消息读或后台任意浏览（FR-062–066,FR-070–072,FR-107）。
 - [ ] T097 [P] [US7] 编写 `tests/e2e/ios/MessagingTests.swift`、`tests/e2e/android/MessagingTest.kt`，全部/未读、新建选人、独立请求与正常聊天、多设备离线/未知发送、默认回执关双方开才互显、typing关闭和5秒暂态，无在线/最后活跃；聊天合法GIF按V19A实际帧/网络/可视区/系统条件/焦点验证，并核单条删除后新Range拒绝；私信仍无视频（FR-061–072,FR-113）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T098 [US7] 通过 `.github/workflows/tdd-cycle.yml` 在真实Auth/DB/对象/事件与两端可调用壳上逐行为取得并读取US7 S_R，注册私有 `ci/tdd-cycles/us7/`；既有有效follow合成前置不代US2关系变更验收；私信GIF消费行为按V19A逐项先有效双端Red并读报告（FR-061–072,FR-113）。
+- [ ] T098 [US7] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地在真实Auth/DB/对象/事件与两端可调用壳上逐行为取得并读取US7 S_R，注册私有 `ci/tdd-cycles/us7/`；既有有效follow合成前置不代US2关系变更验收；私信GIF消费行为按V19A逐项先有效双端Red并读报告（FR-061–072,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T099 [US7] 创建规范pair、独立请求、正常会话和原消息于 `supabase/migrations/0701_messaging.sql`；每方访问与member单独建表，不用会话hide flag代逐消息撤权；模型 `account_pair`：必要字段原文「lower_account_id、upper_account_id、lock_version」；约束原文「lower<upper的无向账号pair唯一；请求创建／接受／到期／直接发送使用一致pair锁顺序，不以发送方向建第二pair」；模型 `dm_request`：必要字段原文「pair→account_pair、sender/recipient、initial_message_id、created/expires、state、reason、cooldown_until」；约束原文「同一规范化无向pair至多一条pending，部分唯一约束只按pair不含方向；sender/recipient保留动作权限，只有显式合法accept可合入，结束不影响合法会话」；模型 `conversation`：必要字段原文「pair_id、established_by、created_at、last_activity_at」；约束原文「pair唯一正常会话，取消关注不自动终止；当前发送资格逐次核」；模型 `message`：必要字段原文「stable_id、sender、conversation_id或request_id、original_saved_at、sequence、body/type、operation_id」；约束原文「pending请求不可正常分页；接受原ID/时间，(saved_at,id)稳定排序；无为全员撤回功能」；模型 `message_access`：必要字段原文「message_id、subject、readable、revoked_at、actual_read_at、delivered_at」；约束原文「(message,subject)唯一；本人删单条立即撤其资格，其他方独立；解除或会话重现不复活」；模型 `conversation_member`：必要字段原文「conversation、subject、list_hidden_at、mute、read_cursor」；约束原文「删会话只隐藏列表；新合法消息可重现，逐消息读权仍优先」；pending部分唯一索引只使用规范化pair、不含发送方向；请求创建／接受／到期／直接发送统一pair事务与锁顺序，过期条件由服务端同锁判断不由索引自行计算（FR-061–070）。
@@ -275,7 +275,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T102 [US7] 实现 `modules/messaging/src/message-access.ts`、`modules/messaging/src/receipts.ts`，本人单条删撤资格和附件绑定读/对方权益独立，删listing合法重现不复活消息；saved/provider_accepted/device_delivered/read分开，双方回执开才输出，短typing无长期追踪（FR-068–072）。
 - [ ] T103 [US7] 实现 `supabase/functions/core/routes/messaging.ts`，严格当前参与者分页/独立请求域／未读、各全部HTTP动作／幂等unknown查询，实时通过core当前投影，不返回未经授予DM元数据／附件，向通知outbox发最小refs与唯一effect（FR-061–072,FR-122）。
 - [ ] T104 [US7] 实现 `apps/mobile/src/features/messaging/ConversationList.tsx`、`apps/mobile/src/features/messaging/RequestInbox.tsx`、`apps/mobile/src/features/messaging/ChatScreen.tsx`，全部未读/选人/请求预览与真实accept状态／回复资格／免打扰举报拉黑／可靠输入重试/回执，单条和会话删除动作分开；实际聊天GIF复用T079/T078与当前偏好及逐消息媒体资格，视区/失焦/省流量/减少动效回退和明确播放，仍不新增私信视频（FR-061–072,FR-113）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T105 [US7] 通过 `.github/workflows/verify-release.yml` 执行US7完整请求/资格/消息/附件/并发/双端/真实Realtime与既有回归，读同目标与final新Green/AI审查/视觉基准报告存私有 `completion-records/us7/`；US2实际关系变化、US15通知与US17备份就绪后再验证交叉用例，不遗落AS-02；V09在真实DB完整执行双向创建A→B/B→A、重试、过期、accept/direct-send竞争并核一pending/initial/正常会话及通知效果，负向原报告和消息/未读域证据均保存；私信GIF按V19A保双端实际帧/网络/交互及逐消息撤权报告（FR-061–072,QR-003–007,FR-065,FR-067,FR-113）。
 
@@ -289,15 +289,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US3-implementation、US5-implementation、US4-implementation、US6-implementation、foundation（见依赖表）。**完整验收前置**：US10资料管理、US11预算、US15故障、US17清理及真实模型/双端基准。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T106 [P] [US8] 编写 `tests/contract/ai/http-mcp.spec.ts`，MCP2025-11-25 initialize/list/call七个工具白名单、有界schema/≤8调用/≤20结果、六类产品功能、真实模型列表与用户会话命令分离；外链只文本，无附件/语音/外联网/写工具（FR-073–077,FR-085–086）。
 - [ ] T107 [P] [US8] 编写 `tests/security/ai/purposes-sources.spec.ts`，账户和逐帖retrieve/summarize/recommend所有实际用途交集、公开候选/屏蔽拉黑、主动受限/self/草稿确认告知／识别粘贴限制；source_kind=document当前release撤下、前答传递闭包、标题复制流续问撤回与恶意指令（FR-075–084）。
 - [ ] T108 [P] [US8] 编写 `tests/concurrency/ai/quota-cost.spec.ts`，成功20+预留、并发重试/stop/未知账目、8000含系统与检索/2000输出tokenizer、Asia/Shanghai初始日桶、配置降额/预算未配置停新调用与恢复时间，不抹真实失败成本（FR-085–089）。
 - [ ] T109 [P] [US8] 编写 `tests/integration/ai/approved-model.spec.ts`、`tests/e2e/ios/AiJourneyTests.swift`、`tests/e2e/android/AiJourneyTest.kt`、`tests/fixtures/ai/labeled-evaluation.json`，真实大陆/不训练合格测试模型、100%来源/授权硬判与普通有用≥90%暂定有标签自动评估，图像开发审查授权不放宽产品政策（FR-073–089）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T110 [US8] 通过 `.github/workflows/tdd-cycle.yml` 按US8行为取得并阅读实际 S_R，获准模型/帮助/检索/讨论均真实接口；必要服务或tokenizer未准入按ED-07索取且保未完成，将红链存私有 `ci/tdd-cycles/us8/`，401/429/缺秘密不算Red（FR-073–089）。
+- [ ] T110 [US8] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档 按US8行为取得并阅读实际 S_R，获准模型/帮助/检索/讨论均真实接口；必要服务或tokenizer未准入按ED-07索取且保未完成，将红链存私有 `ci/tdd-cycles/us8/`，401/429/缺秘密不算Red（FR-073–089）。
 ### Models — 原字段与约束
 
 - [ ] T111 [US8] 创建作者用途和具体获批服务注册于 `supabase/migrations/0801_ai_policy_services.sql`，服务policy证据和tokenizer版本真实引用、不获客户端secret；模型 `ai_use_policy`：必要字段原文「account、resource override、retrieve/summarize/recommend、epoch」；约束原文「账户与逐帖交集，涉及实际用途全满足；重新开不复活失效源」；模型 `approved_service`：必要字段原文「kind/provider/model_id、state、policy_evidence_ref、region/subprocessors/no_training/retention/delete、tokenizer_ref、secret_ref」；约束原文「verified+approved+configured+healthy才可用；费用/条款真实准入未满足不调用」（FR-074,FR-078–082,FR-088–089）。
@@ -312,7 +312,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T118 [US8] 实现 `supabase/functions/core/routes/ai.ts` 全部models/conversations/requests/stream/stop/retry/answer-copy-feedback/usage及本人用途设置动作，用户确定性命令可写本人会话而MCP无写；版本/来源/notice选择提交再核，合法同版本告知可复用、不加公开问答逐次强制同意（FR-073–089）。
 - [ ] T119 [P] [US8] 实现 `apps/mobile/src/features/ai/AiScreen.tsx`、`apps/mobile/src/features/ai/AiHistory.tsx`、`apps/mobile/src/features/privacy/AiPurposeSettings.tsx`，右上历史新建/输入区真实模型与待启用扩展、主动选择确认告知／来源/复制/停止/反馈/未知额度费用、来源失效即时撤回、保输入无假回答（FR-073–088）。
 - [ ] T120 [P] [US8] 实现 `apps/admin/src/features/ai/ServiceAndBudgetConsole.tsx`，真实合格模型/政策状态／全局用户单次金额／成功预留未知对账／告警启停与审计；金额运营值由用户设置，AI运维仅有权指标、原始调试最长7天独立授权，无任意完整对话入口（FR-074,FR-079,FR-088–089,FR-107）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T121 [US8] 通过 `.github/workflows/verify-release.yml` 执行US8真实模型/只读工具/来源用途/撤回/限额/双端及自动有标签评估、适用回归和独立开发AI代码视觉审查；读final SHA报告存私有 `completion-records/us8/`，普通质量/性能保暂定并将实测供用户确认，来源安全硬门槛不降低（FR-073–089,QR-003–007）。
 
@@ -326,15 +326,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US1-implementation、US3-implementation、US5-implementation、foundation（见依赖表）。**完整验收前置**：五角色对所有管理动作、US11/13/14/17及资料各入口和US16；正式正文用户供给。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T122 [P] [US10] 编写 `tests/contract/governance/routes.spec.ts`，待审/举报真实受理反馈、revision决定／三类处罚／到期撤销影响／独立申诉、错误不假受理；批量举报数量不直接定违规（FR-095–101）。
 - [ ] T123 [P] [US10] 编写 `tests/security/governance/roles-evidence.spec.ts`、`tests/concurrency/governance/review-sanction.spec.ts`，五角色action/resource/env/MFA/原因/DEC-001、案证据最小读与审计、原处置≠最终复核/缺第二人、旧会话拒、解除不恢复独立删除/关系/请求；无通用导出（FR-095–107）。
 - [ ] T124 [P] [US10] 编写 `tests/contract/documents/version-publication.spec.ts`、`tests/security/documents/receipts.spec.ts`，V13A的immutable/CAS/ready/preview/release/withdraw/作用范围及生产confirmation错摘要拒绝；当前/合法历史/未发布读、terms-notice-help真实source/撤下、展示与consent分开及注册原子proof（FR-002,FR-078–079,FR-101–107）。
 - [ ] T125 [P] [US10] 编写 `tests/e2e/web/governance-documents.spec.ts`、`tests/e2e/ios/GovernanceDocumentTests.swift`、`tests/e2e/android/GovernanceDocumentTest.kt`，Kiranism实际五角色界面/举报处罚申诉/资料管理及设置注册AI合法资料页，ED-06的3/7工作日提醒无自动决定或硬截止；后台获准媒体预览逐浏览器验证视频/GIF策略、点击回退/音量/视区/预取与操作结束释放，敏感预览和当前撤权不因媒体组件放宽（FR-095–107,FR-125–129,FR-113）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T126 [US10] 通过 `.github/workflows/tdd-cycle.yml` 对US10与ED-08正式资料行为先取得读取真实 S_R，合成正文只CI并有标识，现有注册/AI版本竞争重新建立目标缺行为Red链于私有 `ci/tdd-cycles/us10/`；包括后台实际获准媒体预览的V19A策略/回退/网络逐行为Red（FR-095–107,FR-002,FR-078,FR-113）。
+- [ ] T126 [US10] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地对US10与ED-08正式资料行为先取得读取真实 S_R，合成正文只CI并有标识，现有注册/AI版本竞争重新建立目标缺行为Red链于私有 `ci/tdd-cycles/us10/`；包括后台实际获准媒体预览的V19A策略/回退/网络逐行为Red（FR-095–107,FR-002,FR-078,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T127 [US10] 创建案件／最小证据授权／处罚与独立申诉表于 `supabase/migrations/1001_governance.sql`，与核心deleted和document对象分开，无证据权接回普通业务；模型 `report/case`：必要字段原文「reporter、target、reason、minimal_evidence_refs、state、handler、public_feedback」；约束原文「pending→reviewing→processed/not_actionable；举报数量不自动认定，反馈不漏举报人」；模型 `evidence/grant`：必要字段原文「case、object_ref、retention、allowed_reviewer/action、reason、expires_at」；约束原文「最小案授权，敏感读审计；不授普通消息读权」；模型 `sanction`：必要字段原文「subject/target、type、functions、starts/ends、reason、original_decider、state」；约束原文「功能/临时/永久分开，解除仅该处罚影响，不能恢复主动删/请求/关系」；模型 `appeal`：必要字段原文「sanction、appellant、statement/media、state、reviewer、decision/execution」；约束原文「awaiting_independent_review→reviewing→decided；最终reviewer≠original_decider，无第二人保持待复核」（FR-096–100,FR-107）。
@@ -348,7 +348,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T133 [P] [US10] 实现 `apps/admin/src/features/governance/GovernanceConsole.tsx`、`apps/admin/src/features/operations/OperationsConsole.tsx`，实际用户/处罚/帖子评论投票/媒体/举报审核申诉/话题公告精选/违规记录/角色审计健康各集合分权与明细表单，结果/理由/复核/失败状态真实；外部资源缺失按原节点列出；在 `apps/admin/src/components/MediaPreview.tsx` 对获准预览实现视频/GIF浏览器播放、当前适用播放偏好/静音及主动开声、视区/失焦/预取/系统条件和点击回退，当前role/案证权限与预览安全边界持续有效；播放输入仅来自当前后台audience已有合法投影，不借同语义新增私人preferences读取或绕开用途（FR-095–107,FR-113）。
 - [ ] T134 [P] [US10] 实现 `apps/admin/src/features/documents/DocumentConsole.tsx`，规则/隐私/条款/告知/help真实类型的录入版本/预览发布撤下/适用入口/历史与审计、生产影响精确摘要确认；正文用户提供，无模板正式政策；公告/运营发布仍按相应合法业务路径（FR-101–107,FR-002,FR-078）。
 - [ ] T135 [P] [US10] 实现 `apps/mobile/src/features/governance/ReportScreen.tsx`、`apps/mobile/src/features/governance/SanctionAppealScreen.tsx`、`apps/mobile/src/features/documents/DocumentScreen.tsx`、`apps/share/src/components/DocumentReader.tsx`，当前/历史明示与本人版本动作证明、举报/处罚允许说明和独立申诉真实状态，各合法入口不泄漏内部案信息（FR-095–100,FR-002,FR-078–079）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T136 [US10] 通过 `.github/workflows/verify-release.yml` 执行US10完整五角色/审核并发/处罚申诉/文档发布读取及注册AI消费竞态、真实Web/双端与AI审查、视觉基准；读取同final报告存私有 `completion-records/us10/`，合成资料不等正式运营正文已供或生产已批准；后台合法媒体预览逐浏览器V19A适用行为、当前权限和必要设置回归，保存真实网络/播放器/交互报告（FR-095–107,FR-002,FR-078–079,QR-003–007,FR-113）。
 
@@ -362,14 +362,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation（见依赖表）。**完整验收前置**：全部consumer含US4/6/8/12/13/14/15/17及AS04既有对象；不能只测配置库。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T137 [P] [US11] 编写 `tests/contract/configuration/registry-effective.spec.ts`，全22namespace登记唯一key/schema/default/status/scopes/range/permissions/dependencies/effect/consumer/existing-policy及客户端合法投影，global→environment→module/plugin→有权group，个人选择只收窄（FR-130–133,FR-138–139）。
 - [ ] T138 [P] [US11] 编写 `tests/concurrency/configuration/bundle-activation.spec.ts`，类型范围依赖/多组同层冲突、定时/reload所有consumer-ready、publish/rollback并发和旧bundle缓存、失败不半生效，权威当前权限独立于固定版本；平台媒体参数变化不覆盖本人video_policy/preload，实际播放器消费者与旧对象/网络切换按V19A复验；ED-10在分享consumer就绪后用App相反always/never及preload账号值验证平台默认投影不混入个人选择，匿名/登录同来源；配置回滚不引入个人偏好读取路径（FR-134–139,FR-113,FR-091–092）。
 - [ ] T139 [P] [US11] 编写 `tests/recovery/configuration/existing-objects.spec.ts`、`tests/e2e/web/configuration.spec.ts`，AS-04既有请求截止/恢复副本/首票锁/消息访问/作者收录/资料版本回滚、敏感逐参数MFA/理由/具体生产影响确认与现有runtime免重建边界；UI不伪造能力；ED-10分享config实际响应及页面操作不读取／写回账号偏好；按V12B留原请求、投影和DB未变证据（FR-136–141,FR-091–092,FR-113）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T140 [US11] 通过 `.github/workflows/tdd-cycle.yml` 在基础config既有行为上为新增发布／回滚／consumer与UI目标取得读取缺行为 S_R，既已通过的基础行为保回归、不制造假失败，红链存私有 `ci/tdd-cycles/us11/`（FR-130–141）。
+- [ ] T140 [US11] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地在基础config既有行为上为新增发布／回滚／consumer与UI目标取得读取缺行为 S_R，既已通过的基础行为保回归、不制造假失败，红链存私有 `ci/tdd-cycles/us11/`（FR-130–141）。
 ### Implementation — 服务、接口与真实客户端
 
 - [ ] T141 [US11] 补齐 `packages/config/src/registry.ts`、`packages/config/src/defaults.ts`、`packages/config/src/permissions.ts`，逐参数元数据/confirmed-engineering-provisional及spec所有初值／期限／ED-02／DEC-001／RD-10；`documents,sharing,plugins,release,sandbox`同注册，secret_ref不出客户端，各story新增consumer再校完整度（FR-130–133,FR-136,FR-139）。
@@ -379,7 +379,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T145 [US11] 实现 `supabase/functions/core/routes/configuration.ts` 全部definitions/previews/releases/rollbacks/effective动作，逐参数读写最小授权及版本/范围/时点/来源/前后值/理由/结果；无配置故障不无限额度、不关认证RLS隔离审计、模型数据政策和只读不可普通开关（FR-130–141）。
 - [ ] T146 [P] [US11] 实现 `apps/admin/src/features/configuration/ConfigurationCenter.tsx`、`apps/admin/src/features/configuration/ImpactPreview.tsx`，各域分类/范围/有效来源/目标值/校验冲突/现有影响/确认生效回滚审计；已支持主题菜单排序语言配置有真实反馈、新native代码结构走发布，中文/无障碍保持（FR-130–141）。
 - [ ] T147 [P] [US11] 实现 `apps/mobile/src/config/effective.ts`、`apps/share/src/config/effective.ts`，非敏感展示值过期刷新/current_config_version错误保输入与成功附件，运行时显示不授权、个人接收/回执/作者AI与收录不被放宽、无主题账号同步；App播放账号选择走本人GET/PATCH并与平台参数分源，preload/网络/系统/资格变化重新判策略；分享严格ED-10：匿名和登录只取固定合法分享UI／平台播放默认及当前页面操作，不请求或同步完整/部分账号preferences，不以config query、SSR高权查询、HTML hydration、缓存或登录响应带入账号值，不提供最小本人偏好投影；页面状态不写账号或显示已同步，后台/插件也不得据同语义扩权（FR-130,FR-133–135,FR-138–141,FR-113,FR-091–092）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T148 [US11] 通过 `.github/workflows/verify-release.yml` 验US11真实多consumer/角色/旧值/并发/原子回滚与Web/双端流程，全部consumer就绪后重跑AC38–42/AS04和对应回归，读final SHA/AI代码视觉报告存私有 `completion-records/us11/`，不得以注册条目齐全代真实生效；FR-113关联真实设置与全部已实现播放器consumer，按V19A验证平台更新/回滚不覆盖个人选择，未就绪完整consumer仍未完成；ED-10按V12B复验匿名/登录分享配置来源与App相反保存值隔离，伪query无私人投影、页面操作不改DB；账号偏好仍由App GET/PATCH管理（FR-130–141,QR-003–007,FR-113,FR-091–092）。
 
@@ -393,15 +393,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation、US11-implementation（见依赖表）。**完整验收前置**：US12 SDK/三端样例、八个官方模块、US14生产拒绝、US17清理/US16；fixture包不代正式样例。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T149 [P] [US13] 编写 `tests/contract/plugins/manifest-lifecycle.spec.ts`，直接验证完整manifest.schema及.awplugin文件/hash/来源/三端兼容/权限配置迁移保留声明，生命周期每真实状态；最大包50MiB解压200MiB/1000文件/比≤20、path-traversal重复条目symlink/zip-bomb拒绝（FR-142–144,FR-152–159）。
 - [ ] T150 [P] [US13] 编写 `tests/security/plugins/runtime-broker.spec.ts`，真实独立Deno容器与NOBYPASSRLS非owner运行角色，A/B跨用户环境/DB-Storage-Realtime-jobs-logs-config-AI/secret/外网/hostsocket/FFI/allow-run/资源耗尽负向；受审共享只返回当前用户有权数据（FR-145–147,FR-150–151,FR-170–173）。
 - [ ] T151 [P] [US13] 编写 `tests/concurrency/plugins/drain-dependency.spec.ts`、`tests/recovery/plugins/migration-uninstall.spec.ts`，disable vs admission/任务lease/最终effect、依赖默认拒与明确集合、30秒工程排空超时unknown、增量grant/迁移失败/卸载原期限/额外purge独立确认/重装tombstone不复活（FR-153–159）。
 - [ ] T152 [P] [US13] 编写 `tests/e2e/web/plugin-management.spec.ts`，超管邀请具体包审核/权限预览/MFA/安装未启用/待验证待生产确认/启停升卸失败恢复健康日志；普通及受邀仅提交，DEC-001逐动作，无上传即上线（FR-144,FR-152–159）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T153 [US13] 通过 `.github/workflows/tdd-cycle.yml` 对US13注册/审核/隔离/生命周期行为先测试 S_R并读取健康真实容器/DB报告，私有 `ci/tdd-cycles/us13/` 记录红因果；CI fixture包不是正式SDK样例或产品业务，生产路径始终先拒未确认（FR-142–159）。
+- [ ] T153 [US13] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地对US13注册/审核/隔离/生命周期行为先测试 S_R并读取健康真实容器/DB报告，私有 `ci/tdd-cycles/us13/` 记录红因果；CI fixture包不是正式SDK样例或产品业务，生产路径始终先拒未确认（FR-142–159）。
 ### Models — 原字段与约束
 
 - [ ] T154 [US13] 创建开发邀请、插件不可变版本与具体审核/grant于 `supabase/migrations/1301_plugin_registry.sql`，官方也无自动高权、自用同人审核与发布分档，包审核绑实际digest；模型 `developer_invitation`：必要字段原文「developer、inviter、scope、expires/revoked、state」；约束原文「受邀默认提交，不授review/install/release」；模型 `plugin/version`：必要字段原文「plugin_id、maintainer/source、semver、manifest/hash、payload_digest、compat、dependencies、permissions、migration/lifecycle」；约束原文「ID/版本唯一，原包不可替换；官方也不自动高权」；模型 `plugin_review/grant`：必要字段原文「version/digest、compat/security/permission checks、reviewer、decision、sensitive_permissions」；约束原文「审核绑定digest，更新增量重新审；自用同人也分步骤留档」（FR-144,FR-152–153）。
@@ -415,7 +415,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T160 [US13] 实现 `modules/registry.ts`、`supabase/functions/core/plugins/official-dependencies.ts`，按TD-02登记social/content/discussion/interaction/discovery/messaging/ai/sharing默认启用、准确依赖/核心历史义务与可停清单，不因运行停用删资格事实；停content默认列依赖，无自动扩散或变相核心停卸（FR-143–147,FR-155–156）。
 - [ ] T161 [US13] 实现 `supabase/functions/core/routes/plugins.ts` 全部开发邀请/受邀package-submit、admin versions/reviews/permission-grants/install-preview-actions/额外purge-preview-confirmations/extensions/action/health-log路径，MFA理由具体版本/环境和生产确认再核，敏感权限不可复用旧grant（FR-144–159）。
 - [ ] T162 [US13] 实现 `apps/admin/src/features/plugins/PluginConsole.tsx`、`apps/admin/src/features/plugins/LifecyclePreview.tsx`，来源/当前目标hash/依赖兼容/敏感权限/迁移恢复限制/在途和明确选定停用集合/分数据结果/失败健康授权日志，历史安全只读或无正文占位，不用一按钮假成功（FR-143–144,FR-152–159）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T163 [US13] 通过 `.github/workflows/verify-release.yml` 对US13真实隔离/生命周期/迁移/role/MFA/管理页取得S_G及必要回归；US12三端与全部官方模块/US17清理/US14生产拒绝完成后跑完整AC43–46/50，读final SHA/审查/基准报告存私有 `completion-records/us13/`，未齐不勾完整验收（FR-142–159,QR-003–007）。
 
@@ -429,14 +429,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation、US11-implementation、US13-implementation（见依赖表）。**完整验收前置**：全部17故事最终适用AC51–53及Final冻结全量集合；同版验证不等生产授权。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T164 [P] [US14] 编写 `tests/contract/release/plans-confirmations.spec.ts`，immutable manifest和四类/混合路径、15分钟一次工程租约、plan/scope/hash变化／过期／DEC-001／角色撤销拒，所有生产影响包括后台/迁移/权限需具体确认，检查通过不等批准（FR-160–164）。
 - [ ] T165 [P] [US14] 编写 `tests/security/release/oidc-cohort-runtime.spec.ts`，用真实Actions身份验证issuer/aud/repository_id/owner_id/ref/workflow_sha/environment/run/attempt和短租约，明确名单×兼容×当前数据权交集、名单外descriptor/代码/能力拒、扩灰新确认、自报native无授权（FR-160–163）。
 - [ ] T166 [P] [US14] 编写 `tests/recovery/release/interruption-compatibility.spec.ts`、`tests/e2e/web/release-management.spec.ts`、`tests/e2e/ios/OldClientTests.swift`、`tests/e2e/android/OldClientTest.kt`，中断unknown/重试防重复/安全旧版/局部扩展不可用/核心确不安全强更可达安全申诉、不兼容down/回滚不复活（FR-161–164）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T167 [US14] 通过 `.github/workflows/tdd-cycle.yml` 在合成发行/隔离部署目标上逐行为取得US14有效 S_R并阅读原报告，登记私有 `ci/tdd-cycles/us14/`；不为测试访问生产或消耗用户生产确认（FR-160–164）。
+- [ ] T167 [US14] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地在合成发行/隔离部署目标上逐行为取得US14有效 S_R并阅读原报告，登记私有 `ci/tdd-cycles/us14/`；不为测试访问生产或消耗用户生产确认（FR-160–164）。
 ### Models — 原字段与约束
 
 - [ ] T168 [US14] 创建可信client-release、不可变release plan、当前确认与明确cohort于 `supabase/migrations/1401_release_control.sql`；GitHubEnvironment是附加锁非产品管理员权，不以百分比代名单；模型 `client_release`：必要字段原文「app/build/platform、runtime/native_fingerprint、contract/sdk/ui_versions、capabilities、distribution_ref」；约束原文「发行注册可信；旧端仅局部不兼容不强更，必要核心不安全才强更」；模型 `release_plan`：必要字段原文「id、commit/各产物digest、config/plugin/contract、change_class、migration/permission、environment、cohort_digest、rollback_limits」；约束原文「不可变摘要；混合最高要求；构建/验证同产物」；模型 `release_confirmation`：必要字段原文「plan_digest、scope_digest、approver/session/stepup、reason、expires/consumed」；约束原文「生产每动作匹配/当前授权，改变计划失效；扩灰新确认」；模型 `cohort_member`：必要字段原文「release/cohort_version、account_id、added_by、effective_at」；约束原文「管理员明确名单，非随机百分比；资格不等于数据权限」（FR-160–164）。
@@ -450,7 +450,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T174 [US14] 实现 `supabase/functions/core/routes/releases.ts` 全部previews/confirmations/expand-confirmations/state/evidence与客户端能力读取，scope/权限/名单新摘要当前核，证据受控只读、检查／批准／安装／上线／渠道完成各事实区分，无任意业务全库导出（FR-160–164）。
 - [ ] T175 [US14] 实现 `apps/admin/src/features/releases/ReleaseConsole.tsx`、`apps/admin/src/features/releases/CohortEditor.tsx`，真实四类/最高要求/同版证据/生产版本权限范围摘要/MFA原因、指定名单及扩灰新确认、健康观察/失败中断恢复/渠道待处理，上传安装不当所有端已上线（FR-160–164）。
 - [ ] T176 [US14] 编写 `docs/operations/deployment-runbook.md`、`docs/operations/recovery-runbook.md`、`docs/operations/environment-manifest.json`，用户负责部署上线运营，交接同版Compose/各端包/配置/权限/迁移/备份/安全watermark与明确恢复限制；Q-02实际需用时取Actions专用受限身份验证自管隔离环境，用户个人秘密不入公开仓库，不自动生产操作（QR-001,QR-009,FR-160–164）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T177 [US14] 通过 `.github/workflows/verify-release.yml` 在合成sandbox完整跑四类变更、无确认/摘要篡改/名单/兼容/中断恢复/产物替换负向，读final SHA与全部适用AI审查/视觉回归证据存私有 `completion-records/us14/`；完整首版AC51–53须所有故事就绪后的Final gate，验证通过仍不授权生产（FR-160–164,QR-001–009）。
 
@@ -464,14 +464,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation、US3-implementation、US5-implementation、US7-implementation、US8-implementation、US13-implementation（见依赖表）。**完整验收前置**：全部consumer与插件缺席恢复、最新安全watermark/对象、ED05实测及US16。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T178 [P] [US17] 编写 `tests/contract/retention/classes.spec.ts`、`tests/integration/retention/purge-stages.spec.ts`，所有spec分类触发/期限/授权延期/恢复唯一副本/双方message-access/案证据，DB/object/derivative/index/cache全阶段真实状态、失败重试与核心义务plugin缺席不中断（FR-007,FR-048–052,FR-111,FR-114–118）。
 - [ ] T179 [P] [US17] 编写 `tests/recovery/retention/stale-backup.spec.ts`、`tests/security/retention/watermark.spec.ts`，旧DB/Storage实体恢复并先重放注销/删除/会话角色关系撤权/处罚/隐私/AI用途/插件grants，日志缺口/未知watermark保持closed；重装配置回滚不重置期限或恢复读权（FR-114–118,FR-158,FR-170–173）。
 - [ ] T180 [P] [US17] 编写 `tests/performance/recovery/rpo-rto.spec.ts`、`tests/e2e/web/data-obligations.spec.ts`，记录故障发现/确认/恢复合法读写/用户可用时间、完整DB及对象业务RPO≤1h/RTO≤4h初始工程目标，安全账本必须追当前；90天轮转目标按实际存储过期/删除证据，不拿改fixture时钟冒称历史轮转（FR-117–118,QR-004,QR-007）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T181 [US17] 通过 `.github/workflows/tdd-cycle.yml` 为US17每个分类/阶段/恢复行为先取得并阅读真实 S_R，isolated真实对象与安全日志作前置，红链存私有 `ci/tdd-cycles/us17/`；未获备份存储/权限资源具体请求、相关未通过不承诺恢复（FR-114–118）。
+- [ ] T181 [US17] 本地健康通道为US17每个分类/阶段/恢复行为先取得并阅读真实 S_R，isolated真实对象与安全日志作前置，红链存私有 `ci/tdd-cycles/us17/`；未获备份存储/权限资源具体请求、相关未通过不承诺恢复（FR-114–118）。
 ### Models — 原字段与约束
 
 - [ ] T182 [US17] 创建purge分阶段／DB+Storage备份清单及恢复运行表于 `supabase/migrations/1701_retention_recovery.sql`；原保留表及安全日志复用，清理真实可查、恢复每阶段合法状态不自动opened；模型 `purge_job`：必要字段原文「record、stage(DB/object/derivative/index/cache)、attempt、result/error、watermark」；约束原文「全阶段真实结果，无UI隐藏代全部清理；幂等，不误删共享需求」；模型 `backup_manifest`：必要字段原文「id、DB/object_digest、captured_at、schema/config、security_watermark、expires_at、encryption_ref」；约束原文「DB和Storage实体分别；轮转90天目标未实测；秘密不输出」；模型 `restore_run`：必要字段原文「backup、latest_security_watermark、replayed_seq、state、checks/evidence」；约束原文「isolated→replay→rebuild→verify→ready→opened；缺日志/验证失败保持closed」（FR-114–118）。
@@ -482,7 +482,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T185 [US17] 实现 `services/core-worker/src/backup.ts`、`infra/ci/backup-policy.json`，独立加密DB/Storage实体与安全日志、对应hash/捕获schema/config/watermark/分类过期，实际90天副本轮转目标及完整对象校验；密钥ref不随报告/DTO输出，失败不称备份完成（FR-114–118）。
 - [ ] T186 [US17] 实现 `services/core-worker/src/restore.ts`、`services/core-worker/src/rebuild-projections.ts`，isolated→replay→rebuild→verify→ready→opened、追独立最新安全watermark再建合法索引/缓存/AI依赖/分享/通知/历史；缺日志/版本不明/验证失败保持closed，业务RPO不豁免安全事实（FR-117–118）。
 - [ ] T187 [US17] 实现 `supabase/functions/core/routes/data-obligations.ts`、`apps/admin/src/features/data/DataObligationsConsole.tsx`，按已有action/env最小授权提供分类责任/任务错误重试/备份恢复限制与证据/延保留理由；额外永久清理仍单独superadmin/MFA/DEC001精确确认，无普通恢复管理员处置或任意私人正文入口（FR-101–107,FR-114–118）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T188 [US17] 通过 `.github/workflows/verify-release.yml` 实际陈旧备份/对象/缺日志/插件缺席/共享权益/到期/部分失败重试/配置回滚复活攻击与ED05测量，所有后续consumer就绪后完整恢复回归；读final SHA安全/测量/AI代码视觉报告存私有 `completion-records/us17/`，未验证轮转/目标不能写已达标（FR-114–118,QR-003–007）。
 
@@ -496,15 +496,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation、US3-implementation（见依赖表）。**完整验收前置**：US5及已实现关系消费者/US15通知；合法既有关系可作真实fixture，不用假API。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T189 [P] [US2] 编写 `tests/contract/social/profile-relations.spec.ts`，profiles/contents/relationships/me-profile/follows/follow-requests/actions/blocks/mutes/preferences全部路由与参数，主页仅合法内容分类，昵称与用户名独立/所在地非必填/无真实认证，访客无具体名单；本人preferences按GET/PATCH契约核对请求与真实路由注册表，未列字段保留、当前身份和部分更新规则不得改为完整替换（FR-009–017）。
 - [ ] T190 [P] [US2] 编写 `tests/concurrency/social/names-requests.spec.ts`，同name大小写/保留词/30天冲突，同pair待请求accept-expire竞争、启闭审批/旧关系保留／不同30/7冷却/终态不复活，与DM请求/会话不互授权（FR-011–016）。
 - [ ] T191 [P] [US2] 编写 `tests/security/social/mute-block.spec.ts`、`tests/e2e/ios/SocialRelationsTests.swift`、`tests/e2e/android/SocialRelationsTest.kt`，移粉/取消/双向block即时媒体等资格撤回，mute默认流通知AI过滤而主动show_muted仍有权，历史合法聚合独立/屏蔽不通知他方（FR-009–017）。
 - [ ] T192 [P] [US2] 编写 `tests/contract/social/media-preferences.spec.ts`、`tests/e2e/ios/PlaybackSettingsTests.swift`、`tests/e2e/android/PlaybackSettingsTest.kt`，真实App本人GET/PATCH `/me/preferences` 及always/wifi_only/never／preload布尔；PATCH只改明确注册字段、未列接收/回执/通知/AI用途等已保存值不变，携base_version／operation_id，CAS错版409、非法枚举/类型/未注册字段均无半保存并保输入，同operation同payload复用当前有权结果、不同payload409；错误PUT须405且Allow=GET,PATCH，share-read先按私人/me用途拒绝，不借405扩权；对照HTTP契约、实际注册表与客户端请求方法，默认与本人保存值分开，保存成功才生效、失败真实反馈，重开设置/主页/预览/详情消费当前值；关联V19A真实下载和播放器事件，偏好不授媒体读权（FR-113,FR-009–017,FR-108–110,FR-091–092）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T193 [US2] 通过 `.github/workflows/tdd-cycle.yml` 逐行为取得并读取US2 S_R，基础relation schema和seed既已通过则只新增缺失变更API/界面目标，不制造结构假Red，链存私有 `ci/tdd-cycles/us2/`；包含T192偏好读写／CAS／设置反馈及主页实际播放逐行为有效Red，保留已通过基础schema的回归；T192中PATCH部分字段保留、PUT拒绝、CAS／非法值原子失败和operation重试／冲突每个新增行为均先真实有效Red并读原因；客户端方法／注册表的既有正确部分只回归（FR-009–017,FR-113）。
+- [ ] T193 [US2] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地逐行为取得并读取US2 S_R，基础relation schema和seed既已通过则只新增缺失变更API/界面目标，不制造结构假Red，链存私有 `ci/tdd-cycles/us2/`；包含T192偏好读写／CAS／设置反馈及主页实际播放逐行为有效Red，保留已通过基础schema的回归；T192中PATCH部分字段保留、PUT拒绝、CAS／非法值原子失败和operation重试／冲突每个新增行为均先真实有效Red并读原因；客户端方法／注册表的既有正确部分只回归（FR-009–017,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T194 [US2] 创建profile和username历史占用表于 `supabase/migrations/0201_profiles.sql`，稳定account_id链接/提及、昵称不套用户名ASCII限制，资料与内容读权独立；模型 `profile`：必要字段原文「account_id、nickname、username、avatar/background_media、bio、registered_at」；约束原文「资料读权独立于内容；无首版真实认证字段或必填所在地」；模型 `username_reservation`：必要字段原文「normalized_name、account_id、reserved_until、current」；约束原文「名称大小写归一唯一，改名频率/旧名30天；链接绑定account_id而非可转移用户名」（FR-009–011）。
@@ -517,7 +517,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T199 [P] [US2] 实现 `apps/mobile/src/features/profile/ProfileScreen.tsx`、`apps/mobile/src/features/profile/EditProfile.tsx`，封面头像/昵称用户名简介/注册时间/有效关系数及帖子回复转发媒体分类、本人管理待审状态分开，不填假地点/认证或暴露私人内容；主页合法内容中的视频/GIF复用T079当前播放器与T078策略，偏好/系统条件/当前读取资格变化重新判定，不给头像封面扩展媒体类型（FR-009–011,FR-113）。
 - [ ] T200 [P] [US2] 实现 `apps/mobile/src/features/social/RelationsScreen.tsx`、`apps/mobile/src/features/social/FollowRequests.tsx`、`apps/mobile/src/features/privacy/RelationshipSettings.tsx`，图标文字三分段与真实关注待审批/期限冷却/移粉/屏蔽拉黑/当前名单资格及说明，受限失败不泄私人原因（FR-012–017）。
 - [ ] T201 [US2] 实现 `apps/mobile/src/features/settings/PlaybackSettingsScreen.tsx`、`apps/mobile/src/features/media/usePlaybackPreferences.ts`，用真实本人preferences接口提供始终／仅Wi-Fi／从不自动视频及preload开关、读当前值/CAS保存/加载冲突失败保选择；保存成功后主页与已激活共享播放器消费当前选择，回到设置仍读已保存版本，断网不假成功、失权不读其他账号偏好，保中文读屏名称与操作；无已确认preload初始布尔不在此擅定；实际hook仅GET读取和PATCH `{base_version,operation_id,已改注册字段}`，不发PUT或完整默认对象覆盖未列值；未知保存复用operation查询／重试，冲突及无效输入保选择且不假成功，不向分享提供账号偏好读取／同步桥接（FR-113,FR-125–129）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T202 [US2] 通过 `.github/workflows/verify-release.yml` 执行US2全部身份/名称/关系竞态/资格及双端真实流程，US7/US8/US9/US15消费者接入后复验跨入口/旧链接/请求独立/过滤，读final SHA与审查基准报告存私有 `completion-records/us2/`；T192覆盖App真实设置读写和主页当前播放，对全部已实现合法App消费者重跑V19A偏好/系统/媒体资格联动，分享按ED-10独立默认/页面状态验证，未实现消费者仍后续必需；I3按T192对真实HTTP方法/注册表/客户端、部分更新保留、PUT405/Allow、CAS/非法值无半保存及幂等重试/不同payload冲突复验；App账号改变不作为分享偏好来源，ED-10隔离待US9真实流程齐全后仍必需（FR-009–017,QR-003–007,FR-113）。
 
@@ -531,14 +531,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US3-implementation、US5-implementation、foundation（见依赖表）。**完整验收前置**：US11参数消费者/US15投票结束通知/US16；缺通知不算整条AC12通过。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T203 [P] [US4] 编写 `tests/contract/discussion/comments.spec.ts`，评论2000可见字符AS-01、4×10MB图或1×15MB GIF组合/无视频投票/不独立链接卡、三层更深父reply-to/排序、编辑正文alt不换媒体、中间无正文占位合法子回复与原帖依赖（FR-034–040）。
 - [ ] T204 [P] [US4] 编写 `tests/concurrency/discussion/poll-first-vote.spec.ts`、`tests/contract/discussion/poll-results.spec.ts`，2–4选项label100字符AS-01/300–604800秒、唯一票不改/无投票者名单、首票vs三字段编辑/截止/提前结束/重复vote，原截止保留/原因更正独立不重开（FR-028–033）。
 - [ ] T205 [P] [US4] 编写 `tests/security/discussion/reply-results.spec.ts`、`tests/e2e/ios/DiscussionPollTests.swift`、`tests/e2e/android/DiscussionPollTest.kt`，当前阅读×all_readers/author_follows/mentioned/closed、新主和嵌套立即核；未投作者/访客API/搜索/AI/通知不泄统计，关闭评论保合法旧内容；评论GIF在实际双端用T079/T078验证可视区、系统省流量/减少动效、主动播放/暂停、离屏/失焦和撤权后新读取拒绝；评论仍无视频（FR-028–040,FR-113）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T206 [US4] 通过 `.github/workflows/tdd-cycle.yml` 在US3真实合法poll/post基础上按行为取得US4 S_R并读报告，保存私有 `ci/tdd-cycles/us4/`；已有创建边界保回归，后续AI/搜索通知统计泄漏须在真实消费者就绪后复验；评论GIF消费行为按V19A逐项先有效双端Red并读报告（FR-028–040,FR-113）。
+- [ ] T206 [US4] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地在US3真实合法poll/post基础上按行为取得US4 S_R并读报告，保存私有 `ci/tdd-cycles/us4/`；已有创建边界保回归，后续AI/搜索通知统计泄漏须在真实消费者就绪后复验；评论GIF消费行为按V19A逐项先有效双端Red并读报告（FR-028–040,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T207 [US4] 创建评论关系与资源reaction于 `supabase/migrations/0401_discussion_reactions.sql`，reply_policy复用US3，真实父对象无循环/同原帖及最深显示三层，不做无限缩进或错误级联；模型 `comment_relation`：必要字段原文「resource_id、post_id、parent_comment_id、reply_to_id、thread_root、display_depth」；约束原文「父关系无循环，同原帖；显示最多三层，更深仍保存真实父/对象；中间占位不删合法子回复」；模型 `reaction`：必要字段原文「actor、target、kind(like/repost)、active、operation_id」；约束原文「(actor,target,kind)唯一；合法历史聚合和读者过滤名单分别处理」（FR-034–040,FR-053–054）。
@@ -550,7 +550,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T211 [US4] 实现 `supabase/functions/core/routes/discussion.ts`、`supabase/functions/core/routes/polls.ts`，comments读取创建编辑删除／resource-like与poll-vote-results-edit-end-corrections全HTTP契约，归属当前权/操作防重/CAS、来源DTO不可泄旧版/未投统计（FR-028–040）。
 - [ ] T212 [P] [US4] 实现 `apps/mobile/src/features/discussion/DiscussionScreen.tsx`、`apps/mobile/src/features/discussion/ReplyComposer.tsx`，三级/更深对象上下文/无正文占位、排序/评论范围及关闭旧内容、合法编辑媒体alt/4图GIF/键盘与保输入，举报复用US10合法路径；评论合法GIF接入T079/T078及当前本人偏好，可视区/焦点/系统限制决定动静态，静态回退提供明确可读屏播放控制，仍禁止评论视频（FR-034–040,FR-113）。
 - [ ] T213 [P] [US4] 实现 `apps/mobile/src/features/polls/PollCard.tsx`、`apps/mobile/src/features/polls/PollManagement.tsx`，单选成功/锁字段/真实截止/提前结束理由／独立更正/未投无统计与结束合法结果，作者无未投例外，无结束重开动作（FR-028–033）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T214 [US4] 通过 `.github/workflows/verify-release.yml` 执行US4全部真实评论/票竞态与双端当前Green/回归，AI/搜索/分享/通知已接入后复验统计与源失效，读final SHA/AI代码视觉/基准报告存私有 `completion-records/us4/`，不以点赞mock或页面图代统计安全；评论GIF按V19A保实际网络/帧/播放器/交互证据，设置和共享策略变更重跑适用回归（FR-028–040,QR-003–007,FR-113）。
 
@@ -564,14 +564,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US2-implementation、US3-implementation、US5-implementation、US4-implementation、foundation（见依赖表）。**完整验收前置**：US8/US9/US15接入后的索引、引用和当前授权回归/US16。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T215 [P] [US6] 编写 `tests/contract/discovery/feed-search.spec.ts`，推荐/关注/最新及其游标去重/切换位置、帖子用户话题/时间类型/show_muted/联想count/本人历史删除、冷启动兴趣/主动关注和低数据近期提示，不造热度或强批量关注（FR-056–060）。
 - [ ] T216 [P] [US6] 编写 `tests/security/discovery/bookmarks-aggregates.spec.ts`、`tests/concurrency/discovery/interactions.spec.ts`，重复like/repost/quote/撤销合法效果、来源闭包/访客统计与有权明细/拉黑过滤不误聚合，收藏数量身份偏好无公共/AI搜索泄漏，失权仅本人占位可移除（FR-053–055）。
 - [ ] T217 [P] [US6] 编写 `tests/e2e/ios/DiscoveryInteractionsTests.swift`、`tests/e2e/android/DiscoveryInteractionsTest.kt`、`tests/e2e/web/curation.spec.ts`，真实多范围/屏蔽/删除筛选流/搜索/历史/精选标签期限/互动名单/私人收藏全部状态；流／搜索／收藏及详情真实视频/GIF分别登记组件和偏好消费者，按V19A覆盖三态网络、preload取消与字节、静音/开声、复用/可视区/系统限制及资格变化（FR-053–060,FR-113）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T218 [US6] 通过 `.github/workflows/tdd-cycle.yml` 在真实内容/关系/索引DB和合法reaction基础上对US6新增行为取得读取 S_R，红链存私有 `ci/tdd-cycles/us6/`，现有点赞行为保回归而不以无关失败作Red；包含流/搜索/收藏及详情的V19A播放器消费行为，先取得有效原生Red（FR-053–060,FR-113）。
+- [ ] T218 [US6] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地在真实内容/关系/索引DB和合法reaction基础上对US6新增行为取得读取 S_R，红链存私有 `ci/tdd-cycles/us6/`，现有点赞行为保回归而不以无关失败作Red；包含流/搜索/收藏及详情的V19A播放器消费行为，先取得有效原生Red（FR-053–060,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T219 [US6] 创建私密bookmark／topic和search_history／真实ranking及curated placement于 `supabase/migrations/0601_discovery.sql`，公共索引无私人收藏/草稿/DM，名次不是资格，受控精选有标记/期限/审计；模型 `bookmark`：必要字段原文「owner、target、created_at」；约束原文「本人私密，无公开count/身份/搜索/AI索引；来源失效仅占位可移除」；模型 `topic/search_history`：必要字段原文「topic normalized_key；history owner/query/created_at」；约束原文「搜索历史本人；话题/联想/count按授权；不包含私人收藏等隐藏信号」；模型 `ranking_signal`：必要字段原文「resource、real_event、actor_dedup、window、weight_version」；约束原文「真实有效信号，去测试/异常；排名不是读权」；模型 `curated_placement`：必要字段原文「target、kind、order、starts/ends、operator、reason、audit」；约束原文「显式运营标签/期限，不能伪造计数或绕资格」（FR-055–060）。
@@ -582,7 +582,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T222 [US6] 实现 `supabase/functions/core/routes/discovery.ts`、`supabase/functions/core/routes/interactions.ts`，feeds/search/suggestions/discover/search-history及repost/quote/bookmark/interactions契约，公共访客与本人私密独立、运营placement按逐action权限/期限/MFA适用约束，流位置cursor绑定查询scope不授权（FR-053–060）。
 - [ ] T223 [P] [US6] 实现 `apps/mobile/src/features/feed/FeedScreen.tsx`、`apps/mobile/src/features/discovery/DiscoveryScreen.tsx`、`apps/mobile/src/features/search/SearchScreen.tsx`，三流分段/刷新分页回位/真实低数据与话题趋势/用户推荐/筛选历史、当前删除失权不展示旧摘要；流/搜索及详情实际视频/GIF复用T079/T078和当前已保存偏好，统一可视/焦点/网络切换/声音/preload及资格变化，逐入口登记实际组件（FR-056–060,FR-113）。
 - [ ] T224 [P] [US6] 实现 `apps/mobile/src/features/interactions/InteractionList.tsx`、`apps/mobile/src/features/bookmarks/BookmarksScreen.tsx`，真实统计与明细资格、转发引用预览及私人收藏在侧栏/占位可删，重试unknown不多计，主页无收藏数身份；私人收藏/引用中合法视频/GIF同样复用T079/T078、当前偏好与媒体gate，来源失效停止新读取且真实占位，不复活旧受限媒体（FR-053–055,FR-113）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T225 [US6] 通过 `.github/workflows/verify-release.yml` 执行US6真实Auth/DB查询/信号/互动/权限/分页竞态/双端与运营后台、已激活回归和AI代码视觉审查，读final SHA与基准报告存私有 `completion-records/us6/`；AI/分享/通知接入后再次核信号与当前输出；流/搜索/收藏/详情各入口按V19A同oracle及设置变化回归，保存双端网络/播放/预取/声音/视区原报告（FR-053–060,QR-003–007,FR-113）。
 
@@ -596,14 +596,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：US2-implementation、US3-implementation、US5-implementation、foundation（见依赖表）。**完整验收前置**：US2资料和US3/5范围事实、当前索引投影、App/分享各自基准/US16。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T226 [P] [US9] 编写 `tests/contract/sharing/audience-routes.spec.ts`，逐方法/路径/投影完整share-read白名单、仅login/refresh/logout不升级，未列GET/private-me/关系明细/feed-search/DM/AI/admin拒，伪channel/audience本人或管理员无扩权，有权受限目标200不是一律404；ED-10明确完整/部分 `/me/preferences` GET/PATCH/PUT和全部私人/me均不在share-read白名单；本人/管理员登录不增权，config/effective固定平台默认不因query或账号身份返回已保存video_policy/preload（FR-090–092,FR-113）。
 - [ ] T227 [P] [US9] 编写 `tests/concurrency/sharing/indexing-policies.spec.ts`、`tests/security/sharing/previews-media.spec.ts`，V12A账号/target继承允许拒绝CAS/创建/编辑/历史目标/主页串依赖交集、陈旧enable/重开/删除/收紧，源码元信息结构化/机器人/媒体Range/cache无受限摘要、收录不改AI用途或人阅读；在 `tests/security/sharing/playback-sources.spec.ts` 覆盖V12B：合成账号保存相反always/never及preload选择，匿名/本人/管理员分享登录不查询或泄漏账号值；实际请求、SSR数据访问审计、HTML/hydration、共享缓存、config/媒体DTO/登录响应逐处核无私人偏好，伪config/account_id/私有API探针拒绝；页面播放/声音/自动/preload操作前后DB与账号版本未变、不发个人写入/同步事件，媒体撤权仍拒后续GET/Range（FR-093–094,FR-108–110,FR-091–092,FR-113）。
 - [ ] T228 [P] [US9] 编写 `tests/e2e/web/sharing.spec.ts`、`tests/e2e/web/share-playback.spec.ts`、`tests/e2e/ios/SearchIndexSettingsTests.swift`、`tests/e2e/android/SearchIndexSettingsTest.kt`，稳定/p/u/t链接/改名/打开App/未安装浏览器阅读、有权登录/无权占位、App账号及目标收录设置和外部缓存限制；按ED-10／V12B／V19A逐浏览器验证匿名/登录均默认wifi_only且静音、蜂窝点击，不能可靠确认网络自动条件或浏览器拒绝自动/开声时提供真实点击回退；实际播放/暂停/开声/静音/当前页自动播放及关闭预加载控件可用，preload关闭无推测下载而主动缓冲单列、GIF视区/省流量/减少动效与失焦行为正确；合成账号在App保存相反always/never及preload值并改变后，分享仍只按平台默认/当前页操作，不调用私人/me、账号值不入响应，页面操作不写账号/不同步App/不显示设置已保存，登录仅改变资源读权；保实际网络/Range字节/帧/音量/控件交互及DB未变报告，截图不代行为证据（FR-090–094,FR-113,FR-108–110）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T229 [US9] 通过 `.github/workflows/tdd-cycle.yml` 对US9白名单、SSR当前读取和作者设置行为先取得读取 S_R，真实cookie/Auth/DB/媒体/浏览器，存私有 `ci/tdd-cycles/us9/`，已经有的policy表默认规则保回归、不把禁止写等于全GET许可；包括分享实际支持媒体的V19A浏览器策略/回退/网络逐行为Red；T226/T227/T228的ED-10默认／页面操作、相反账号值隔离、零私人读取／SSR泄漏和不写账号逐新增行为先有效Red并读报告；已通过白名单或播放器只做适用回归（FR-090–094,FR-113）。
+- [ ] T229 [US9] 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地对US9白名单、SSR当前读取和作者设置行为先取得读取 S_R，真实cookie/Auth/DB/媒体/浏览器，存私有 `ci/tdd-cycles/us9/`，已经有的policy表默认规则保回归、不把禁止写等于全GET许可；包括分享实际支持媒体的V19A浏览器策略/回退/网络逐行为Red；T226/T227/T228的ED-10默认／页面操作、相反账号值隔离、零私人读取／SSR泄漏和不写账号逐新增行为先有效Red并读报告；已通过白名单或播放器只做适用回归（FR-090–094,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T230 [US9] 创建收录投影作业于 `supabase/migrations/0901_index_projection.sql`，author/target策略复用US3并与App当前CAS读写联通，状态只证明内部事实不保证外部缓存已消失；模型 `index_projection_job`：必要字段原文「stable_target_ref、desired_policy_digest、stage(sitemap/submission/preview)、state(pending/running/succeeded/failed/superseded)、attempt/error、effect_key」；约束原文「只记录系统内更新事实，不冒称外部搜索缓存已消失；消费前核当前策略，陈旧enable任务不能反向覆盖新deny」（FR-093–094）。
@@ -613,7 +613,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T232 [US9] 实现 `supabase/functions/core/routes/search-indexing.ts`、`services/core-worker/src/index-projection.ts`，本人App的me search-indexing与resources search-indexing GET/PATCH及创建参数CAS/operation/epoch/outbox，only post/thread、陈旧job消费前重核/no复活、sitemap与主动收录实时同源，不调用未获准外部付费服务（FR-093–094）。
 - [ ] T233 [US9] 实现 `apps/share/app/p/[id]/page.tsx`、`apps/share/app/u/[id]/page.tsx`、`apps/share/app/t/[id]/page.tsx`、`apps/share/app/sitemap.ts`、`apps/share/src/auth/share-session.ts`，SSR逐请求no-store/X-Robots/meta、合法公开元信息/有权受限读取/匿名无受限正文、合法历史资料；禁正文缓存及Next图片优化源站旁路，网页业务写/AI转App；在 `apps/share/src/components/MediaPlayer.tsx` 实现ED-10默认与页面内视频/GIF操作：匿名/登录均初始wifi_only/静音、蜂窝点击，不能可靠确认所需网络条件或浏览器拒绝自动时真实点击回退，可主动播放/暂停/静音/开声/调整当前页自动播放/关闭预加载，preload关闭取消推测预取而显式缓冲可用，GIF遵守可视区/失焦/省流量/减少动效；输入仅合法固定平台默认及当前页面状态，不读取/同步账号preferences，不从私人/me、config、SSR高权查询、hydration、共享缓存、媒体或登录响应取得账号选择，不新增个人投影；操作不保存账号/不显示已同步，账号设置转App，登录只变内容读权；当前媒体GET/Range/cache-hit继续经核心授权，失权停止新读取（FR-090–094,FR-108–110,FR-113）。
 - [ ] T234 [US9] 实现 `apps/mobile/src/features/privacy/SearchIndexSettings.tsx`、`apps/mobile/src/features/composer/IndexingSetting.tsx`、`apps/mobile/src/navigation/share-links.ts`，账号主页帖子串范围说明/每post-thread inherit-allow-deny/实际effective状态与作业结果/稳定链接App打开，明确外部副本限制且不把AI开关用作收录（FR-090,FR-093–094）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T235 [US9] 通过 `.github/workflows/verify-release.yml` 实际浏览器/分享会话直接API/机器人源码/媒体/陈旧job/配置与App设置跑US9所有V12/12A当前Green/回归，读final SHA和独立代码视觉/基准证据存私有 `completion-records/us9/`，分享白名单不能仅静态文件存在；分享实际视频/GIF逐浏览器V19A适用组合、真实点击回退及网络/播放原报告，不由截图推断；V12B按ED-10真实验证匿名/登录默认相同来源、相反账号always/never和preload及App改变不影响分享、无私人API/SSR/config/hydration/缓存/媒体/登录响应泄漏、页面全部控件可操作且DB不变/不假保存；原网络/播放/请求审计与账号前后版本报告齐全，账号设置仍App GET/PATCH且媒体撤权硬门槛不降（FR-090–094,QR-003–007,FR-113）。
 
@@ -627,14 +627,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US11-implementation、US13-implementation、US14-implementation（见依赖表）。**完整验收前置**：US13生命周期、US14隔离发布恢复、US17数据保留与US16；从零闭环真实完成。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T236 [P] [US12] 编写 `tests/contract/plugins/sdk-slots.spec.ts`、`tests/contract/plugins/package-cli.spec.ts`，全mobile/admin/server插槽/合法DTO/注册冲突稳定排序/版本兼容/manifest有界包/公共error-operation-event、声明树深20节点1000/类型白名单/动作有限与JSON Schema，禁eval任意URL/SQL/身份覆盖；CLI各命令只云端执行（FR-142,FR-148–151,FR-165–168）。
 - [ ] T237 [P] [US12] 编写 `tests/security/plugins/host-bindings.spec.ts`、`tests/security/plugins/sandbox-leases.spec.ts`，真实Host及broker下菜单无权/旧端未知能力/共享grant撤销/后台逐action/AI工具只读、lease过期/越用户插件环境/log/备份/生产token/短信推送副作用拒，凭据到期和清理失败真实留证；实际mobile/admin Host受审媒体binding复用合法播放器，验证V19A适用行为、当前grant与媒体gate、释放/预取及跨用户拒绝，无任意URL旁路；Host播放输入按当前audience既有合法投影核验，不因组件同语义新增私人preferences接口（FR-145–151,FR-168,FR-170–172,FR-113）。
 - [ ] T238 [P] [US12] 编写 `tests/e2e/developer/from-zero.spec.ts`、`tests/e2e/ios/PluginSampleTests.swift`、`tests/e2e/android/PluginSampleTest.kt`，隔离新worktree只给正式发布文档/SDK/CLI版本与受邀身份，从零sample-a三端+sample-b独立数据/受审共享，真实生成打包单端跨端故障/权限/生命周期/恢复，断言核心diff为0（FR-165–173）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T239 [US12] 通过 `.github/workflows/tdd-cycle.yml` 为US12正式SDK/Host/CLI/sandbox每新增行为先取得健康真实环境上的 S_R并读报告，红链存私有 `ci/tdd-cycles/us12/`；生成/验证/预览/测试全部在Actions，不以US13fixture包当正式开发者通过；包括实际mobile/admin Host媒体binding的V19A逐行为Red，不用声明树或静态图代真实播放器（FR-142,FR-148–151,FR-165–173,FR-113）。
+- [ ] T239 [US12] 本地健康通道为US12正式SDK/Host/CLI/sandbox每新增行为先取得健康真实环境上的 S_R并读报告，红链存私有 `ci/tdd-cycles/us12/`；生成/验证/预览/测试的开发反馈可本地执行；Actions负责独立复验与正式归档，不以US13fixture包当正式开发者通过；包括实际mobile/admin Host媒体binding的V19A逐行为Red，不用声明树或静态图代真实播放器（FR-142,FR-148–151,FR-165–173,FR-113）。
 ### Models — 原字段与约束
 
 - [ ] T240 [US12] 创建sandbox租约于 `supabase/migrations/1201_sandbox_leases.sql`，绑定邀请开发者/插件/环境/期限/配额/凭据与证据；开发许可和测试安装/生产批准独立；模型 `sandbox_lease`：必要字段原文「developer/plugin/environment、expires、limits、credential_ref、evidence_run」；约束原文「实际独立环境，合成数据，不能切生产凭据或副作用」（FR-168,FR-170–172）。
@@ -648,7 +648,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T246 [US12] 实现 `supabase/functions/core/routes/developer-sandboxes.ts`、`services/core-worker/src/sandbox-leases.ts`，最小邀请/环境/plugin受限租约，真实隔离dev/test Compose与A/B合成账号数据、故障注入/脱敏日志/短期TLS访问与成本；到期撤凭据停止服务归档回收，测试外部渠道按实际准入，不触生产（FR-168,FR-170–172）。
 - [ ] T247 [US12] 创建 `plugins/examples/sample-a/manifest.json`、`plugins/examples/sample-a/ui/mobile.json`、`plugins/examples/sample-a/ui/admin.json`、`plugins/examples/sample-a/server/main.ts`、`plugins/examples/sample-b/manifest.json`、`plugins/examples/sample-b/server/main.ts`，按契约交齐各包migrations/config.schema/retention/docs/tests证据引用，合成本人记录三端与独立B受审共享read；通用教学不预置行业生产业务（FR-166,FR-169–173）。
 - [ ] T248 [US12] 编写 `docs/developer/index.md`、`docs/developer/getting-started.md`、`docs/developer/sdk-reference.md`、`docs/developer/cloud-debugging.md`、`docs/developer/lifecycle-recovery.md`、`docs/developer/compatibility.md`，完整从零组织清单/类型插槽接口事件/权限依赖配置/迁移日志保留/测试打包提交发布停卸排障恢复、弃用支持版本，引用真实云端截图报告而非导航页；文档不要求本地启动或执行CLI生成（FR-165–169）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T249 [US12] 通过 `.github/workflows/verify-release.yml` 执行US12原oracle S_G与developer-journey真实云端从零闭环、正式SDK包摘要/各Host单端及集成/受审A-B共享拒绝/资源异常/生命周期恢复，读final SHA/代码视觉基准/文档覆盖存私有 `completion-records/us12/`；未真实走通或须改核心不完成AC48–50；实际三端Host媒体入口按V19A适用策略/系统/网络/权限消费回归；缺实际组件或媒体binding未激活保完整验收未完成（FR-142,FR-148–151,FR-165–173,QR-003–009,FR-113）。
 
@@ -662,14 +662,14 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、US1-implementation、US2-implementation、US3-implementation、US4-implementation、US5-implementation、US7-implementation、US8-implementation、US10-implementation、US11-implementation、US6-implementation（见依赖表）。**完整验收前置**：全部事件真实生产者、模拟器支持的实际推送测试、独立故障/停用/当前权限与US16。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T250 [P] [US15] 编写 `tests/contract/notifications/events-projections.spec.ts`，完整关注/请求/like/评论回复/repost-quote/mention/DM-request/poll结束/公告/security/review-sanction事件，持久合并去重不自通知；列表/未读/目标当前权、分类偏好与必要安全服务消息、锁屏默认通用/公开预览敏感禁止（FR-119–123）。
 - [ ] T251 [P] [US15] 编写 `tests/concurrency/notifications/duplicates-reconnect.spec.ts`、`tests/security/notifications/push-payloads.spec.ts`，重复outbox/attempt/多端重连/读游标/关闭推送/pending-request接受和poll结束仅一effect；撤权/删/拉黑/屏蔽与派送末端竞争及旧deep-link/实时/锁屏payload无正文秘密（FR-119–123,FR-067–069）。
 - [ ] T252 [P] [US15] 编写 `tests/integration/failures/dependency-outages.spec.ts`、`tests/e2e/ios/NotificationRecoveryTests.swift`、`tests/e2e/android/NotificationRecoveryTest.kt`、`tests/e2e/web/service-incidents.spec.ts`，分别注入SMS/review/AI/push/realtime/network超时断连和unknown，查看无暗换/自动通过/验证码旁路、输入和持久消息/后台影响及核心失败如实告知（FR-119–124）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T253 [US15] 通过 `.github/workflows/tdd-cycle.yml` 为US15每新增持久/投递/故障反馈行为先取得读取 S_R，实际DB/原生前台与受控故障通道，私有 `ci/tdd-cycles/us15/`；必需真实推送资源缺失保未通过，模拟仅辅助（FR-119–124）。
+- [ ] T253 [US15] 本地健康通道为US15每新增持久/投递/故障反馈行为先取得读取 S_R，实际DB/原生前台与受控故障通道，私有 `ci/tdd-cycles/us15/`；必需真实推送资源缺失保未通过，模拟仅辅助（FR-119–124）。
 ### Models — 原字段与约束
 
 - [ ] T254 [US15] 创建通知与每次投递记录于 `supabase/migrations/1501_notifications.sql`，复用operation/effect唯一、真实provider结果与多端read状态独立，必要安全源由核心不受业务模块停用影响；模型 `notification`：必要字段原文「recipient、kind、target_refs、group_key、state/read_at、source_epoch」；约束原文「合并真实互动，不自通知；当前授权投影摘要/目标；必要安全类核心生成」；模型 `delivery_attempt`：必要字段原文「message/notification、channel、effect_key、state、provider_ref、timestamp/error」；约束原文「saved、provider_accepted、device_delivered、read分离，重试不多提醒」（FR-119–123）。
@@ -681,7 +681,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T258 [P] [US15] 实现 `apps/mobile/src/features/notifications/NotificationsScreen.tsx`、`apps/mobile/src/features/settings/NotificationSettings.tsx`、`apps/mobile/src/notifications/push.ts`，分类站内列表/真实group/已读/深链当前访问、foreground重连同步/推送和系统权限状态，Android后台不足提示、必要安全消息说明，默认锁屏无敏感正文（FR-119–123）。
 - [ ] T259 [P] [US15] 实现 `apps/mobile/src/components/ServiceStatus.tsx`、`apps/admin/src/features/operations/ServiceIncidents.tsx`，真实影响/时点/恢复/待核结果与合法行动、错误保输入/retry先查operation、不把独立故障变整站不可用或用旧数据假正常（FR-124,FR-127）。
 - [ ] T260 [US15] 在 `docs/operations/push-channel-admission.md`、`infra/ci/push-test-channels.json` 实际需用时索取用户测试设备/渠道/短期凭据，记录内测前台保证与Android限制；公开大陆发布前核目标渠道，模拟器实际接收／展示默认通用payload及同effect重试/前台重连/拒绝秘密探针，缺资源不替换政策或声称即时送达（FR-121–123,FR-172,QR-004,QR-009）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T261 [US15] 通过 `.github/workflows/verify-release.yml` 完成US15全部真实事件/各独立故障/多端未读/默认锁屏与模拟器推送集成（硬件链路按ED-14排除）、跨入口撤权/AI和DM接受/停用回归，读final SHA与代码视觉基准证据存私有 `completion-records/us15/`，provider accepted报告不足代替设备结果（FR-119–124,QR-003–009）。
 
@@ -695,15 +695,15 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **实现前置**：foundation、all-stories-UI-implementation（见依赖表）。**完整验收前置**：全部故事实际页面与适用状态＋最低/当前OS原生模拟器＋本人具体基准确认；公共工具可提前。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T262 [P] [US16] 编写 `tests/contract/visual/page-matrix.spec.ts`、`tests/security/visual/baseline-consent.spec.ts`，UI-SPEC§6及资料管理预览发布/条款隐私规则告知帮助/本人适用记录与插件三端全页面状态映射、0.5%告警与独立交互硬断言；无首次基准用design_reference、未本人确认/自动更新/遮罩隐藏权限状态拒绝（FR-125–129,FR-101,QR-005–007）。
 - [ ] T263 [P] [US16] 编写 `tests/e2e/ios/NativeAccessibilityTests.swift`、`tests/e2e/android/NativeAccessibilityTest.kt`、`tests/e2e/web/accessibility.spec.ts`，五入口头像侧栏/图标文字与读屏名、真实最低当前OS/320pt或360dp/大字键盘长文窄屏/焦点触区/安全区，注册发布评论DM举报处罚申诉/播放/插件错误全流程（FR-125–129）。
 - [ ] T264 [P] [US16] 编写 `tests/contract/production/content-boundaries.spec.ts`，按实际用途检查生产源码注释资源/中文文案alt/runtime无AI自评开发对话任务测试过程/假认证假能力假系统栏；保护必要maintenance注释/测试标识/真实业务反馈与独立证据，禁止简单关键词误删（QR-010,FR-127–129）。
 - [ ] T265 [P] [US16] 编写 `tests/e2e/media/entry-matrix.spec.ts`、`tests/e2e/ios/SimulatorMediaTests.swift`、`tests/e2e/android/SimulatorMediaTest.kt`，按quickstart V19A逐条件与US3预览/详情、US2设置/主页、US6流/搜索/收藏、US4评论GIF、US7私信GIF、US9分享、US10后台、US12实际Host登记适用类型/真实组件/按audience合法播放输入来源/行为用例；Actions双端模拟器实际播放器及受控网络类型/音量状态/系统省流量/减少动效/视区/取消预取/Range字节与帧/语义焦点操作，注明各条件控制方式和ED-14硬件排除，适用网页逐浏览器点击回退；缺入口、仅截图或策略单元不得算FR-113覆盖；I3 App部分PATCH/PUT拒绝/CAS幂等与V12B分享匿名/登录默认、相反账号值、页面控件不读写账号分别验；分享不列为账号偏好consumer，记录请求/SSR响应/DB未变与实际交互证据（FR-113,FR-108–110,FR-125–129,QR-004–007,FR-091–092）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T266 [US16] 通过 `.github/workflows/tdd-cycle.yml` 为US16矩阵/基准拒绝/新原生可用行为先测试健康云端 S_R并阅读，红链存私有 `ci/tdd-cycles/us16/`；基础设施先行后可早实施本故事采集与共享修复，全页面Green等真实页面齐全；T265新增媒体行为先有真实有效Red，既有已通过播放行为仅做同oracle回归，不制造Red；包含I3/I4新增矩阵行为的有效Red链，App与分享按各自合法输入求oracle，不能以已保存账号值作为分享期望（FR-125–129,QR-003,QR-005–007,FR-113）。
+- [ ] T266 [US16] 本地健康通道为US16矩阵/基准拒绝/新原生可用行为先取得有效 S_R并阅读；Actions检查点独立复现，红链存私有 `ci/tdd-cycles/us16/`；基础设施先行后可早实施本故事采集与共享修复，全页面Green等真实页面齐全；T265新增媒体行为先有真实有效Red，既有已通过播放行为仅做同oracle回归，不制造Red；包含I3/I4新增矩阵行为的有效Red链，App与分享按各自合法输入求oracle，不能以已保存账号值作为分享期望（FR-125–129,QR-003,QR-005–007,FR-113）。
 ### Implementation — 服务、接口与真实客户端
 
 - [ ] T267 [US16] 编写 `tools/ci/page-matrix.json`、`docs/design/native-adaptations.md`，逐UI-SPEC页面/原AC/故事记录端/状态/主题/设备OS/字号键盘读屏播放/设计摘要及插槽覆盖与动态区域，正式资料新增页按既有语义生成可审阅候选；未经确认不说已批准画面，不添加首版外认证/语音/附件AI；V19A各条件/入口/组件/按audience合法播放输入来源/用例及网络-播放器-声音证据索引独立登记，App账号GET/PATCH与ED-10分享默认/页面状态分别标记，评论/私信只适用GIF（FR-125–129,FR-101,QR-005,FR-113）。
@@ -713,7 +713,7 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 - [ ] T271 [US16] 实现 `tools/ci/visual/baseline-manifest.ts`、`supabase/functions/core/release/baseline-confirmation.ts`，从Actions实际产品页面候选绑定设计/token/矩阵/设备/截图摘要/AI报告/交互证据，由已确定用户本人审具体批次首次或必要变更；未确认awaiting_confirmation/非visual passed，保旧图原失败及实质改变用户决定，不拿bootstrap壳作基准（QR-005–007,FR-129）。
 - [ ] T272 [US16] 在 `.github/workflows/simulator-accessibility.yml`、`tools/ci/device/collect.ts` 接入GitHub-hosted双端最低/当前OS模拟器，按ED-14及 `contracts/simulator-validation.md` 实测原生语义标签/角色/状态/顺序、焦点/键盘IME/媒体播放/支持的推送与辅助技术；可用系统audit另保原报告，不把语义树命名为已执行VoiceOver/TalkBack；接入T265实际系统设置、受控网络条件/音量状态/帧/操作及可视焦点轨迹和媒体gate字节报告，iOS/Android分别绑定当前SHA；不支持的硬件流程明确not_applicable/平台限制/未验证风险，可执行必需项缺失仍未通过，不索取未来真机服务（FR-125–129,QR-004–006,QR-008,FR-113）。
 - [ ] T273 [US16] 按生产内容测试与真实页面报告修正 `apps/mobile/src/locales/zh-CN.json`、`apps/admin/src/locales/zh-CN.json`、`apps/share/src/locales/zh-CN.json`、`packages/design/src/content-policy.ts` 和实际被报告源码资源；开发资料留docs/测试/证据区，必要标签/维护注释不误删，每处清理后云端影响回归、实质产品文案变更先宪法九决定（QR-010,FR-127–129）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T274 [US16] 通过 `.github/workflows/verify-release.yml` 对US16所有适用实际页面/状态/设备主题矩阵、模拟器原生语义焦点及适用辅助技术/大字键盘播放/中文内容与完整基准确认跑当前S_G及回归，执行独立真实图像AI审查逐状态处置并重审，读final SHA原报告存私有 `completion-records/us16/`；漏图漏状态未确认基准不通过；T265完整V19A入口/策略矩阵及实际模拟器播放/网络条件/音量状态/字节报告齐全，App个人设置与获准App消费者行为一致，分享依ED-10核默认/页面状态；截图或一般可访问性检查不能证明播放通过；I3 App GET/PATCH及ED-10分享默认/页面操作各自V19A/V12B报告齐全，匿名/登录无个人读取／同步／DB写入及真实浏览器点击回退，分享不要求消费账号设置（FR-125–129,QR-003–010,FR-113,FR-091–092）。
 
@@ -725,19 +725,19 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 **Independent Test**：SC-001–018、FR-001–173、QR-001–010和原202追溯项均有完整最终Actions用例/状态/产物/报告；无未解决阻断严重问题，无越权泄漏/重复效果/复活/未授权生产，任何缺项仍未通过。
 
-### Tests — 先写目标断言
+### Tests — 先写目标断言（本地先行，Actions独立复验）
 
 - [ ] T275 [P] 编写 `tests/acceptance/full-release-map.spec.ts`、`tests/security/full-release/cross-entry.spec.ts`、`tests/concurrency/full-release/state-races.spec.ts`，逐PRD202条/55AC全文/AS01–04/EC01–19/FR/QR/SC及V13A/V12A完整正常异常权限并发直接访问，不以摘要缩范围；跨旧JWT/媒体/索引/引用/通知/AI/插件/备份闭包与全部可停官方模块仍有核心义务；显式含V19A全入口和FR-113设置/播放器行为及C1双向pair并发，I1调用链非空与I2完整DAG依赖契约的全量归属；纳入I3 GET/PATCH部分保留/错误PUT/CAS幂等，以及ED-10／V12B匿名与登录默认/页面控件/相反账号值不影响/无私人读取与响应旁路/不写账号的全量安全回归（FR-001–173,QR-001–010,SC-001–018）。
 - [ ] T276 [P] 编写 `tests/performance/full-release/workloads.ts`、`tests/performance/full-release/native-tasks.spec.ts`、`tests/performance/full-release/budgets.spec.ts`，落实TD-09/quickstart固定规模负载/预热/窗口/样本分母，API往返与服务端分开、DM对端render/AI首有效非心跳；全部成功失败超时未知/冷热p50p95p99/实际费用，性能暂定不得声称已达SLA（QR-004,QR-006–007）。
-### Actions Red — 读取真实失败后才实现
+### Red — 本地读取失败后实现，Actions独立复验
 
-- [ ] T277 通过 `.github/workflows/tdd-cycle.yml` 对最后新增覆盖/测量/跨域行为取得缺行为或真实缺陷 S_R并读取因果，私有 `ci/tdd-cycles/final/`；已有通过行为只做回归，不人为删现有实现制造Red，修复与oracle变化按契约重建对应链（QR-003,QR-006–007）。
+- [ ] T277 本地健康通道先取得有效 S_R；Actions 检查点通过 `.github/workflows/tdd-cycle.yml` 独立复现并归档；本地对最后新增覆盖/测量/跨域行为取得缺行为或真实缺陷 S_R并读取因果，私有 `ci/tdd-cycles/final/`；已有通过行为只做回归，不人为删现有实现制造Red，修复与oracle变化按契约重建对应链（QR-003,QR-006–007）。
 ### Implementation — 服务、接口与真实客户端
 
 - [ ] T278 补齐并冻结 `tools/ci/validation-manifest.json`、`tools/ci/requirements-map.json`、`docs/engineering/release-coverage.md` 的全量必需集合与原55AC完整前置/异常/直接访问/AS及最新复检关闭项；每需求至少对应真实业务oracle/用例和当前产物，不用grep编号数量代语义覆盖，full-release无not_yet_applicable豁免；冻结FR-113实现责任/设置读写/入口组件/消费者/具体Red-Green及完整V19A回归映射，记录C1/I1/I2/G1及I3/I4（ED-10）对当前任务及后续真实用例的关系；I3方法/客户端/注册表和部分更新语义、I4 ED-10默认与页面状态/按audience来源/负向投影/DB未变责任及V12B用例明确进入受审必需集合，不以单纯改词关闭发现（FR-001–173,QR-001–010,SC-001–018）。
 - [ ] T279 完善 `tools/ci/performance/measure.ts`、`infra/ci/load-profile.json`、`docs/engineering/measurement-protocol.md`，以10k合成账号/100k帖/300k评论/1m私信/200连接、70%读20%写10%媒体/预热5m稳定30m/每类≥1000请求每端任务≥100次测量；记录实际隔离云环境/设备OS网络工具成本和结果分布，AI模型独立，ED05实际RPO/RTO与安全watermark另硬核；结果不达目标按宪法九处理不偷偷调阈值（QR-004,QR-006–007,FR-117–118）。
 - [ ] T280 依据真实云端报告在 `supabase/functions/core/`、`services/core-worker/src/`、`services/plugin-runner/src/`、`modules/`、`packages/`、`apps/` 的明确被报告文件修复全量findings并记录 `docs/engineering/final-review-dispositions.md`；先定位/对应Red再改，每次新SHA重跑影响行为/适用回归与代码视觉审查，阻断/严重或未知留未完成，不删断言降范围（QR-003–007,QR-010）。
-### Actions Green / Checkpoint — 当前版本证据与回归
+### Green / Checkpoint — 本地反馈与Actions复验
 
 - [ ] T281 通过 `.github/workflows/verify-release.yml` 以full-release对同一final SHA/冻结产物完整执行quickstart所有必需云端jobs与55AC/AS/SC、两个A-B及八官方业务/四类更新/双端原生模拟器/真实AI/最新日志恢复/全部配置消费者；任何skip/取消超时缺资源unknown错版拒绝，原失败与完整Green证据均保留；完整V19A每项网络/视区/系统条件/声音/preload和合法媒体入口真实证据齐全，含C1双向并发与I1非空调用链，缺组件/缺消费不算全量通过；I3真实方法/部分PATCH/PUT拒绝/CAS幂等及V12B ED-10全部来源/页面操作/零私人读写/不泄漏/不假同步与当前媒体资格证据完整，缺报告仍未通过（FR-001–173,QR-001–010,SC-001–018）。
 - [ ] T282 当前Codex依据 `tools/ci/review/code-review.md`、`tools/ci/review/visual-review.md` 在final SHA再次审全部修改／契约／真实测试报告和全端矩阵实际原图／基准／交互；私有记录摘要／覆盖／findings／处置并在Actions校验，修复后对应版本重审；未判／漏范围／缺图／未本人基准确认不通过，审查只用必要工程／合成数据（QR-005–007,QR-009–010）。
@@ -751,16 +751,17 @@ description: "AgoraWeave 完整首版：CI 先行、Actions 云端 TDD 与强制
 
 ### Phase Dependencies 与实现 DAG
 
-Setup先取得最小push/PR入口与无业务壳，对工程门禁及T021增量编排逐行为云端Red→Green。实际构建／非空目标执行／所需服务健康和原报告认证取得独立development-ready后准入T033／T034核心行为；T027按ED-20确认当前SHA的Android development-ready工程收口；完整正式ci-ready责任单独后置。开发Green执行目标、受影响套件及必要回归，T051和故事完整验收保持其当前适用全部证据。各故事进入行为前接入真实套件，US14的T173只扩充full-release与受控部署。未实现业务在bootstrap登记not_yet_applicable及激活点，不计passed；full-release不留未适用。
+Setup先取得最小push/PR入口与无业务壳；历史工程门禁及T021云端Red→Green能力保留。ED-21下本地健康通道先按切片取得真实Red/Green，T033/T034承接本地入口与Actions检查点复现；T027按ED-20确认当前SHA的Android development-ready工程收口；完整正式ci-ready责任单独后置。开发Green执行目标、受影响套件及必要回归，T051仍为完整共享核心收口及Actions全适用检查点，不是所有故事实现的无条件前置。各故事按直接依赖进入行为前接入真实套件，US14的T173只扩充full-release与受控部署。未实现业务在bootstrap登记not_yet_applicable及激活点，不计passed；full-release不留未适用。
 
 ```mermaid
 flowchart TD
-  Setup["Setup 基础通道 / development-ready"] --> F["Foundational T028–T051"]
+  Setup["Setup 本地健康通道 / Actions复验"] --> F["按切片激活的直接基础依赖"]
+  Setup --> T051["T051 完整共享核心Actions检查点"]
   Setup --> CI["T026–T027 / Android开发准备收口"]
-  F --> US1
-  F --> US2
+  F --> US1["US1直接依赖"]
+  F --> US2["US2直接依赖"]
   US1 --> US2
-  US3 --> US2
+  US3 --> US2["US2实现"]
   US1 --> US3
   US3 --> US5
   US1 --> US11
@@ -806,13 +807,14 @@ flowchart TD
   US8 --> US15
   US10 --> US15
   US11 --> US15
-  F --> UI["US16 公共采集/组件可提前"]
+  F --> UI["按组件实际依赖的公共能力"]
   US12 --> All["全部故事consumer/页面齐全"]
   US9 --> All
   US15 --> All
   US17 --> All
   US10 --> All
   US14 --> All
+  T051["T051 完整共享核心Actions检查点"] --> All
   All --> V16["US16 全页面/本人基准确认"]
   UI --> V16
   V16 --> Final["各故事完整Green + Final T275–T285"]
@@ -822,9 +824,11 @@ flowchart TD
 
 ### User Story Dependencies
 
+各行及各故事正文中的`foundation`均指当前切片实际必需且已验证的身份/授权/RLS/隔离、必要审计/耐久撤销/可靠写入、数据与组件子集，不等于T028–T051全部完成。表中无故事前置仍需该子集；功能使用某核心能力前即激活其责任，T051完整收口最终保留。17故事和跨故事原有实现依赖不删除。
+
 “实现完成”表示逻辑按每行为Red→Green和已激活必需证据齐全；“完整验收”还须表中的真实consumer。核心接口不能代整个故事passed，也不机械地要求一个故事完整Green之后才实现消费者。真实Auth/DB合成fixture可准备合法已存在事实，后续仍以真实业务操作验证资格变化，不造假API、不借fixture绕授权。
 
-| 故事／任务范围 | 实现前置（T051均必需） | 完整验收还需 |
+| 故事／任务范围 | 实现前置（按切片直接依赖；T051为完整共享核心收口） | 完整验收还需 |
 | --- | --- | --- |
 | US1 / T052–T064 | 无故事前置 | US17分类清理及本人页面基准；注销即时拒绝先验，30天物理清理不能在US1记已完成 |
 | US2 / T189–T202 | US1-implementation、US3-implementation | US5及已实现关系消费者/US15通知；合法既有关系可作真实fixture，不用假API |
@@ -878,11 +882,11 @@ flowchart TD
 
 ### MVP First — 仅工程验证里程碑
 
-阶段一收口后的首个Android用户增量建议US1的加入／登录／会话撤销；其最小基础依赖与T051局部拆分提案见[下一批Android交接](../../docs/engineering/android-next-batch.md)。原完整US1（T052–T064）责任保留：准入／账号／会话／换号／恢复／即时注销，在Actions及合成数据中独立验证。US17前不宣称注销物理清理通过；实际页面候选需本人具体基准确认。此MVP只调整顺序，不删完整首版、不对外上线、不豁免17故事/55AC。
+ED-21已批准首个Android用户增量为US1的加入／登录／会话撤销；其最小基础依赖按身份会话、当前授权/RLS、环境隔离、审计耐久撤销、幂等可靠写入、条款及必要组件执行。T051为完整核心检查点，不阻塞直接依赖切片。见[下一批Android交接](../../docs/engineering/android-next-batch.md)。原完整US1（T052–T064）责任保留：准入／账号／会话／换号／恢复／即时注销，在Actions及合成数据中独立验证。US17前不宣称注销物理清理通过；实际页面候选需本人具体基准确认。此MVP只调整顺序，不删完整首版、不对外上线、不豁免17故事/55AC。
 
 ### Incremental Delivery
 
-1. bootstrap-only最小通道→T021真实非空编排／所需服务健康→独立development-ready→T033核心目标接入及逐行为Red/Green；完整T026／正式 ci-ready并行闭合，每个工程行为也按云端TDD。
+1. 本地最小通道→T021真实非空编排／所需服务健康→按切片直接依赖接入→逐行为本地Red/Green；T033迁移本地与Actions入口及证据绑定，Actions复验并行闭合。
 2. 核心后优先US1/3/5/11，US2必须等US1和US3当前实现Green，按真实依赖穿插US2/4/6支撑P1 AI；US7/10治理和正式资料按就绪契约推进。
 3. US13核心隔离/生命周期和US14隔离发行确认就绪后推进US12正式SDK；US9分享、US15通知、US17清理恢复纳入真实消费者。US16采集/公共语义及逐页候选贯穿，完整矩阵最后。
 4. consumer齐全后各故事重跑完整Green，再Final全量同版验证/真实代码与图像AI复检/本人基准确认/测量/归档读取。失败修复后新SHA重跑影响行为及必要回归，缺项不完成。
@@ -911,7 +915,7 @@ flowchart TD
 
 ### I3 / I4（ED-10）契约与验证责任
 
-I3沿用HTTP契约，App本人GET只读、PATCH仅列字段部分更新，base_version／operation_id的CAS与幂等不变；PUT不注册。I4为用户明确方案A：匿名与登录分享页均只取固定合法平台默认及当前页操作，登录只改变当前内容资格，不授账号偏好权限。全部实际行为测试／安全探针及回归均由Actions执行，以下仅分配任务。
+I3沿用HTTP契约，App本人GET只读、PATCH仅列字段部分更新，base_version／operation_id的CAS与幂等不变；PUT不注册。I4为用户明确方案A：匿名与登录分享页均只取固定合法平台默认及当前页操作，登录只改变当前内容资格，不授账号偏好权限。本地先执行实际行为测试／安全探针并记录source=local；Actions在检查点独立复验并归档，以下分配完整责任。
 
 | 事项 | 具体测试 → 有效Red | 实现与入口 | 当前Green及完整回归 |
 | --- | --- | --- | --- |
@@ -1205,11 +1209,11 @@ I3沿用HTTP契约，App本人GET只读、PATCH仅列字段部分更新，base_v
 
 各故事Independent Test与依赖表一并执行；合成fixture不代真实资格变化、真实端和真实外部集成。自用同人也分步骤留审核/具体确认/MFA/证据。未解决阻断严重问题、未知、假成功、秘密/私人泄漏、重复effects、复活或缺必需资源禁止有效完成。
 
-本轮before_tasks mandatory guard已实际执行且allow；生成清单后重新解析extensions.yml并实际执行after_tasks mandatory handoff，保ready快照及事件。未来T022–T024强制门禁尚未实施，现有桥接guard/checkbox不能验证Actions，本次ready不作准入或完成证据。
+历史首次生成清单时before_tasks guard和after_tasks handoff已执行；当时T022–T024尚未实现的记录保留为历史。当前ED-21修订使用既有guard/状态工具更新源快照；本地来源/准入新职责仍须T033迁移实测，ready不作local/Actions已通过或feature完成证据。
 
-未来入口 `$speckit-superpowers-bridge` 先读取AGENTS／宪法v3.1.0／源快照及本清单，bootstrap-only后取得独立真实development-ready可实施业务TDD；后续完整ci-ready仍待正式验收，不用开发准入代任务完成。不得独立brainstorming/writing-plans改写确认源；适配不改canonical语义，兼容问题按T024及宪法九处理。
+未来入口 `$speckit-superpowers-bridge` 读取指定工作树AGENTS/宪法4.0.0/当前源快照及本清单；按ED-21先核当前切片合法本地入口、健康及直接安全依赖，Actions检查点核独立云端准入和正式证据。未迁移的runner-only脚本不得伪装调用；不以开发准入代完整任务/阶段验收，不另行brainstorming/writing-plans改确认源，兼容问题按T024及宪法九处理。
 
-**统计**：20阶段、17故事、285任务、94个条件式并行候选；Setup27、Foundational24、故事223、Final11。所有任务未勾选；本轮无代码/CI/测试运行结果或真实基准批准。
+**统计**：20阶段、17故事、285任务、94个条件式并行候选；Setup27、Foundational24、故事223、Final11。当前T001–T027为ED-20历史开发准备完成，T028–T285仍未完成（27已勾选、258未勾选）；本轮仅同步职责边界，不声称新执行器或正式验收通过。
 
 | 故事 | 任务数 | 独立验收依据 |
 | --- | --- | --- |

@@ -1,6 +1,8 @@
-# AgoraWeave 云端验证与开发预览指南
+# AgoraWeave 本地开发与Actions独立验证指南
 
-本指南定义后续实现应提供的可执行路径，当前尚无产品工程／工作流／测试套件；下列工作流名和npm命令是实施接口约定，**本轮没有执行它们**。SP本地编写代码和测试；所有编译、静态检查、测试、代码复检、回归、预览、实际页面、视觉复检、原生交互与性能验收只在GitHub Actions云端运行。本地只编辑／阅读文件、Git及调度／等待／读取Actions。缺云端资源保留阻塞，禁止本地服务／模拟器／设备／本地runner补验。完整门禁／TDD／审查规则见[云端验证契约](contracts/cloud-validation.md)。
+现行依据宪法4.0.0与[ED-21](../../docs/engineering/local-cloud-responsibility-decision.md)：本地安装/增量构建、lint/types、单元/契约及真实隔离Compose接口/权限/并发、Android/Web日常交互用于高频反馈；Actions干净环境独立复验与正式验收。现有部分工程入口已实现，不等于全部拟命令可用；本地来源/runner-only适配仍由T033实测后启用。禁止伪造GitHub变量或把本地结果称云端完成。本次只同步文档，未执行产品验证。
+
+本地先保留可重现的测试先行提交/快照，取得有效语义Red并读取因果后实现同oracle/fixture Green和受影响回归；功能检查点由Actions复现必要Red、运行候选Green。当前切片所需身份/授权/RLS/隔离/审计撤销/可靠写入先具备，媒体/Realtime/完整配置随消费者激活，T051仍负责完整核心验收。
 
 ## 1. 前置条件与准入
 
@@ -18,7 +20,7 @@
 
 按cloud-validation §2，先只写基础设施，Actions实际安装固定工具并运行真实Compose、网页与双端原生壳、测试发现／报告／截图差异／交互／归档清理、当前Codex代码与实际图像审查及记录绑定探针、桥接版本适配与拒绝探针。无业务检查在初始化清单记not_yet_applicable及激活节点，禁止把缺测试脚本包装成成功。故意失败／零用例／错误SHA／缺报告／跳过／取消／未确认基准必须被聚合和桥接拒绝；保存原始失败与“预期拒绝被观察”记录，不伪造passed。
 
-最先只提供可调度的最小配置／接口壳／日志通道；它能运行后，报告聚合、桥接门禁和审查适配等工程行为也用该Actions通道先测试Red再实现Green，不以初始化为理由先实现全部逻辑。项目门禁脚本只在Actions计算与验证，本地SP只读取匹配结果／报告及桥接元数据，不运行项目工具。
+历史初始化先提供可调度最小入口；ED-21之后开发工程行为也可本地真实Red/Green，Actions特有调用、认证、秘密权限和正式门禁必须在云端检查点实际复验。现有门禁未支持的本地来源/准入由T033迁移，开发预检不授正式完成令牌，不能伪造旧脚本期望的CI身份。
 
 全部初始化必需项有同SHA的真实结果且已读取后才声明ci-ready；业务阶段可先凭独立development-ready及健康非空执行链准入；不宣称任一业务AC通过。尚无workflow时先通过获授权初始化提交／PR事件建立入口；不得预设缺失工作流可以dispatch。资源缺失只暂停依赖部分；不影响目标行为的完整CI证据／审查完备性问题可并行修复，基础构建／目标测试／所需服务不可认证或安全未知则不准入依赖业务，不改本地验收。
 
@@ -28,7 +30,7 @@
 
 ## 2. 调度接口（未来工作流）
 
-本地可以使用GitHub CLI调度／等待／读结果，不启动项目。FEATURE_BRANCH必须是真实已提交分支／ref；COMMIT_SHA、RUN_ID、ARTIFACT_ID须换成真实对象。拟工作流接收target_sha并校调度ref／实际checkout／run身份，分支移动造成不符则拒绝，不能只信输入。没有工作流前不能把命令成功视为验证已完成。本轮不推送、不dispatch。
+本地可运行已经适配并核实的开发入口，也可用GitHub CLI调度/读独立复验。下列云端示例的FEATURE_BRANCH/COMMIT_SHA/RUN_ID/ARTIFACT_ID必须是真实对象，实际checkout/输入身份一致；分支移动或工作流未提供时不能当已验证。本地记录使用source=local且不填伪run。当前文档修订本身不表示任何命令已执行。
 
 ```powershell
 gh workflow run ci-bootstrap.yml --ref FEATURE_BRANCH -f target_sha=COMMIT_SHA
@@ -44,17 +46,17 @@ gh api repos/OWNER/REPO/actions/artifacts/ARTIFACT_ID
 
 命令只是控制面查询示例，不是完整门禁：watch只等待一个run，不能证明所有必需结果。桥接完成前按清单枚举当前SHA全部必需run／attempt／job，等待终态、取得并校验artifact、读取测试／AI审查／视觉／回归报告。`gh run watch`不支持fine-grained PAT的checks:read，实际选择获准GitHub身份或REST查询适配，不要求放宽至生产权。
 
-正式产物按artifact_id经官方REST下载并自校raw/archive摘要，UI展示的报告也须匹配commit/runtime/config。失败后仅编辑/提交/读取云端结果迭代，重新dispatch受影响行为和必要回归，完整正式发行执行全部必需集合。生产工作流与验证/预览分离，验证dispatch输入不接受生产token或绕确认flag。正常提交／PR事件也必须触发聚合，不能仅依赖dispatch满足分支保护。
+正式产物按真实artifact ID下载校raw/archive摘要并匹配commit/runtime/config。开发失败本地立即修复复测，功能检查点Actions独立复验受影响行为和必要回归，正式发行执行全部必需集合；每次编辑不强制全矩阵。生产工作流与验证/预览分离，不接受生产token或绕确认flag；真实PR必需check保留，不能凭dispatch假定分支保护已满足。
 
 ### 2.1 SP迭代及完成判定
 
-business开始先取得start门禁，使用与canonical tasks一致的临时适配；适配中的测试命令只调度／读取云端验证，不直接调用本地npm test。TDD先在S_R运行并读取目标断言失败，确认因行为缺失才实现；S_G同目标及已有适用套件通过，再重构／修复并在final SHA取得新结果。oracle实质变化重新建立Red；不固定用例数量，不将构建／环境失败当Red。
+business按当前切片核本地健康/安全前置并使用canonical tasks适配；已有runner-only测试命令先由T033提供合法本地入口，不伪造CI绕start。有效S_R先于实现，记录原报告与因果；开发S_G同oracle/fixture及受影响回归，检查点Actions复现必要Red并独立验证候选Green。oracle实质变化重建链，不固定用例数，不把构建/环境失败当Red。正式start/complete仍依真实云端身份和证据。
 
 每次任务勾选及报告完成前执行complete门禁，读取当前SHA全必需报告和审查处置、同版产物、基准确认及必要回归；任务工具退出码必须只在这些满足后成功。完成记录绑定SHA／清单／报告摘要和read_by／read_at。queued／running等待；failed／skipped／cancelled／timed_out／missing／unavailable／unknown及版本不符都未通过。等待超时保留未完成，不打印成功。新提交使旧完成记录失效，不能直接写旧handoff complete绕开。
 
 ## 3. Actions 内部执行约定
 
-以下命令**仅在未来Actions job中执行**，不是让开发者在本地操作。脚本必须由后续实施提供、行为与本指南匹配；本指南不包含实现代码或测试套件。
+以下表格描述Actions独立复验/正式验收入口；本地可复用已明确支持local来源的底层测试能力。任何依赖GITHUB环境、runner文件或云端秘密的ci:*命令均不可直接当作本地入口；先由T033适配并实测。表中未来命令存在与否、功能和来源校验以真实实现为准。
 
 | 云端job | 命令／阶段约定 | 预期结果 |
 | --- | --- | --- |
@@ -126,7 +128,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 ### V19A — FR-113播放器、设置与消费行为矩阵（G1）
 
-先在各行为缺失时由Actions执行真实用例并读有效Red，再实现播放器／设置／入口，Green和最终SHA重跑同oracle及已激活回归。策略单元／组件用例可辅助，iOS／Android原生产物的云端模拟器实际播放证据仍必需（网络/系统条件控制方式及硬件排除按ED-14）；适用分享／后台网页逐浏览器记录真实允许或点击回退。不能仅以上传、编辑器截图或一般无障碍检查映射FR-113。
+先在各行为缺失时通过适用本地真实用例读有效Red，再实现播放器/设置/入口和同oracle Green；Actions检查点复现必要Red并独立回归，正式最终SHA保留全部适用云端原生播放证据（iOS按ED-20后置）。网络/系统条件及硬件排除仍按ED-14；网页逐浏览器验证真实允许或点击回退，不能用上传/编辑器截图代FR-113。
 
 | 条件／操作 | 必须观察的行为断言 | 所需证据 |
 | --- | --- | --- |

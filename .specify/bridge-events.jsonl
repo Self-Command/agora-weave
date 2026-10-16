@@ -56,3 +56,13 @@
 
 {"timestamp":"2026-10-15T14:43:31.3166944Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
 
+{"timestamp":"2026-10-16T00:10:59.0267178Z","action":"handoff","status":"blocked","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"ED-21 user-approved local/cloud responsibilities and dependency amendment; governance repair in progress","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0010589781671Z-blocked"}
+
+{"timestamp":"2026-10-16T00:10:59.1284625Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.constitution"}
+
+{"timestamp":"2026-10-16T00:10:59.2030232Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.plan"}
+
+{"timestamp":"2026-10-16T00:10:59.2638873Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"speckit.tasks"}
+
+{"timestamp":"2026-10-16T00:25:40.3231572Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0025402917458Z-ready"}
+

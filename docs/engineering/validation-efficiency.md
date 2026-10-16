@@ -1,10 +1,10 @@
 # 验证效率：安全检查点与桥接执行说明
 
-**ED-20 当前范围（优先于本文历史全平台收口说明）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
+**ED-20历史范围（ED-21已更新开发分工）**：用户要求阶段一按Android可开发条件完成并同步tasks；当前不做iOS验证，后续跨平台再执行。先取得当前foundation的真实development-ready后进入原Phase2/Android业务DAG；全平台ci-ready、产品验收、合并及生产批准仍未取得。见 [Android优先决定](android-first-development-decision.md)。
 
-日期：2026-10-15。历史计划基线为`72cb1a23ce0f921949f96f360e87048659376bec`、分支`codex/agoraweave-tdd-rebuild-clean`。用户先批准CI调度、缓存和证据读取优化，随后明确批准[分层开发验证与宪法修订](validation-tiering-decision.md)，允许当前初始化阶段执行并以Draft PR工程移交。以宪法v3.1.0／cloud-validation v1.2及最新真实证据为准；本说明的历史基线和文档更新本身不授开发准入、任务完成或提速结论。
+日期：2026-10-15。历史计划基线为`72cb1a23ce0f921949f96f360e87048659376bec`、分支`codex/agoraweave-tdd-rebuild-clean`。用户先批准CI调度、缓存和证据读取优化，随后明确批准[分层开发验证与宪法修订](validation-tiering-decision.md)，允许当前初始化阶段执行并以Draft PR工程移交。历史依据为宪法3.1.0/cloud-validation1.2，现行依据宪法4.0.0及[ED-21](local-cloud-responsibility-decision.md)；本说明的历史基线和文档更新本身不授开发准入、任务完成或提速结论。
 
-必须读取根`AGENTS.md`、`.specify/memory/constitution.md`、`plan.md` TD-07A/B/C、`tasks.md`、`contracts/cloud-validation.md` §2.2及`release-evidence.md`。既有ED-11–18、最低／当前OS、全部真实云端TDD与同SHA验收保留；ED-14不等待真机，ED-18只限API24实际省电开启／深色截图的系统警示栏。所有项目安装、构建、测试、运行、截图、交互和门禁计算仍仅Actions，本地只编辑、Git／GitHub控制面及读取已验报告。
+必须读取根`AGENTS.md`、`.specify/memory/constitution.md`、`plan.md` TD-07A/B/C、`tasks.md`、`contracts/cloud-validation.md` §2.2及`release-evidence.md`。既有ED-11–18、最低/当前OS和正式同SHA验收保留，开发TDD按ED-21本地先行/Actions独立复验；ED-14不等待真机，ED-18只限API24实际省电开启／深色截图的系统警示栏。本地承担高频真实安装/构建/测试/交互反馈，标清local来源；Actions独立复验和正式门禁/归档，真实远端行为不能仅凭本地模拟判通过。
 
 ## 实际运行基线与限制
 
@@ -42,7 +42,7 @@
 3. 在T014–T023原实现责任内最小修改：共享正式矩阵唯一调用、区分反馈／正式Green／完成意图、保护Red／必要验证／清理的旧run取消、锁／工具链／平台缓存、健康前置后独立job并行、按完整身份／archive及raw摘要复用证据字节与退避轮询。不要新造通用调度平台。未改且已认证的历史行为链按祖先与输入核验，受改行为取得新链。
 4. 正式开发S_G运行同Red oracle／fixture、受影响套件和必要回归，依据整个实际diff、依赖、任务／契约与风险冻结集合；未知影响用完整适用集合。反馈不授Green、task done或ci-ready，开发Green也不授正式验收。清单、门禁、依赖、测试及工程行为不按普通文档跳过；取消、失败、跳过、缺失、旧SHA不能充passed。
 5. T026/T027按ED-20冻结当前SHA，读取固定安装/类型/lint、非空工程回归、dev/test服务、Web基础交互及foundation认证五项原报告，以真实Android development-ready退出Phase1；不执行iOS或完整原生验收矩阵。
-6. 当前工程完成记录写外部私库，不为补记通过循环提交；冻结后修改foundation重新核验。交接后暂停，非阻塞事项见phase1-follow-ups.md，下一批Android与T051提案见android-next-batch.md。后续产品完整验收/合并/发行仍须同SHA当时全部适用证据。
+6. 正式完成记录写外部私库，不为补记通过循环提交；foundation改变按对应检查点重核。原阶段一暂停只为历史交接，用户后续继续指令按当前切片执行；ED-21已批准android-next-batch中的T051依赖拆分。后续产品/合并/发行仍须同最终SHA全部适用Actions证据。
 
 ## 实测交付要求
 

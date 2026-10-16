@@ -1,5 +1,5 @@
 # 后续继续开发提示词
 
-当前本轮已按ED-20收口阶段一并暂停。以下供用户下一轮明确继续时使用，不在本轮执行：
+阶段一已按ED-20收口，后续开发规则已由ED-21批准并同步。以下提示词供后续窗口复用，不新增暂停或再次批准的前置；本次文档修订不冒称执行器适配已完成。
 
-> 在`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`的`codex/agoraweave-tdd-rebuild-clean`最新干净检查点继续。先读AGENTS、`.specify/memory/constitution.md`、canonical tasks及`docs/engineering/bridge-next-window.md`。阶段一T001–T027按真实Android development-ready口径完成，其余258项未完成；不重新生成任务、不再扩展CI平台，不恢复当前iOS验证。先核最终HEAD外部工程记录与foundation是否仍匹配，再根据`android-next-batch.md`定点处理T051消费者依赖提案，并推进Android安全加入/登录/会话撤销纵向切片。身份、当前授权、安全和目标真实执行链必须先到位，T033按该行为局部接线后取得云端语义Red，读取再实现同oracle Green与必要回归。其他核心按消费者实现，完整T051/故事/Android产品验收及后续跨平台责任保留。只有实际需要阿里云短信等资源时才索取最小凭据和获准对象。不得把工程Green、ready或阶段一完成当完整业务/全平台ci-ready/合并/生产批准。
+> 在`C:/Users/by970/.codex/worktrees/tdd-rebuild/my-project`的`codex/agoraweave-tdd-rebuild-clean`继续，先核路径、分支、HEAD与未提交修改并保留现有工作。读取AGENTS、`.specify/memory/constitution.md`、canonical tasks、`docs/engineering/bridge-next-window.md`及ED-21。T001–T027按Android开发准备历史口径完成，其余258项未完成；不重新生成任务，不另造CI平台，iOS仍在后续跨平台阶段验证。按已批准的`android-next-batch.md`消费者依赖推进Android安全加入/登录/会话撤销切片。身份、当前授权、隔离、安全和目标真实执行通道先到位；T033迁移合法本地入口及source=local证据，不伪造runner变量。本地先取得有效语义Red并读因果，再实现同oracle/fixture Green与受影响回归；Actions在功能检查点独立复现必要Red、候选Green并正式验收。优先闭合已开工且依赖满足的任务，其余核心随消费者激活，保留完整T051、故事、Android产品验收及后续跨平台责任。实际需要阿里云短信等资源时再索取最小凭据和获准对象。ready、本地Green及历史工程完成均不代替当前Actions验收、合并或生产批准。
