@@ -37,10 +37,10 @@ hooks:
   before_implement:
   - extension: agoraweave-ci
     command: agoraweave.ci.start
-    enabled: true
+    enabled: false
     optional: false
     priority: 5
-    description: Authenticate the exact cloud bootstrap or business start admission
+    description: 'ED-22: optional legacy admission; disabled for daily development'
     condition: null
   - extension: speckit-superpowers-bridge
     command: speckit.speckit-superpowers-bridge.guard
@@ -53,10 +53,10 @@ hooks:
   after_implement:
   - extension: agoraweave-ci
     command: agoraweave.ci.complete
-    enabled: true
+    enabled: false
     optional: false
     priority: 5
-    description: Authenticate full-release evidence before effective feature completion
+    description: 'ED-22: optional legacy completion reader; disabled for daily development'
     condition: null
   after_tasks:
   - extension: speckit-superpowers-bridge

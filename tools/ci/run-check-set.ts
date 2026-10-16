@@ -28,7 +28,7 @@ export function inventoryNodeTestFiles(): string[] {
 export function resolveValidationRequest(request: unknown, context: unknown): Record<string, any> {
   const object = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
   const sha = (value: unknown) => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
-  if (!object(request) || request.schema_version !== 1 || !['feedback', 'green', 'completion'].includes(request.validation_intent) ||
+  if (!object(request) || request.schema_version !== 1 || !['feedback', 'green', 'completion', 'batch'].includes(request.validation_intent) ||
     (request.development_platform !== undefined && request.development_platform !== 'android') ||
     !object(context) || context.repository !== 'Self-Command/agora-weave' || !sha(context.target_sha) ||
     context.checkout_sha !== context.target_sha || !sha(context.event_sha) ||
@@ -38,6 +38,18 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
     context.changed_paths.some((file: unknown) => typeof file !== 'string' || !file || file.includes('..')) ||
     (context.event === 'pull_request' && (context.pr_head_sha !== context.target_sha || context.pr_merge_sha !== context.event_sha))) {
     return { state: 'blocked', reason_codes: ['invalid_validation_request'], readiness: 'not_evaluated' };
+  }
+  if (request.validation_intent === 'batch') {
+    if (context.event !== 'workflow_dispatch') return { state: 'blocked', reason_codes: ['batch_requires_explicit_dispatch'], ci_ready: false };
+    if (!Array.isArray(request.target_ids) || !request.target_ids.length ||
+        new Set(request.target_ids).size !== request.target_ids.length || !Array.isArray(context.available_target_ids) ||
+        request.target_ids.some((id: unknown) => typeof id !== 'string' || !context.available_target_ids.includes(id))) {
+      return { state: 'blocked', reason_codes: ['batch_requires_registered_targets'], ci_ready: false };
+    }
+    return { ...context, state: 'resolved', reason_codes: [], validation_intent: 'batch', profile: 'business-increment',
+      target_ids: request.target_ids,
+      full_required: false, development_required: true, validation_tier: 'batch', readiness: 'not_evaluated',
+      ci_ready: false, feature_complete: false };
   }
   const governingDocuments = new Set(['execution-policy.md', 'validation-efficiency.md', 'bridge-next-window.md',
     'superpowers-execution.md', 'resource-admission.md', 'development-ai-admission.md',
@@ -51,7 +63,7 @@ export function resolveValidationRequest(request: unknown, context: unknown): Re
   const androidPaths = context.changed_paths.every((file: string) =>
     /^(apps\/(mobile|admin|share)\/|packages\/|services\/|supabase\/(functions|migrations|upstream)\/|tests\/|tools\/ci\/|infra\/ci\/|\.github\/(workflows|actions)\/|docs\/engineering\/|specs\/001-agoraweave-v1\/|\.specify\/|\.agents\/skills\/agoraweave-ci-|\.claude\/skills\/agoraweave-ci-)/.test(file) &&
       !/^(tests\/e2e\/ios\/|apps\/mobile\/ios\/)/.test(file) ||
-    ['package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', '.npmrc', '.node-version', '.nvmrc',
+    ['package.json', 'package-lock.json', 'eslint.config.mjs', '.gitignore', '.gitmodules', '.npmrc', '.node-version', '.nvmrc', 'docs/product/PRD.md',
       'tests/e2e/ios/BootstrapShellTests.swift', 'superpowers-v7'].includes(file));
   const androidDevelopment = request.development_platform === 'android' && request.validation_intent === 'green' && androidPaths;
   if (request.development_platform === 'android' && request.validation_intent !== 'completion' && !androidDevelopment) {

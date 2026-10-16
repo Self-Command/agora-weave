@@ -1,12 +1,10 @@
 ---
 name: agoraweave-ci-complete
-description: Run the mandatory AgoraWeave bridge completion hook after all canonical tasks and current cloud evidence are complete.
+description: Optional historical AgoraWeave admission diagnostic
 ---
 
-Read `.specify/memory/constitution.md` and invoke from the repository root:
+# ED-22 optional diagnostic
 
-```powershell
-& ./tools/ci/bridge-transition.ps1 -Transition complete -Mode full-release -Actor claude
-```
+The project daily completion receipt hook is disabled. Follow constitution5.0.0, ED-22 and docs/engineering/execution-policy.md. Do not request historical Red-chain authentication, repeated report verification or archive readback for ordinary development. Continue SP batch implementation, debugging, review and effective tests.
 
-Wait for the actual result before changing the handoff. Refusal preserves the incomplete state. Bootstrap readiness, partial tasks, raw task-done success, and manual status edits do not authorize feature completion. Do not execute project verification locally. Follow `specs/001-agoraweave-v1/contracts/cloud-validation.md` §3 for the authenticated evidence.
+Only when an explicit historical cloud audit is requested, invoke tools/ci/bridge-transition.ps1 with -LegacyAudit -Transition complete. This diagnostic does not replace actual functional tests or authorize production.

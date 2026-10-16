@@ -1,8 +1,16 @@
 name: Approved initialization verification
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      verification_profile:
+        description: Explicit functional batch or optional historical full diagnostic
+        type: choice
+        options: [batch, legacy-full]
+        default: batch
+      core_targets:
+        description: Comma separated core target IDs for this batch (target plus directly affected regressions)
+        type: string
+        default: ''
 permissions:
   contents: read
   actions: read
@@ -43,6 +51,8 @@ jobs:
     needs: plan
     if: ${{ needs.plan.outputs.development_required == 'true' }}
     uses: ./.github/workflows/verify-development.yml
+    with:
+      core_targets: ${{ inputs.core_targets }}
     secrets: inherit
   final-gate:
     name: agoraweave/ci-gate

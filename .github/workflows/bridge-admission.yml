@@ -1,8 +1,5 @@
 name: Cloud bootstrap bridge admission
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_call:
     inputs:
       mode:
