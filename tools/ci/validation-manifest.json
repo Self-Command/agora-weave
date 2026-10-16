@@ -1169,6 +1169,12 @@
       "depends_on": [
         "supabase/migrations/0020_registered_event_types.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0022_restore_watermark_guard.sql",
+      "depends_on": [
+        "supabase/migrations/0021_journal_unknown_and_restriction_facts.sql"
+      ]
     }
   ],
   "core_fixture_files": [
