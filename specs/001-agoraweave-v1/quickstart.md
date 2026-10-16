@@ -20,6 +20,13 @@ App/分享页新增或设计变更先在统一HTML原型补具体页面/状态�
 
 ## 3. 任务、结果与确认
 
+多agent按[已批准分工](../../docs/engineering/execution-policy.md#已批准的多-agent-分工)启用：主agent先按现有任务与源码分清模块、接口和写入文件，
+后端/App/后台开发显式 `gpt-6-sol` / `high`，复杂工作由主agent或显式允许的 `gpt-6.1-sol` 承担；阶段UI复检 `gpt-5.6-luna` / `xhigh`。
+每个任务包给仓库根、宪法路径及遵守要求、既有任务ID、文件范围、契约、预期行为和目标测试；核实际模型，不继承完整会话。
+通常主agent加两名开发者，活动数不超过工具上限；同文件单写者，公共依赖/契约/迁移编号/规范由主agent协调。
+共享DB夹具、H盘运行副本、Metro及模拟器/浏览器串行交接，工作树不能隔离这些资源；不同时同步不同分支覆盖运行区。
+集成后集中交独立UI角色检查真实页面和交互，修复后优先复测受影响项，再交用户验收；AI不能代替人的批准。
+
 轻量页面检查沿用现有Actions手动入口，不表示已配置PR required status：`verify-increment`和`verify-release`检查页面清单结构，
 再用有效base的实际源码差异检查生产UI绑定及批准（默认HEAD^；整批需显式传批次起点ui_base_ref）。纯后端差异不被pending页面阻塞。
 阶段完成/发布产品时必须给全部适用页面ID及真实实现commit，执行 `check-ui-bindings.ts --mode stage --ids <ids> --source-revision <commit>`，
