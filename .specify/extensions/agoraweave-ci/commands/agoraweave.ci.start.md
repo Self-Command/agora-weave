@@ -1,1 +1,1 @@
-Read and execute the current agent's project skill `agoraweave-ci-start`. Wait for the authenticated `tools/ci/bridge-transition.ps1 -Transition start` result. Follow the active constitution and cloud-validation §3; do not run project checks locally or continue a refused business transition.
+ED-22 disables the daily receipt hook. Follow constitution5.0.0 and docs/engineering/execution-policy.md. Use the existing start reader only for an explicitly requested historical audit with -LegacyAudit; it is not a daily development gate.

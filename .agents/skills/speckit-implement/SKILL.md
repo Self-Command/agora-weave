@@ -150,22 +150,22 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Execution flow**: Order and dependency requirements
 
 6. Execute implementation following the task plan:
-   - **Phase-by-phase execution**: Complete each phase before moving to the next
+   - **Direct dependencies**: Complete current consumer dependencies; unrelated public infrastructure does not block a usable slice
    - **Respect dependencies**: Run sequential tasks in order, parallel tasks [P] can run together
-   - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
+   - **Follow ED-22**: Implement usable slices and execute corresponding effective tests; per-behavior TDD is discretionary
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
-   - **Tests before code**: If you need to write tests for contracts, entities, and integration scenarios
+   - **Risk-based tests**: Cover current contracts, permissions, security, integrity and bug fixes; TDD order is chosen by the implementer
    - **Core development**: Implement models, services, CLI commands, endpoints
    - **Integration work**: Database connections, middleware, logging, external services
    - **Polish and validation**: Unit tests, performance optimization, documentation
 
 8. Progress tracking and error handling:
    - Report progress after each completed task
-   - Halt execution if any non-parallel task fails
+   - Pause only work depending on a failed required dependency; continue unaffected authorized work
    - For parallel tasks [P], continue with successful tasks, report failed ones
    - Provide clear error messages with context for debugging
    - Suggest next steps if implementation cannot proceed

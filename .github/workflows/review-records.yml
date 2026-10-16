@@ -7,7 +7,7 @@ permissions:
 jobs:
   records:
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -16,6 +16,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Authenticate original same-target review input context
         env:
           GH_TOKEN: ${{ github.token }}
@@ -23,37 +27,23 @@ jobs:
         run: node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" verify-output
       - name: Install frozen schema validation tools
         run: npm run ci:install
-      - name: Read exact private current Codex records without exposing their payloads
-        shell: bash
+      - name: Await exact private current Codex records without exposing their payloads
         env:
           EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
           EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
           EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
           EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
-          TARGET_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          set -eu
-          umask 077
-          mkdir -p private-review
-          key="$RUNNER_TEMP/review-read-key"
-          hosts="$RUNNER_TEMP/review-read-hosts"
-          batch="$RUNNER_TEMP/review-read-batch"
-          trap 'rm -f "$key" "$hosts" "$batch"' EXIT
-          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
-          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
-          user=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
-          host=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
-          context=$(sha256sum verify-output/review-context.json | cut -d' ' -f1)
-          for kind in code visual; do
-            printf 'get /archive/ordinary/review-%s-%s-%s.json private-review/%s.json\n' "$TARGET_SHA" "$kind" "$context" "$kind" > "$batch"
-            if ! sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host" > "$RUNNER_TEMP/review-read-$kind.log" 2>&1; then
-              rm -f "private-review/$kind.json"
-            fi
-          done
-          rm -f "$key" "$hosts" "$batch"
-          test ! -e "$key"
+        run: node --experimental-strip-types tools/ci/read-private-reviews.ts
       - name: Validate current Codex statements against authenticated input bytes and actual checks
         run: npm run ci:review
+      - name: Remove any review transport credential files
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/review-read-key" "$RUNNER_TEMP/review-read-hosts" "$RUNNER_TEMP/review-read-batch"
+          test ! -e "$RUNNER_TEMP/review-read-key"
+          test ! -e "$RUNNER_TEMP/review-read-hosts"
+          test ! -e "$RUNNER_TEMP/review-read-batch"
       - if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
