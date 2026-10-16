@@ -1,11 +1,23 @@
-# Session read checkpoint — preimplementation replay
+# 本人会话读取开发检查点
 
-2026-10-16. This commit exports the recorded local preimplementation tree `5b6fe0f56af13b1a2a69630f7833057ca39b0409` on base `41523a9b4541208ecf7bc59d83fdf19d9e4c9b81`. It does not remove code from a later implementation to manufacture a historical Red.
+2026-10-16，按宪法4.0.0及ED-21执行。当前为T033、T052、T061的局部实现；T001–T027之外的任务仍未勾选，不代表完整US1、正式验收、可合并或生产批准。
 
-The original local AS01–04 assertion failures were read before implementation. The first Green attempt exposed an HTTP HEAD fixture transport timeout; the fixture now uses curl's HEAD mode. This replay keeps those business assertions and adds valid base64url payload/signature tampering and configuration activation coverage (AS05), so the independent Actions Red and candidate Green use the same corrected oracle and fixture. The original local report remains distinct from this replay.
+## 当前行为
 
-The activated scope is 250 engineering assertions and 65 current core assertions. The new read route and session-read SQL function are absent in this replay. Expected business failures are missing-route assertions while the real Auth/SQL/service baseline remains healthy. Actions results have not yet been observed. No canonical task is completed by this checkpoint; T033, T052, T061 and the full feature remain incomplete.
+`GET /me/sessions`使用真实Auth签名主体和主库当前账号／会话资格，只返回本人当前有效会话的六项设备字段。初始20、最大50，游标签名绑定主体、环境、limit、客户端版本和实际配置版本；非法参数、篡改、跨账号及旧配置游标拒绝。share-read audience不获得此私人入口权限。读取沿用撤权输出admission锁，撤销后的新访问拒绝旧JWT。
 
-Local evidence is source=local with raw Git tree snapshots and pinned Node 22.23.3/npm 10.9.9. The implemented candidate has five session-read cases passing locally, and the preceding 64-case core regression passed; 23 of 249 full engineering cases were blocked by cloud-only fixture assumptions or missing local Python. Those failures are not business Red or local passes. Independent Actions must evaluate its own original reports.
+本地源显式为`local`，固定Node22.23.3/npm10.9.9；独立官方Compose服务无公开底层端口，合成数据不冒充短信注册。原报告保留工作区原始Git tree、工具／环境、命令／退出状态与fixture/oracle摘要。五项AS用例已在真实服务上通过；此前64项当前核心回归通过，受影响25项工程回归、AD01–04、类型与lint通过。完整本地工程249项曾226通过、23项因旧云端夹具假设或本地Python缺失失败，这些结果未改写为通过。
 
-The first independent replay (1131661; verify-release run 38839915976/1) was blocked before service execution because the cumulative approved ED-21 PRD update was outside the development planner path set. CI-bootstrap run 38839916027/1 also exposed the cloud bridge still pinning constitution 3.1.0. Neither result is session business Red. AD04 reproduced the planner rejection locally as ERR_ASSERTION before adding the specific PRD path; AD01–04 then passed (4/4), while unknown paths, iOS changes and formal completion remain refused or require full acceptance. The cloud bridge now requires the approved constitution 4.0.0; ownership and lifecycle checks remain in force. Frozen typecheck and lint passed after those repairs. This child replay still has no session-read implementation.
+## Red及独立复验
+
+原本地Red树`5b6fe0f56af13b1a2a69630f7833057ca39b0409`在实现前取得并读取AS01–04的缺路由404断言失败。首次Green还暴露curl HEAD夹具等待不存在响应体的传输超时；改用HEAD模式后四项通过。后续加入合法base64url的payload／signature篡改及AS05配置切换验证，五项通过。
+
+`1131661`将记录的原始实现前树导出为独立复现提交，并使用修正后的同一oracle／fixture；它不把后来的实现挖空冒充最初Red。其verify-release run38839915976/1在服务执行前被PRD范围分类拒绝，CI-bootstrap run38839916027/1发现云端桥接仍要求宪法3.1.0，均不计会话业务Red。AD04先观察到本地ERR_ASSERTION，再允许具体的已批准PRD路径；未知路径、iOS新实现和正式completion仍保持原边界。云端桥接改为要求已批准4.0.0，身份／所有者／生命周期检查保留。
+
+修复后的独立Red复现提交为`3805acac81465cd440a1f3817302229be9b16c7a`。其服务原报告仍须读取，并与候选实现提交在Actions中独立复验；本记录不预填云端通过。当前工程清单250项，核心清单65项；新的消费者继续按实际行为登记，不以局部通过勾完整任务。
+
+## 审查与剩余范围
+
+会话读取只读审查未确认运行时越权缺陷；发现的签名完整性测试缺口已增加真实篡改断言。配置失配／缺失和旧配置游标已覆盖。此审查不替该新路由的专门读撤并发证据、Android交互／图像或完整认证链验收。
+
+邀请码、OTP／阿里云短信、原子条款／年龄准入、耐久撤销及幂等写入、Android页面尚未完成。当前路由没有宣称执行这些未完成行为。独立安全日志、原子写入及必要审计验证后，才启用相应会话撤销和注册写入口；真实短信验证节点按ED-07取得最小资源。

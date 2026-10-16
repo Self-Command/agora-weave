@@ -3094,6 +3094,15 @@
         "supabase/migrations/0008_current_authorization.sql",
         "supabase/migrations/0005_obligations.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0102_session_reads.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0006_configuration.sql",
+        "supabase/migrations/0008_current_authorization.sql",
+        "supabase/migrations/0009_output_admission.sql"
+      ]
     }
   ],
   "core_fixture_files": [
