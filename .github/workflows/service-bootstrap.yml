@@ -2,6 +2,9 @@ name: Isolated official services bootstrap
 on:
   workflow_call:
     inputs:
+      core_targets:
+        type: string
+        default: ''
       https_ingress:
         type: boolean
         default: false
@@ -35,6 +38,8 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             infra/ci/toolchain-lock.json
+      - name: Install committed frozen dependencies on this isolated runner
+        run: npm run ci:install
       - name: Prepare isolated configuration and locked image override
         shell: bash
         run: |
@@ -47,8 +52,11 @@ jobs:
           printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT_NAME" >> "$GITHUB_ENV"
           node --input-type=module <<'NODE'
           import { execFileSync } from 'node:child_process';
-          import { readFileSync, writeFileSync } from 'node:fs';
-          import { createHash } from 'node:crypto';
+          import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+          import { createHash, randomBytes } from 'node:crypto';
+          const runtimePassword = randomBytes(32).toString('hex');
+          console.log('::add-mask::' + runtimePassword);
+          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\n`);
           const base = ['--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
             '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml'];
           const config = JSON.parse(execFileSync('docker', ['compose', ...base, 'config', '--format', 'json'], { encoding: 'utf8' }));
@@ -84,7 +92,9 @@ jobs:
           edge_image=$(node -e 'const v=JSON.parse(require("fs").readFileSync("infra/ci/images.lock.json"));process.stdout.write(v.images.find(i=>i.reference.startsWith("supabase/edge-runtime:")).repo_digests[0])')
           docker volume create "${COMPOSE_PROJECT_NAME}_deno-cache" > /dev/null
           docker run -d --name agoraweave-import-cache \
-            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions:/home/deno/functions:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/main:/home/deno/functions/main:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/deno.jsonc:/home/deno/functions/deno.jsonc:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/functions/core:/home/deno/functions/core:ro" \
             -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
             "$edge_image" start --main-service /home/deno/functions/main > /dev/null
           for attempt in $(seq 1 60); do
@@ -92,12 +102,22 @@ jobs:
             sleep 2
           done
           docker exec agoraweave-import-cache bash -c 'timeout 1 bash -c "</dev/tcp/127.0.0.1/9000"'
+          # Resolve the committed core's pinned imports without attaching service credentials.
+          docker exec agoraweave-import-cache bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000; printf "GET /core/api/v1/me/preferences HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3; cat <&3' > "$RUNNER_TEMP/core-import-probe.txt"
+          grep -q 'SESSION_INVALID' "$RUNNER_TEMP/core-import-probe.txt"
           docker rm -f agoraweave-import-cache > /dev/null
           "${compose[@]}" up -d --wait --wait-timeout 300
           npm run ci:health
       - name: Execute current core contracts against the live isolated services
         id: core
-        run: npm run ci:core
+        env:
+          AGORAWEAVE_BATCH_TARGETS: ${{ inputs.core_targets }}
+        run: |
+          if [ -n "$AGORAWEAVE_BATCH_TARGETS" ]; then
+            node --experimental-strip-types tools/ci/core-entry.ts batch
+          else
+            npm run ci:core
+          fi
       - name: Preserve original active core execution
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
