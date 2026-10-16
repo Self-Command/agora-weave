@@ -13,8 +13,6 @@
     ".agents/skills/speckit-speckit-superpowers-bridge-execute/SKILL.md",
     ".agents/skills/agoraweave-ci-start/SKILL.md",
     ".agents/skills/agoraweave-ci-complete/SKILL.md",
-    ".claude/skills/speckit-superpowers-bridge/SKILL.md",
-    ".claude/skills/speckit-speckit-superpowers-bridge-execute/SKILL.md",
     ".claude/skills/agoraweave-ci-start/SKILL.md",
     ".claude/skills/agoraweave-ci-complete/SKILL.md",
     "docs/product/PRD.md",
