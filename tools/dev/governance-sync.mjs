@@ -9,7 +9,9 @@ const normalized = bytes => {
   return Buffer.from(text).equals(bytes) && !bytes.includes(0) ? Buffer.from(text.replace(/\r\n/g, '\n')) : bytes;
 };
 const hash = bytes => createHash('sha256').update(normalized(bytes)).digest('hex');
-const git = (root, args, options = {}) => execFileSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, ...options });
+const cleanEnvironment = () => Object.fromEntries(Object.entries(process.env).filter(([key]) =>
+  !['GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE','GIT_COMMON_DIR','GIT_PREFIX','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES'].includes(key)));
+const git = (root, args, options = {}) => execFileSync('git', args, { cwd: root, env: cleanEnvironment(), encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, ...options });
 function configuration(root) {
   const manifest = JSON.parse(readFileSync(resolve(root, 'tools/dev/governance-sync-manifest.json'), 'utf8'));
   const files = new Set(manifest.files);
@@ -83,7 +85,7 @@ export function synchronize(source, publish = false) {
     if (config.manages(file) && !canonical.has(file)) obsolete.add(file);
   }
   const managed = [...config.files, ...obsolete];
-  const env = { ...process.env, AGORAWEAVE_GOVERNANCE_SYNC: '1' };
+  const env = { ...cleanEnvironment(), AGORAWEAVE_GOVERNANCE_SYNC: '1' };
   function copyTo(tree) {
     for (const file of managed) {
       const target = resolve(tree.path, file), bytes = canonical.get(file);
@@ -105,7 +107,9 @@ export function synchronize(source, publish = false) {
       const tracked = entries(tree.path, 'HEAD');
       const paths = managed.filter(file => existsSync(resolve(tree.path,file)) || tracked.has(file));
       git(tree.path, ['add', '-A', '--', ...paths], { env });
-      git(tree.path, ['-c', 'core.autocrlf=input', 'commit', '--only', '-m', 'chore(governance): synchronize approved current specification', '--', ...paths], { env });
+      if (git(tree.path, ['diff','--cached','--name-only','--',...paths], { env }).trim()) {
+        git(tree.path, ['-c', 'core.autocrlf=input', 'commit', '--only', '-m', 'chore(governance): synchronize approved current specification', '--', ...paths], { env });
+      }
     }
   }
   const blobs = new Map([...canonical].map(([file, bytes]) => [file, git(root, ['hash-object', '-w', '--stdin'], { input: bytes }).trim()]));
