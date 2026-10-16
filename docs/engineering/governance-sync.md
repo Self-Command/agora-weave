@@ -13,6 +13,8 @@ pwsh -NoProfile -File tools/dev/sync-governance.ps1 -Verify
 
 `-Publish` 基于每个远端分支原提交叠加规范后普通快进推送，保留远端业务树，不夹带本地业务提交、不强推。删除／重命名按受管目录与目标树差异传播，旧文件先备份；二进制规范附件保持原字节。历史标签与旧提交不改写。
 
+Git传输不可用时可用同仓库GitHub接口：`pwsh -NoProfile -File tools/dev/sync-governance.ps1 -AllBranches -Publish -GitHubApi`。接口发布先逐项校当前规范及未受管业务blob未变，再以原远端提交为父提交快进更新并回读ref；结果存H盘reports/governance-remote-sync.json。
+
 共享Git目录的 `post-commit`／`post-checkout` 钩子在规范提交或切换分支后调用同步，递归同步有显式保护；`tools/dev/local.ps1` 对应的实际开发入口在运行前校验。远端发布与本地来源分别保持各自代码历史，规范相同不能推导源码或测试状态相同。
 
 业务代码、未完成迁移、测试和报告不属于规范同步清单；它们必须保留原事实，不能被同步操作伪装成已完成。历史决定、历史报告和 bridge snapshot 继续保留，但只能作为历史资料读取，不能覆盖现行规则。
