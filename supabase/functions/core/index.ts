@@ -1,11 +1,13 @@
 import { principal } from './identity.ts';
 import { database } from './database.ts';
 import { admittedResource } from './admission.ts';
-import { listSessions } from './routes/account-security.ts';
+import { listSessions, revokeSession } from './routes/account-security.ts';
+import { refreshSession, registrationDocuments } from './routes/auth.ts';
 
 const messages: Record<string, string> = { SESSION_INVALID: '登录已失效，请重新登录',
   NOT_FOUND: '内容不可用', FORBIDDEN: '当前入口不支持此操作', METHOD_NOT_ALLOWED: '不支持此操作',
-  INVALID_INPUT: '请求内容有误，请检查后重试',
+  INVALID_INPUT: '请求内容有误，请检查后重试', CONFLICT: '状态已变化，请刷新后重试',
+  TERMS_UNAVAILABLE: '注册条款暂时不可用，请稍后重试',
   SERVICE_UNAVAILABLE: '服务暂时不可用，请稍后重试' };
 const failure = (code: string, status: number) => Response.json({ request_id: crypto.randomUUID(), code,
   message: messages[code], retryable: status === 503 }, { status, headers: { 'Cache-Control': 'no-store' } });
@@ -22,6 +24,11 @@ Deno.serve(async (request: Request) => {
   }
   if (!actor && path.startsWith('/me/')) return failure('SESSION_INVALID', 401);
   try {
+    if (path === '/auth/refresh') return request.method === 'POST' ? await refreshSession(request,failure) : failure('METHOD_NOT_ALLOWED',405);
+    if (path === '/documents/current') return request.method === 'GET' ? await registrationDocuments(request,failure) : failure('METHOD_NOT_ALLOWED',405);
+    if (path === '/auth/logout') return request.method === 'POST' ? await revokeSession(request,null,failure) : failure('METHOD_NOT_ALLOWED',405);
+    const sessionTarget = path.match(/^\/me\/sessions\/([a-f0-9-]{36})$/i);
+    if (sessionTarget) return request.method === 'DELETE' ? await revokeSession(request,sessionTarget[1],failure) : failure('METHOD_NOT_ALLOWED',405);
     const sql = database();
     if (actor) {
       const [current] = await sql`SELECT core.current_identity(${actor.account}::uuid,${actor.session}::uuid) AS active`;

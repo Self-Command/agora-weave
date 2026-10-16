@@ -9,6 +9,7 @@ before(() => {
   assert.equal(sql('SELECT 1;').trim(), '1');
   assert.equal(request('/user', { auth: true, token: token() }).status, 200, 'Real Auth must be healthy before admission assertions');
   assert.ok(['dev', 'test'].includes(environment || ''));
+  sql(`INSERT INTO core.account(id) VALUES ('${account(1)}'),('${account(2)}'),('${account(3)}') ON CONFLICT (id) DO NOTHING;`);
 });
 function available(table: string) {
   assert.equal(rows(`SELECT to_regclass('core.${table}') IS NOT NULL AS present`)[0].present, true,

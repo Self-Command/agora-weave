@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { before, test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import { setTimeout as pause } from 'node:timers/promises';
 import { account, session, request, token, sql } from '../../fixtures/core/runtime.ts';
 import { asynchronousCompose, heldTransaction, readConcurrently } from '../../fixtures/core/concurrency.ts';
 
 const target = '40000000-0000-4000-8000-000000000002';
+before(() => sql(readFileSync('tests/fixtures/core/policy.sql','utf8')));
 
 test('AD01: a request admitted behind an uncommitted restriction waits for its authoritative commit and emits no old body', async () => {
   assert.equal(request(`/posts/${target}`, { token: token(2) }).status, 200, 'The same live follower must first read the original body');

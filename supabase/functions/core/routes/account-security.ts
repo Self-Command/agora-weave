@@ -1,5 +1,6 @@
 import { database } from '../database.ts';
 import { principal } from '../identity.ts';
+import { readCommandJson } from '../request-body.ts';
 
 type Cursor = { position: string; subject: string; environment: string; limit: number; client_release: string; config_version: string };
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
@@ -25,6 +26,34 @@ async function writeCursor(cursor: Cursor): Promise<string> {
   const payload = JSON.stringify(cursor);
   const signature = encode(new Uint8Array(await crypto.subtle.sign('HMAC',await cursorKey(),text.encode(payload))));
   return encode(text.encode(JSON.stringify({ payload,signature })));
+}
+
+export async function revokeSession(request: Request, target: string | null,
+  failure: (code: string, status: number) => Response): Promise<Response> {
+  const logout = target === null;
+  const actor = await principal(request);
+  if (!actor || actor.audience !== 'authenticated') return failure('SESSION_INVALID',401);
+  const environment = Deno.env.get('CORE_ENVIRONMENT');
+  if (!environment || !['dev','test','production'].includes(environment)) return failure('SERVICE_UNAVAILABLE',503);
+  let body;
+  try {
+    body = await readCommandJson(request,2048);
+  } catch { return failure('INVALID_INPUT',422); }
+  if (!body || typeof body !== 'object' || Array.isArray(body) ||
+      Object.keys(body).some(key => !(logout ? ['operation_id'] : ['operation_id','base_version']).includes(key)) ||
+      typeof body.operation_id !== 'string' || !uuid.test(body.operation_id) || !logout &&
+      (!target || !uuid.test(target) || !Number.isSafeInteger(body.base_version) || body.base_version < 1)) return failure('INVALID_INPUT',422);
+  const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256',text.encode(JSON.stringify({
+    target,base_version: body.base_version ?? null,operation_id: body.operation_id,
+  }))))].map(value => value.toString(16).padStart(2,'0')).join('');
+  const [row] = await database()`SELECT core.revoke_session_result(${actor.account}::uuid,${actor.session}::uuid,
+    ${target}::uuid,${body.base_version ?? null}::bigint,${body.operation_id}::uuid,${digest},${environment},${logout}) AS result`;
+  const result = row.result;
+  if (result.code !== 'OK') return failure(result.code,result.code === 'SESSION_INVALID' ? 401 :
+    result.code === 'NOT_FOUND' ? 404 : result.code === 'CONFLICT' ? 409 : 422);
+  return Response.json({ request_id: body.operation_id,data: {
+    revoked: result.revoked,clear_restricted_cache: result.clear_restricted_cache,
+  } },{ headers: { 'Cache-Control': 'no-store' } });
 }
 
 /** The caller receives only current owned device metadata, under the same output gate as revocation. */

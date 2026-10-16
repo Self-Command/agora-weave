@@ -3041,10 +3041,79 @@
       ],
       "case_count": 4,
       "requires_services": true
+    },
+    {
+      "id": "core.auth-session-commands",
+      "command": "ci:service",
+      "files": ["tests/integration/auth/session-mutations.spec.ts"],
+      "case_count": 3,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-refresh",
+      "command": "ci:service",
+      "files": ["tests/contract/auth/refresh.spec.ts"],
+      "case_count": 2,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-registration",
+      "command": "ci:service",
+      "files": ["tests/integration/auth/registration.spec.ts"],
+      "case_count": 3,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-otp-policy",
+      "command": "ci:security",
+      "files": ["tests/security/auth/otp-policy.spec.ts"],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-request-bounds",
+      "command": "ci:security",
+      "files": ["tests/security/auth/request-bounds.spec.ts"],
+      "case_count": 3,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-mobile-client",
+      "command": "ci:core:contracts",
+      "files": ["tests/contract/auth/mobile-client.spec.ts"],
+      "case_count": 5,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-concurrency",
+      "command": "ci:concurrency",
+      "files": ["tests/concurrency/auth/invitation-otp.spec.ts"],
+      "case_count": 2,
+      "requires_services": true
     }
   ],
-  "core_case_count": 69,
+  "core_case_count": 91,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0107_otp_challenges.sql",
+      "depends_on": ["supabase/migrations/0106_registration_binding_fix.sql"]
+    },
+    {
+      "file": "supabase/migrations/0106_registration_binding_fix.sql",
+      "depends_on": ["supabase/migrations/0105_registration_admission.sql"]
+    },
+    {
+      "file": "supabase/migrations/0105_registration_admission.sql",
+      "depends_on": ["supabase/migrations/0103_invitation_initial_state.sql", "supabase/migrations/0007_documents.sql", "supabase/migrations/0009_output_admission.sql"]
+    },
+    {
+      "file": "supabase/migrations/0104_session_commands.sql",
+      "depends_on": ["supabase/migrations/0102_session_reads.sql", "supabase/migrations/0003_effects.sql", "supabase/migrations/0005_obligations.sql"]
+    },
+    {
+      "file": "supabase/migrations/0103_invitation_initial_state.sql",
+      "depends_on": ["supabase/migrations/0101_admission_recovery.sql"]
+    },
     {
       "file": "supabase/migrations/0001_identity.sql",
       "depends_on": []

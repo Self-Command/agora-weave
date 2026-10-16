@@ -10,7 +10,7 @@
   "runner_image": "20261012.334.1",
   "runner_os": "Linux",
   "lockfile_version": 3,
-  "lock_sha256": "452bdde3da25e5f80aa462879fe63dbf396ece2c78157fc6679e90b712e275b3",
+  "lock_sha256": "ce37a9e9c5b03b77dd9e55185bd2b56978c4d0ffbcb54433a03b7d5634ba44ed",
   "workflow_actions": {
     "checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "setup_node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
