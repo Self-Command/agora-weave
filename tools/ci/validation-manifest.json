@@ -3060,7 +3060,7 @@
       "id": "core.auth-registration",
       "command": "ci:service",
       "files": ["tests/integration/auth/registration.spec.ts"],
-      "case_count": 3,
+      "case_count": 5,
       "requires_services": true
     },
     {
@@ -3068,6 +3068,13 @@
       "command": "ci:security",
       "files": ["tests/security/auth/otp-policy.spec.ts"],
       "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-operation-results",
+      "command": "ci:service",
+      "files": ["tests/integration/auth/operations.spec.ts"],
+      "case_count": 3,
       "requires_services": true
     },
     {
@@ -3081,7 +3088,7 @@
       "id": "core.auth-mobile-client",
       "command": "ci:core:contracts",
       "files": ["tests/contract/auth/mobile-client.spec.ts"],
-      "case_count": 5,
+      "case_count": 7,
       "requires_services": false
     },
     {
@@ -3092,8 +3099,20 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 91,
+  "core_case_count": 98,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0110_login_session_binding.sql",
+      "depends_on": ["supabase/migrations/0106_registration_binding_fix.sql"]
+    },
+    {
+      "file": "supabase/migrations/0109_account_operation_ambiguity.sql",
+      "depends_on": ["supabase/migrations/0108_account_operation_reads.sql"]
+    },
+    {
+      "file": "supabase/migrations/0108_account_operation_reads.sql",
+      "depends_on": ["supabase/migrations/0104_session_commands.sql"]
+    },
     {
       "file": "supabase/migrations/0107_otp_challenges.sql",
       "depends_on": ["supabase/migrations/0106_registration_binding_fix.sql"]

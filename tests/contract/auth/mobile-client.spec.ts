@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { test } from 'node:test';
 import { accountApi, AccountError, normalizePhone } from '../../../apps/mobile/src/features/account/api.ts';
-import { recoverChangedTerms } from '../../../apps/mobile/src/features/account/recovery.ts';
+import { confirmRevocation, recoverChangedTerms } from '../../../apps/mobile/src/features/account/recovery.ts';
 import { storedSession } from '../../../apps/mobile/src/features/account/session-policy.ts';
 
 test('MC01: phone normalization preserves international numbers and refuses incomplete or non-phone input', () => {
@@ -55,4 +55,29 @@ test('MC05: access token expiry alone retains refresh credentials while corrupte
   const session = { access_token: 'expired-access',refresh_token: 'still-valid-refresh',expires_at: 1 };
   assert.deepEqual(storedSession(JSON.stringify(session)),session);
   for (const raw of ['invalid','{}','null',JSON.stringify({ ...session,refresh_token: '' })]) assert.equal(storedSession(raw),null);
+});
+test('MC06: uncertain revocation queries its owned operation without sending the mutation twice', async () => {
+  const seen: string[] = [];
+  const server = createServer((request,response) => {
+    seen.push(`${request.method} ${request.url}`);
+    assert.equal(request.headers.authorization,'Bearer controlled-token');
+    response.setHeader('Content-Type','application/json');
+    response.end(JSON.stringify({ data: { operation_id: 'command-6',action: 'session.revoke',state: 'succeeded' } }));
+  });
+  server.listen(0,'127.0.0.1'); await once(server,'listening');
+  try {
+    const address = server.address() as { port: number };
+    const api = accountApi(`http://127.0.0.1:${address.port}`,'test',true);
+    assert.equal(await confirmRevocation(api,'controlled-token','command-6',new AccountError('NETWORK_UNCONFIRMED','网络中断')),true);
+    assert.deepEqual(seen,['GET /operations/command-6']);
+  } finally { server.close(); await once(server,'close'); }
+});
+test('MC07: pending, unrelated or inaccessible operation results cannot turn uncertain revocation into success', async () => {
+  const failure = new AccountError('NETWORK_UNCONFIRMED','网络中断');
+  for (const patch of [{ state: 'unknown' as const },{ state: 'pending' as const },{ action: 'auth.logout' },{ operation_id: 'other' }]) {
+    assert.equal(await confirmRevocation({ operation: async () => ({ operation_id: 'command',action: 'session.revoke',state: 'succeeded',...patch }) },'token','command',failure),false);
+  }
+  await assert.rejects(confirmRevocation({ operation: async () => { throw new AccountError('SESSION_INVALID','已失效'); } },'token','command',failure),
+    error => error instanceof AccountError && error.code === 'SESSION_INVALID');
+  assert.equal(await confirmRevocation({ operation: async () => { assert.fail('Validation failures must not query operations'); } },'token','command',new AccountError('CONFLICT','冲突')),false);
 });

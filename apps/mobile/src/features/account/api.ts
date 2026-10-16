@@ -3,6 +3,7 @@ export type DeviceSession = { id: string; device_label: string; current: boolean
 export type RegistrationDocuments = { document_set_digest: string; age_declaration_version: string;
   documents: { release_id: string; title: string; body: string; digest: string; kind: string }[] };
 export type Challenge = { challenge_id: string; expires_at: string; retry_after: number };
+export type AccountOperation = { operation_id: string; action: string; state: 'pending'|'succeeded'|'failed'|'unknown' };
 
 export class AccountError extends Error {
   code: string;
@@ -45,6 +46,7 @@ export function accountApi(base: string | undefined,release: string,development 
     challenge: (body: unknown) => call<Challenge>('/auth/challenges','POST',body),
     verify: (body: unknown) => call<{ session: SessionTokens; account: { id: string; admitted: boolean } }>('/auth/verify','POST',body),
     refresh: (refresh_token: string) => call<{ session: SessionTokens }>('/auth/refresh','POST',{ refresh_token }),
+    operation: (token: string,id: string) => call<AccountOperation>('/operations/' + encodeURIComponent(id),'GET',undefined,token),
     sessions: (token: string,cursor?: string) => call<{ items: DeviceSession[]; next_cursor: string | null; has_more: boolean }>(
       '/me/sessions' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''),'GET',undefined,token),
     revoke: (token: string,id: string,base_version: number,operation_id: string) => call('/me/sessions/' + encodeURIComponent(id),'DELETE',{ base_version,operation_id },token),

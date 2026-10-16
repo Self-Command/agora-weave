@@ -38,6 +38,9 @@ test('SM02: one owned revocation commits durable deny, audit and outbox once and
   assert.equal(response.status,200,response.body);
   assert.equal((response.data.data as { revoked: boolean }).revoked,true);
   assert.equal(send(path,body).status,200,'An identical retry must reuse the committed effect');
+  const outcome = request(`/operations/${operation(6)}`,{ token: token() });
+  assert.equal(outcome.status,200,outcome.body);
+  assert.deepEqual(outcome.data.data,{ operation_id: operation(6),action: 'session.revoke',state: 'succeeded' });
   assert.equal(send(path,{ ...body,base_version: 2 }).status,409);
   assert.equal(request('/me/sessions',{ token: token(1,{ session_id: extraSession }),headers: { 'X-Client-Release': 'synthetic-account-v1' } }).status,401);
   for (const statement of [

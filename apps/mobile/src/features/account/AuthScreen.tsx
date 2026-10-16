@@ -85,7 +85,7 @@ export function AuthScreen({ api,onAuthenticated }: { api: AccountApi; onAuthent
     {mode === 'register' && <>
       <Text style={{ color: colors.fg }}>邀请码</Text>
       <TextInput accessibilityLabel="邀请码" editable={!busy && !challenge} value={invitation} onChangeText={value => { setInvitation(value); challengeCommand.current = null; }} autoCapitalize="none" autoCorrect={false} style={input} />
-      <View style={styles.choice}><Switch accessibilityLabel="我主动声明已满 18 岁" value={adult} disabled={busy || !!challenge} onValueChange={value => { setAdult(value); challengeCommand.current = null; }} />
+      <View style={styles.choice}><Switch style={styles.switch} accessibilityLabel="我主动声明已满 18 岁" value={adult} disabled={busy || !!challenge} onValueChange={value => { setAdult(value); challengeCommand.current = null; }} />
         <Text style={[styles.choiceText,{ color: colors.fg }]}>我主动声明已满 18 岁</Text></View>
       <Text style={[styles.body,{ color: colors.secondary }]}>此声明不代表平台已核验实际年龄。</Text>
       {loadingDocuments && <ActivityIndicator accessibilityLabel="加载当前条款" />}
@@ -94,7 +94,7 @@ export function AuthScreen({ api,onAuthenticated }: { api: AccountApi; onAuthent
         <Text selectable style={[styles.body,{ color: colors.fg }]}>{doc.body}</Text>
       </View>)}
       {!documents && !loadingDocuments && <Action title="重试加载条款" onPress={() => void loadDocuments()} disabled={busy} />}
-      <View style={styles.choice}><Switch accessibilityLabel="我明确同意以上当前条款" value={consent} disabled={busy || !documents} onValueChange={setConsent} />
+      <View style={styles.choice}><Switch style={styles.switch} accessibilityLabel="我明确同意以上当前条款" value={consent} disabled={busy || !documents} onValueChange={setConsent} />
         <Text style={[styles.choiceText,{ color: colors.fg }]}>我明确同意以上当前条款</Text></View>
     </>}
     {challenge && <>
@@ -112,4 +112,4 @@ export function AuthScreen({ api,onAuthenticated }: { api: AccountApi; onAuthent
 }
 const styles = StyleSheet.create({ container: { padding: 24,gap: 12,paddingBottom: 48 },brand: { fontSize: 24,fontWeight: '600',marginBottom: 20 },
   title: { fontSize: 22,fontWeight: '700' },body: { fontSize: 16,lineHeight: 26 },input: { minHeight: 52,padding: 14,borderWidth: 1,borderRadius: 12,fontSize: 17 },
-  choice: { flexDirection: 'row',alignItems: 'center',gap: 12 },choiceText: { flex: 1,fontSize: 16,lineHeight: 24 },document: { borderWidth: 1,borderRadius: 12,padding: 16,gap: 8 },documentTitle: { fontSize: 17,fontWeight: '600' } });
+  choice: { flexDirection: 'row',alignItems: 'center',gap: 12,minHeight: 48 },switch: { minWidth: 48,minHeight: 48 },choiceText: { flex: 1,fontSize: 16,lineHeight: 24 },document: { borderWidth: 1,borderRadius: 12,padding: 16,gap: 8 },documentTitle: { fontSize: 17,fontWeight: '600' } });

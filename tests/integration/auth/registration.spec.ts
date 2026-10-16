@@ -71,3 +71,39 @@ test('RA03: one transaction binds verified phone, invitation, age and consent an
     SELECT core.current_identity('${account(10)}','${session(10)}'); ROLLBACK;`).trim().split(/\r?\n/);
   assert.deepEqual(output,['OK','OK','INVITATION_INVALID','1',String(documents().documents.length),'t']);
 });
+test('RA04: existing admitted phone accounts bind verified OTP sessions without new terms consent or duplicate effects', () => {
+  const register = command(7);
+  const loginSession = session(90),loginCommand=id(190);
+  const login = `core.complete_login_result('${account(10)}','${loginSession}','${loginCommand}','Synthetic login device','${environment}')`;
+  const output = sql(`BEGIN; ${invitation}
+    UPDATE auth.users SET phone='15555550110',phone_confirmed_at=clock_timestamp() WHERE id='${account(10)}';
+    SELECT ${register}->>'code';
+    INSERT INTO auth.sessions(id,user_id,created_at,updated_at,aal) VALUES ('${loginSession}','${account(10)}',clock_timestamp(),clock_timestamp(),'aal1');
+    SELECT ${login}->>'code';
+    INSERT INTO auth.mfa_amr_claims(id,session_id,authentication_method,created_at,updated_at)
+      VALUES ('${id(191)}','${loginSession}','otp',clock_timestamp(),clock_timestamp());
+    UPDATE core.document_release SET state='withdrawn' WHERE id='${id(3)}';
+    SELECT ${login}->>'code'; SELECT ${login}->>'code';
+    SELECT core.complete_login_result('${account(10)}','${loginSession}','${loginCommand}','Changed device','${environment}')->>'code';
+    SELECT count(*) FROM core.session_registry WHERE session_id='${loginSession}';
+    SELECT count(*) FROM core.document_receipt WHERE request_id='${loginCommand}';
+    SELECT count(*) FROM core.audit_event WHERE request_id='${loginCommand}';
+    SELECT core.current_identity('${account(10)}','${loginSession}'); ROLLBACK;`).trim().split(/\r?\n/);
+  assert.deepEqual(output,['OK','SESSION_INVALID','OK','OK','CONFLICT','1','0','1','t']);
+});
+test('RA05: unadmitted, cancelled or revoked identities cannot bind or reopen a login session', () => {
+  const register = command(8),loginSession=session(91);
+  const login = `core.complete_login_result('${account(10)}','${loginSession}','${id(192)}','Synthetic login device','${environment}')`;
+  const output = sql(`BEGIN; ${invitation}
+    UPDATE auth.users SET phone='15555550110',phone_confirmed_at=clock_timestamp() WHERE id='${account(10)}';
+    INSERT INTO auth.sessions(id,user_id,created_at,updated_at,aal) VALUES ('${loginSession}','${account(10)}',clock_timestamp(),clock_timestamp(),'aal1');
+    INSERT INTO auth.mfa_amr_claims(id,session_id,authentication_method,created_at,updated_at)
+      VALUES ('${id(193)}','${loginSession}','otp',clock_timestamp(),clock_timestamp());
+    SELECT ${login}->>'code'; SELECT ${register}->>'code';
+    UPDATE core.account SET status='cancelled' WHERE id='${account(10)}'; SELECT ${login}->>'code';
+    UPDATE core.account SET status='active' WHERE id='${account(10)}'; SELECT ${login}->>'code';
+    UPDATE core.session_registry SET revoked_at=clock_timestamp() WHERE session_id='${loginSession}';
+    SELECT ${login}->>'code';
+    SELECT revoked_at IS NOT NULL FROM core.session_registry WHERE session_id='${loginSession}'; ROLLBACK;`).trim().split(/\r?\n/);
+  assert.deepEqual(output,['SESSION_INVALID','OK','SESSION_INVALID','OK','SESSION_INVALID','t']);
+});

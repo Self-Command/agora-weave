@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, AppState, ScrollView, StyleSheet, Text, View 
 import { randomUUID } from 'expo-crypto';
 import { AccountError, type AccountApi, type DeviceSession, type SessionTokens } from './api';
 import { Action, useAccountColors } from './components';
+import { confirmRevocation } from './recovery';
 
 export function AccountSecurityScreen({ api,session,onSignedOut }: { api: AccountApi; session: SessionTokens; onSignedOut: () => Promise<void> }) {
   const colors = useAccountColors();
@@ -39,6 +40,9 @@ export function AccountSecurityScreen({ api,session,onSignedOut }: { api: Accoun
     if (!command) { command = { id: randomUUID(),version: item.row_version }; revocations.current.set(item.id,command); }
     try { await api.revoke(session.access_token,item.id,command.version,command.id); revocations.current.delete(item.id); await load(); }
     catch (failure) {
+      try {
+        if (await confirmRevocation(api,session.access_token,command.id,failure)) { revocations.current.delete(item.id); await load(); return; }
+      } catch (lookupFailure) { await handleFailure(lookupFailure); return; }
       if (failure instanceof AccountError && failure.code === 'CONFLICT') { revocations.current.delete(item.id); await load(); }
       await handleFailure(failure);
     } finally { setBusy(false); }
