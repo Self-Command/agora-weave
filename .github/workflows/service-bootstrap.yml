@@ -2,6 +2,9 @@ name: Isolated official services bootstrap
 on:
   workflow_call:
     inputs:
+      core_targets:
+        type: string
+        default: ''
       https_ingress:
         type: boolean
         default: false
@@ -107,7 +110,14 @@ jobs:
           npm run ci:health
       - name: Execute current core contracts against the live isolated services
         id: core
-        run: npm run ci:core
+        env:
+          AGORAWEAVE_BATCH_TARGETS: ${{ inputs.core_targets }}
+        run: |
+          if [ -n "$AGORAWEAVE_BATCH_TARGETS" ]; then
+            node --experimental-strip-types tools/ci/core-entry.ts batch
+          else
+            npm run ci:core
+          fi
       - name: Preserve original active core execution
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9

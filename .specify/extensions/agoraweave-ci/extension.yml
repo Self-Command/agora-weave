@@ -3,7 +3,7 @@ extension:
   id: agoraweave-ci
   name: AgoraWeave cloud admission
   version: "0.1.0"
-  description: Mandatory project bridge admission and completion readers
+  description: Optional historical admission diagnostics; ED-22 disables daily hooks
   author: AgoraWeave
   category: process
   effect: read-only
@@ -17,12 +17,4 @@ provides:
     - name: agoraweave.ci.complete
       file: commands/agoraweave.ci.complete.md
       description: Read full-release admission before feature completion
-hooks:
-  before_implement:
-    command: agoraweave.ci.start
-    optional: false
-    description: Authenticate current start admission
-  after_implement:
-    command: agoraweave.ci.complete
-    optional: false
-    description: Authenticate current full-release completion
+hooks: {}

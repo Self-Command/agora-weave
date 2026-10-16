@@ -5,7 +5,8 @@ param(
     [string]$Feature = 'specs/001-agoraweave-v1',
     [ValidateSet('github-actions', 'local')][string]$ExecutionSource = 'github-actions',
     [string]$Target = '',
-    [string]$NodePath = 'node'
+    [string]$NodePath = 'node',
+    [switch]$LegacyAudit
 )
 $ErrorActionPreference = 'Stop'
 $taskRepository = 'Self-Command/agora-weave'
@@ -15,6 +16,23 @@ $taskRoot = [System.IO.Path]::GetFullPath($taskRoot.Trim())
 $taskHead = (& git rev-parse HEAD 2>$null)
 if ($LASTEXITCODE -ne 0 -or $taskHead -notmatch '^[a-f0-9]{40}$') { throw 'Missing current committed target; raw status is ineffective' }
 $taskHead = $taskHead.Trim()
+$taskPolicyPath = Join-Path $taskRoot 'infra/development/policy.json'
+if (-not $LegacyAudit -and (Test-Path -LiteralPath $taskPolicyPath)) {
+    $taskPolicy = Get-Content -LiteralPath $taskPolicyPath -Raw | ConvertFrom-Json
+    if ($taskPolicy.decision -eq 'ED-22' -and $taskPolicy.daily_gates.admission_receipt -eq $false) {
+        $taskHandoff = Get-Content -LiteralPath (Join-Path $taskRoot '.specify/superpowers-handoff.json') -Raw | ConvertFrom-Json
+        if ($Actor -ne $taskHandoff.artifact_owner -or $Feature -ne $taskHandoff.feature_directory) { throw 'Current feature ownership refused' }
+        if ($Transition -eq 'complete') {
+            $taskCanonical = Join-Path $taskRoot (Join-Path $Feature 'tasks.md')
+            if (-not (Test-Path -LiteralPath $taskCanonical) -or (Select-String -LiteralPath $taskCanonical -Pattern '^- \[ \] T\d+' -Quiet)) {
+                throw 'Canonical tasks remain incomplete; handoff cannot claim feature completion'
+            }
+        } elseif ($taskHandoff.status -eq 'blocked') { throw 'Current contract is blocked; resolve its direct issue' }
+        Write-Output 'ED-22: no daily admission receipt required; feature ownership and truthful completion remain checked.'
+        return
+    }
+}
+
 if ($ExecutionSource -eq 'local') {
     if ($Transition -ne 'start' -or $Mode -ne 'local-development') { throw 'Local evidence authorizes start only; complete and full release require cloud evidence' }
     if ($Feature -ne 'specs/001-agoraweave-v1' -or $Actor -ne 'codex' -or -not $Target) { throw 'Local start requires the current authorized feature, actor and target' }
