@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { coreEnvironmentFile, requireCoreEnvironment, sql } from './core-database.ts';
+import { compose, coreEnvironmentFile, requireCoreEnvironment, sql } from './core-database.ts';
 import { normalizeExecution } from './run-check-set.ts';
 import { prepareLocalServices } from './local-services.ts';
 import { executionContext, executionDirectory } from './execution-context.ts';
@@ -67,7 +67,12 @@ if (action === 'all' || action === 'batch') {
     const digest = hash(readFileSync(next.file));
     const previous = sql(`SELECT digest FROM ci_control.migrations WHERE file='${next.file}';`).trim();
     if (previous && previous !== digest) throw new Error('An applied migration was mutated');
-    if (!previous) sql(`BEGIN;\n${readFileSync(next.file, 'utf8')}\nINSERT INTO ci_control.migrations(file,digest) VALUES ('${next.file}','${digest}');\nCOMMIT;`);
+    if (!previous) {
+      const statement = `BEGIN;\n${readFileSync(next.file, 'utf8')}\nINSERT INTO ci_control.migrations(file,digest) VALUES ('${next.file}','${digest}');\nCOMMIT;`;
+      if (['supabase/migrations/0011_independent_security_journal.sql','supabase/migrations/0021_journal_unknown_and_restriction_facts.sql'].includes(next.file)) {
+        compose(['exec','-T','db','psql','-X','-qAt','-U','supabase_admin','-d','postgres','-v','ON_ERROR_STOP=1'],statement);
+      } else sql(statement);
+    }
     results.push({ file: next.file, sha256: digest, state: previous ? 'verified-existing' : 'applied' });
     applied.add(next.file);
   }
@@ -78,6 +83,11 @@ if (action === 'all' || action === 'batch') {
     if (!password) throw new Error('Isolated runtime credential was not provisioned');
     // Only the migration adapter sees this secret; it never enters an artifact.
     sql(`ALTER ROLE core_runtime PASSWORD '${password}';`);
+    if (migrations.some(entry=>entry.file.endsWith('/0012_reliable_effects.sql'))) {
+      const workerPassword=environment.match(/^CORE_WORKER_DATABASE_PASSWORD=([a-f0-9]{64})$/m)?.[1];
+      if(!workerPassword)throw new Error('Isolated worker credential was not provisioned');
+      sql(`ALTER ROLE core_worker PASSWORD '${workerPassword}';`);
+    }
   }
   save(`migrate-${sequence}`, { state: 'passed', migrations: results, scope: 'isolated-current-schema' });
 } else if (action === 'seed') {

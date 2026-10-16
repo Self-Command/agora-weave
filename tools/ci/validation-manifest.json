@@ -878,9 +878,81 @@
       ],
       "case_count": 2,
       "requires_services": true
+    },
+    {
+      "id": "core.foundation",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/foundation.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.security-journal",
+      "command": "ci:recovery",
+      "files": [
+        "tests/recovery/core/security-journal.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
+    },
+    {
+      "id": "core.effects",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/effects.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.gateways",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/gateways.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.effective-configuration",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/effective-configuration.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.design-components",
+      "command": "ci:components",
+      "files": [
+        "tests/contract/design/components.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": false
+    },
+    {
+      "id": "core.realtime-concurrency",
+      "command": "ci:concurrency",
+      "files": [
+        "tests/concurrency/core/realtime.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": true
+    },
+    {
+      "id": "core.internal-boundaries",
+      "command": "ci:security",
+      "files": [
+        "tests/security/core/internal-boundaries.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
     }
   ],
-  "core_case_count": 105,
+  "core_case_count": 131,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1021,6 +1093,81 @@
         "supabase/migrations/0001_identity.sql",
         "supabase/migrations/0003_effects.sql",
         "supabase/migrations/0007_documents.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0010_foundation_constraints.sql",
+      "depends_on": [
+        "supabase/migrations/0009_output_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0011_independent_security_journal.sql",
+      "depends_on": [
+        "supabase/migrations/0010_foundation_constraints.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0012_reliable_effects.sql",
+      "depends_on": [
+        "supabase/migrations/0011_independent_security_journal.sql",
+        "supabase/migrations/0104_session_commands.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0013_effect_claim_binding.sql",
+      "depends_on": [
+        "supabase/migrations/0012_reliable_effects.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0014_read_gateways.sql",
+      "depends_on": [
+        "supabase/migrations/0013_effect_claim_binding.sql",
+        "supabase/migrations/0007_documents.sql",
+        "supabase/migrations/0006_configuration.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0015_effective_config_compat.sql",
+      "depends_on": [
+        "supabase/migrations/0014_read_gateways.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0016_gateway_binding_fixes.sql",
+      "depends_on": [
+        "supabase/migrations/0015_effective_config_compat.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0017_output_restore_admission.sql",
+      "depends_on": [
+        "supabase/migrations/0016_gateway_binding_fixes.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0018_configuration_registry.sql",
+      "depends_on": [
+        "supabase/migrations/0017_output_restore_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0019_register_initial_parameters.sql",
+      "depends_on": [
+        "supabase/migrations/0018_configuration_registry.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0020_registered_event_types.sql",
+      "depends_on": [
+        "supabase/migrations/0019_register_initial_parameters.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0021_journal_unknown_and_restriction_facts.sql",
+      "depends_on": [
+        "supabase/migrations/0020_registered_event_types.sql"
       ]
     }
   ],

@@ -55,8 +55,10 @@ jobs:
           import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
           import { createHash, randomBytes } from 'node:crypto';
           const runtimePassword = randomBytes(32).toString('hex');
+          const workerPassword = randomBytes(32).toString('hex');
           console.log('::add-mask::' + runtimePassword);
-          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\n`);
+          console.log('::add-mask::' + workerPassword);
+          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\nCORE_WORKER_DATABASE_PASSWORD=${workerPassword}\n`);
           const base = ['--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
             '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml'];
           const config = JSON.parse(execFileSync('docker', ['compose', ...base, 'config', '--format', 'json'], { encoding: 'utf8' }));
@@ -95,6 +97,7 @@ jobs:
             -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/main:/home/deno/functions/main:ro" \
             -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/deno.jsonc:/home/deno/functions/deno.jsonc:ro" \
             -v "$GITHUB_WORKSPACE/supabase/functions/core:/home/deno/functions/core:ro" \
+            -v "$GITHUB_WORKSPACE/packages:/home/packages:ro" \
             -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
             "$edge_image" start --main-service /home/deno/functions/main > /dev/null
           for attempt in $(seq 1 60); do
