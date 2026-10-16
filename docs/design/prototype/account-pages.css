@@ -4,11 +4,15 @@
 .prototype-navigation select{font:inherit;color:#35353d;background:#fff;border:1px solid #dedee4;border-radius:8px;min-height:34px;padding:5px 26px 5px 10px;max-width:160px}
 .prototype-review-label{color:#85858f;font-size:10px;margin-left:8px}
 .board-account-title{font-size:10px;color:#92929c;padding:20px 10px 8px;letter-spacing:.06em}
-.account-prototype{letter-spacing:0}
+.account-prototype{letter-spacing:0;--secondary:#6c6c77;--tertiary:#74747f}
+.device[data-theme="dark"] .account-prototype{--secondary:#a1a1ac;--tertiary:#96969f}
+.account-prototype .layer-body{min-height:0;overscroll-behavior:contain}
+.account-prototype .account-intro h1:focus{outline:none}
+.prototype-reset{font-size:11px;min-height:34px;padding:5px 10px;border:1px solid #dedee4;border-radius:8px;background:#fff;color:#35353d}
 .account-prototype .native-header{border-bottom:1px solid var(--line);grid-template-columns:64px minmax(0,1fr) 64px}
 .account-prototype .native-title{font-size:18px;letter-spacing:-.025em}
 .account-prototype .layer-body{display:flex;flex-direction:column}
-.account-content{padding:34px 22px 28px;display:flex;flex-direction:column;gap:24px;flex:1}
+.account-content{padding:34px 22px 28px;display:flex;flex-direction:column;gap:24px;flex:1;min-width:0;overflow-wrap:anywhere}
 .account-intro h1{font-size:25px;line-height:1.45;font-weight:600;letter-spacing:-.04em}
 .account-intro p{font-size:13px;line-height:1.85;color:var(--secondary);margin-top:10px;max-width:310px}
 .account-form{display:flex;flex-direction:column;gap:21px}
@@ -26,7 +30,7 @@
 .account-primary,.account-secondary{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;border-radius:24px;padding:12px 18px;font-size:14px;font-weight:500;line-height:1.6;gap:8px;text-align:center}
 .account-primary{background:var(--fg);color:var(--bg)}
 .account-secondary{border:1px solid var(--line);background:var(--bg);color:var(--fg)}
-.account-primary:disabled,.account-secondary:disabled{opacity:.3;cursor:default;transform:none}
+.account-primary:disabled,.account-secondary:disabled{opacity:.45;cursor:default;transform:none}
 .account-primary svg,.account-secondary svg{width:17px;height:17px}
 .account-actions{display:flex;flex-direction:column;gap:12px;margin-top:2px}
 .account-text-button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:10px 5px;color:var(--fg);font-size:12px;line-height:1.7;gap:5px}
@@ -36,6 +40,7 @@
 .account-choice{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:9px 0;font-size:12px;line-height:1.8;color:var(--fg);cursor:pointer}
 .account-choice input{width:17px;height:17px;flex:none;margin:3px 0 0;accent-color:var(--fg)}
 .account-choice small{display:block;color:var(--secondary);font-size:11px;line-height:1.8;margin-top:2px}
+.account-choice>div{flex:1;min-width:0}
 .account-terms-link{padding:0;color:var(--fg);text-decoration:underline;text-underline-offset:3px;font-size:inherit;line-height:inherit}
 .account-register .account-content{padding-top:24px;gap:22px}
 .account-register .account-form{gap:17px}
@@ -59,7 +64,8 @@
 .account-device-copy p{font-size:11px;line-height:1.8;color:var(--secondary);margin-top:5px}
 .account-device-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--accent);padding:4px 0 0;line-height:1.6}
 .account-device-tag:before{content:"";width:4px;height:4px;border-radius:50%;background:var(--accent)}
-.account-revoke{border:1px solid var(--line);border-radius:18px;font-size:11px;min-height:36px;padding:6px 13px;margin-top:1px}
+.account-revoke{border:1px solid var(--line);border-radius:22px;font-size:12px;min-height:44px;min-width:48px;padding:8px 13px;margin-top:1px}
+.account-revoke:disabled{color:var(--secondary);cursor:default;transform:none}
 .account-menu-row{width:100%;min-height:60px;display:flex;align-items:center;gap:12px;text-align:left;border-bottom:1px solid var(--line);padding:12px 0;font-size:13px;line-height:1.7}
 .account-menu-row>svg:first-child{width:20px;height:20px;stroke-width:1.65}
 .account-menu-row>span{flex:1}
@@ -78,7 +84,7 @@
 .account-recovery-option strong{font-size:14px;font-weight:500;line-height:1.7}
 .account-recovery-option small{display:block;font-size:12px;line-height:1.8;color:var(--secondary);margin-top:6px}
 .account-recovery-option input{width:17px;height:17px;accent-color:var(--fg);margin:4px 0}
-.account-recovery-option:has(input:disabled){opacity:.45}
+.account-recovery-option:has(input:disabled){color:var(--secondary)}
 .account-case-status{padding:7px 0 0;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500}
 .account-case-status svg{width:19px;height:19px;color:var(--secondary)}
 .account-case-details{margin-top:15px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0}
@@ -89,6 +95,31 @@
 .account-prototype-sheet p{font-size:13px;color:var(--secondary);line-height:1.9;margin:10px 0 18px}
 .account-prototype-sheet .account-actions{padding-bottom:8px}
 .account-prototype-sheet .account-text-button{width:100%}
+.account-prototype-sheet{overscroll-behavior:contain;overflow-wrap:anywhere}
+.account-terms-body{padding:16px 0 10px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:16px 0 22px}
+.account-terms-body h3{font-size:14px;line-height:1.7;font-weight:500}
+.account-terms-body p{margin:8px 0 18px}
+.account-spaced{margin-top:14px}
+.account-live-notice{font-size:12px;line-height:1.8;color:var(--secondary)}
+.account-live-notice:empty{display:none}
+.account-large-type .account-intro h1{font-size:32px}
+.account-large-type .account-register .account-intro h1,.account-large-type .account-security .account-intro h1,.account-large-type .account-recovery .account-intro h1{font-size:30px}
+.account-large-type .account-prototype .native-title{font-size:23px}
+.account-large-type .account-intro p{font-size:17px}
+.account-large-type .account-field-label,.account-large-type .account-choice,.account-large-type .account-helper,.account-large-type .account-field-error,.account-large-type .account-text-button,.account-large-type .account-feedback,.account-large-type .account-case-details div,.account-large-type .account-live-notice{font-size:16px}
+.account-large-type .account-input-row input{font-size:21px}
+.account-large-type .account-input-row input::placeholder,.account-large-type .account-prefix,.account-large-type .account-primary,.account-large-type .account-secondary,.account-large-type .account-menu-row{font-size:18px}
+.account-large-type .account-otp-row input{font-size:36px;letter-spacing:10px}
+.account-large-type .account-otp-row input::placeholder{font-size:36px;letter-spacing:10px}
+.account-large-type .account-choice small,.account-large-type .account-footnote,.account-large-type .account-device-copy p,.account-large-type .account-menu-row small,.account-large-type .account-section-label{font-size:14px}
+.account-large-type .account-device-copy h3,.account-large-type .account-recovery-option strong,.account-large-type .account-case-status{font-size:18px}
+.account-large-type .account-device-tag{font-size:13px}
+.account-large-type .account-recovery-option small,.account-large-type .account-revoke,.account-large-type .account-prototype-sheet p{font-size:16px}
+.account-large-type .account-prototype-sheet h2{font-size:23px}
+.account-large-type .account-terms-body h3{font-size:18px}
+.account-large-type .account-device-row{gap:10px;flex-wrap:wrap}
+.account-large-type .account-device-copy{flex-basis:150px}
+.account-large-type .account-code-caption{flex-wrap:wrap}
 .account-skeleton{height:12px;background:var(--surface);border-radius:4px;margin:7px 0;animation:account-pulse 1.2s ease-in-out infinite alternate}
 .account-skeleton.short{width:60%;height:10px}
 .account-loading{display:flex;gap:9px;align-items:center;font-size:12px;color:var(--secondary);padding:12px 0}
