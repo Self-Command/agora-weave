@@ -119,7 +119,8 @@ export function synchronize(source, publish = false) {
     try {
       git(root, ['read-tree', parent], { env: isolated });
       const lines = [...blobs].map(([file, blob]) => `${file.startsWith('.githooks/') ? '100755' : '100644'} ${blob}\t${file}\0`);
-      for (const file of obsolete) lines.push(`0 ${'0'.repeat(40)}\t${file}\0`);
+      const parentObsolete = new Set([...obsolete, ...[...entries(root,parent).keys()].filter(file => config.manages(file) && !canonical.has(file))]);
+      for (const file of parentObsolete) lines.push(`0 ${'0'.repeat(40)}\t${file}\0`);
       git(root, ['update-index', '-z', '--index-info'], { env: isolated, input: lines.join('') });
       const tree = git(root, ['write-tree'], { env: isolated }).trim();
       if (tree === git(root, ['rev-parse', `${parent}^{tree}`]).trim()) return parent;
