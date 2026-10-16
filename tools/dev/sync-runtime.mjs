@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import process from 'node:process';
 
 const [sourceArgument, destinationArgument] = process.argv.slice(2);
 if (!sourceArgument || !destinationArgument) throw new Error('Source and runtime workspace are required');
