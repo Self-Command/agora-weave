@@ -905,9 +905,18 @@
       ],
       "case_count": 4,
       "requires_services": true
+    },
+    {
+      "id": "core.gateways",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/gateways.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
     }
   ],
-  "core_case_count": 116,
+  "core_case_count": 120,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
