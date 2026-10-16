@@ -1,0 +1,4 @@
+#!/bin/sh
+[ "$AGORAWEAVE_GOVERNANCE_SYNC" = "1" ] && exit 0
+source_root=$(git config --get agoraweave.governanceSourceRoot) || exit 0
+pwsh -NoLogo -NoProfile -File "$source_root/tools/dev/governance-hook.ps1" -Event checkout

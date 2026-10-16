@@ -131,7 +131,7 @@ Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览�
 
 **Alternatives considered**：仅网页截图、Expo Go 代实际 native build、仅模拟器 VoiceOver、仅静态 token 对照、本地 runner 后备均不选。
 
-来源：[Expo UI SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/ui/)、[Expo Video SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/video/)、[Expo Picker GIF约束](https://docs.expo.dev/versions/v57.0.0/sdk/imagepicker/)、[Android真实媒体格式](https://developer.android.com/media/platform/supported-formats)、[Apple accessibility testing](https://developer.apple.com/documentation/accessibility/performing-accessibility-testing-for-your-app)、[Apple accessibility audit](https://developer.apple.com/documentation/accessibility/performing-accessibility-audits-for-your-app)、[云端macOS26软件表](https://raw.githubusercontent.com/actions/runner-images/main/images/macos/macos-26-Readme.md)。核验日 2026-10-14。云端选择Xcode26.4.1并记录实际image；当前image缺最低OS运行时须Q-16云端设备补齐，不等同编译下限已验。
+来源：[Expo UI SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/ui/)、[Expo Video SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/video/)、[Expo Picker GIF约束](https://docs.expo.dev/versions/v57.0.0/sdk/imagepicker/)、[Android真实媒体格式](https://developer.android.com/media/platform/supported-formats)、[Apple accessibility testing](https://developer.apple.com/documentation/accessibility/performing-accessibility-testing-for-your-app)、[Apple accessibility audit](https://developer.apple.com/documentation/accessibility/performing-accessibility-audits-for-your-app)、[云端macOS26软件表](https://raw.githubusercontent.com/actions/runner-images/main/images/macos/macos-26-Readme.md)。核验日 2026-10-14。云端选择Xcode26.4.1并记录实际image；当前image缺最低OS运行时须在Actions补齐对应模拟器运行时，不等同编译下限已验。
 
 ## 官方Compose及Actions锁定补充
 

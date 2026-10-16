@@ -6,7 +6,7 @@
 
 `.awplugin`是有界ZIP，内容为manifest.json、files.sha256、ui/mobile.json、ui/admin.json、server/（冻结Deno代码/依赖）、migrations/（受控结构）、config.schema.json、retention.json、docs/、tests/evidence-refs.json。纯一端包可无其他entrypoint，但正式sample-a三端必需；所有文件和整包SHA-256进入审核，签名来源/邀请身份与具体维护者核。拒绝绝对路径/..//重复条目/符号链接/摘要不符/zip bomb；初始包50MiB、解压200MiB、1000文件、压缩比≤20为统一配置工程保护，可基于测量调但不取消校验。
 
-SDK `@agoraweave/plugin-sdk`1.0.0提供manifest/UI/types、operation/error/event/policy DTO、scope broker客户端和文档；CLI `aw-plugin`提供init（云端文件生成）、validate/package/preview/test（Actions作业）、submit（受邀包提交）和evidence（读云端结果）。CLI包括生成器全部在Actions执行；开发者本地仅编辑/阅读生成文件、Git及调度/读取Actions，校验/编译/打包/预览/测试均在云端，文档不得要求先本地启动。正式文档和迁移指南按平台/SDK/schema/contract版本维护。
+SDK `@agoraweave/plugin-sdk`1.0.0提供manifest/UI/types、operation/error/event/policy DTO、scope broker客户端和版本化文档。CLI `aw-plugin`按ED-21提供init、validate/package/preview/test的本地高频开发入口与Actions独立复验入口，submit受邀包、evidence读取真实云端结果。云端独立开发预览与正式验证能力继续提供，不强迫开发者先本地启动；本地隔离sandbox结果不代正式跨端/权限/隔离验收。现有CLI/来源适配未实现的部分保留任务，不因契约修改宣称已可调用。
 
 ## 三端插槽
 
