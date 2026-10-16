@@ -40,5 +40,5 @@
     "codex-state",
     "preserved-legacy-runtime"
   ],
-  "after_this_change": "wait-for-user"
+  "governance_sync": "all-workspaces-and-branches"
 }
