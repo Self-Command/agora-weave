@@ -16,11 +16,7 @@ $taskNodeName = 'node-' + $taskLock.node + '-win-x64'
 $taskNodeDirectory = Join-Path $taskRuntime ('tools/' + $taskNodeName)
 $taskNode = Join-Path $taskNodeDirectory 'node.exe'
 if (-not (Test-Path -LiteralPath $taskNode)) {
-    $taskExistingNode = Join-Path $taskSource ('.superpowers/tools/' + $taskNodeName)
-    if (-not (Test-Path -LiteralPath (Join-Path $taskExistingNode 'node.exe'))) {
-        throw "Pinned runtime unavailable. Place $taskNodeName in $taskRuntime/tools."
-    }
-    Copy-Item -LiteralPath $taskExistingNode -Destination $taskNodeDirectory -Recurse
+    throw "Pinned runtime unavailable. Place $taskNodeName in $taskRuntime/tools."
 }
 $env:PATH = $taskNodeDirectory + [IO.Path]::PathSeparator + $env:PATH
 & pwsh -NoLogo -NoProfile -File (Join-Path $taskSource 'tools/dev/sync-governance.ps1') -SourceRoot $taskSource -Verify

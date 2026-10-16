@@ -1,3 +1,5 @@
+> 历史资料：记录原决定或运行事实。现行入口为 [ED-23 执行政策](execution-policy.md)，本文不再触发旧流程。
+
 # ED-21：本地开发反馈、Actions 独立复验与按消费者拆分前置
 
 > 历史资料：本文保留所记日期／提交的决定、结果或资源事实，不作为当前开发入口。现行执行见宪法5.0.0、[ED-22](business-first-development-decision.md)及[执行政策](execution-policy.md)；旧状态不能推断当前或其他分支已通过。

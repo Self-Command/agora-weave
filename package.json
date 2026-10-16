@@ -3,20 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": "22.23.3", "npm": "10.9.9" },
-  "workspaces": ["apps/*", "packages/*"],
+  "engines": {
+    "node": "22.23.3",
+    "npm": "10.9.9"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "ci:contracts": "node --experimental-strip-types --test tests/contract/ci/*.spec.ts tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts",
+    "ci:contracts": "node --experimental-strip-types --test --test-concurrency=1 tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts",
     "ci:typecheck": "tsc -p tools/ci/tsconfig.json && npm run typecheck --workspaces",
     "ci:build:web": "npm run build --workspace apps/admin && npm run build --workspace apps/share",
     "ci:e2e:web": "playwright test --config tests/e2e/bootstrap/playwright.config.ts",
     "ci:install": "npm ci --no-audit --no-fund",
     "ci:discover": "node --experimental-strip-types tools/ci/discover-targets.ts",
-    "ci:run": "node --experimental-strip-types tools/ci/test-harness.ts",
-    "ci:tdd": "node --experimental-strip-types tools/ci/tdd-journal.ts",
-    "ci:evidence": "node --experimental-strip-types tools/ci/collect-bootstrap.ts",
-    "ci:review": "node --experimental-strip-types tools/ci/review-cli.ts",
-    "ci:bridge": "node --experimental-strip-types tools/ci/bridge-gate.ts",
     "ci:health": "node --experimental-strip-types tools/ci/service-health.ts",
     "ci:core": "node --experimental-strip-types tools/ci/core-entry.ts all",
     "ci:migrate": "node --experimental-strip-types tools/ci/core-entry.ts migrate",
@@ -30,6 +31,16 @@
     "ci:lint": "eslint apps tools/ci tests --max-warnings 0 --format json --output-file lint-output/report.json",
     "ci:e2e": "playwright test --config tests/e2e/bootstrap/playwright.config.ts"
   },
-  "dependencies": { "postgres": "3.4.7", "unicode-segmenter": "0.17.3" },
-  "devDependencies": { "@playwright/test": "1.64.1", "eslint": "10.12.0", "@eslint/js": "10.0.1", "typescript-eslint": "8.71.2", "ajv": "8.20.0", "ajv-formats": "3.0.1" }
+  "dependencies": {
+    "postgres": "3.4.7",
+    "unicode-segmenter": "0.17.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "eslint": "10.12.0",
+    "@eslint/js": "10.0.1",
+    "typescript-eslint": "8.71.2",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
 }

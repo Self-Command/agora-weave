@@ -31,7 +31,8 @@ const contained = file => {
 };
 const current = new Set(files);
 for (const file of previous?.files || git(['ls-files'], destination).split('\n').filter(Boolean)) {
-  if (!current.has(file)) rmSync(contained(file), { force: true });
+  // Removed gitlinks can be directories; contained() checks the disposable workspace boundary.
+  if (!current.has(file)) rmSync(contained(file), { force: true, recursive: true });
 }
 for (const file of files) {
   const original = resolve(source, file), target = contained(file);

@@ -106,6 +106,10 @@ export function synchronize(source, publish = false) {
     if (git(tree.path, ['status', '--porcelain', '--', ...managed]).trim()) {
       const tracked = entries(tree.path, 'HEAD');
       const paths = managed.filter(file => existsSync(resolve(tree.path,file)) || tracked.has(file));
+      // A caller may already have staged a deletion with git rm. Restore only these
+      // managed index entries before re-staging the canonical files and deletions.
+      // Working files and unrelated staged changes remain untouched.
+      git(tree.path, ['reset', '--quiet', 'HEAD', '--', ...paths], { env });
       git(tree.path, ['add', '-A', '--', ...paths], { env });
       if (git(tree.path, ['diff','--cached','--name-only','--',...paths], { env }).trim()) {
         git(tree.path, ['-c', 'core.autocrlf=input', 'commit', '--only', '-m', 'chore(governance): synchronize approved current specification', '--', ...paths], { env });
