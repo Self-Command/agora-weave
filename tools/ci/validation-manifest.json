@@ -932,9 +932,27 @@
       ],
       "case_count": 2,
       "requires_services": false
+    },
+    {
+      "id": "core.realtime-concurrency",
+      "command": "ci:concurrency",
+      "files": [
+        "tests/concurrency/core/realtime.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": true
+    },
+    {
+      "id": "core.internal-boundaries",
+      "command": "ci:security",
+      "files": [
+        "tests/security/core/internal-boundaries.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
     }
   ],
-  "core_case_count": 126,
+  "core_case_count": 131,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1138,6 +1156,18 @@
       "file": "supabase/migrations/0019_register_initial_parameters.sql",
       "depends_on": [
         "supabase/migrations/0018_configuration_registry.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0020_registered_event_types.sql",
+      "depends_on": [
+        "supabase/migrations/0019_register_initial_parameters.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0021_journal_unknown_and_restriction_facts.sql",
+      "depends_on": [
+        "supabase/migrations/0020_registered_event_types.sql"
       ]
     }
   ],

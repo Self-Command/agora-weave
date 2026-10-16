@@ -97,6 +97,7 @@ jobs:
             -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/main:/home/deno/functions/main:ro" \
             -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/deno.jsonc:/home/deno/functions/deno.jsonc:ro" \
             -v "$GITHUB_WORKSPACE/supabase/functions/core:/home/deno/functions/core:ro" \
+            -v "$GITHUB_WORKSPACE/packages:/home/packages:ro" \
             -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
             "$edge_image" start --main-service /home/deno/functions/main > /dev/null
           for attempt in $(seq 1 60); do
