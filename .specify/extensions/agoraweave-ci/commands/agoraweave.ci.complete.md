@@ -1,1 +1,0 @@
-ED-22 disables the daily receipt hook. Follow constitution5.0.0 and docs/engineering/execution-policy.md. Use the existing complete reader only for an explicitly requested historical audit with -LegacyAudit; it is not a daily development gate.

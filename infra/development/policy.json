@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "decision": "ED-22",
-  "constitution_version": "5.2.0",
+  "decision": "ED-23",
+  "constitution_version": "5.2.1",
   "priority": "usable-business-features",
-  "implementation": "superpowers",
+  "implementation": "codex-direct",
   "runtime_root": "H:/Projects/AgoraWeave/development",
   "test_scope": "target-and-directly-affected",
   "tdd": "discretionary",
@@ -14,12 +14,6 @@
     "bug-fixes"
   ],
   "cloud": "on-demand-business-batch",
-  "daily_gates": {
-    "historical_red_chain": false,
-    "admission_receipt": false,
-    "duplicate_report_authentication": false,
-    "archive_readback": false
-  },
   "preserve": {
     "task_ids": true,
     "history": true,

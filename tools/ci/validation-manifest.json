@@ -1,0 +1,1070 @@
+{
+  "schema_version": 1,
+  "feature": "001-agoraweave-v1",
+  "source_of_truth": [
+    ".specify/memory/constitution.md",
+    "specs/001-agoraweave-v1/spec.md",
+    "specs/001-agoraweave-v1/plan.md",
+    "specs/001-agoraweave-v1/tasks.md",
+    "docs/product/PRD.md",
+    "specs/001-agoraweave-v1/traceability.md"
+  ],
+  "product_cases": [
+    {
+      "id": "AC-01",
+      "kind": "product_acceptance",
+      "full_text": "邀请内测中无效 / 过期 / 撤销 / 已用码不能注册；同码并发仅一成功兑换，不能代替 OTP；已有账号不以新码登录。",
+      "prd_refs": "AUTH-01–04",
+      "requirements": "FR-001–003",
+      "stories": "US1",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-02",
+      "kind": "product_acceptance",
+      "full_text": "重发 / 猜码 / 恶意注册触发服务端限制；短信故障无验证旁路。封闭内测未主动声明已满 18 岁不完成注册，不把声明视为年龄证明。",
+      "prd_refs": "AUTH-01–04、AUTH-10",
+      "requirements": "FR-001–003、FR-008",
+      "stories": "US1",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-03",
+      "kind": "product_acceptance",
+      "full_text": "A 撤销另一会话、退出、换号或注销后，旧会话敏感调用失败；换号验证 / 恢复不可凭公开资料；注销清理可追踪失败重试。",
+      "prd_refs": "AUTH-05–10、DATA-01–04",
+      "requirements": "FR-004–008、FR-114–118",
+      "stories": "US1、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-04",
+      "kind": "product_acceptance",
+      "full_text": "改名后旧分享与提及仍指 A；默认 30 天内不能再次改名，旧名 30 天内不能被他人注册，用户名冲突 / 冷却与保留词验证。主页不读出收藏 / 草稿 / AI 历史，未审核内容只在授权管理里显示。",
+      "prd_refs": "PRF-01–03、EDIT-03、GOV-01、WEB-01",
+      "requirements": "FR-009–011、FR-015、FR-043、FR-090、FR-095",
+      "stories": "US2",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-05",
+      "kind": "product_acceptance",
+      "full_text": "审批开启保留已有粉丝；待请求不涨有效数，关闭不批量批准。请求创建后 30 天过期，拒绝 / 删除后冷却 30 天、主动取消 / 自然过期后冷却 7 天；与私信状态独立，拉黑不能借重申请绕过。同对只能一请求，批准与过期并发只得一个有效终态，冷却不能多端绕过。",
+      "prd_refs": "SOC-01–04、SOC-06、SOC-08",
+      "requirements": "FR-012–016",
+      "stories": "US2",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-06",
+      "kind": "product_acceptance",
+      "full_text": "移除 B 或 B 取消关注后，信息流、详情、媒体、搜索、版本、网页、AI 对 A 受限内容拒绝；公开内容仍按公开规则。重新关注依当前审批，拉黑持续阻止。",
+      "prd_refs": "SOC-05–07、VIS-01–03、MEDIA-01–04、AI-05",
+      "requirements": "FR-014–015、FR-044–047、FR-052、FR-076、FR-108–111",
+      "stories": "US2、US5",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-07",
+      "kind": "product_acceptance",
+      "full_text": "屏蔽 A 后默认信息流 / 普通通知 / 主动 AI 推荐过滤；主动显示搜索仅返回仍有权内容。拉黑互解关注、新互动 / 私信失败、既有历史只读，聚合数不任意减。",
+      "prd_refs": "SOC-09–10、SOC-01–08、INT-02、DM-03",
+      "requirements": "FR-012–017、FR-054、FR-063、FR-120",
+      "stories": "US2、US6",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-08",
+      "kind": "product_acceptance",
+      "full_text": "各帖子类型按已确认默认与当前配置边界成功发布 / 展示，验证 2,000 / 10,000 字符、9 张 / 10 MB 图片、1 视频 / 200 MB / 5 分钟、1 GIF / 15 MB 的边界；超限、伪格式、非法归属、危险链接抓取后端拒绝，保留输入和可重试结果。多链接正文最多 1 个链接预览，失败 / 超时 / 目标不可访问仍可展示复制普通链接；引用仅附文字，额外图片 / 视频 / GIF 拒绝，原帖失权整条引用含附加文字为不可用占位。",
+      "prd_refs": "POST-01–06、MEDIA-05–06、VIS-01–03、CFG-03、CFG-09",
+      "requirements": "FR-018–022、FR-044–047、FR-052、FR-112–113、FR-132、FR-138",
+      "stories": "US3、US6",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-09",
+      "kind": "product_acceptance",
+      "full_text": "上传一半、强制关闭、写成功响应丢失和重复发布后，先查提交结果，仅一逻辑内容；成功附件复用，失败仅重试失败附件，孤立对象可清理。",
+      "prd_refs": "POST-03–06、DRF-01–03",
+      "requirements": "FR-020–025",
+      "stories": "US3",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-10",
+      "kind": "product_acceptance",
+      "full_text": "串初发和续写批次任一步失败均不对外出现部分帖子；部分条目已审核通过而另条待审核 / 未通过时整批不先公开，全部满足审核 / 发布资格后才统一可见，作者可查状态，等待中的新续写不隐藏既有有效串。只有作者续写，顺序稳定；整体权限变化统一生效，中间删除不错误串联、首帖删使整串不可用。恢复首帖一并恢复当次连带隐藏的有效条目，独立删除 / 限制不复活，窗口不被依赖隐藏重置。",
+      "prd_refs": "THR-01–04、VIS-03、DEL-01–04、POST-03、GOV-01",
+      "requirements": "FR-020、FR-026–027、FR-046–052、FR-095",
+      "stories": "US3、US5",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-11",
+      "kind": "product_acceptance",
+      "full_text": "默认 2–4 个选项、5 分钟–7 天的有效边界和超限验证；B 首票与 A 修改问题 / 选项 / 截止并发，不可同时留下已投票后修改成功；提前结束与首票竞争有单一有效结果，原截止不因提前结束被改写；重复票仅一有效票，更正独立且不改变旧票。",
+      "prd_refs": "POL-01–03、POL-06、CFG-09、CFG-11",
+      "requirements": "FR-028–030、FR-032–033、FR-138、FR-140",
+      "stories": "US4",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-12",
+      "kind": "product_acceptance",
+      "full_text": "未投者 / 访客在进行中经详情、统计、搜索 / AI / API 均看不到结果；已投有权者可看；到期 / 提前结束停止新票，原截止不改，结束后有权者可看且通知正确。",
+      "prd_refs": "POL-04–07、NTF-01–04",
+      "requirements": "FR-028–029、FR-031–033、FR-044、FR-119–122",
+      "stories": "US4",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-13",
+      "kind": "product_acceptance",
+      "full_text": "三层与更深回复保留被回复对象；删中间仅占位，子回复可按原顺序读；更换排序不能暴露失权内容；附件不能替换，作者评论范围对新回复立即生效。",
+      "prd_refs": "CMT-01–08",
+      "requirements": "FR-034–040、FR-047",
+      "stories": "US4",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-14",
+      "kind": "product_acceptance",
+      "full_text": "收到互动的帖子可改指定字段并显示标记；媒体 / 原引用不变；本人历史 / 治理历史可用且审计，C 及失权 B 不能经旧版本读取正文。",
+      "prd_refs": "EDIT-01–03、VIS-01–03",
+      "requirements": "FR-039、FR-041–047、FR-052",
+      "stories": "US5",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-15",
+      "kind": "product_acceptance",
+      "full_text": "A 收紧 / 删除 / 被限制时，原帖评论、串、再引用链及引用附加文字隐藏，直接链接与摘要不泄露；恢复前重新验当前依赖，普通恢复不解管理员处罚。",
+      "prd_refs": "VIS-01–03、DEL-01–04、THR-04、WEB-03",
+      "requirements": "FR-027、FR-036、FR-040、FR-044–052、FR-092",
+      "stories": "US5",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-16",
+      "kind": "product_acceptance",
+      "full_text": "点赞 / 取消、转发 / 撤销、收藏重复提交不多记；互动名单对访客受限，拉黑隐藏个别记录但聚合不误算。收藏数不向他人公开，收藏列表及身份仅本人；公开 API、互动名单、搜索与 AI 检索不能泄露收藏行为；失权原帖为占位可移除。",
+      "prd_refs": "INT-01–03",
+      "requirements": "FR-021、FR-046、FR-053–055",
+      "stories": "US5、US6",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-17",
+      "kind": "product_acceptance",
+      "full_text": "登录草稿云同步、断网本地恢复、多端冲突可选版本；访客登录导入有明确选择，无他人读取或默认 AI 使用；注销关联清理。",
+      "prd_refs": "DRF-01–03、AI-08–09、AUTH-09",
+      "requirements": "FR-007、FR-023–025、FR-078–079、FR-110",
+      "stories": "US3",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-18",
+      "kind": "product_acceptance",
+      "full_text": "三流排序和权限正确，切换位置合理、分页无重复；搜索帖子 / 用户 / 话题和筛选 / 历史清除可用，建议 / 数量不泄密；无真实热度时不伪造榜单。",
+      "prd_refs": "FEED-01–03、SEARCH-01–04",
+      "requirements": "FR-056–060",
+      "stories": "US6",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-19",
+      "kind": "product_acceptance",
+      "full_text": "默认有效关注者可直接发私信；无审批时陌生人成功关注即取得资格，待关注请求不算。陌生人仅一条文本 / Emoji 请求，图片 / GIF / 链接及追加拒绝；接受保留首消息。默认请求 30 天过期，拒绝 / 删除 / 自然过期后冷却 30 天、发送者主动取消后冷却 7 天；统一结束且与关注状态独立。全部关闭后旧请求保留原期限，可看 / 删 / 举报但不能接受；重开只处理仍有效请求，结束 / 过期 / 被拉黑阻止的旧请求不激活，改设置不绕过拉黑。",
+      "prd_refs": "DM-01–06、SOC-01–02、SOC-08、CFG-03–06",
+      "requirements": "FR-012、FR-016、FR-061–066、FR-132–135",
+      "stories": "US7",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-20",
+      "kind": "product_acceptance",
+      "full_text": "正常会话断网 / 响应丢失重试不重复，新消息 / 未读跨端补同步；送达、推送接受和已读分开。关闭全部私信 / 拉黑立即拒绝新发送，取消关注不自动结束通过接受请求或合法直接发信建立的正常会话。",
+      "prd_refs": "DM-03、DM-07–08、DM-12、NTF-04–05",
+      "requirements": "FR-021、FR-061、FR-063、FR-067–069、FR-122–123",
+      "stories": "US7、US15",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-21",
+      "kind": "product_acceptance",
+      "full_text": "本人删除单条立即隐藏并撤销消息 / 附件的正常应用与 API 访问；分页、重连、附件 URL、会话重现或备份恢复不能重新授予本人访问，对方合法已收消息仍可读，共享数据按保留条件清理。删会话后合法新消息令列表重现，只返回本人仍有权历史。回执默认关闭，双方均开才互显，任一关闭双方不显示而本人未读不变；输入提示关闭不漏状态。举报仅提交必要证据，不产生后台任意读私信或恢复删除方普通访问的资格。",
+      "prd_refs": "DM-09–11、DATA-02–04、ADM-07",
+      "requirements": "FR-007、FR-061、FR-070–072、FR-107、FR-115–118",
+      "stories": "US7、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-22",
+      "kind": "product_acceptance",
+      "full_text": "AI 社区问题有真实相关来源，无结果 / 失败明确；只读工具不能被帖子恶意指令触发写操作或跨用户读；模型选择只含真实已批准能力。",
+      "prd_refs": "AI-01–07",
+      "requirements": "FR-073–077",
+      "stories": "US8",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-23",
+      "kind": "product_acceptance",
+      "full_text": "泛社区提问只用合规公开内容；受限帖须主动选择、有权、用途允许及处理告知；自己的草稿不自动入上下文，粘贴无法关联不授权扩展抓取。",
+      "prd_refs": "AI-08–12、DRF-03",
+      "requirements": "FR-025、FR-047、FR-073、FR-076、FR-078–082",
+      "stories": "US8",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-24",
+      "kind": "product_acceptance",
+      "full_text": "账户禁某用途时单帖不能开启；普通搜索仍可读合规公开帖。禁止总结的来源不能以搜索包装生成摘要；关闭 / 重开索引逐项执行。",
+      "prd_refs": "AI-10–12",
+      "requirements": "FR-076、FR-080–082",
+      "stories": "US8",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-25",
+      "kind": "product_acceptance",
+      "full_text": "删除 / 撤权 / 作者关闭用途后，已生成回答和依赖它的后续回答失效；不能只删引用留答案。历史、标题、复制、续问与缓存重新校验；不能定位来源时整条隐藏。",
+      "prd_refs": "AI-13–16、VIS-02",
+      "requirements": "FR-045、FR-047、FR-052、FR-076、FR-082–085、FR-110",
+      "stories": "US5、US8、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-26",
+      "kind": "product_acceptance",
+      "full_text": "新建 / 标题 / 历史 / 删除 / 停止 / 复制 / 反馈闭环；内测默认 20 次成功完成 / 用户 / 日、输入 8,000 Token 含上下文 / 输出 2,000 Token 的边界及配置时区重置有效。失败 / 重试不多消息或重复扣，结果不确定可对账；并发不能越额度，限额时说明恢复时间并保留输入，全局成本保护不暗中转给新服务商。",
+      "prd_refs": "AI-16–20、DATA-01、CFG-03–06、CFG-09",
+      "requirements": "FR-085–089、FR-114、FR-118、FR-132–135、FR-138",
+      "stories": "US8",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-27",
+      "kind": "product_acceptance",
+      "full_text": "网页访客公开可读、受限登录再验；登录仍不能写 / 投票 / 聊天。分享卡 / 源码 / 爬虫 / 缓存不含受限内容；关闭收录后人仍可按权限阅读分享页，页面不收录信号 / 站点地图移除生效，内部公开读取不变。",
+      "prd_refs": "WEB-01–06、VIS-02、PRF-03",
+      "requirements": "FR-011、FR-045、FR-047、FR-052、FR-090–094",
+      "stories": "US9",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-28",
+      "kind": "product_acceptance",
+      "full_text": "举报成功可追踪进度，批量举报不直接认定违规；待审核仅本人管理，编辑需重新审核。功能 / 临时 / 永久处罚效果分别生效，后台处置与理由通知闭环。",
+      "prd_refs": "GOV-01–06、ADM-01",
+      "requirements": "FR-095–099、FR-101",
+      "stories": "US10",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-29",
+      "kind": "product_acceptance",
+      "full_text": "原处理人不能独自复核申诉；无第二人保持待复核。撤销只恢复该处罚影响状态，不复活主动删除、过期请求、取消关注或解除拉黑；失败可追踪。",
+      "prd_refs": "GOV-05–07",
+      "requirements": "FR-050、FR-098–100",
+      "stories": "US10",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-30",
+      "kind": "product_acceptance",
+      "full_text": "普通 OTP 无后台权限；管理员 MFA 服务端强制，五角色逐操作验证。旧会话 / 权限撤销拒绝操作，敏感读取 / 处置有审计，初始化和 MFA 恢复无公开绕过。",
+      "prd_refs": "ADM-01–07",
+      "requirements": "FR-072、FR-089、FR-101–107、FR-115",
+      "stories": "US1、US10",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-31",
+      "kind": "product_acceptance",
+      "full_text": "B 有权时取得媒体链接，A 删除 / 收紧或调整授权使 B 失去读取资格后，普通及敏感媒体在系统可控的新读取、旧签名与实际缓存命中路径立即按当前资格拒绝；签名未过期也不能继续取回文件，离线不展示未验证受限内容。取得云端测量与请求证据；外部另存副本与系统可控访问区分。只撤 B 不删他人合法对象；永久清理包括派生文件。",
+      "prd_refs": "MEDIA-01–06、DEL-04",
+      "requirements": "FR-045、FR-051–052、FR-072、FR-092、FR-108–113",
+      "stories": "US5、US9",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-32",
+      "kind": "product_acceptance",
+      "full_text": "按第 16 节已确认默认及有效分类配置触发清理并记录结果，备份 90 天目标取得实际轮转证据；10 秒撤销 / 删除后 30 天恢复可用并保留唯一恢复副本。另一方仍有权的私信不因发送方删除 / 注销被误删，证据独立受控、延期有理由 / 授权 / 审计。备份恢复先应用删除 / 撤权 / 处罚 / 隐私设置再开放；调整期限不复活数据或撤销已收回访问，必要审计不能通过普通配置关闭。",
+      "prd_refs": "DATA-01–04、AUTH-08–09、DEL-01–04、CFG-07–11",
+      "requirements": "FR-007、FR-025、FR-048–052、FR-072、FR-111、FR-114–118、FR-136–140",
+      "stories": "US1、US5、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-33",
+      "kind": "product_acceptance",
+      "full_text": "推送默认无正文 / 秘密、公开预览选择不放开私信；关闭推送仍有站内未读。Android 不支持后台通道时前台 / 重连仍可收消息，无重复提醒或自我通知。",
+      "prd_refs": "NTF-01–05",
+      "requirements": "FR-119–123",
+      "stories": "US15",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-34",
+      "kind": "product_acceptance",
+      "full_text": "短信、审核、AI 分别故障和恢复，不跳 OTP、不自动审核通过、不暗换服务商，输入可恢复、已发布合法内容不因独立服务故障全部下线；后台可诊断。",
+      "prd_refs": "AUTH-10、AI-20、FAIL-01、POST-03–06",
+      "requirements": "FR-008、FR-020–022、FR-089、FR-097、FR-124",
+      "stories": "US15",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-35",
+      "kind": "product_acceptance",
+      "full_text": "通过 Actions 云端驱动的 iOS / Android 实际原生运行与适用云端设备环境，验证全宽顶部 / 键盘 / 侧栏 / 图标操作、较大字号、读屏、视频 / GIF 播放及减少动画；按 UI-SPEC / 归档参考核对实际视觉层级与原生适配，保存页面截图和交互证据。无虚构认证 / AI 能力；源码、静态概念稿或仅 Web 替代不能完成原生视觉与交互验收。",
+      "prd_refs": "UX-01–08、MEDIA-06、AI-02–03、TECH-05、CI-01–05",
+      "requirements": "FR-073–074、FR-112–113、FR-125–129、QR-002–006",
+      "stories": "US16",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-36",
+      "kind": "product_acceptance",
+      "full_text": "实际移动工程基于 Expo / React Native + Expo UI、后台基于 Kiranism、Supabase 通过官方 Docker Compose 在自有 / 自管服务器部署，不依赖 Supabase 云端托管；Postgres / Auth / Storage / Realtime / Studio 管理及运维配置可验证，Studio 不替代业务后台。版本锁定与兼容证据可查，认证 / 业务替换示例配置，额外基础设施有明确缺口与成本依据。",
+      "prd_refs": "TECH-01–04",
+      "requirements": "QR-001",
+      "stories": "QR 全局证据及交付门槛",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-37",
+      "kind": "product_acceptance",
+      "full_text": "已发布内容编辑后，等待审核 / 审核未通过时读者继续看最后通过版本，作者管理可看新版本状态；通过后按审核版本统一切换，重复编辑不自动公开未审版本。独立违规限制仍可使整条隐藏；详情 / 引用 / 搜索 / AI 只读取当前合法版本，不经缓存泄露待审或被限制文本。",
+      "prd_refs": "EDIT-01–03、CMT-07、GOV-01、VIS-02、AI-13–15",
+      "requirements": "FR-010、FR-034、FR-039、FR-041–043、FR-045、FR-047、FR-052、FR-083–084、FR-095",
+      "stories": "US5、US10",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-38",
+      "kind": "product_acceptance",
+      "full_text": "配置按注册元数据管理，默认 / 当前值、环境 / 模块与插件 / 用户组范围、依赖和权限可查，按明确优先级得唯一有效值。各消费者使用相同适用规则；未授权人员不能读改他插件、其他用户或后台专用配置，调整一个插件参数不污染无关模块及环境。新增参数有默认、范围、生效与验收登记。",
+      "prd_refs": "CFG-01–04、CFG-08–09、ADM-02、PLT-05–06",
+      "requirements": "FR-102、FR-130–133、FR-137–138、FR-146–147",
+      "stories": "US11",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-39",
+      "kind": "product_acceptance",
+      "full_text": "修改帖子长度、媒体大小、投票时长、AI 额度及推荐权重后各消费者按版本 / 时点生效；离线或旧客户端缓存不能越新限制，服务端拒绝后刷新并保留输入。权限 / 账号 / 敏感操作不依赖缓存授权，配置缺失或不兼容不变成无限额度或跳过检查；并发不读取冲突参数组合。",
+      "prd_refs": "CFG-05–06、CFG-08–10、POST-04–05、AI-18–19",
+      "requirements": "FR-021–022、FR-087–088、FR-132、FR-134–135、FR-137–139、FR-141",
+      "stories": "US11",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-40",
+      "kind": "product_acceptance",
+      "full_text": "普通运营只能改授权参数，敏感变更高权限 / 再次验证，变更前预览并记录前后值 / 理由 / 版本 / 结果。非法类型 / 范围 / 依赖组合拒绝；关联发布失败不部分生效，回滚和恢复结果可查；API / 数据函数 / Edge Functions / 作业不另写一套业务阈值。",
+      "prd_refs": "CFG-02、CFG-07–09、ADM-02–03、ADM-06",
+      "requirements": "FR-102–103、FR-106、FR-131–132、FR-136–138",
+      "stories": "US11",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-41",
+      "kind": "product_acceptance",
+      "full_text": "参数调整 / 回滚不恢复单条私信已撤销访问、已删内容、结束请求或破坏已锁定投票；后台不能通过普通参数关闭认证、RLS、隔离和审计。常规运行时参数按规则生效且无需重建，新增原生 / 结构 / 不兼容能力仍走构建迁移；主题 / 菜单 / 模块 / 已支持语言调整有反馈且不虚构能力或放开授权，默认中文和无障碍保持有效。",
+      "prd_refs": "CFG-10–13、DATA-01–04、POL-02–03、DM-06、DM-09–11、UX-01–06",
+      "requirements": "FR-029–030、FR-066、FR-070–072、FR-114–118、FR-125–128、FR-132、FR-139–141",
+      "stories": "US11",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-42",
+      "kind": "product_acceptance",
+      "full_text": "使用真实社区用户数据前，已批准 AI 服务商 / 模型的大陆推理、日志、存储及分包处理位置与不训练承诺有可核验条款。不满足条件或未批准服务不能调用；配置切换 / 故障 / 预算保护不自动跨境或扩大数据读取。公开、受限、草稿等仍检查原资格与作者用途；无可用合格模型时说明失败并保留输入。",
+      "prd_refs": "AI-03、AI-08–12、AI-19–20、CFG-01、CFG-07、CFG-10",
+      "requirements": "FR-074、FR-078–082、FR-088–089、FR-130、FR-136、FR-139",
+      "stories": "US8",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-43",
+      "kind": "product_acceptance",
+      "full_text": "首版实际交付安装管理、三端扩展、文档工具和隔离测试；核心身份 / 权限 / 安全 / 审计 / 生命周期与官方社交业务清单可查，既有首版验收全部保留，官方业务默认全部启用。管理员可在权限 / 依赖校验下受控停用；有有效依赖时默认阻止并列影响，只有明确选定联动范围且校验通过才停用，不自动扩散或删其他模块数据。核心身份 / 安全 / 配置 / 审计 / 插件管理持续可用；以契约增加业务无需改核心源码，官方 / 第三方均按权限与统一配置运行。",
+      "prd_refs": "PLT-01–05、PLG-03–05、CFG-01–13、VIS-01–03、ADM-02",
+      "requirements": "FR-044–047、FR-052、FR-101–102、FR-130–146、FR-155–158",
+      "stories": "US13",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-44",
+      "kind": "product_acceptance",
+      "full_text": "同一扩展按规范注册 App 页面 / 插槽、后台页面与后端 API / 事件 / 任务，公共类型与兼容信息可查；未授权注册 / 调用拒绝。入口冲突、缺失依赖、旧客户端不兼容有明确结果，不覆盖他插件或出现空白死路；事件重试与通知不重复业务效果。",
+      "prd_refs": "EXT-01–04、POST-04、NTF-03–04、ADM-02",
+      "requirements": "FR-021、FR-101–102、FR-121–122、FR-145、FR-148–151",
+      "stories": "US12",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-45",
+      "kind": "product_acceptance",
+      "full_text": "自用及受邀开发者提交来源 / 版本 / 权限明确的包，经兼容、安全与权限审核才可安装到测试或生产；超级管理员负责邀请、认可具体版本审核通过、敏感权限及生产确认。自用同人兼任仍有各步独立记录、云端证据、MFA 和审计；受邀开发者未另获授权不能认可审核通过、批权限、安装或发布，普通角色不能借入口越权。未受邀、未审或版本不符拒绝；管理端显示兼容、依赖、迁移、环境及状态，上传不等同上线，停用同步处理新业务页面 / API / 任务 / 通知 / AI 工具，历史按受控只读或占位。",
+      "prd_refs": "PLG-01–03、PLT-03–05、EXT-01–04、ADM-02–03、ADM-06",
+      "requirements": "FR-101–103、FR-106、FR-144–146、FR-148–156",
+      "stories": "US13",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-46",
+      "kind": "product_acceptance",
+      "full_text": "升级权限增量需审核，依赖 / 迁移失败可查和恢复，最后可用版本按兼容状态保留；代码 / 配置 / 结构 / 数据恢复限制分别明确。停用历史当前有权且可安全展示时只读，否则无正文占位；有依赖时默认阻止卸载，明确联动停用不自动卸载依赖。卸载默认保留数据并按原分类期限清理，不重置时间；卸载时额外永久清理单独授权确认，证据 / 共享数据 / 恢复副本不误删，原到期清理仍执行。兼容重装恢复有效数据，已删 / 已清理 / 撤权或未批敏感权限不复活；核心删除 / 撤权 / 治理义务持续有效，运行健康及授权日志可定位故障。",
+      "prd_refs": "PLG-03–06、PLT-02、DATA-01–04、ADM-02–03、FAIL-01",
+      "requirements": "FR-101–103、FR-114–118、FR-124、FR-143、FR-155–159、FR-173",
+      "stories": "US13、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-47",
+      "kind": "product_acceptance",
+      "full_text": "安装 / 升级自动识别配置、后端 / 后台、兼容 OTA 或 App 重建，检查 / 测试 / 构建 / 预发布可追踪。未经超级管理员对版本、权限与作用范围确认，不影响生产用户；迁移、后台生效或版本替换不能绕过确认。先指定名单灰度，名单外不提前启用，扩大范围前再次确认；失败 / 未批权限阻止。旧版兼容功能仍可用，不兼容扩展仅提示更新，核心无法安全兼容时才强制更新整个 App；不下发无法运行代码，中断重试不重复发布，回滚不复活撤权。",
+      "prd_refs": "UPD-01–05、PLG-01–04、CFG-05–12、UX-04",
+      "requirements": "FR-101、FR-103、FR-127、FR-134–141、FR-148、FR-152–157、FR-160–164、FR-173",
+      "stories": "US14",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-48",
+      "kind": "product_acceptance",
+      "full_text": "在指定平台 / SDK 版本下，开发者仅依据正式文档、模板 / 生成工具、公共类型与 API 文档，从零完成经确认的跨端示例、权限 / RLS 测试、打包、发布与恢复验证而无需改核心源码。文档含版本兼容、依赖、配置、迁移、日志、生命周期及故障排查，升级有同步变更 / 迁移说明。",
+      "prd_refs": "DEV-01–04、EXT-01–04",
+      "requirements": "FR-142、FR-148–151、FR-165–169、FR-173、QR-008",
+      "stories": "US12",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-49",
+      "kind": "product_acceptance",
+      "full_text": "开发 / 测试 / 生产服务端隔离数据库、Storage、账号、令牌、日志与副作用；独立前后调试、权限 / 故障模拟和全流程测试可用。测试不能改生产数据、发真实私信或用隐藏入口充隔离；生产发布使用已批准同一版本产物及证据，测试环境安装 / 迁移 / 回滚失败不破坏生产或他环境。",
+      "prd_refs": "TST-01–04、DEV-04、PLG-03–06、UPD-01–05",
+      "requirements": "FR-155–164、FR-168–173、QR-008–009",
+      "stories": "US12",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-50",
+      "kind": "product_acceptance",
+      "full_text": "用不同用户、两个插件及开发 / 测试 / 生产边界验证：插件 A 不能直接读取 B 的非授权数据、使用其凭据或绕过共享内容 / 私信 / 媒体权限；经声明并审核的接口只返回当前用户有权数据。数据库、API、实时、任务、搜索 / AI、Storage、日志、配置及恢复均无旁路；未授权调用拒绝，测试副作用不触达生产。验收对象是通用插件 / 用户 / 环境隔离，不要求多社区空间或产品编排。",
+      "prd_refs": "PLT-04–06、CFG-04、EXT-01–04、TST-01–04、DATA-04",
+      "requirements": "FR-108、FR-117–118、FR-133、FR-145–151、FR-159、FR-170–173",
+      "stories": "US12、US13、US17",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-51",
+      "kind": "product_acceptance",
+      "full_text": "同一提交及交付版本由 Actions 云端完成移动双端、后端、后台、分享网页、AI/MCP 与插件的必需编译和功能 / 接口 / 权限安全 / 回归 / 端到端检查。实际启动相应服务、安装运行移动产物并连通隔离后端执行跨端流程；模拟接口、代码扫描或单独编译成功不能代替运行验收。本地项目运行记录不能充验收证据。",
+      "prd_refs": "TECH-05、CI-01–03、CI-06–08、TST-01–04",
+      "requirements": "FR-160、FR-170–173、QR-002–004、QR-007–009",
+      "stories": "US14",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-52",
+      "kind": "product_acceptance",
+      "full_text": "Actions 云端在实际页面 / 原生 UI 执行布局、样式、交互与视觉检查，覆盖移动端、后台、分享页面及插件入口 / 页面；按 UI-SPEC 及设备、视口、主题、字号、键盘和状态记录截图、交互 / 失败轨迹及差异结果。页面未启动、页面错位 / 遮挡、操作失效或必需视觉检查跳过不能标通过；截图只能证明对应状态，交互另有执行结果。",
+      "prd_refs": "CI-03–06、UX-01–08、EXT-01–02",
+      "requirements": "FR-125–129、FR-148–149、FR-160、FR-173、QR-002、QR-004–007",
+      "stories": "US14、US16",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-53",
+      "kind": "product_acceptance",
+      "full_text": "云端记录提交、版本、环境、Actions run、检查范围和结果，保留日志、测试报告、截图 / 差异 / 交互证据及适用构建产物；失败、取消、超时、跳过或缺证据不能伪报通过。AI 读取失败后仅修改代码 / 测试 / 工作流并推送，重新通过云端回归后才交付；生产服务独立运行，不以 Actions 长期进程充生产部署。",
+      "prd_refs": "TECH-05、CI-01、CI-05–08、UPD-01–05",
+      "requirements": "FR-160–164、FR-173、QR-002、QR-006–009",
+      "stories": "US14",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-54",
+      "kind": "product_acceptance",
+      "full_text": "C 已向 A 发待处理陌生人请求，随后成功关注且当前设置允许直接发信：新消息进入唯一正常会话，旧请求仍在独立请求流程且原有效期不变，初始消息不出现在正常历史 / API。A 显式接受仍有效请求后初始消息才合入同一聊天，多端 / 并发不另建会话、不重复消息 / 未读 / 提醒；拒绝 / 删除 / 取消 / 过期不把旧消息合入或终止仍合法正常会话。接受 / 过期 / 新消息竞争只有有效状态；拉黑、关闭全部或适用私信处罚仍拒绝新消息 / 接受，结束请求不复活，回执与单条删除撤权仍按原规则。",
+      "prd_refs": "DM-02–12、SOC-01–02、SOC-08、NTF-01–04、POST-04",
+      "requirements": "FR-012、FR-016、FR-021、FR-062–072、FR-119–122",
+      "stories": "US7",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AC-55",
+      "kind": "product_acceptance",
+      "full_text": "UI-SPEC、token、HTML / CSS / JS 归档可随 Git 读取且相互关联，页面 / 组件状态映射到有效业务需求与验收；Actions 实际页面使用语义配色、层级、图标文字和状态，原生适配差异有记录。旧稿示例不复活旧状态 / 权限，不带入假系统栏、桌面画板或未经确认能力；弱色 / 小字号 / 小触区按无障碍调整，移动、后台、分享和插件同规则适配。实际云端截图、视觉差异及交互与版本关联，资料静态完整不等同产品验收通过。",
+      "prd_refs": "UX-01–08、CFG-13、EXT-01–02、CI-03–06",
+      "requirements": "FR-125–129、FR-141、FR-148–149、QR-004–007",
+      "stories": "US16",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AS-01",
+      "kind": "supplementary_acceptance",
+      "full_text": "1. **AS-01（FR-018、FR-034、FR-061、FR-065、FR-028；ED-01–02）**：**Given** 文字分别含中英文、组合 Emoji、空白和不同换行表示，且当前配置正文限额为 N，**When** 输入恰好 N 或 N+1 个用户可见字符并提交，**Then** 各端计数一致，N 按其他资格接受、N+1 拒绝并保留原输入；评论 2,000、正常私信 4,000、请求 500、单选项 100 初始边界分别覆盖，后台改有效值后同样执行。",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AS-02",
+      "kind": "supplementary_acceptance",
+      "full_text": "2. **AS-02（FR-067；ED-03）**：**Given** 初始请求的双方实际阅读状态已知且其后已有合法正常消息，**When** 显式接受有效请求及多端重连，**Then** 初始消息按原保存时间稳定插入，仅一条；已读不变未读、未读从请求域转到会话仅一次，无新重复提醒；结束或过期未接受者不插入。",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AS-03",
+      "kind": "supplementary_acceptance",
+      "full_text": "3. **AS-03（FR-005–006、FR-103；DEC-001）**：**Given** 本账号换号完成时间 T，**When** 在 T、T+24 小时之前及恰好 T+24 小时从正常／旧会话／插件入口执行列明操作，**Then** 限制期内拒绝并显示解除时点，到期仅解除冷却而仍检查正常权限；退出、撤会话、举报、申诉不受冷却，必要恢复走受控人工。",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    },
+    {
+      "id": "AS-04",
+      "kind": "supplementary_acceptance",
+      "full_text": "4. **AS-04（FR-140；ED-04）**：**Given** 已锁定投票、结束请求、已撤销私信访问和待清理对象，**When** 预览／应用／回滚期限及状态参数，**Then** 预览分别列出现有及新增对象生效方式，应用后不改锁定票、不复活请求或访问；真实不可逆风险未明确时不能假称安全执行。",
+      "activation": "corresponding_business_task_present",
+      "bootstrap_applicability": "not_yet_applicable",
+      "full_release_applicability": "required",
+      "actual_state": "not_executed"
+    }
+  ],
+  "core_targets": [
+    {
+      "id": "core.http",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/http.spec.ts"
+      ],
+      "case_count": 5,
+      "requires_services": true
+    },
+    {
+      "id": "core.events",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/events.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": false
+    },
+    {
+      "id": "core.graphemes",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/contracts/graphemes.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": false
+    },
+    {
+      "id": "core.schema-config",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/schema-config.spec.ts"
+      ],
+      "case_count": 29,
+      "requires_services": true
+    },
+    {
+      "id": "core.schema-invariants",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/schema-invariants.spec.ts"
+      ],
+      "case_count": 7,
+      "requires_services": true
+    },
+    {
+      "id": "core.current-policy",
+      "command": "ci:security",
+      "files": [
+        "tests/security/core/current-policy.spec.ts"
+      ],
+      "case_count": 8,
+      "requires_services": true
+    },
+    {
+      "id": "core.admission-concurrency",
+      "command": "ci:concurrency",
+      "files": [
+        "tests/concurrency/core/admission.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": true
+    },
+    {
+      "id": "core.configuration-resolution",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/core/configuration.spec.ts"
+      ],
+      "case_count": 5,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-sessions",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/auth/routes.spec.ts"
+      ],
+      "case_count": 5,
+      "requires_services": true
+    },
+    {
+      "id": "core.admission-schema",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/admission-schema.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-session-commands",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/session-mutations.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-refresh",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/auth/refresh.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-registration",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/registration.spec.ts"
+      ],
+      "case_count": 5,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-otp-policy",
+      "command": "ci:security",
+      "files": [
+        "tests/security/auth/otp-policy.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-recovery-requests",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/recovery.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-operation-results",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/operations.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-request-bounds",
+      "command": "ci:security",
+      "files": [
+        "tests/security/auth/request-bounds.spec.ts"
+      ],
+      "case_count": 3,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-mobile-client",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/auth/mobile-client.spec.ts"
+      ],
+      "case_count": 10,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-concurrency",
+      "command": "ci:concurrency",
+      "files": [
+        "tests/concurrency/auth/invitation-otp.spec.ts"
+      ],
+      "case_count": 2,
+      "requires_services": true
+    }
+  ],
+  "core_case_count": 105,
+  "core_migrations": [
+    {
+      "file": "supabase/migrations/0112_recovery_binding_fix.sql",
+      "depends_on": [
+        "supabase/migrations/0111_recovery_requests.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0111_recovery_requests.sql",
+      "depends_on": [
+        "supabase/migrations/0104_session_commands.sql",
+        "supabase/migrations/0101_admission_recovery.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0110_login_session_binding.sql",
+      "depends_on": [
+        "supabase/migrations/0106_registration_binding_fix.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0109_account_operation_ambiguity.sql",
+      "depends_on": [
+        "supabase/migrations/0108_account_operation_reads.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0108_account_operation_reads.sql",
+      "depends_on": [
+        "supabase/migrations/0104_session_commands.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0107_otp_challenges.sql",
+      "depends_on": [
+        "supabase/migrations/0106_registration_binding_fix.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0106_registration_binding_fix.sql",
+      "depends_on": [
+        "supabase/migrations/0105_registration_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0105_registration_admission.sql",
+      "depends_on": [
+        "supabase/migrations/0103_invitation_initial_state.sql",
+        "supabase/migrations/0007_documents.sql",
+        "supabase/migrations/0009_output_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0104_session_commands.sql",
+      "depends_on": [
+        "supabase/migrations/0102_session_reads.sql",
+        "supabase/migrations/0003_effects.sql",
+        "supabase/migrations/0005_obligations.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0103_invitation_initial_state.sql",
+      "depends_on": [
+        "supabase/migrations/0101_admission_recovery.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0001_identity.sql",
+      "depends_on": []
+    },
+    {
+      "file": "supabase/migrations/0002_policy_facts.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0003_effects.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0004_resources_media.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0005_obligations.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql",
+        "supabase/migrations/0004_resources_media.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0006_configuration.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0007_documents.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0008_current_authorization.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0002_policy_facts.sql",
+        "supabase/migrations/0004_resources_media.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0009_output_admission.sql",
+      "depends_on": [
+        "supabase/migrations/0008_current_authorization.sql",
+        "supabase/migrations/0005_obligations.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0102_session_reads.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0006_configuration.sql",
+        "supabase/migrations/0008_current_authorization.sql",
+        "supabase/migrations/0009_output_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0101_admission_recovery.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql",
+        "supabase/migrations/0007_documents.sql"
+      ]
+    }
+  ],
+  "core_fixture_files": [
+    "tests/fixtures/core/seed.sql",
+    "tests/fixtures/core/runtime.ts",
+    "tests/fixtures/core/policy.sql",
+    "tests/fixtures/core/concurrency.ts"
+  ],
+  "engineering_targets": [
+    {
+      "command": "ci:contracts",
+      "id": "ci.source",
+      "files": [
+        "tests/integration/ci/source-collection.spec.ts"
+      ]
+    },
+    {
+      "command": "ci:contracts",
+      "id": "ci.discovery-normalization",
+      "files": [
+        "tests/integration/ci/check-set.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.https-ingress",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/https-ingress.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.https-descriptor",
+      "command": "ci:contracts",
+      "files": [
+        "tests/security/ci/https-descriptor.spec.ts"
+      ]
+    },
+    {
+      "id": "ci.local-services",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/local-services.spec.ts"
+      ]
+    }
+  ]
+}

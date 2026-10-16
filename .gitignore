@@ -1,2 +1,21 @@
-# Local brainstorming previews and session artifacts.
-/.superpowers/
+# Private local runtime and reports.
+/.agoraweave/
+node_modules/
+.next/
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.tsbuildinfo
+**/.env
+**/.env.local
+**/.env.*.local
+bootstrap-output/
+check-output/
+core-output/
+service-output/
+lint-output/
+dispatch-gate-output/
+validation-plan/
+freeze-output/
+playwright-report/
+test-results/
