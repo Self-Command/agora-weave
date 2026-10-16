@@ -1,7 +1,7 @@
-# 当前原生执行器核验
+# Superpowers执行
 
-本项目保持 Spec Kit 1.0.12、Superpowers 7.0.0 与已安装桥接，不升级技能。canonical `specs/001-agoraweave-v1/tasks.md` 是唯一任务契约；临时 adapter 只提取未勾选任务，使用原始任务行和一一对应的 Task N 标题，并引用宪法、规格与计划。
+现行依据宪法5.0.0与ED-22。继续使用桥接及SP实施、系统调试、批次审查和真实验证；既有SK规格／plan／tasks为已批准合同，不另起规划。
 
-`.github/workflows/tooling-bootstrap.yml` 仅在 GitHub-hosted Actions 验证固定 gitlink、全部任务提取、Expected／接口／整体回归字段和真实 `task-done` 调用。原生 ledger 的 complete 行保留为原始工具结果；它不能替代有效证据，也不勾选 canonical 任务。`28500c22` 的 run38645599873 已实际保留完整285项映射、首末brief、原ledger／command与同SHA有效完成拒绝；新版本仍须重跑。后续已完成任务退出adapter后，剩余任务使用连续原生序号，canonical ID保持不变。文档本身不授予兼容或完成状态。
+按可用业务切片和真实直接依赖实施，日常目标用例＋直接受影响回归。逐行为TDD由执行者判断；权限、安全、数据完整性与缺陷修复须有效测试。已禁用项目收据钩子保持禁用，不要求历史Red认证、重复报告校验或归档回读。
 
-实际项目验证命令须调度并读取 Actions，按同 SHA 的必需集合核验。历史测试成功、原生 exit 0、raw handoff complete 与静态元数据都不授予有效 complete。临时 adapter 在云端探针退出时清理；设备范围按ED-14及 `specs/001-agoraweave-v1/contracts/simulator-validation.md`，物理通道不再必需；最低/当前OS模拟器、实际语义焦点/媒体/适用辅助技术缺必需证据继续阻塞初始化准入。
+适配器只派生当前tasks，局部进展与未决验证分列。任务完整实现且对应有效测试后才勾选，不以SP工具状态代替产品结果。规范变更按AGENTS同步所有工作树和分支，Actions按可用业务批次或发布需要复验。

@@ -1,84 +1,24 @@
-# AgoraWeave 云端验证与开发预览指南
+# AgoraWeave 本地开发与Actions独立验证指南
 
-本指南定义后续实现应提供的可执行路径，当前尚无产品工程／工作流／测试套件；下列工作流名和npm命令是实施接口约定，**本轮没有执行它们**。SP本地编写代码和测试；所有编译、静态检查、测试、代码复检、回归、预览、实际页面、视觉复检、原生交互与性能验收只在GitHub Actions云端运行。本地只编辑／阅读文件、Git及调度／等待／读取Actions。缺云端资源保留阻塞，禁止本地服务／模拟器／设备／本地runner补验。完整门禁／TDD／审查规则见[云端验证契约](contracts/cloud-validation.md)。
+现行依据宪法5.0.0与[ED-22](../../docs/engineering/business-first-development-decision.md)：业务优先，本地批次开发测试，日常目标＋直接受影响回归，Actions按需复验。逐行为TDD由执行者判断，历史红链／收据／归档回读不是日常前置。
 
-## 1. 前置条件与准入
+当前切片仅要求实际使用的身份／授权／RLS／隔离／审计撤销／可靠写入依赖；媒体／Realtime／完整配置随消费者激活，T051保完整核心收口。按功能批次实现、测试和审查，是否逐行为TDD由执行者判断。
 
-最新责任分工见[决定登记](reviews/planning-decisions-2026-10-14.md)。用户处理预算、服务器、设备、签名渠道、外部测试及真实运营内容；以下是实际验证时所需条件，不是要求用户现在重复决策。工程在具体需用节点说明用途和最小权限并索取，缺供给保留未完成。
+## 1. 当前功能与H盘入口
 
-1. 在GitHub仓库先建立bootstrap入口、固定upstream Compose／工具SHA及无业务壳；首次云端解析lockfile／镜像digest，回传受审后在新提交immutable install。bootstrap聚合实际运行并登记后保护必需check，正式业务前取得ci-ready。未实现业务不阻断初始化，也不计为通过。云端取固定Expo/Kiranism/Supabase组合，单独lint；不得将Next build当lint。
-2. 使用独立开发／测试Compose/Storage/账号/密钥/日志/网络，合成数据和A/B插件；无生产凭据、无生产用户资料。Q-02/03/16提供真实云端实例/分钟/存储/设备/费用许可，不能凭指南认为已取得。
-3. 真实短信/推送/审核/AI测试先满足Q-04/16的测试通道、价格、数据区域、条款和批准，AI满足大陆推理/日志/存储/分包、不训练和告知。模拟可辅助，不代替必需真实集成；未满足时相应job是blocked/unavailable，整体验收不通过。
-4. iOS签名/渠道账号、Android渠道、最低OS和当前OS运行资源、模拟器原生语义/焦点/键盘/媒体/推送支持范围必须就绪。设备范围按ED-14及 `contracts/simulator-validation.md`，不再要求物理设备；不支持的辅助技术/硬件操作明示排除且不记passed，必需模拟器项缺结果不通过。
-5. 固定实际runner image/toolchain，Linux支持Android硬件加速；macos-26选Xcode26.4.1。最低OS(iOS16.4/Android7)和当前OS为独立运行层，当前image缺旧runtime则须在Actions补齐对应模拟器运行时，缺结果仍阻塞。不得把deployment target等同已在旧OS运行。
-6. 公司治理／隐私／条款／告知／帮助功能与页面完整验证，合成内容用于CI；正式文案由用户管理。ED-06不新增硬性申诉截止，首响应／完成提醒3／7工作日为可配置流程目标，无第二合格复核者保持待复核、不自动结案，不编造实际运营承诺。
-7. 按ED-11由当前Codex读取Actions原报告与真实图像完成代码／视觉审查，Actions核验记录与实际输入绑定；不再要求独立AI审查API账户。真实用户／生产资料禁发。首个真实产品基准仍由用户本人确认，初始化壳截图不作产品基准。
+源码工作树保持原路径。运行 `./tools/dev/local.ps1 -Prepare -Install` 准备H盘项目运行副本及环境；之后在输出的H盘工作区运行当前目标用例和直接受影响回归。配置见 `infra/development/policy.json`。后续通过同一入口传入 `-Command @('node','--experimental-strip-types','--test','tests/目标.spec.ts')`，入口先同步源码，再在H盘执行并保留真实退出状态。
 
-### 1.1 首次初始化验收
+依赖、构建、当前数据库和测试通道可用后直接推进业务；无关工程完善记后续，完整共享核心验收不作全部消费者前置。可配置运行副本、依赖、缓存、临时内容、产物和报告使用H:/Projects/AgoraWeave/development；系统管理工具及全局Docker存储记录例外，保留旧副本。
 
-按cloud-validation §2，先只写基础设施，Actions实际安装固定工具并运行真实Compose、网页与双端原生壳、测试发现／报告／截图差异／交互／归档清理、当前Codex代码与实际图像审查及记录绑定探针、桥接版本适配与拒绝探针。无业务检查在初始化清单记not_yet_applicable及激活节点，禁止把缺测试脚本包装成成功。故意失败／零用例／错误SHA／缺报告／跳过／取消／未确认基准必须被聚合和桥接拒绝；保存原始失败与“预期拒绝被观察”记录，不伪造passed。
+## 2. 功能批次与按需Actions
 
-最先只提供可调度的最小配置／接口壳／日志通道；它能运行后，报告聚合、桥接门禁和审查适配等工程行为也用该Actions通道先测试Red再实现Green，不以初始化为理由先实现全部逻辑。项目门禁脚本只在Actions计算与验证，本地SP只读取匹配结果／报告及桥接元数据，不运行项目工具。
+继续使用SP实施、调试、批次审查和验证。逐行为TDD由执行者判断；关键权限、安全、数据完整性和修复缺陷须有效测试。批次完成需要真实功能运行和对应测试，编译不能单独证明完成。
 
-全部初始化必需项有同SHA的真实结果且已读取后才声明ci-ready，并切换业务阶段清单；不宣称任一业务AC通过。尚无workflow时先通过获授权初始化提交／PR事件建立入口；不得预设缺失工作流可以dispatch。正式业务资源／AI审查通道缺失则停在初始化／未就绪，继续已获授权的无依赖编辑，不改本地验收。
+日常不调用历史红链认证、准入收据、重复报告校验或归档回读。Actions通过手动／显式调用按可用业务切片复验，等待期间继续不受影响开发。现有核心批次可手动运行verify-release，选择batch并填写core_targets（manifest中的ID，逗号分隔当前目标与直接受影响回归）；缺失或未注册目标拒绝执行。该入口只证明所选核心范围，不宣称完整客户端／产品验收。完整历史诊断另选legacy-full；旧工具和原始历史保留。
 
-**I1实际入口核验**：ci-ready前还须经`verify-release.yml`的business-increment编排真实调用已有初始化适用作业（可复用bootstrap job），保存从目标SHA／清单到安装／真实服务／非空发现／端采集／审查／聚合的报告链；核心前逐行为接入真实核心脚本和套件，在核心Green前全部已激活项实际运行。注入“只有聚合但缺服务／端job”“空矩阵／零用例”“缺核心脚本”和“调用依赖缺边”，必须拒绝。US14只扩充既有入口的全量发行与部署，不是首次让核心验证可运行；阶段产出见cloud-validation §2.1。
+## 3. 任务、结果与确认
 
-初始化调用共享增量编排时仍使用bootstrap清单及bootstrap-only范围，只证明执行通道，不以business-start等待尚未产生的ci-ready；ci-ready取得后才切business-increment profile验证实际核心／故事。
-
-## 2. 调度接口（未来工作流）
-
-本地可以使用GitHub CLI调度／等待／读结果，不启动项目。FEATURE_BRANCH必须是真实已提交分支／ref；COMMIT_SHA、RUN_ID、ARTIFACT_ID须换成真实对象。拟工作流接收target_sha并校调度ref／实际checkout／run身份，分支移动造成不符则拒绝，不能只信输入。没有工作流前不能把命令成功视为验证已完成。本轮不推送、不dispatch。
-
-```powershell
-gh workflow run ci-bootstrap.yml --ref FEATURE_BRANCH -f target_sha=COMMIT_SHA
-gh workflow run tdd-cycle.yml --ref FEATURE_BRANCH -f target_sha=COMMIT_SHA -f phase=red -f behavior_id=BEHAVIOR_ID
-gh workflow run verify-release.yml --ref FEATURE_BRANCH -f target_sha=COMMIT_SHA -f profile=full -f environment=ci
-gh run watch RUN_ID --exit-status
-gh run view RUN_ID --json status,conclusion,jobs,headSha,url
-gh run view RUN_ID --log-failed
-gh api --paginate "repos/OWNER/REPO/actions/runs?head_sha=COMMIT_SHA"
-gh api --paginate repos/OWNER/REPO/commits/COMMIT_SHA/check-runs
-gh api repos/OWNER/REPO/actions/artifacts/ARTIFACT_ID
-```
-
-命令只是控制面查询示例，不是完整门禁：watch只等待一个run，不能证明所有必需结果。桥接完成前按清单枚举当前SHA全部必需run／attempt／job，等待终态、取得并校验artifact、读取测试／AI审查／视觉／回归报告。`gh run watch`不支持fine-grained PAT的checks:read，实际选择获准GitHub身份或REST查询适配，不要求放宽至生产权。
-
-正式产物按artifact_id经官方REST下载并自校raw/archive摘要，UI展示的报告也须匹配commit/runtime/config。失败后仅编辑/提交/读取云端结果迭代，重新dispatch受影响行为和必要回归，完整正式发行执行全部必需集合。生产工作流与验证/预览分离，验证dispatch输入不接受生产token或绕确认flag。正常提交／PR事件也必须触发聚合，不能仅依赖dispatch满足分支保护。
-
-### 2.1 SP迭代及完成判定
-
-business开始先取得start门禁，使用与canonical tasks一致的临时适配；适配中的测试命令只调度／读取云端验证，不直接调用本地npm test。TDD先在S_R运行并读取目标断言失败，确认因行为缺失才实现；S_G同目标及已有适用套件通过，再重构／修复并在final SHA取得新结果。oracle实质变化重新建立Red；不固定用例数量，不将构建／环境失败当Red。
-
-每次任务勾选及报告完成前执行complete门禁，读取当前SHA全必需报告和审查处置、同版产物、基准确认及必要回归；任务工具退出码必须只在这些满足后成功。完成记录绑定SHA／清单／报告摘要和read_by／read_at。queued／running等待；failed／skipped／cancelled／timed_out／missing／unavailable／unknown及版本不符都未通过。等待超时保留未完成，不打印成功。新提交使旧完成记录失效，不能直接写旧handoff complete绕开。
-
-## 3. Actions 内部执行约定
-
-以下命令**仅在未来Actions job中执行**，不是让开发者在本地操作。脚本必须由后续实施提供、行为与本指南匹配；本指南不包含实现代码或测试套件。
-
-| 云端job | 命令／阶段约定 | 预期结果 |
-| --- | --- | --- |
-| dependency-freeze（首次） | 固定官方提交，解析依赖并提交受审lock/digest清单；后续npm ci | 精确依赖、action SHA、Node/SDK/原生/DB版本报告；漂移失败 |
-| bootstrap-readiness（仅初始化） | 云端执行无业务壳／服务／采集／审查通道与门禁拒绝探针，并真实调用增量verify编排 | 只证明基础设施及增量调用链就绪；未实现业务不计通过，缺真实job／非空探针不ci-ready |
-| tdd-red／tdd-green | `npm run ci:tdd`（拟脚本，phase／behavior／case-set取受审清单） | Red目标语义断言真实失败且因果确认；Green同目标及适用套件／回归通过，绑定测试摘要 |
-| service-prepare | `docker compose -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml up -d --wait` | 同固定官方Compose，真实Auth/DB/Storage/Realtime/Edge/代理健康；不使用本地或托管替代 |
-| schema-fixtures | `npm run ci:migrate`；`npm run ci:seed` | 核心/官方/插件受控schema，合成A/B/C/访客/角色、内容依赖和时钟夹具 |
-| static-contract | `npm run ci:lint`；`npm run ci:typecheck`；`npm run ci:contracts` | 独立lint/type/schema/接口合规；不单独证明业务通过 |
-| service-scenarios | `npm run ci:service`；`npm run ci:security`；`npm run ci:concurrency` | 真实接口/授权/DB/对象/事件/任务与竞争报告 |
-| web | `npm run ci:build:web`；`npm run ci:run:web`；`npm run ci:e2e:web` | 真Kiranism/分享/插件页，Playwright连接真实隔离服务，页面/角色/视觉/键盘 |
-| native-ios | `npm run ci:build:ios`；`npm run ci:e2e:ios` | Actions Xcode构建安装运行实际native，XCTest交互/截图/审计，连接隔离真实后端 |
-| native-android | `npm run ci:build:android`；`npm run ci:e2e:android` | Actions原生Gradle产物、emulator真实流程/媒体/视觉/无障碍检查 |
-| simulator-accessibility-media | `npm run ci:device` | Actions双端最低/当前OS模拟器实际语义/焦点/键盘/媒体/支持的推送及辅助技术，能力/排除按ED-14，原报告绑定当前产物 |
-| plugins | `npm run ci:plugins`；`npm run ci:developer-journey` | 两插件实际隔离、生命周期、三端从零样例/SDK/CLI/文档闭环 |
-| ai-real | `npm run ci:ai:integration`；`npm run ci:ai:eval` | 合格真实模型/工具/来源/政策/限额/自动有标签评估；未准入不通过 |
-| measurement-recovery | `npm run ci:performance`；`npm run ci:recovery` | 固定负载/失败分布、陈旧备份安全重放/对象恢复和清理证据 |
-| code-review-record | 当前Codex读取final diff／源码／需求／真实报告；Actions只校审查记录和输入摘要 | 覆盖／findings／证据／处置与当前SHA绑定，缺审查或无法判断拒绝 |
-| visual-review-record | 当前Codex实际读取全图／裁图、UI-SPEC／基准／页面矩阵／差异／交互报告；Actions校图像摘要绑定 | 各端适用状态语义审查及处置完整，缺实际图片／漏范围拒绝 |
-| aggregate | `npm run ci:evidence` | 同发行必需check全passed才输出通过；任何缺证据/版本不匹配拒绝 |
-
-上述job按阶段接入：ci-ready前真实安装／Compose／壳与采集／审查调用链可运行；核心Green前当前已激活schema／fixtures／service／security／concurrency／recovery与各端组件job及对应脚本均已实现；各故事进入行为前接入自己的实际套件；US14扩充full-release及受控部署。表中完整作业集合不是允许将核心必需执行拖到US14的理由。
-
-云端服务测试与macOS/Android测试通过有TLS/访问范围/短期凭据的同一隔离场景环境联通，不能各端偷偷换mock。作业结束撤sandbox/凭据、回收临时服务，保留按类证据；Actions不长期托管生产。镜像拉取/启动失败是环境不可用，不算产品通过。
+局部进展与剩余验证分列，完整任务才勾选；每批简报实现、实际测试及未完成项。不删有价值测试、不伪造通过、不因历史证明缺口重做正常代码。产品正式验收保留。普通工程自主处理，产品／技术栈／安全隐私／费用／不可逆数据／生产操作才确认。
 
 ## 4. 验证场景与判定（全部首版）
 
@@ -126,7 +66,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 ### V19A — FR-113播放器、设置与消费行为矩阵（G1）
 
-先在各行为缺失时由Actions执行真实用例并读有效Red，再实现播放器／设置／入口，Green和最终SHA重跑同oracle及已激活回归。策略单元／组件用例可辅助，iOS／Android原生产物的云端模拟器实际播放证据仍必需（网络/系统条件控制方式及硬件排除按ED-14）；适用分享／后台网页逐浏览器记录真实允许或点击回退。不能仅以上传、编辑器截图或一般无障碍检查映射FR-113。
+按实际改动执行播放器／设置／入口目标及直接受影响回归，读取真实失败并复测修复；Actions按需批次复验。正式平台覆盖和真实播放结果保留（iOS按ED-20后置）。网络／系统及硬件边界按ED-14；网页逐浏览器验证允许或点击回退，不用上传／编辑器截图代FR-113。
 
 | 条件／操作 | 必须观察的行为断言 | 所需证据 |
 | --- | --- | --- |
@@ -140,7 +80,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 | 视频主动开声／静音、离开／换另一视频 | 默认自动播放始终静音，当前用户可明确开声和再静音；新列表项不无意继承上一条开声，控制可读屏操作 | 音频状态／实际设备会话、点击和读屏轨迹、对应视频引用 |
 | 播放／预加载期间撤权、退出／注销／网络断开 | 媒体后续GET／Range／缓存命中按当前资格拒绝，停止新的未获权读取；离线不恢复他人受限媒体，错误／不可用保真实反馈 | 与V06联动的网关原报告、失权UI及新请求拒绝；已交付字节单列 |
 
-逐入口覆盖登记：US3共享播放器与发布预览／正文详情，US2设置和主页，US6流／搜索／收藏，US4评论GIF，US7私信GIF，US9分享、US10后台预览、US12实际插件host媒体。仅实际支持的媒体类型适用，不给评论／私信新增视频；缺实际入口组件或偏好消费不算覆盖。US16汇总双端模拟器播放／可访问性／视觉，最终full-release检查全部入口和策略组合，FR-113追溯须同时指向实现责任、具体行为Red／Green及完整消费回归。
+逐入口覆盖登记：US3共享播放器与发布预览／正文详情，US2设置和主页，US6流／搜索／收藏，US4评论GIF，US7私信GIF，US9分享、US10后台预览、US12实际插件host媒体。仅实际支持的媒体类型适用，不给评论／私信新增视频；缺实际入口组件或偏好消费不算覆盖。US16汇总双端模拟器播放／可访问性／视觉，最终full-release检查全部入口和策略组合，FR-113追溯须同时指向实现责任、对应有效行为测试及必要消费回归。
 
 各入口的播放输入先依audience核来源：分享仅ED-10默认／页面内操作，US9测试和实现不得再写“本人合法preferences”或假设个人DTO；T147配置consumer／T228浏览器用例／T233播放器／T235回归及US16／Final适用矩阵同步。登录改变资源资格但不授偏好读取，App设置变动只能影响App的合法消费者，分享保按本矩阵独立验证。
 
@@ -148,7 +88,7 @@ business开始先取得start门禁，使用与canonical tasks一致的临时适�
 
 ## 6. 失败修复、证据和生产边界
 
-每run生成[release evidence](contracts/release-evidence.md) index，绑定同提交/产物/配置/环境/工具/页面状态/AC-AS/报告/截图/差异/交互，并关联TDD链、基准确认、开发AI审查／处置和报告读取。必需check缺失、取消、超时、跳过、环境不可用、真模型/必需模拟器项未执行或版本不同都不能通过；失败同样上传脱敏证据。聚合须显式识别必需项，GitHub绿图标／neutral不作产品通过。修复后重验受影响行为和必要回归，正式发行完成全必需集合。报告使用合成数据，秘密/私人原文不入长存档。
+日常保留当前版本、环境、命令与真实结果、必要失败日志；修复后复测目标及直接受影响回归。按业务切片或发布需要执行Actions，正式产品验收对应实际提交与产物及全部适用平台／功能。历史TDD链、重复报告认证和归档回读不作开发或任务进展门槛；失败、未执行、环境故障不计通过。必要图像基准、生产授权与隐私要求保留；扩展发行格式按[发行契约](contracts/release-evidence.md)用途采用。
 
 生产另经超级管理员当前MFA和DEC-001核验对准确版本/权限/迁移/环境/名单确认，观察后扩大再确认；Actions通过不自动部署。预览/验证工作流不能写生产配置或执行迁移。实际生产发布/采购/外部真实消息均非本轮授权内容。
 
