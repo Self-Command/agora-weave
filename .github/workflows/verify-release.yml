@@ -21,9 +21,13 @@ jobs:
       - run: npm run ci:contracts
   services:
     uses: ./.github/workflows/service-bootstrap.yml
+    with:
+      https_ingress: true
     secrets: inherit
   web:
     uses: ./.github/workflows/web-bootstrap.yml
   native:
     uses: ./.github/workflows/native-bootstrap.yml
+    with:
+      https_required: true
     secrets: inherit
