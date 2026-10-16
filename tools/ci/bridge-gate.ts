@@ -23,7 +23,7 @@ const constitution = readFileSync('.specify/memory/constitution.md', 'utf8');
 const mode = process.env.BRIDGE_MODE || 'bootstrap-only';
 const transition = process.env.BRIDGE_TRANSITION || 'start';
 const readyBootstrapStart = handoff.status === 'ready' && mode === 'bootstrap-only' && transition === 'start';
-if (constitution.match(/\*\*版本\*\*:\s*([\d.]+)/)?.[1] !== '3.1.0' || handoff.artifact_owner !== 'codex' ||
+if (constitution.match(/\*\*版本\*\*:\s*([\d.]+)/)?.[1] !== '4.0.0' || handoff.artifact_owner !== 'codex' ||
   (handoff.status !== 'executing' && !readyBootstrapStart)) throw new Error('Unapproved bootstrap ownership or lifecycle');
 const scopeBase = '665fffada2dd4fb908b53ad7ca16159ce5e263d8';
 const changedPaths = execFileSync('git', ['diff', '--name-only', scopeBase, sha], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
