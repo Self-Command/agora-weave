@@ -139,7 +139,7 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**Project ED-22 testing policy**: Generate meaningful tests by actual behavior and risk. Permissions, security, data integrity and bug fixes require effective tests. Per-behavior TDD is discretionary; daily execution is target plus directly affected regressions.
 
 ### Checklist Format (REQUIRED)
 

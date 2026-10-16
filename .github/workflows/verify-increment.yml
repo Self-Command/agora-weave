@@ -18,6 +18,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Check frozen checkout dependencies and bootstrap scope
         shell: bash
         run: |
@@ -72,6 +76,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Install discover and execute approved nonempty targets
         run: |
           npm run ci:install
@@ -124,6 +132,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Preserve all executor job outcomes before aggregation
         env:
           GH_TOKEN: ${{ github.token }}
@@ -168,6 +180,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Recompute readiness from every collected original report and frozen requirement
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
@@ -209,6 +225,33 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: verify-readiness-${{ github.run_id }}-${{ github.run_attempt }}
-          path: gate-output/
+          path: |
+            gate-output/readiness.json
+            gate-output/orchestration.json
+            gate-output/final-source-job-outcomes.json
+          if-no-files-found: error
+          retention-days: 7
+  development-readiness:
+    needs: [install, service, discover, web]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+      - name: Read original foundational reports without waiting for the full matrix
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --experimental-strip-types tools/ci/write-development-readiness.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: development-readiness-${{ github.run_id }}-${{ github.run_attempt }}
+          path: development-output/
           if-no-files-found: error
           retention-days: 7
