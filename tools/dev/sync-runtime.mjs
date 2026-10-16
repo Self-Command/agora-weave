@@ -13,7 +13,10 @@ mkdirSync(dirname(destination), { recursive: true });
 if (!existsSync(resolve(destination, '.git'))) git(['clone', '--shared', '--no-hardlinks', '--quiet', source, destination]);
 const marker = resolve(destination, '.runtime-sync.json');
 const previous = existsSync(marker) ? JSON.parse(readFileSync(marker, 'utf8')) : undefined;
-if (previous && previous.source !== source) throw new Error('Runtime belongs to another source tree');
+const commonDirectory = directory => resolve(git(['rev-parse', '--path-format=absolute', '--git-common-dir'], directory));
+if (previous && previous.source !== source && commonDirectory(previous.source) !== commonDirectory(source)) {
+  throw new Error('Runtime belongs to another repository');
+}
 if (!previous && git(['status', '--porcelain'], destination)) throw new Error('Existing runtime has unowned changes');
 if (!previous) writeFileSync(marker, JSON.stringify({ source, source_head: head, files: [] }) + '\n');
 // This runtime is disposable; preserve source HEAD identity while copying its actual working files.
