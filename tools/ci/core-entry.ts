@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { coreEnvironmentFile, requireCoreEnvironment, sql } from './core-database.ts';
+import { compose, coreEnvironmentFile, requireCoreEnvironment, sql } from './core-database.ts';
 import { normalizeExecution } from './run-check-set.ts';
 import { prepareLocalServices } from './local-services.ts';
 import { executionContext, executionDirectory } from './execution-context.ts';
@@ -55,32 +55,6 @@ if (action === 'all' || action === 'batch') {
   }
 } else if (action === 'migrate') {
   const migrations: { file: string; depends_on: string[] }[] = manifest.core_migrations || [];
-  if (migrations.some(entry => entry.file.endsWith('/0011_independent_security_journal.sql'))) {
-    // Provision outside the migration transaction; dblink commits the independent
-    // archive before business writes. The password remains in an owner-only mapping.
-    const variables = Object.fromEntries(readFileSync(coreEnvironmentFile(),'utf8').split(/\r?\n/)
-      .filter(line => /^[A-Z][A-Z0-9_]*=/.test(line)).map(line => [line.slice(0,line.indexOf('=')),line.slice(line.indexOf('=')+1)]));
-    const literal = (value: string) => "'"+value.replaceAll("'","''")+"'";
-    try {
-      sql('CREATE EXTENSION IF NOT EXISTS dblink WITH SCHEMA extensions;');
-      if (sql("SELECT 1 FROM pg_database WHERE datname='agoraweave_security';").trim()!=='1') {
-        const password = variables.POSTGRES_PASSWORD;
-        if (!password) throw new Error('Missing isolated database credential');
-        const dsn = `host=127.0.0.1 dbname=postgres user=postgres password='${password.replaceAll('\\','\\\\').replaceAll("'","\\'")}'`;
-        sql(`SELECT extensions.dblink_exec(${literal(dsn)},'CREATE DATABASE agoraweave_security');`);
-      }
-      sql(`CREATE SERVER IF NOT EXISTS core_security FOREIGN DATA WRAPPER dblink_fdw
-        OPTIONS(host '127.0.0.1',dbname 'agoraweave_security');
-        CREATE USER MAPPING IF NOT EXISTS FOR postgres SERVER core_security OPTIONS(user 'postgres',password ${literal(variables.POSTGRES_PASSWORD)});
-        ALTER USER MAPPING FOR postgres SERVER core_security OPTIONS(SET password ${literal(variables.POSTGRES_PASSWORD)});
-        REVOKE ALL ON FOREIGN SERVER core_security FROM PUBLIC,anon,authenticated,service_role,core_runtime;`);
-    } catch (error) {
-      const stderr = (error as { stderr?: Buffer | string }).stderr?.toString() || '';
-      const summary = Object.values(variables).filter(value => value.length>=8)
-        .reduce((text,value)=>text.split(value).join('[REDACTED]'),stderr.split(/\r?\n/).filter(line=>/^(ERROR|DETAIL|HINT):/.test(line)).join(' '));
-      throw new Error('Independent journal provisioning failed: '+(summary || 'credential or connection unavailable'));
-    }
-  }
   const inventory = existsSync('supabase/migrations') ? readdirSync('supabase/migrations').filter(file => file.endsWith('.sql')).map(file => `supabase/migrations/${file}`).sort() : [];
   if (JSON.stringify([...migrations.map(entry => entry.file)].sort()) !== JSON.stringify(inventory) || new Set(inventory).size !== migrations.length) {
     throw new Error('Every actual migration requires one explicit dependency registration');
@@ -93,7 +67,12 @@ if (action === 'all' || action === 'batch') {
     const digest = hash(readFileSync(next.file));
     const previous = sql(`SELECT digest FROM ci_control.migrations WHERE file='${next.file}';`).trim();
     if (previous && previous !== digest) throw new Error('An applied migration was mutated');
-    if (!previous) sql(`BEGIN;\n${readFileSync(next.file, 'utf8')}\nINSERT INTO ci_control.migrations(file,digest) VALUES ('${next.file}','${digest}');\nCOMMIT;`);
+    if (!previous) {
+      const statement = `BEGIN;\n${readFileSync(next.file, 'utf8')}\nINSERT INTO ci_control.migrations(file,digest) VALUES ('${next.file}','${digest}');\nCOMMIT;`;
+      if (next.file.endsWith('/0011_independent_security_journal.sql')) {
+        compose(['exec','-T','db','psql','-X','-qAt','-U','supabase_admin','-d','postgres','-v','ON_ERROR_STOP=1'],statement);
+      } else sql(statement);
+    }
     results.push({ file: next.file, sha256: digest, state: previous ? 'verified-existing' : 'applied' });
     applied.add(next.file);
   }
