@@ -885,7 +885,7 @@
       "files": [
         "tests/integration/core/foundation.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 5,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 138,
+  "core_case_count": 139,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
