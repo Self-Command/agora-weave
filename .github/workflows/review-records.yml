@@ -1,0 +1,53 @@
+name: Current Codex record integrity
+on:
+  workflow_call:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  records:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Authenticate original same-target review input context
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node --experimental-strip-types tools/ci/download-source.ts "verify-executor-outcomes-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" verify-output
+      - name: Install frozen schema validation tools
+        run: npm run ci:install
+      - name: Await exact private current Codex records without exposing their payloads
+        env:
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
+        run: node --experimental-strip-types tools/ci/read-private-reviews.ts
+      - name: Validate current Codex statements against authenticated input bytes and actual checks
+        run: npm run ci:review
+      - name: Remove any review transport credential files
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/review-read-key" "$RUNNER_TEMP/review-read-hosts" "$RUNNER_TEMP/review-read-batch"
+          test ! -e "$RUNNER_TEMP/review-read-key"
+          test ! -e "$RUNNER_TEMP/review-read-hosts"
+          test ! -e "$RUNNER_TEMP/review-read-batch"
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: codex-record-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: review-output/
+          if-no-files-found: error
+          retention-days: 7

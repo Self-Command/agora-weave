@@ -125,13 +125,13 @@
 
 首版图片 JPEG／PNG、动态 GIF、视频 MP4 容器 H.264＋AAC 为受控输入清单；拒绝伪格式／不支持编码并保留输入，不扩复杂转码。HEIC 选择后可用 SDK 成熟转换到受支持静态格式并明确失败；未经双端云端验证不加到直接服务清单。上传入口／Storage 大小联动以支持 spec 的 200 MB 视频；官方默认约 50 MiB 不可照抄。所有媒体 GET／Range 仍走 RD-03。
 
-Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览器 Playwright／性能；macOS 跑固定 Xcode 的 iOS 原生产物与 XCTest；Android 云端 emulator 跑原生产物与 UIAutomator／Espresso。物理云端 iOS／Android 的播放、推送、VoiceOver／TalkBack、键盘和性能列必需设备层，Actions 调度有合格资源才执行。模拟器与自动 accessibility audit 不代替真实读屏流程。预览由 Actions 运行隔离环境、产出录像／截图／轨迹和受保护限时远程视图，不能要求本地启动。
+Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览器 Playwright／性能；macOS 跑固定 Xcode 的 iOS 原生产物与 XCTest；Android 云端 emulator 跑原生产物与 UIAutomator／Espresso。用户已按ED-14决定今后只有模拟器设备层，撤出旧物理设备验收前置，最低/当前OS均独立实际运行；原生语义／焦点／键盘／媒体／支持的推送及辅助技术仍须实际证据，不支持的硬件流程按[模拟器验收范围](contracts/simulator-validation.md)明示not_applicable及未验证风险，不能标记passed。预览由 Actions 运行隔离环境、产出录像／截图／轨迹和受保护限时远程视图，不能要求本地启动。
 
-**Rationale**：Apple 明确 VoiceOver 不能在 iOS Simulator 使用，自动审计也不保证所有可访问性。设备供给与预算是 Q-16／03 的真实条件，不能假说已选厂商或已有物理设备。
+**Rationale**：ED-14是用户对验收设备范围的明确变更，读屏适配本身仍要求实现。Apple既有辅助技术指南说明Simulator的VoiceOver限制；2026-10-15复核官方symbol metadata，新 `XCUIVoiceOverService` 的iOS可用性为27.0，不能据此声称已锁iOS16.4／26.4.1可执行；系统audit与语义/焦点流程分别记录，均不冒充真实VoiceOver用户验收。模拟器资源与预算仍为Q-16／03真实条件，不假设已有新runtime或API。
 
 **Alternatives considered**：仅网页截图、Expo Go 代实际 native build、仅模拟器 VoiceOver、仅静态 token 对照、本地 runner 后备均不选。
 
-来源：[Expo UI SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/ui/)、[Expo Video SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/video/)、[Expo Picker GIF约束](https://docs.expo.dev/versions/v57.0.0/sdk/imagepicker/)、[Android真实媒体格式](https://developer.android.com/media/platform/supported-formats)、[Apple accessibility testing](https://developer.apple.com/documentation/accessibility/performing-accessibility-testing-for-your-app)、[Apple accessibility audit](https://developer.apple.com/documentation/accessibility/performing-accessibility-audits-for-your-app)、[云端macOS26软件表](https://raw.githubusercontent.com/actions/runner-images/main/images/macos/macos-26-Readme.md)。核验日 2026-10-14。云端选择Xcode26.4.1并记录实际image；当前image缺最低OS运行时须Q-16云端设备补齐，不等同编译下限已验。
+来源：[Expo UI SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/ui/)、[Expo Video SDK57](https://docs.expo.dev/versions/v57.0.0/sdk/video/)、[Expo Picker GIF约束](https://docs.expo.dev/versions/v57.0.0/sdk/imagepicker/)、[Android真实媒体格式](https://developer.android.com/media/platform/supported-formats)、[Apple accessibility testing](https://developer.apple.com/documentation/accessibility/performing-accessibility-testing-for-your-app)、[Apple accessibility audit](https://developer.apple.com/documentation/accessibility/performing-accessibility-audits-for-your-app)、[云端macOS26软件表](https://raw.githubusercontent.com/actions/runner-images/main/images/macos/macos-26-Readme.md)。核验日 2026-10-14。云端选择Xcode26.4.1并记录实际image；当前image缺最低OS运行时须在Actions补齐对应模拟器运行时，不等同编译下限已验。
 
 ## 官方Compose及Actions锁定补充
 
@@ -159,7 +159,7 @@ Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览�
 
 未发现要求修改获批范围、栈、严格撤权或验收标准的实质性冲突。官方默认能力的缺口已被明确的网关、隔离和交付设计承接；不可据此宣称实际成功。新冲突按宪法第九条仅暂停依赖工作、报告影响和选项等待用户决定，不自行改变条件。
 
-计划可以进入 Phase 1。以下仍是执行前条件：Q-02 实际大陆服务器／网络／备份；Q-03 预算／日期；Q-04 合格短信／审核／推送／AI 真实准入；Q-08 参数风险验证／性能／备份与 RPO-RTO；Q-11 域名／制度／处理告知／申诉合格责任人；Q-16 Actions 云端资源／物理设备／预览／真实外部测试许可。Q-10 新范围默认不启用。没有把任一条件记作通过，也没有重问已确认决定。
+计划可以进入 Phase 1。以下仍是执行前条件：Q-02 实际大陆服务器／网络／备份；Q-03 预算／日期；Q-04 合格短信／审核／推送／AI 真实准入；Q-08 参数风险验证／性能／备份与 RPO-RTO；Q-11 域名／制度／处理告知／申诉合格责任人；Q-16 Actions 云端模拟器资源／预览／真实外部测试许可（ED-14不再要求物理设备）。Q-10 新范围默认不启用。没有把任一条件记作通过，也没有重问已确认决定。
 
 ## RD-11 — 先验证CI基础设施，再开发业务
 
@@ -185,7 +185,9 @@ TDD S_R先测试提交，Actions真实断言因行为缺失／真实缺陷失败
 
 桥接文字仍为SP6.4.2 adapter，实际安装SP7.0.0可识别Task N，但还需红绿／Expected／接口预检／整体测试等完整适配。仓库init-options为SK1.0.12，已验证组合记录SK1.1.3／SP7／bridge1.4.0，不能继承其兼容声明。初始化以当前组合执行云端任务提取、远端task-done和错误SHA／缺报告拒绝探针；失败且既定条件无法解决才按宪法九报告选择，不自动升级或更改原生技能。这里只读调查，没有创建adapter／handoff或运行探针。
 
-## RD-13 — 开发AI代码与视觉审查候选
+## RD-13 — 开发AI代码与视觉审查候选（历史路线）
+
+**2026-10-15已被ED-11取代**：用户明确要求并确认当前Codex完成代码与Actions实际图像／报告审查，取消额外独立云端AI／API资源要求。以下保留原调查历史，不是当前实施门禁；当前规则见cloud-validation §6及[执行决定](reviews/execution-decisions-2026-10-15.md)。
 
 **Decision（候选，尚待CV-D01准入）**：独立Linux Actions job分别使用官方Codex Action运行非交互代码审查和图像视觉审查，冻结action／CLI／proxy；输入只读、结果结构化。具体模型必须显式配置获准ID，不使用默认模型隐含决定。代码读final diff、必要完整源码、需求契约及真实验证报告；视觉通过--image实际附各端截图、基准／参考和UI-SPEC／页面状态／交互报告。每批覆盖和图像digest都登记，不能只给模型文件名。
 
@@ -219,3 +221,19 @@ action／CLI支持这些参数只是工具能力依据，不证明安全组合�
 **Alternatives considered**：分享全部GET通行或所有受限404、只在网页加noindex而无作者状态、复用AI开关控制收录、用模板帮助／虚构条款或只要求用户提供文案均不采用。资料展示不等于用户同意，也不引入老用户登录或普通公开AI逐次强制同意；真实服务准入与来源资格继续独立。
 
 依据：本仓库PRD WEB-01–06／AI-04／08–10／ADM-01–07、spec FR-078／090–107、UI-SPEC §5设置与发布入口、[最新决定ED-08](reviews/planning-decisions-2026-10-14.md)及[独立发现](reviews/independent-plan-review-2026-10-14.md)。本节是依据既有材料的设计修订，不包含新外部技术选型或实际执行结论。
+
+## RD-15 — Analyze四项缺口的修订边界
+
+**Decision**：按既有FR／PRD／UI-SPEC恢复四项约束并把验证责任落到可派生任务：FR-065使用规范化无向账号pair的单一pending部分唯一约束和A→B／B→A并发断言；在共享核心Green前，ci-ready必须能真实调用business-increment验证作业，US14只扩充完整发行与受控部署；US2实现同时依赖US1与US3实现；FR-113拆为播放器、偏好设置和所有实际媒体消费入口，并在云端验证网络／视区／声音／预加载／省流量／减少动效行为。
+
+**Rationale**：FR-065原文“每对至多一个”与旧任务的“同方向／每向”不相容；只建立聚合门禁不能证明核心前已有可执行验证作业；DAG和前置表不一致会允许US2过早启动；FR-113的真实行为不能由编辑器或一般媒体截图覆盖。上述修订只澄清并恢复已批准行为，不增加用户范围或新产品选择。
+
+**Alternatives rejected**：保留有向pending、让US14首次创建增量工作流、只在文字前置表补US2而不改DAG、把播放器行为并入编辑器或最终通用视觉任务，均会留下同类跨产物缺口。
+
+**Verification mapping**：plan TD-07A／TD-07D／TD-07E；data-model与HTTP/configuration契约；quickstart V09／V19；下一次speckit-tasks需把模型、云端作业调用链、依赖图／前置表、播放器消费入口和Red／Green／回归断言一并派生。此处未修改既有tasks或交接状态。
+
+### 后续I3／I4核对
+
+I3不引入新方法选择，HTTP已有GET/PATCH为准，计划／HTTP／V19A补足部分更新／CAS／幂等及PUT拒绝；现有任务需同步。I4不能由“各端同语义”推导share-read可读取账号偏好，/config/effective非敏感平台投影也不授个人数据用途。曾呈现A默认／页面内操作与B最小本人只读投影待决，用户随后明确选择A，以下最新决定生效。
+
+**Decision（ED-10）**：匿名与登录分享均用合法平台默认＋当前页面操作，不读取／同步账号preferences，账号设置由App管理。保留现有share-read白名单，配置／SSR／hydration／缓存／认证响应不派生私人偏好投影，页面操作不写账号。**Rationale**：完整实现播放控件和默认策略即可满足本次明确选择，登录仅提升当前合法内容读取资格。**Alternative rejected**：B最小本人只读端点未获选择，更不能开放整个GET/PATCH preferences。**Verification**：quickstart V12B与V19A测试账号已有相反偏好、匿名／登录同默认来源、无私人读取及页面操作不写回，同时保持当前媒体gate；下一次tasks按真实来源同步实现、配置consumer和安全／浏览器回归。

@@ -18,3 +18,7 @@
 最新用户决定／资源分工及授权工程参数见[决定登记](../reviews/planning-decisions-2026-10-14.md)。用户处理部署上线运营，工程按需索取具体供给；不据此免除完整功能、实际云端验证或同版证据。
 
 独立复检的三项缺口已补入本契约集：HTTP分享白名单／合法受限读取、模型及本人收录接口、正式资料版本管理／发布／适用记录和AI帮助来源。修订依据、复检和是否已闭环以[独立计划复检记录](../reviews/independent-plan-review-2026-10-14.md)最新状态为准；真实Actions验证仍在后续实施阶段。
+
+后续analyze的C1／I1／I2／G1修订见[核对记录](../reviews/plan-analyze-revision-2026-10-14.md)：模型／HTTP恢复无向pair唯一pending，云端验证前置真实增量作业，计划统一US2前置，配置／播放器／消费侧验收承接FR-113。旧tasks及ready快照待下一轮speckit-tasks更新；先前独立复检结论不覆盖这次修订。
+
+后续I3统一GET/PATCH部分更新／CAS／幂等，I4按[ED-10用户明确A](../reviews/planning-decisions-2026-10-14.md)让匿名／登录分享使用默认及页面内操作、不读取或同步账号偏好。HTTP、授权、配置、模型及验证指南同步，无新增私人偏好投影；下一轮tasks仍须刷新对应方法／用例／consumer和交接，再由analyze取得跨产物结论。

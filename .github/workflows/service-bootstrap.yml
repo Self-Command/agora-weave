@@ -1,0 +1,280 @@
+name: Isolated official services bootstrap
+on:
+  workflow_call:
+    inputs:
+      core_targets:
+        type: string
+        default: ''
+      https_ingress:
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+jobs:
+  services:
+    name: Official Compose (${{ matrix.environment }}, not ci-ready)
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ inputs.https_ingress && 75 || 20 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, test]
+    env:
+      CI_ENVIRONMENT: ${{ matrix.environment }}
+      CI_SERVICE_ENV: ${{ matrix.environment == 'dev' && secrets.CI_DEV_SUPABASE_ENV || secrets.CI_TEST_SUPABASE_ENV }}
+      AGORAWEAVE_HTTPS_SEED: ${{ inputs.https_ingress && secrets.AGORAWEAVE_HTTPS_SEED || '' }}
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Install committed frozen dependencies on this isolated runner
+        run: npm run ci:install
+      - name: Prepare isolated configuration and locked image override
+        shell: bash
+        run: |
+          set -eu
+          umask 077
+          test -n "$CI_SERVICE_ENV"
+          mkdir -p service-output
+          printf '%s\n' "$CI_SERVICE_ENV" | tr -d '\r' > "$RUNNER_TEMP/agoraweave-ci.env"
+          export COMPOSE_PROJECT_NAME="agoraweave-${CI_ENVIRONMENT}-${GITHUB_RUN_ID}"
+          printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT_NAME" >> "$GITHUB_ENV"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
+          import { createHash, randomBytes } from 'node:crypto';
+          const runtimePassword = randomBytes(32).toString('hex');
+          console.log('::add-mask::' + runtimePassword);
+          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\n`);
+          const base = ['--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
+            '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml'];
+          const config = JSON.parse(execFileSync('docker', ['compose', ...base, 'config', '--format', 'json'], { encoding: 'utf8' }));
+          const lock = JSON.parse(readFileSync('infra/ci/images.lock.json', 'utf8'));
+          const services = {};
+          for (const [name, service] of Object.entries(config.services)) {
+            const image = lock.images.find(image => image.reference === service.image);
+            if (!image || image.os !== 'linux' || image.architecture !== 'amd64') throw new Error(`Unlocked service ${name}`);
+            if (service.ports?.length) throw new Error(`Published service port ${name}`);
+            services[name] = { image: image.repo_digests[0] };
+          }
+          if (config.networks.default.internal !== true) throw new Error('Service network is not internal');
+          writeFileSync(`${process.env.RUNNER_TEMP}/agoraweave-images.json`, JSON.stringify({ services }));
+          writeFileSync('service-output/configuration.json', JSON.stringify({
+            checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+            environment: process.env.CI_ENVIRONMENT, source: 'github-actions', runner_environment: 'github-hosted',
+            run_id: process.env.GITHUB_RUN_ID, attempt: process.env.GITHUB_RUN_ATTEMPT,
+            upstream_commit: lock.upstream_commit, published_ports: [], internal_network: true,
+            services: Object.keys(services), readiness: 'not_evaluated',
+            check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
+            toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
+          }, null, 2) + '\n');
+          NODE
+      - name: Start actual official services and inspect internal health
+        id: health
+        shell: bash
+        run: |
+          set -eu
+          compose=(docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env"
+            -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json")
+          "${compose[@]}" pull
+          # Resolve official runtime imports without service secrets before internal network startup.
+          edge_image=$(node -e 'const v=JSON.parse(require("fs").readFileSync("infra/ci/images.lock.json"));process.stdout.write(v.images.find(i=>i.reference.startsWith("supabase/edge-runtime:")).repo_digests[0])')
+          docker volume create "${COMPOSE_PROJECT_NAME}_deno-cache" > /dev/null
+          docker run -d --name agoraweave-import-cache \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/main:/home/deno/functions/main:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/upstream/docker/volumes/functions/deno.jsonc:/home/deno/functions/deno.jsonc:ro" \
+            -v "$GITHUB_WORKSPACE/supabase/functions/core:/home/deno/functions/core:ro" \
+            -v "${COMPOSE_PROJECT_NAME}_deno-cache:/root/.cache/deno" \
+            "$edge_image" start --main-service /home/deno/functions/main > /dev/null
+          for attempt in $(seq 1 60); do
+            if docker exec agoraweave-import-cache bash -c 'timeout 1 bash -c "</dev/tcp/127.0.0.1/9000"' 2>/dev/null; then break; fi
+            sleep 2
+          done
+          docker exec agoraweave-import-cache bash -c 'timeout 1 bash -c "</dev/tcp/127.0.0.1/9000"'
+          # Resolve the committed core's pinned imports without attaching service credentials.
+          docker exec agoraweave-import-cache bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000; printf "GET /core/api/v1/me/preferences HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n" >&3; cat <&3' > "$RUNNER_TEMP/core-import-probe.txt"
+          grep -q 'SESSION_INVALID' "$RUNNER_TEMP/core-import-probe.txt"
+          docker rm -f agoraweave-import-cache > /dev/null
+          "${compose[@]}" up -d --wait --wait-timeout 300
+          npm run ci:health
+      - name: Execute current core contracts against the live isolated services
+        id: core
+        env:
+          AGORAWEAVE_BATCH_TARGETS: ${{ inputs.core_targets }}
+        run: |
+          if [ -n "$AGORAWEAVE_BATCH_TARGETS" ]; then
+            node --experimental-strip-types tools/ci/core-entry.ts batch
+          else
+            npm run ci:core
+          fi
+      - name: Preserve original active core execution
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: core-services-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: core-output/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Publish authenticated run-scoped HTTPS health ingress
+        if: ${{ inputs.https_ingress }}
+        shell: bash
+        run: |
+          set -eu
+          test -n "$AGORAWEAVE_HTTPS_SEED"
+          curl --fail --location --retry 2 https://github.com/cloudflare/cloudflared/releases/download/2026.10.0/cloudflared-linux-amd64 -o "$RUNNER_TEMP/cloudflared"
+          printf 'd33ff2d14475178d2012c2c56beba87389ac5ded27649519f198a7d3134a99db  %s\n' "$RUNNER_TEMP/cloudflared" | sha256sum -c -
+          chmod 700 "$RUNNER_TEMP/cloudflared"
+          "$RUNNER_TEMP/cloudflared" --version > service-output/cloudflared-version.txt
+          node --experimental-strip-types tools/ci/https-service.ts > "$RUNNER_TEMP/https-service.log" 2>&1 &
+          for poll in $(seq 1 60); do
+            if [ -f service-output/https-ready.json ]; then break; fi
+            sleep 2
+          done
+          test -f service-output/https-ready.json
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { deriveIngressToken } from './tools/ci/https-ingress.ts';
+          const ready = JSON.parse(readFileSync('service-output/https-ready.json', 'utf8'));
+          const token = deriveIngressToken(process.env.AGORAWEAVE_HTTPS_SEED, ready);
+          console.log('::add-mask::' + token);
+          const attempts = [];
+          let passed = false;
+          for (let poll = 0; poll < 30; poll++) {
+            try {
+              const response = await fetch(ready.url + '/auth/v1/health', { headers: { authorization: 'Bearer ' + token }, redirect: 'error', signal: AbortSignal.timeout(10000) });
+              attempts.push({ status: response.status, at: new Date().toISOString() });
+              if (response.status === 200 && (await response.json()).name === 'GoTrue') { passed = true; break; }
+            } catch { attempts.push({ state: 'unavailable', at: new Date().toISOString() }); }
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          }
+          writeFileSync('service-output/https-startup-probe.json', JSON.stringify({ state: passed ? 'passed' : 'blocked', attempts }, null, 2) + '\n');
+          if (!passed) throw new Error('Real temporary HTTPS health unavailable');
+          NODE
+      - name: Publish credential-free live HTTPS descriptor
+        if: ${{ inputs.https_ingress }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: https-ready-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: service-output/https-ready.json
+          if-no-files-found: error
+          retention-days: 1
+      - name: Keep isolated HTTPS ingress alive until actual native clients finish
+        if: ${{ inputs.https_ingress }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --experimental-strip-types tools/ci/https-wait-native.ts
+      - name: Capture sanitized real container failure detail
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync, spawnSync } from 'node:child_process';
+          import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+          const environmentPath = `${process.env.RUNNER_TEMP}/agoraweave-ci.env`;
+          if (!existsSync(environmentPath)) process.exit(0);
+          const secretValues = readFileSync(environmentPath, 'utf8').split('\n').map(line => line.slice(line.indexOf('=') + 1))
+            .filter(value => value.length >= 16).sort((a, b) => b.length - a.length);
+          const sanitize = value => secretValues.reduce((result, secret) => result.split(secret).join('[REDACTED]'), value);
+          const args = ['compose', '--project-directory', 'supabase/upstream/docker', '--env-file', environmentPath,
+            '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml',
+            '-f', `${process.env.RUNNER_TEMP}/agoraweave-images.json`];
+          try {
+            const ids = execFileSync('docker', [...args, 'ps', '-a', '-q'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+            const records = ids.map(id => {
+              const [container] = JSON.parse(execFileSync('docker', ['inspect', id], { encoding: 'utf8' }));
+              const logProcess = spawnSync('docker', ['logs', '--tail', '120', id], { encoding: 'utf8' });
+              const logs = `${logProcess.stdout || ''}\n${logProcess.stderr || ''}`;
+              // Public artifacts contain service state only. Runtime errors can encode secrets as byte arrays.
+              return { name: container.Name, state: container.State.Status, health: container.State.Health?.Status,
+                health_exit_codes: container.State.Health?.Log?.slice(-8).map(entry => entry.ExitCode),
+                exit_code: container.State.ExitCode };
+            });
+            writeFileSync('service-output/container-diagnostics.json', JSON.stringify(records, null, 2) + '\n');
+          } catch (error) {
+            writeFileSync('service-output/diagnostics-error.txt', sanitize(error.message));
+          }
+          NODE
+      - name: Remove isolated service resources
+        id: cleanup
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -eu
+          if [ -f "$RUNNER_TEMP/https-gateway.pid" ]; then
+            gateway_pid=$(cat "$RUNNER_TEMP/https-gateway.pid")
+            kill "$gateway_pid" 2>/dev/null || true
+          fi
+          if [ -f "$RUNNER_TEMP/https-cloudflared.pid" ]; then
+            tunnel_pid=$(cat "$RUNNER_TEMP/https-cloudflared.pid")
+            kill "$tunnel_pid" 2>/dev/null || true
+          fi
+          sleep 2
+          node --input-type=module <<'NODE'
+          import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+          const pids = ['https-gateway.pid', 'https-cloudflared.pid'].filter(name => existsSync(process.env.RUNNER_TEMP + '/' + name)).map(name => Number(readFileSync(process.env.RUNNER_TEMP + '/' + name)));
+          const stopped = pids.every(pid => { try { process.kill(pid, 0); return false; } catch { return true; } });
+          writeFileSync('service-output/https-process-cleanup.json', JSON.stringify({ processes_observed: pids.length, stopped }) + '\n');
+          if (!stopped) throw new Error('Temporary HTTPS process remains');
+          NODE
+          docker rm -f agoraweave-import-cache > /dev/null 2>&1 || true
+          if [ -f "$RUNNER_TEMP/agoraweave-ci.env" ] && [ -f "$RUNNER_TEMP/agoraweave-images.json" ]; then
+            docker compose --project-directory supabase/upstream/docker --env-file "$RUNNER_TEMP/agoraweave-ci.env" \
+              -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json" \
+              down --volumes --remove-orphans
+          fi
+          rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json"
+          rm -f "$RUNNER_TEMP/https-gateway.pid" "$RUNNER_TEMP/https-cloudflared.pid" "$RUNNER_TEMP/https-service.log" "$RUNNER_TEMP/cloudflared"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { existsSync, writeFileSync } from 'node:fs';
+          const filter = 'label=com.docker.compose.project=' + process.env.COMPOSE_PROJECT_NAME;
+          const inspect = (kind, args) => {
+            const raw = execFileSync('docker', args, { encoding: 'utf8' });
+            writeFileSync('service-output/cleanup-' + kind + '.txt', raw);
+            return raw.trim().split(/\r?\n/).filter(Boolean);
+          };
+          const remaining_containers = inspect('containers', ['ps', '-aq', '--filter', filter]);
+          const remaining_volumes = inspect('volumes', ['volume', 'ls', '-q', '--filter', filter]);
+          const remaining_networks = inspect('networks', ['network', 'ls', '-q', '--filter', filter]);
+          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json', 'https-gateway.pid', 'https-cloudflared.pid', 'https-service.log', 'cloudflared'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
+          const complete = !remaining_containers.length && !remaining_volumes.length && !remaining_networks.length && temporary_files_removed;
+          writeFileSync('service-output/cleanup.json', JSON.stringify({ source: 'github-actions',
+            environment: process.env.CI_ENVIRONMENT, cleanup: complete ? 'success' : 'failure',
+            remaining_containers, remaining_volumes, remaining_networks, temporary_files_removed }, null, 2) + '\n');
+          if (!complete) throw new Error('Isolated resources or temporary service files remain');
+          NODE
+      - name: Preserve truthful health and cleanup outcomes
+        if: ${{ always() }}
+        shell: bash
+        env:
+          HEALTH_OUTCOME: ${{ steps.health.outcome }}
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
+        run: |
+          mkdir -p service-output
+          node --input-type=module <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync('service-output/outcome.json', JSON.stringify({
+            health: process.env.HEALTH_OUTCOME || 'missing', cleanup: process.env.CLEANUP_OUTCOME || 'missing',
+            environment: process.env.CI_ENVIRONMENT, readiness: 'not_evaluated',
+            scope: 'internal-official-services-only-no-business-or-native-connectivity',
+          }, null, 2) + '\n');
+          NODE
+      - name: Upload sanitized nonproduction service health
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ inputs.https_ingress && 'bootstrap-https-services' || 'bootstrap-services' }}-${{ matrix.environment }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: service-output/
+          if-no-files-found: error
+          retention-days: 7

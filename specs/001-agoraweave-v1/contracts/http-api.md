@@ -32,8 +32,10 @@
 | GET /me/follow-requests；POST /follow-requests/{id}/actions | read本人；action=accept/reject/delete/cancel | 一合法终态、发送者统一ended，expire按服务时间 |
 | PUT/DELETE /me/blocks/{id} | command | 双向关系退出/新互动拒；解除不复活 |
 | GET/PUT/DELETE /me/mutes | kind/account-keyword-topic/value、command | 本人偏好，与拉黑/DM mute独立 |
-| GET/PATCH /me/preferences | 当前注册字段/base_version | 本人接收/回执/通知/AI用途等；平台不能放宽 |
+| GET/PATCH /me/preferences | 本人App会话、当前注册字段/base_version；video_policy=always/wifi_only/never、preload布尔 | 本人接收/回执/通知/AI用途及播放偏好；视频初始wifi_only／静音、蜂窝点击，关闭预加载生效；当前系统省流量／减少动效由各端消费，偏好不授媒体读权，分享不消费该接口 |
 | GET/PATCH /me/search-indexing | 本人App会话；patch allow_indexing/base_version/operation_id | author_index_policy／epoch及作用范围：本人公开主页、帖子、串；不修改阅读权限或AI用途 |
+
+`/me/preferences`方法按注册契约固定：GET只读本人当前合法投影；PATCH仅部分更新请求中明确列出的注册字段，携带`base_version`和`operation_id`，未列字段保持原值，不用完整替换语义或默认重置其他偏好。CAS错版409且保输入，非法枚举／类型／未注册字段拒绝且不部分提交；同主体／动作／operation相同payload复用当前可读结果、不同payload返回409。PUT不注册，Actions须验证其405／Allow=GET,PATCH；share-read用途仍先按白名单判定，不能因405声明或本人身份取得私人接口权限。测试／客户端／实现／路由注册表及OpenAPI不得共同漂移为GET/PUT。
 
 ## 内容、草稿、讨论、投票、互动和发现
 
@@ -67,7 +69,7 @@
 | 方法/路径 | 输入及资格 | 输出/关键结果 |
 | --- | --- | --- |
 | GET /dm/eligibility/{recipient} | 当前找人/发送资格 | 可允许动作/统一不可联系，不泄漏隐私原因 |
-| GET/POST /dm/requests；POST /dm/requests/{id}/actions | initial_text或accept/reject/delete/cancel、command | 初始独立、30天/30或7冷却；accept重核并只合一次 |
+| GET/POST /dm/requests；POST /dm/requests/{id}/actions | initial_text或accept/reject/delete/cancel、command | 规范化无向pair至多一pending，反向并发也互斥；同operation重试一效果，其他竞争409且不泄漏无权请求详情；初始独立、30天/30或7冷却，accept重核并只合一次 |
 | GET /dm/conversations；GET /dm/conversations/{id}/messages | all/unread/cursor；当前参与者 | 正常历史不混待请求，逐消息资格过滤 |
 | POST /dm/messages | recipient或conversation、body/type/media_refs、command | 当前允许发送；唯一pair/稳定ID、saved状态非送达 |
 | DELETE /dm/messages/{id}/access | 本人command | 本人的消息/附件资格撤销，对方保留独立 |
@@ -145,7 +147,9 @@ presented只记录展示版本，acknowledged/consented只记录真实明确动�
 | GET /posts/{id}；GET /posts/{id}/comments；GET /threads/{id} | 只读当前分享目标及其合法正文／讨论／串投影，受限目标按当前本人／有效关注等实际资格判定，不取作者管理revision |
 | GET /polls/{id}/results | 只限有权分享目标关联投票，仍校投票中已投／结束规则；登录不能在网页投票 |
 | GET/HEAD /media/{id} | 只限上述分享目标当前合法绑定的正文／资料媒体与派生，逐Range/conditional当前核；即使本人也不能读草稿、私信、证据或AI附件；客户端target_ref仅供定位，不能授予绑定资格 |
-| GET /config/effective | 仅服务器固定的分享UI非敏感投影，query不能扩为个人偏好／后台策略／秘密 |
+| GET /config/effective | 仅服务器固定的分享UI非敏感投影及获准平台播放默认，匿名／登录均不混入账号preferences，query不能扩为个人偏好／后台策略／秘密 |
 | GET /documents/current；GET /documents/{id}/releases/{release_id} | 仅当前入口允许公开的已发布／合法历史制度及帮助内容，无草稿／未发布版本／私人同意记录 |
 
 除此之外包括所有私人`/me`读取、关系明细、信息流／搜索、通知、私信、AI、治理／开发者／后台及收录修改均拒绝，既有社区写入全部引导App。Cookie认证的SSR/API和底层媒体使用同一audience注册及当前资格判断，不能以服务端service_role读取后跳过用户／用途投影。必需认证POST不表示允许任何社区业务写入。
+
+**ED-10分享播放输入**：用户明确选择A，匿名／登录均使用上述合法平台默认与页面内明确操作，不读取或同步账号播放偏好，不新增最小本人偏好投影端点。页面播放／暂停／声音／自动播放／关闭预加载控件只改变当前页面播放状态，不发账号PATCH，不形成“设置已保存／同步”结果；账号设置转App。SSR和客户端都不能读取完整或部分preferences后塞入HTML／hydration／缓存／媒体DTO／登录响应，登录仅改变内容当前读权。测试须以账号已保存always／never等相反偏好验证分享默认不受影响，并检验所有/me及伪config query读取／写入拒绝、响应不泄漏个人字段、页面操作不改数据库。

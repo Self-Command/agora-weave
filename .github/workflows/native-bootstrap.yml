@@ -1,0 +1,389 @@
+name: Native shell bootstrap
+on:
+  workflow_dispatch:
+    inputs:
+      https_required:
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      https_required:
+        type: boolean
+        default: false
+concurrency:
+  group: native-bootstrap-${{ github.event.pull_request.head.sha || github.sha }}-${{ github.run_id }}-${{ inputs.https_required }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+  actions: read
+env:
+  GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+  AGORAWEAVE_HTTPS_SEED: ${{ inputs.https_required && secrets.AGORAWEAVE_HTTPS_SEED || '' }}
+jobs:
+  ios:
+    name: iOS shell ${{ matrix.ios }} exact toolchain (not ci-ready)
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        ios: ['16.4', '26.4']
+    env:
+      IOS_VERSION: ${{ matrix.ios }}
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Confirm required Xcode 26.4.1 is actually available
+        shell: bash
+        run: |
+          mkdir -p native-output
+          sw_vers > native-output/macos-version.txt
+          ls -d /Applications/Xcode*.app > native-output/xcode-inventory.txt
+          test -d /Applications/Xcode_26.4.1.app
+          sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          xcodebuild -version > native-output/xcode-version.txt
+          xcrun simctl list runtimes -j > native-output/ios-before-runtimes.json
+          if [ "$IOS_VERSION" = '16.4' ]; then
+            downloaded=false
+            for attempt in 1 2 3; do
+              if xcodebuild -downloadPlatform iOS -buildVersion 16.4 > "native-output/minimum-runtime-download-$attempt.log" 2>&1; then
+                downloaded=true
+                break
+              fi
+              xcrun simctl list runtimes -j > "native-output/ios-runtime-health-$attempt.json"
+            done
+            test "$downloaded" = true
+            xcrun simctl create agoraweave-ci-minimum com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation com.apple.CoreSimulator.SimRuntime.iOS-16-4 > native-output/minimum-device-udid.txt
+          fi
+          xcrun simctl list runtimes -j > native-output/ios-runtimes.json
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Install frozen dependencies and generate no-business native shell
+        shell: bash
+        run: |
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts native-output
+          npm ci --no-audit --no-fund
+          cd apps/mobile
+          CI=1 npm run ci:prebuild -- --platform ios
+          cd ios
+          pods_ready=false
+          for attempt in 1 2 3; do
+            if pod install > "../../../native-output/pod-install-$attempt.log" 2>&1; then
+              pods_ready=true
+              cp "../../../native-output/pod-install-$attempt.log" ../../../native-output/pod-install.log
+              break
+            fi
+          done
+          test "$pods_ready" = true
+          cd ../../..
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            GH_TOKEN='${{ github.token }}' node --experimental-strip-types tools/ci/https-client-config.ts
+          fi
+          ruby tools/ci/install-ios-bootstrap-tests.rb > native-output/xctest-configuration.log
+      - name: Build install and capture actual iOS shell
+        shell: bash
+        run: |
+          set -eu
+          xcrun simctl list devices available -j > native-output/ios-devices.json
+          device=$(node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const devices = JSON.parse(readFileSync('native-output/ios-devices.json', 'utf8')).devices;
+          const runtime = `com.apple.CoreSimulator.SimRuntime.iOS-${process.env.IOS_VERSION.replaceAll('.', '-')}`;
+          const selected = devices[runtime]?.find(device => device.isAvailable &&
+            (process.env.IOS_VERSION === '16.4' ? device.name === 'agoraweave-ci-minimum' : device.name.includes('iPhone')));
+          if (!selected) throw new Error('Required actual iOS runtime/device unavailable');
+          writeFileSync('native-output/ios-selected-device.json', JSON.stringify({ ...selected, runtime }, null, 2) + '\n');
+          process.stdout.write(selected.udid);
+          NODE
+          )
+          xcodebuild -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+            -configuration Release -sdk iphonesimulator -destination "platform=iOS Simulator,id=$device" \
+            -derivedDataPath "$RUNNER_TEMP/ios-derived" CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES \
+            > native-output/ios-build.log 2>&1
+          xcrun simctl boot "$device"
+          xcrun simctl bootstatus "$device" -b
+          xcrun simctl install "$device" "$RUNNER_TEMP/ios-derived/Build/Products/Release-iphonesimulator/AgoraWeave.app"
+          xcrun simctl help ui > native-output/ios-simctl-ui-help.txt 2>&1
+          xcrun simctl ui "$device" content_size large
+          xcrun simctl ui "$device" content_size > native-output/ios-font-normal.txt
+          xcrun simctl ui "$device" appearance light
+          xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+            -configuration Release -destination "platform=iOS Simulator,id=$device" \
+            -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
+            -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath native-output/ios-tests-light.xcresult \
+            CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-light.log 2>&1
+          xcrun xcresulttool get test-results summary --path native-output/ios-tests-light.xcresult > native-output/ios-tests-light.json
+          xcrun xcresulttool export attachments --path native-output/ios-tests-light.xcresult --output-path native-output/ios-attachments-light
+          xcrun simctl ui "$device" appearance dark
+          xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+            -configuration Release -destination "platform=iOS Simulator,id=$device" \
+            -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
+            -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath native-output/ios-tests-dark.xcresult \
+            CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > native-output/ios-tests-dark.log 2>&1
+          xcrun xcresulttool get test-results summary --path native-output/ios-tests-dark.xcresult > native-output/ios-tests-dark.json
+          xcrun xcresulttool export attachments --path native-output/ios-tests-dark.xcresult --output-path native-output/ios-attachments-dark
+          xcrun simctl ui "$device" content_size accessibility-extra-large
+          xcrun simctl ui "$device" content_size > native-output/ios-font-large.txt
+          for theme in light dark; do
+            xcrun simctl ui "$device" appearance "$theme"
+            xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
+              -configuration Release -destination "platform=iOS Simulator,id=$device" \
+              -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
+              -derivedDataPath "$RUNNER_TEMP/ios-derived" -resultBundlePath "native-output/ios-tests-large-$theme.xcresult" \
+              CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES > "native-output/ios-tests-large-$theme.log" 2>&1
+            xcrun xcresulttool get test-results summary --path "native-output/ios-tests-large-$theme.xcresult" > "native-output/ios-tests-large-$theme.json"
+            xcrun xcresulttool export attachments --path "native-output/ios-tests-large-$theme.xcresult" --output-path "native-output/ios-attachments-large-$theme"
+          done
+          xcrun simctl ui "$device" content_size large
+          xcrun simctl shutdown "$device"
+      - name: Export diagnostic attachments from every completed iOS result bundle
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -eu
+          for bundle in native-output/ios-tests-*.xcresult; do
+            if [ ! -d "$bundle" ]; then continue; fi
+            name=$(basename "$bundle" .xcresult)
+            if [ -s "native-output/$name.json" ]; then continue; fi
+            xcrun xcresulttool get test-results summary --path "$bundle" > "native-output/$name.json"
+            xcrun xcresulttool export attachments --path "$bundle" --output-path "native-output/$name-diagnostics"
+          done
+      - name: Remove temporary iOS HTTPS configuration
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/https-client.json"
+          if [ -d "$RUNNER_TEMP/ios-derived" ]; then
+            find "$RUNNER_TEMP/ios-derived" -type f -name https-client.json -delete
+          fi
+          node --input-type=module <<'NODE'
+          import { existsSync, writeFileSync } from 'node:fs';
+          const removed = !existsSync(process.env.RUNNER_TEMP + '/https-client.json');
+          writeFileSync('native-output/https-client-cleanup.json', JSON.stringify({ temporary_config_removed: removed }) + '\n');
+          if (!removed) throw new Error('Temporary native configuration remains');
+          NODE
+      - name: Preserve actual iOS environment and shell results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-ios-${{ matrix.ios }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: native-output/
+          if-no-files-found: error
+          retention-days: 7
+
+  android:
+    name: Android shell API ${{ matrix.api }} actual runtime (not ci-ready)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [24, 36]
+    env:
+      ANDROID_USER_HOME: /home/runner/.android
+      ANDROID_AVD_HOME: /home/runner/.android/avd
+      ANDROID_API: ${{ matrix.api }}
+    steps:
+      - name: Checkout exact target
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Install fixed Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Prepare SDK and record actual toolchain
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p native-output
+          test -d "$JAVA_HOME_17_X64"
+          printf 'JAVA_HOME=%s\n' "$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          printf '%s/bin\n' "$JAVA_HOME_17_X64" >> "$GITHUB_PATH"
+          "$JAVA_HOME_17_X64/bin/java" -version > native-output/java-version.txt 2>&1
+          printf 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"\n' | sudo tee /etc/udev/rules.d/99-agoraweave-kvm.rules > /dev/null
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          sudo apt-get update > native-output/system-packages.log 2>&1
+          sudo apt-get install -y --no-install-recommends libpulse0 >> native-output/system-packages.log 2>&1
+          dpkg-query -W -f='${Package}=${Version}\n' libpulse0 > native-output/system-package-versions.txt
+          sdk_ready=false
+          for attempt in 1 2 3; do
+            if "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' "system-images;android-$ANDROID_API;google_apis;x86_64" 'emulator' > "native-output/sdk-install-$attempt.log" 2>&1; then
+              sdk_ready=true
+              cp "native-output/sdk-install-$attempt.log" native-output/sdk-install.log
+              break
+            fi
+          done
+          test "$sdk_ready" = true
+          ndk_ready=false
+          for attempt in 1 2 3; do
+            if "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'ndk;27.1.12297006' > "native-output/ndk-install-$attempt.log" 2>&1; then
+              ndk_ready=true
+              break
+            fi
+          done
+          test "$ndk_ready" = true
+          cat "$ANDROID_HOME/ndk/27.1.12297006/source.properties" > native-output/ndk-version.txt
+          test -x "$ANDROID_HOME/platform-tools/adb"
+          printf '%s/platform-tools\n' "$ANDROID_HOME" >> "$GITHUB_PATH"
+          "$ANDROID_HOME/platform-tools/adb" version > native-output/adb-version.txt
+          cat "$ANDROID_HOME/system-images/android-$ANDROID_API/google_apis/x86_64/source.properties" > native-output/system-image.properties
+          test -x "$ANDROID_HOME/emulator/emulator"
+          "$ANDROID_HOME/emulator/emulator" -version > native-output/emulator-version.txt 2>&1
+      - name: Install frozen dependencies and build actual Android shell
+        shell: bash
+        run: |
+          node --experimental-strip-types tools/ci/write-runtime-identity.ts native-output
+          npm ci --no-audit --no-fund
+          cd apps/mobile
+          CI=1 npm run ci:prebuild -- --platform android
+          mkdir -p android/app/src/androidTest/java/org/agoraweave/bootstrap
+          cp ../../tests/e2e/android/BootstrapShellTest.kt android/app/src/androidTest/java/org/agoraweave/bootstrap/
+          cp ../../infra/ci/android-bootstrap-AndroidManifest.xml android/app/src/androidTest/AndroidManifest.xml
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            cd ../..
+            GH_TOKEN='${{ github.token }}' node --experimental-strip-types tools/ci/https-client-config.ts
+            cd apps/mobile
+            mkdir -p android/app/src/androidTest/assets
+            cp "$RUNNER_TEMP/https-client.json" android/app/src/androidTest/assets/https-client.json
+          fi
+          printf '\napply from: "%s/infra/ci/android-bootstrap-tests.gradle"\n' "$GITHUB_WORKSPACE" >> android/app/build.gradle
+          cd android
+          ./gradlew assembleRelease assembleReleaseAndroidTest --no-daemon -PreactNativeArchitectures=x86_64 > ../../../native-output/android-build.log 2>&1
+          ./gradlew :app:dependencies --configuration releaseAndroidTestRuntimeClasspath --no-daemon > ../../../native-output/android-test-dependencies.txt 2>&1
+      - name: Install launch resume and capture Android shell
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --name agoraweave-ci \
+            --path "$ANDROID_AVD_HOME/agoraweave-ci.avd" --package "system-images;android-$ANDROID_API;google_apis;x86_64" --device pixel_6
+          "$ANDROID_HOME/emulator/emulator" -list-avds > native-output/avd-inventory.txt
+          grep -qx agoraweave-ci native-output/avd-inventory.txt
+          "$ANDROID_HOME/emulator/emulator" -avd agoraweave-ci -no-window -no-audio -no-boot-anim -no-snapshot -gpu swiftshader_indirect > native-output/emulator.log 2>&1 &
+          emulator_pid=$!
+          timeout 180 adb wait-for-device
+          for attempt in $(seq 1 90); do
+            kill -0 "$emulator_pid"
+            if [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ]; then break; fi
+            sleep 2
+          done
+          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1
+          adb shell input keyevent 82
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+          for setting in window_animation_scale transition_animation_scale animator_duration_scale; do
+            printf '%s=' "$setting" >> native-output/android-animation-settings.txt
+            adb shell settings get global "$setting" >> native-output/android-animation-settings.txt
+          done
+          adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
+          adb install apps/mobile/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+          adb shell dumpsys package org.agoraweave.app > native-output/android-target-package.txt
+          adb shell dumpsys package org.agoraweave.app.test > native-output/android-test-package.txt
+          capture_failure() {
+            adb logcat -d > native-output/android-failure-logcat.txt || true
+            adb shell dumpsys activity activities > native-output/android-failure-activities.txt || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-failure.png || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-background.txt native-output/android-failure-background.txt || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-font-diagnostic.json native-output/android-font-diagnostic.json || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-launcher-diagnostic.json native-output/android-launcher-diagnostic.json || true
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-system-chrome.json native-output/android-system-chrome-diagnostic.json || true
+            adb emu kill || true
+          }
+          trap capture_failure ERR
+          drive_legacy_power_theme() {
+            if [ "$ANDROID_API" -lt 28 ]; then
+              adb shell dumpsys battery unplug
+              adb shell dumpsys battery set level 80
+              adb shell settings put global low_power "$1"
+              for attempt in $(seq 1 30); do
+                adb shell dumpsys power > "native-output/android-power-$2.txt"
+                if grep -q "mLowPowerModeEnabled=$3" "native-output/android-power-$2.txt"; then return; fi
+                sleep 1
+              done
+              return 1
+            fi
+          }
+          drive_legacy_power_theme 0 light false
+          adb shell settings put system font_scale 1.0
+          adb shell settings get system font_scale > native-output/android-font-normal.txt
+          adb shell cmd uimode night no
+          adb shell am instrument -w -r -e theme light org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > native-output/android-tests-light.log
+          grep -q 'OK (1 test)' native-output/android-tests-light.log
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml native-output/android-ui.xml
+          grep -q 'AgoraWeave' native-output/android-ui.xml
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-light.png
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-theme.txt native-output/android-theme-light.txt
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json native-output/android-accessibility-light.json
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml native-output/android-ui-light.xml
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https-light.json
+          fi
+          drive_legacy_power_theme 1 dark true
+          adb shell cmd uimode night yes
+          adb shell am instrument -w -r -e theme dark org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > native-output/android-tests-dark.log
+          grep -q 'OK (1 test)' native-output/android-tests-dark.log
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png native-output/android-dark.png
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-theme.txt native-output/android-theme-dark.txt
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json native-output/android-accessibility-dark.json
+          adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml native-output/android-ui-dark.xml
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https-dark.json
+          fi
+          adb shell settings put system font_scale 2.0
+          adb shell settings get system font_scale > native-output/android-font-large.txt
+          for theme in light dark; do
+            if [ "$theme" = light ]; then
+              drive_legacy_power_theme 0 light false
+              adb shell cmd uimode night no
+            else
+              drive_legacy_power_theme 1 dark true
+              adb shell cmd uimode night yes
+            fi
+            adb shell am instrument -w -r -e theme "$theme" org.agoraweave.app.test/androidx.test.runner.AndroidJUnitRunner > "native-output/android-tests-large-$theme.log"
+            grep -q 'OK (1 test)' "native-output/android-tests-large-$theme.log"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-accessibility.json "native-output/android-accessibility-large-$theme.json"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-ui.xml "native-output/android-ui-large-$theme.xml"
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-resume.png "native-output/android-large-$theme.png"
+          done
+          adb shell settings put system font_scale 1.0
+          if [ '${{ inputs.https_required }}' = 'true' ]; then
+            adb pull /sdcard/Android/data/org.agoraweave.app/files/bootstrap-https.json native-output/android-https.json
+            adb uninstall org.agoraweave.app.test
+          fi
+          adb emu kill
+      - name: Remove temporary Android HTTPS configuration
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          rm -f "$RUNNER_TEMP/https-client.json" apps/mobile/android/app/src/androidTest/assets/https-client.json
+          node --input-type=module <<'NODE'
+          import { existsSync, writeFileSync } from 'node:fs';
+          const removed = !existsSync(process.env.RUNNER_TEMP + '/https-client.json') && !existsSync('apps/mobile/android/app/src/androidTest/assets/https-client.json');
+          writeFileSync('native-output/https-client-cleanup.json', JSON.stringify({ temporary_config_removed: removed }) + '\n');
+          if (!removed) throw new Error('Temporary native configuration remains');
+          NODE
+      - name: Preserve actual Android environment and shell results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: bootstrap-android-api${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: native-output/
+          if-no-files-found: error
+          retention-days: 7

@@ -1,0 +1,67 @@
+name: Authenticated TDD cycle journal
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      core_source_run_id:
+        description: Actual verify-release run containing core assertions and independent service health
+        type: string
+        required: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  journal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Wait for current source artifacts and execute actual TDD journal
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          source=$(gh run list --repo "$GITHUB_REPOSITORY" --commit "${{ github.event.pull_request.head.sha || github.sha }}" --workflow ci-bootstrap.yml --event "$GITHUB_EVENT_NAME" --branch "${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}" --json databaseId --jq 'if length == 1 then .[0].databaseId else empty end')
+          test -n "$source"
+          for attempt in $(seq 1 30); do
+            count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$source/artifacts?per_page=100" --jq '[.artifacts[] | select(.name | startswith("bootstrap-transport-"))] | length')
+            if [ "$count" = 1 ]; then break; fi
+            sleep 10
+          done
+          test "$count" = 1
+          npm run ci:tdd
+      - name: Authenticate original core assertions with live service health and cleanup
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CORE_SOURCE_RUN_ID: ${{ inputs.core_source_run_id }}
+        run: node --experimental-strip-types tools/ci/core-tdd-journal.ts
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: tdd-journal-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            tdd-output/
+            core-tdd-output/
+          if-no-files-found: error
+          retention-days: 7
+  archive-core-observation:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: journal
+    uses: ./.github/workflows/archive-bootstrap.yml
+    with:
+      source_run_id: ${{ github.run_id }}
+      source_sha: ${{ github.sha }}
+    secrets: inherit

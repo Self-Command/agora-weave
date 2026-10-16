@@ -1,0 +1,45 @@
+name: Minimum iOS runtime admission
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  ios-minimum:
+    runs-on: macos-26
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Request the actual minimum runtime from Apple with the approved Xcode
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p admission-output
+          sudo xcode-select -s /Applications/Xcode_26.4.1.app/Contents/Developer
+          xcodebuild -version > admission-output/xcode-version.txt
+          xcrun simctl list runtimes -j > admission-output/before-runtimes.json
+          download_rc=0
+          xcodebuild -downloadPlatform iOS -buildVersion 16.4 > admission-output/runtime-download.log 2>&1 || download_rc=$?
+          printf '%s\n' "$download_rc" > admission-output/download-exit-code.txt
+          xcrun simctl list runtimes -j > admission-output/after-runtimes.json
+          python3 - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          runtimes=json.loads(Path('admission-output/after-runtimes.json').read_text())['runtimes']
+          matching=[r for r in runtimes if r.get('platform')=='iOS' and r.get('version')=='16.4' and r.get('isAvailable')]
+          record={'source':'github-actions','checkout_sha':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+            'run_id':os.environ['GITHUB_RUN_ID'],'attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),
+            'required_os':'16.4','available_runtimes':matching,'download_exit_code':int(Path('admission-output/download-exit-code.txt').read_text()),
+            'state':'runtime_available_execution_still_required' if matching else 'unavailable','readiness':'not_evaluated'}
+          Path('admission-output/minimum-runtime.json').write_text(json.dumps(record,indent=2)+'\n')
+          if not matching: raise SystemExit('Required iOS16.4 runtime unavailable; minimum coverage remains blocked')
+          PY
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-ios-minimum-admission-${{ github.run_id }}-${{ github.run_attempt }}
+          path: admission-output/
+          if-no-files-found: error
+          retention-days: 7

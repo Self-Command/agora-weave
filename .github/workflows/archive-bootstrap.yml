@@ -1,0 +1,113 @@
+name: Private complete source archive
+on:
+  workflow_call:
+    inputs:
+      source_run_id:
+        type: string
+        required: true
+      source_sha:
+        type: string
+        required: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
+      - name: Authenticate every original artifact and index bounded raw ZIP members
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id || '38636632772' }}
+          SOURCE_SHA: ${{ inputs.source_sha || 'e2908de7da82e195a7087dde0b1e57842d8a9c8f' }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node --experimental-strip-types tools/ci/collect-archives.ts
+      - name: Transfer complete originals to the dedicated private store and verify readback
+        shell: bash
+        env:
+          EVIDENCE_SSH_PRIVATE_KEY: ${{ secrets.EVIDENCE_SSH_PRIVATE_KEY }}
+          EVIDENCE_SSH_HOST: ${{ secrets.EVIDENCE_SSH_HOST }}
+          EVIDENCE_SSH_USER: ${{ secrets.EVIDENCE_SSH_USER }}
+          EVIDENCE_SSH_KNOWN_HOSTS: ${{ secrets.EVIDENCE_SSH_KNOWN_HOSTS }}
+        run: |
+          set -eu
+          umask 077
+          key="$RUNNER_TEMP/private-archive-key"
+          hosts="$RUNNER_TEMP/private-archive-hosts"
+          batch="$RUNNER_TEMP/private-archive-batch"
+          trap 'rm -f "$key" "$hosts" "$batch"' EXIT
+          test -n "$EVIDENCE_SSH_PRIVATE_KEY"
+          test -n "$EVIDENCE_SSH_KNOWN_HOSTS"
+          printf '%s\n' "$EVIDENCE_SSH_PRIVATE_KEY" | tr -d '\r' > "$key"
+          printf '%s\n' "$EVIDENCE_SSH_KNOWN_HOSTS" | tr -d '\r' > "$hosts"
+          user=$(printf '%s' "$EVIDENCE_SSH_USER" | tr -d '\r\n')
+          host=$(printf '%s' "$EVIDENCE_SSH_HOST" | tr -d '\r\n')
+          for directory in archive-output/[0-9]*; do
+            remote=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(process.argv[1])).remote_directory)' "$directory/index.json")
+            mkdir -p "$directory/readback"
+            printf 'put %s/source.zip %s.source.zip\nput %s/index.json %s.index.json\nget %s.source.zip %s/readback/source.zip\nget %s.index.json %s/readback/index.json\n' \
+              "$directory" "$remote" "$directory" "$remote" "$remote" "$directory" "$remote" "$directory" > "$batch"
+            sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host"
+            cmp "$directory/source.zip" "$directory/readback/source.zip"
+            cmp "$directory/index.json" "$directory/readback/index.json"
+            python3 tools/ci/index-archive.py "$directory/readback/source.zip" "$directory/readback/raw-files.json"
+            node --experimental-strip-types --input-type=module - "$directory" <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          import { verifyReadback } from './tools/ci/archive-evidence.ts';
+          const directory = process.argv[2];
+          const original = JSON.parse(readFileSync(`${directory}/index.json`, 'utf8'));
+          const hash = path => createHash('sha256').update(readFileSync(path)).digest('hex');
+          const result = verifyReadback(original, { storage: 'dedicated-private-sftp',
+            archive_sha256: hash(`${directory}/readback/source.zip`),
+            index_sha256: hash(`${directory}/readback/index.json`), expected_index_sha256: hash(`${directory}/index.json`),
+            raw_files: JSON.parse(readFileSync(`${directory}/readback/raw-files.json`, 'utf8')) });
+          if (result.state !== 'archived_and_readback_verified') throw new Error('Private readback was not verified');
+          writeFileSync(`${directory}/receipt.json`, JSON.stringify({ ...result, source_run: original.run_id,
+            source_attempt: original.attempt, source_sha: original.target_sha, artifact_id: original.artifact_id,
+            archive_sha256: original.archive_sha256, index_sha256: hash(`${directory}/index.json`),
+            raw_file_count: original.raw_files.length, expires_at: original.expires_at,
+            product_cleanup: original.product_cleanup, private_ref: original.remote_directory,
+            source: 'github-actions', archive_run: process.env.GITHUB_RUN_ID,
+          }, null, 2) + '\n');
+          NODE
+            printf 'put %s/receipt.json %s.receipt.json\nget %s.receipt.json %s/readback/receipt.json\n' \
+              "$directory" "$remote" "$remote" "$directory" > "$batch"
+            sftp -b "$batch" -i "$key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="$hosts" -o ConnectTimeout=15 "$user@$host"
+            cmp "$directory/receipt.json" "$directory/readback/receipt.json"
+          done
+          rm -f "$key" "$hosts" "$batch"
+          test ! -e "$key"
+          mkdir -p archive-receipts
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+          const catalog = JSON.parse(readFileSync('archive-output/catalog.json', 'utf8'));
+          mkdirSync('archive-receipts', { recursive: true });
+          for (const item of catalog) {
+            const receipt = JSON.parse(readFileSync(`${item.directory}/receipt.json`, 'utf8'));
+            delete receipt.private_ref;
+            writeFileSync(`archive-receipts/${item.artifact_id}.json`, JSON.stringify({ ...receipt, temporary_key_files_removed: true }, null, 2) + '\n');
+          }
+          NODE
+      - name: Preserve sanitized truthful archive receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: private-source-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: archive-receipts/
+          if-no-files-found: error
+          retention-days: 7
