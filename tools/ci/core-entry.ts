@@ -83,6 +83,11 @@ if (action === 'all' || action === 'batch') {
     if (!password) throw new Error('Isolated runtime credential was not provisioned');
     // Only the migration adapter sees this secret; it never enters an artifact.
     sql(`ALTER ROLE core_runtime PASSWORD '${password}';`);
+    if (migrations.some(entry=>entry.file.endsWith('/0012_reliable_effects.sql'))) {
+      const workerPassword=environment.match(/^CORE_WORKER_DATABASE_PASSWORD=([a-f0-9]{64})$/m)?.[1];
+      if(!workerPassword)throw new Error('Isolated worker credential was not provisioned');
+      sql(`ALTER ROLE core_worker PASSWORD '${workerPassword}';`);
+    }
   }
   save(`migrate-${sequence}`, { state: 'passed', migrations: results, scope: 'isolated-current-schema' });
 } else if (action === 'seed') {

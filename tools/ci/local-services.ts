@@ -61,6 +61,10 @@ export function prepareLocalServices() {
     values.ANON_KEY = jwt('anon'); values.SERVICE_ROLE_KEY = jwt('service_role');
     writeFileSync(runtime.environment_file, Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
   }
+  const currentPrivate = readFileSync(runtime.environment_file,'utf8');
+  if (!/^CORE_WORKER_DATABASE_PASSWORD=/m.test(currentPrivate)) {
+    writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_WORKER_DATABASE_PASSWORD='+random()+'\n',{mode:0o600});
+  }
   const serviceVariables = new Set(readFileSync(runtime.environment_file, 'utf8').split(/\r?\n/)
     .filter(line => /^[A-Z][A-Z0-9_]*=/.test(line)).map(line => line.slice(0, line.indexOf('='))));
   const controlled = Object.fromEntries(Object.entries(process.env).filter(([key]) =>
