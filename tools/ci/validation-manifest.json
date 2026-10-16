@@ -1097,6 +1097,12 @@
       "depends_on": [
         "supabase/migrations/0014_read_gateways.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0016_gateway_binding_fixes.sql",
+      "depends_on": [
+        "supabase/migrations/0015_effective_config_compat.sql"
+      ]
     }
   ],
   "core_fixture_files": [
