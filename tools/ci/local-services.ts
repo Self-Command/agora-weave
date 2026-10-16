@@ -23,7 +23,7 @@ export function localRuntime() {
   if (!['dev', 'test'].includes(environment || '')) throw new Error('Local services require explicit dev or test isolation');
   const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim();
   const project = `agoraweave-local-${environment}-${hash(root).slice(0, 12)}`;
-  const directory = resolve('.superpowers/local', environment!, 'runtime');
+  const directory = resolve('.agoraweave/local', environment!, 'runtime');
   return { source: 'local', environment, project, directory, root,
     environment_file: resolve(directory, 'services.env'), compose_file: resolve(directory, 'compose.json') };
 }

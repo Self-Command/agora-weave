@@ -9,7 +9,7 @@ const manifest = JSON.parse(manifestBytes.toString());
 const root = JSON.parse(readFileSync('package.json', 'utf8'));
 const files = inventoryNodeTestFiles();
 const coreTargets = manifest.core_targets || [];
-const profile = coreTargets.length ? 'business-increment' : 'bootstrap';
+const profile = 'business-increment';
 const result = discoverApprovedTargets({ profile, approved: [...manifest.engineering_targets, ...coreTargets],
   scripts: root.scripts, available_files: files });
 const directory = executionDirectory('check', identity);

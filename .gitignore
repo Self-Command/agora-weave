@@ -1,5 +1,5 @@
-# Local brainstorming previews and session artifacts.
-/.superpowers/
+# Private local runtime and reports.
+/.agoraweave/
 node_modules/
 .next/
 .expo/

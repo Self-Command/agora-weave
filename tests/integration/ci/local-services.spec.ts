@@ -17,7 +17,7 @@ test('LS01: local preparation uses the fixed official Compose with private crede
       cpSync(directory, join(root, directory), { recursive: true });
     }
     cpSync('package.json', join(root, 'package.json')); cpSync('package-lock.json', join(root, 'package-lock.json'));
-    writeFileSync(join(root, '.gitignore'), '.superpowers/\n');
+    writeFileSync(join(root, '.gitignore'), '.agoraweave/\n');
     execFileSync('git', ['init', '--quiet'], { cwd: root });
     execFileSync('git', ['add', '.'], { cwd: root });
     execFileSync('git', ['-c', 'user.name=Local fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '--quiet', '-m', 'synthetic service adapter'], { cwd: root });
@@ -30,7 +30,7 @@ test('LS01: local preparation uses the fixed official Compose with private crede
           JWT_SECRET: 'synthetic-parent-secret-must-never-enter-local-services', POSTGRES_PASSWORD: 'synthetic-parent-password',
           OPENAI_API_KEY: 'synthetic-external-provider-key' }, encoding: 'utf8', timeout: 30000 });
       assert.equal(result.status, 0, result.stderr);
-      const directory = join(root, '.superpowers/local', environment, 'runtime');
+      const directory = join(root, '.agoraweave/local', environment, 'runtime');
       const identity = JSON.parse(readFileSync(join(directory, 'identity.json'), 'utf8'));
       assert.equal(identity.source, 'local'); assert.equal(identity.environment, environment);
       assert.match(identity.project, new RegExp(`^agoraweave-local-${environment}-[a-f0-9]{12}$`));

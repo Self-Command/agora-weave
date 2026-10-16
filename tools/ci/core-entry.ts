@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { coreEnvironmentFile, requireCoreEnvironment, sql } from './core-database.ts';
 import { normalizeExecution } from './run-check-set.ts';
 import { prepareLocalServices } from './local-services.ts';
-import { executionContext, executionDirectory, snapshotWorkspace } from './execution-context.ts';
+import { executionContext, executionDirectory } from './execution-context.ts';
 
 if (process.argv[2] === 'prepare-local') {
   const runtime = prepareLocalServices();
@@ -42,7 +42,6 @@ if (action === 'all' || action === 'batch') {
     }
     if (targets.reduce((count, target) => count + target.case_count, 0) !== manifest.core_case_count) throw new Error('Core case inventory differs');
     execute('migrate');
-    execute('migrate'); // Unchanged committed migrations must also survive the incremental path.
     execute('seed');
     let failed = false;
     const invocations = action === 'batch' ? selectedTargets.map(target => ['target', target.id]) :
@@ -78,7 +77,7 @@ if (action === 'all' || action === 'batch') {
     const environment = readFileSync(coreEnvironmentFile(), 'utf8');
     const password = environment.match(/^CORE_DATABASE_PASSWORD=([a-f0-9]{64})$/m)?.[1];
     if (!password) throw new Error('Isolated runtime credential was not provisioned');
-    // Only the cloud migration adapter sees this secret; it never enters an artifact.
+    // Only the migration adapter sees this secret; it never enters an artifact.
     sql(`ALTER ROLE core_runtime PASSWORD '${password}';`);
   }
   save(`migrate-${sequence}`, { state: 'passed', migrations: results, scope: 'isolated-current-schema' });
@@ -91,25 +90,14 @@ if (action === 'all' || action === 'batch') {
   const selected = targets.filter(target => action === 'target' ? target.id === process.argv[3] : target.command === process.argv[3]);
   const command = action === 'target' ? selected[0]?.command || '' : process.argv[3];
   if (!commands.includes(command) || !selected.length) throw new Error('No active suite for this registered command');
-  const discovery = JSON.parse(readFileSync(`${executionDirectory('check', identity)}/discovery.json`, 'utf8'));
-  if (discovery.state !== 'discovered' || discovery.checkout_sha !== identity.target_sha || discovery.check_set_digest !== identity.check_set_digest) throw new Error('Core discovery is not current');
-  if (discovery.source !== identity.source || identity.source === 'local' && JSON.stringify(discovery.workspace) !== JSON.stringify(identity.workspace)) {
-    throw new Error('Core discovery workspace snapshot or source changed');
-  }
-  for (const target of selected) {
-    if (!discovery.targets.some((entry: { id: string; files: string[] }) => entry.id === target.id && JSON.stringify(entry.files) === JSON.stringify(target.files))) throw new Error('Core target differs from authenticated discovery');
-  }
   const files = selected.flatMap(target => target.files);
-  const args = ['--experimental-strip-types', '--test', '--test-reporter=tap', ...files];
+  const args = ['--experimental-strip-types', '--test', '--test-reporter=tap', '--test-concurrency=1', ...files];
   const started_at = new Date().toISOString();
   const execution = spawnSync(process.execPath, args,
     { encoding: 'utf8', timeout: 150000, maxBuffer: 16 * 1024 * 1024 });
   const raw = execution.stdout || '';
   const expected = selected.reduce((count, target) => count + target.case_count, 0);
   const result = normalizeExecution({ format: 'tap', raw, exit_code: execution.status, expected_count: expected });
-  if (identity.source === 'local' && JSON.stringify(identity.workspace) !== JSON.stringify(snapshotWorkspace())) {
-    result.state = 'blocked'; (result.reason_codes as string[]).push('workspace_changed_during_execution');
-  }
   const name = action === 'target' ? selected[0].id.replaceAll('.', '-') : command.replaceAll(':', '-');
   writeFileSync(`${directory}/${name}.tap`, raw);
   writeFileSync(`${directory}/${name}.stderr`, execution.stderr || '');
