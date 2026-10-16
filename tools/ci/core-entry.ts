@@ -74,7 +74,12 @@ if (action === 'all' || action === 'batch') {
         CREATE USER MAPPING IF NOT EXISTS FOR postgres SERVER core_security OPTIONS(user 'postgres',password ${literal(variables.POSTGRES_PASSWORD)});
         ALTER USER MAPPING FOR postgres SERVER core_security OPTIONS(SET password ${literal(variables.POSTGRES_PASSWORD)});
         REVOKE ALL ON FOREIGN SERVER core_security FROM PUBLIC,anon,authenticated,service_role,core_runtime;`);
-    } catch { throw new Error('Independent journal provisioning failed; credentials are omitted from diagnostics'); }
+    } catch (error) {
+      const stderr = (error as { stderr?: Buffer | string }).stderr?.toString() || '';
+      const summary = Object.values(variables).filter(value => value.length>=8)
+        .reduce((text,value)=>text.split(value).join('[REDACTED]'),stderr.split(/\r?\n/).filter(line=>/^(ERROR|DETAIL|HINT):/.test(line)).join(' '));
+      throw new Error('Independent journal provisioning failed: '+(summary || 'credential or connection unavailable'));
+    }
   }
   const inventory = existsSync('supabase/migrations') ? readdirSync('supabase/migrations').filter(file => file.endsWith('.sql')).map(file => `supabase/migrations/${file}`).sort() : [];
   if (JSON.stringify([...migrations.map(entry => entry.file)].sort()) !== JSON.stringify(inventory) || new Set(inventory).size !== migrations.length) {
