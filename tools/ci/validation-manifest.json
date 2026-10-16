@@ -894,7 +894,7 @@
       "files": [
         "tests/recovery/core/security-journal.spec.ts"
       ],
-      "case_count": 3,
+      "case_count": 4,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 131,
+  "core_case_count": 132,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
