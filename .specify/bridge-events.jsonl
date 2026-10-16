@@ -80,3 +80,9 @@
 
 {"timestamp":"2026-10-16T01:53:55.8042495Z","action":"guard","status":"allow","feature_directory":"specs/001-agoraweave-v1","decision":"allow","reason":"","actor":"codex","checked_action":"superpowers:executing-plans"}
 
+{"timestamp":"2026-10-16T03:24:55.3680015Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"ED-22 approved governance synchronized; verification only, await next user instruction","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0324553369800Z-ready"}
+
+{"timestamp":"2026-10-16T03:27:53.7320265Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"ED-22 final current procedure synchronized; await user instruction","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0327536988300Z-ready"}
+
+{"timestamp":"2026-10-16T04:37:15.1096819Z","action":"handoff","status":"ready","feature_directory":"specs/001-agoraweave-v1","decision":"updated","reason":"ED-22 canonical rules and all-workspace synchronization approved by user; source snapshot refreshed","actor":"codex","prior_actor":"codex","snapshot_id":"20261016T0437150722974Z-ready"}
+

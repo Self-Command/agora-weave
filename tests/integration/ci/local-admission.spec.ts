@@ -9,7 +9,7 @@ const command = (args: string[], extra: NodeJS.ProcessEnv = {}) => {
   const env = { ...process.env };
   for (const key of Object.keys(env)) if (/^(GITHUB_|RUNNER_)/.test(key) || key === 'NODE_TEST_CONTEXT' || key === 'AGORAWEAVE_LOCAL_ENVIRONMENT') delete env[key];
   return spawnSync('pwsh', ['-NoProfile', '-File', 'tools/ci/bridge-transition.ps1', ...args,
-    '-ExecutionSource', 'local', '-NodePath', process.execPath], { env: { ...env, ...extra }, encoding: 'utf8', timeout: 60000 });
+    '-ExecutionSource', 'local', '-NodePath', process.execPath, '-LegacyAudit'], { env: { ...env, ...extra }, encoding: 'utf8', timeout: 60000 });
 };
 
 test('LA01: the actual bridge start admits a registered local contract target with real discovery execution and source binding', () => {

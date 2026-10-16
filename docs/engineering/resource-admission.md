@@ -1,5 +1,7 @@
 # 资源准入台账
 
+> 历史资料：本文保留所记日期／提交的决定、结果或资源事实，不作为当前开发入口。现行执行见宪法5.0.0、[ED-22](business-first-development-decision.md)及[执行政策](execution-policy.md)；旧状态不能推断当前或其他分支已通过。
+
 遵循 ED-07 和 [ED-11／ED-12](../../specs/001-agoraweave-v1/reviews/execution-decisions-2026-10-15.md)。供给不等于验证通过，不提交密钥、私人连接信息、真实用户或生产资料。
 
 | 资源 | 已知事实 | 用途／最小权限 | 状态和节点 |

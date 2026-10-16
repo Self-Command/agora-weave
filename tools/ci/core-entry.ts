@@ -25,7 +25,11 @@ const save = (file: string, value: object) => writeFileSync(`${directory}/${file
 const execute = (...args: string[]) => execFileSync(process.execPath,
   ['--experimental-strip-types', 'tools/ci/core-entry.ts', ...args], { stdio: 'inherit', timeout: 180000 });
 const action = process.argv[2];
-if (action === 'all') {
+if (action === 'all' || action === 'batch') {
+  const requested = action === 'batch' ? String(process.env.AGORAWEAVE_BATCH_TARGETS || '').split(',').map(id => id.trim()).filter(Boolean) : [];
+  if (action === 'batch' && (!requested.length || new Set(requested).size !== requested.length ||
+      requested.some(id => !targets.some(target => target.id === id)))) throw new Error('Batch requires explicit registered core targets');
+  const selectedTargets = action === 'batch' ? targets.filter(target => requested.includes(target.id)) : targets;
   // Discovery is mandatory even with no core suites; writing a new suite activates it immediately.
   execFileSync(process.execPath, ['--experimental-strip-types', 'tools/ci/discover-targets.ts'], { stdio: 'inherit', timeout: 180000 });
   if (!targets.length) save('execution', { state: 'inactive', executed: 0, reason: 'No core suites have been authored' });
@@ -41,12 +45,14 @@ if (action === 'all') {
     execute('migrate'); // Unchanged committed migrations must also survive the incremental path.
     execute('seed');
     let failed = false;
-    for (const command of commands) {
-      if (!targets.some(target => target.command === command)) continue;
-      try { execute('suite', command); } catch { failed = true; }
+    const invocations = action === 'batch' ? selectedTargets.map(target => ['target', target.id]) :
+      commands.filter(command => targets.some(target => target.command === command)).map(command => ['suite', command]);
+    for (const args of invocations) {
+      try { execute(...args); } catch { failed = true; }
     }
     save('execution', { state: failed ? 'blocked' : 'passed', active_commands: [...new Set(targets.map(target => target.command))],
-      discovered: manifest.core_case_count, scope: 'current-core-only', task_complete: false });
+      discovered: selectedTargets.reduce((count, target) => count + target.case_count, 0),
+      target_ids: selectedTargets.map(target => target.id), scope: action === 'batch' ? 'selected-business-batch' : 'current-core-only', task_complete: false });
     if (failed) throw new Error('An active core suite failed; original target reports are retained');
   }
 } else if (action === 'migrate') {
@@ -81,9 +87,9 @@ if (action === 'all') {
   if (!existsSync(fixture)) throw new Error('Active core suites require the controlled real-service fixture');
   sql(readFileSync(fixture, 'utf8'));
   save('seed', { state: 'passed', fixture, fixture_sha256: hash(readFileSync(fixture)), synthetic: true });
-} else if (action === 'suite') {
-  const command = process.argv[3];
-  const selected = targets.filter(target => target.command === command);
+} else if (action === 'suite' || action === 'target') {
+  const selected = targets.filter(target => action === 'target' ? target.id === process.argv[3] : target.command === process.argv[3]);
+  const command = action === 'target' ? selected[0]?.command || '' : process.argv[3];
   if (!commands.includes(command) || !selected.length) throw new Error('No active suite for this registered command');
   const discovery = JSON.parse(readFileSync(`${executionDirectory('check', identity)}/discovery.json`, 'utf8'));
   if (discovery.state !== 'discovered' || discovery.checkout_sha !== identity.target_sha || discovery.check_set_digest !== identity.check_set_digest) throw new Error('Core discovery is not current');
@@ -104,7 +110,7 @@ if (action === 'all') {
   if (identity.source === 'local' && JSON.stringify(identity.workspace) !== JSON.stringify(snapshotWorkspace())) {
     result.state = 'blocked'; (result.reason_codes as string[]).push('workspace_changed_during_execution');
   }
-  const name = command.replaceAll(':', '-');
+  const name = action === 'target' ? selected[0].id.replaceAll('.', '-') : command.replaceAll(':', '-');
   writeFileSync(`${directory}/${name}.tap`, raw);
   writeFileSync(`${directory}/${name}.stderr`, execution.stderr || '');
   save(name, { ...result, command, invocation: [process.execPath, ...args], started_at, finished_at: new Date().toISOString(),

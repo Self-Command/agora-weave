@@ -1,5 +1,7 @@
 # ED-21文档修订复检
 
+> 历史资料：本文保留所记日期／提交的决定、结果或资源事实，不作为当前开发入口。现行执行见宪法5.0.0、[ED-22](business-first-development-decision.md)及[执行政策](execution-policy.md)；旧状态不能推断当前或其他分支已通过。
+
 日期：2026-10-16。基线提交：`3393f70429a10ce3b1ffcf80da6534a88265c607`。批准及16条映射见[ED-21](local-cloud-responsibility-decision.md)。本次只验收治理、计划、任务及配套执行条款，不验收应用行为或执行器迁移。
 
 ## 分工与变更范围

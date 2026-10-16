@@ -11,6 +11,10 @@ test('TA01: pending native task ordinals follow canonical IDs after completed ta
   assert.match(result.adapter, /### Task 2: T285\n\n- \[ \] T285 Pending delivery/);
   assert.equal(result.adapter.includes('### Task 285:'), false);
   assert.equal(result.adapter.includes('Completed setup'), false);
+  assert.match(result.adapter, /Constitution 5.0.0 and ED-22/);
+  assert.match(result.adapter, /Per-behavior TDD is discretionary/);
+  assert.match(result.adapter, /target tests and directly affected regressions/);
+  assert.equal(result.adapter.includes('every activated required target'), false);
 });
 
 test('TA02: duplicate canonical IDs are refused and zero pending tasks never invent a native task', () => {

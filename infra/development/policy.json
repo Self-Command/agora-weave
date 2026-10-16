@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "decision": "ED-22",
+  "constitution_version": "5.0.0",
+  "priority": "usable-business-features",
+  "implementation": "superpowers",
+  "runtime_root": "H:/Projects/AgoraWeave/development",
+  "test_scope": "target-and-directly-affected",
+  "tdd": "discretionary",
+  "critical_tests_required": [
+    "permissions",
+    "security",
+    "data-integrity",
+    "bug-fixes"
+  ],
+  "cloud": "on-demand-business-batch",
+  "daily_gates": {
+    "historical_red_chain": false,
+    "admission_receipt": false,
+    "duplicate_report_authentication": false,
+    "archive_readback": false
+  },
+  "preserve": {
+    "task_ids": true,
+    "history": true,
+    "valuable_tests": true,
+    "existing_work": true
+  },
+  "confirmation_required": [
+    "product-scope",
+    "technology-stack",
+    "security-privacy-boundary",
+    "cost",
+    "irreversible-data-operation",
+    "production"
+  ],
+  "storage_exceptions": [
+    "global-docker-image-and-virtual-disk-storage",
+    "system-managed-tools",
+    "codex-state",
+    "preserved-legacy-runtime"
+  ],
+  "after_this_change": "wait-for-user"
+}

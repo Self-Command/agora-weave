@@ -37,13 +37,29 @@ test('FG02: top-level final gate runs after failed planning and rejects incomple
   ];
   for (const [index, needs] of candidates.entries()) {
     const result = spawnSync(process.execPath, ['--experimental-strip-types', 'tools/ci/final-dispatch-gate.ts'], {
-      encoding: 'utf8', env: { ...process.env, NEEDS_JSON: JSON.stringify(needs) },
+      encoding: 'utf8', env: { ...process.env, GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted',
+        GITHUB_SHA: spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim(),
+        GITHUB_HEAD_SHA: '', NEEDS_JSON: JSON.stringify(needs) },
     });
     assert.equal(result.status, index === 0 ? 0 : 1, JSON.stringify(needs) + '\n' + result.stderr);
     const report = JSON.parse(readFileSync('dispatch-gate-output/result.json', 'utf8'));
     assert.equal(report.ci_ready, index === 0);
     assert.equal(report.feature_complete, false);
     assert.equal(report.validation_intent, needs.plan.outputs.validation_intent || 'invalid_or_missing');
+  }
+  const batch = { plan: { result: 'success', outputs: { full_required: 'false', development_required: 'true', validation_intent: 'batch' } },
+    bootstrap: { result: 'skipped' }, development: { result: 'success' } };
+  for (const outcome of ['success', 'failure', 'skipped']) {
+    const needs = { ...batch, development: { result: outcome } };
+    const result = spawnSync(process.execPath, ['--experimental-strip-types', 'tools/ci/final-dispatch-gate.ts'], {
+      encoding: 'utf8', env: { ...process.env, GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted', GITHUB_EVENT_NAME: 'workflow_dispatch',
+        GITHUB_SHA: spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).stdout.trim(),
+        GITHUB_HEAD_SHA: '', NEEDS_JSON: JSON.stringify(needs) },
+    });
+    assert.equal(result.status, outcome === 'success' ? 0 : 1, result.stderr);
+    const report = JSON.parse(readFileSync('dispatch-gate-output/result.json', 'utf8'));
+    assert.equal(report.ci_ready, false, 'Batch result cannot claim formal release readiness');
+    assert.equal(report.feature_complete, false);
   }
 });
 

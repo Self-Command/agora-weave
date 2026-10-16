@@ -1,12 +1,10 @@
 ---
 name: agoraweave-ci-start
-description: Use for the mandatory AgoraWeave before_implement start admission.
+description: Optional historical AgoraWeave admission diagnostic
 ---
 
-Read the constitution, active handoff and authorized scope. Constitution 4.0.0 and ED-21 permit local feedback and require independent Actions checkpoints and formal acceptance. The current local adapter admits actor Codex only; Claude must use its exact cloud receipt or report this actor-specific adapter limitation for the dependent transition. Do not impersonate Codex. Invoke the cloud reader from the repository root:
+# ED-22 optional diagnostic
 
-```powershell
-& ./tools/ci/bridge-transition.ps1 -Transition start -Mode bootstrap-only -Actor claude
-```
+The project daily start receipt hook is disabled. Follow constitution5.0.0, ED-22 and docs/engineering/execution-policy.md. Do not request historical Red-chain authentication, repeated report verification or archive readback for ordinary development. Continue SP batch implementation, debugging, review and effective tests.
 
-For a business cloud checkpoint use `-Mode business-increment` with its exact receipt. Wait for the actual result. Refusal pauses its dependent transition without changing the handoff; it is not business Red. Explicitly authorized T033 migration may repair missing executors. Never fabricate runner identity or promote local feedback to cloud acceptance. Every behavior needs semantic Red, cause reading and same-oracle/fixture Green; complete, stage acceptance, merge and release retain all applicable same-final-SHA Actions evidence. See cloud-validation §3.
+Only when an explicit historical cloud audit is requested, invoke tools/ci/bridge-transition.ps1 with -LegacyAudit -Transition start. This diagnostic does not replace actual functional tests or authorize production.

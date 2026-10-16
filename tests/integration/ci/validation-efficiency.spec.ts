@@ -9,13 +9,13 @@ type Workflow = { on?: Record<string, { branches?: string[] } | null>; true?: Re
   jobs: Record<string, Job>; concurrency: { group: string; 'cancel-in-progress': boolean } };
 
 function workflows(): Record<string, Workflow> {
-  const parsed = spawnSync('python3', ['-c',
-    'import glob,json,yaml; print(json.dumps({p:yaml.safe_load(open(p,encoding="utf-8")) for p in glob.glob(".github/workflows/*.yml")}))'], { encoding: 'utf8' });
+  const parsed = spawnSync(process.platform === 'win32' ? 'python' : 'python3', ['-c',
+    'import glob,json,yaml; print(json.dumps({p.replace(chr(92),"/"):yaml.safe_load(open(p,encoding="utf-8")) for p in glob.glob(".github/workflows/*.yml")}))'], { encoding: 'utf8' });
   assert.equal(parsed.status, 0, parsed.stderr);
   return JSON.parse(parsed.stdout);
 }
 
-test('EV01: an open feature PR has exactly one automatic full native execution owner across push and PR events', () => {
+test('EV01: ED-22 keeps Actions explicit and does not run full native matrices on every push or PR', () => {
   const all = workflows();
   function calledNative(file: string): number {
     if (file.endsWith('/native-bootstrap.yml')) return 1;
@@ -32,8 +32,12 @@ test('EV01: an open feature PR has exactly one automatic full native execution o
       nativeOwners += calledNative(file);
     }
   }
-  assert.equal(nativeOwners, 1, 'The shared formal chain owns the matrix; standalone diagnostic entry does not auto-duplicate it');
-  assert.ok('pull_request' in (all['.github/workflows/ci-bootstrap.yml'].on || all['.github/workflows/ci-bootstrap.yml'].true));
+  assert.equal(nativeOwners, 0, 'Native validation is explicitly requested by business batch or release need');
+  for (const file of ['ci-bootstrap.yml', 'verify-release.yml', 'bridge-admission.yml', 'archive-admission.yml', 'inspect-native-evidence.yml']) {
+    const events = all[`.github/workflows/${file}`].on || all[`.github/workflows/${file}`].true || {};
+    assert.ok('workflow_dispatch' in events, file);
+    assert.ok(!('push' in events) && !('pull_request' in events), file);
+  }
 });
 
 test('EV02: old targets and evidence cleanup cannot be automatically cancelled by a newer validation run', () => {
@@ -77,6 +81,17 @@ test('VI01: feedback, formal Green and completion retain exact event and head id
     assert.equal(result.full_required, intent !== 'feedback');
     assert.equal(result.readiness, 'not_evaluated');
   }
+  const batch = { schema_version: 1, validation_intent: 'batch', target_ids: ['core.http'] };
+  assert.equal(resolveValidationRequest(batch, context()).state, 'blocked', 'Batch execution must be explicit');
+  const explicit = { ...context(), event: 'workflow_dispatch', available_target_ids: ['core.http'] };
+  assert.equal(resolveValidationRequest({ ...batch, target_ids: [] }, explicit).state, 'blocked');
+  assert.equal(resolveValidationRequest({ ...batch, target_ids: ['unregistered'] }, explicit).state, 'blocked');
+  const result = resolveValidationRequest(batch, explicit);
+  assert.equal(result.state, 'resolved');
+  assert.equal(result.full_required, false);
+  assert.equal(result.development_required, true);
+  assert.equal(result.ci_ready, false);
+  assert.equal(result.feature_complete, false);
 });
 
 test('VI02: unknown intent, checkout mismatch and PR merge mistaken for head cannot request reduced validation', () => {
