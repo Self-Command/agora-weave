@@ -1188,6 +1188,12 @@
       "depends_on": [
         "supabase/migrations/0023_archive_failure_closes_output.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0025_remaining_engineering_parameters.sql",
+      "depends_on": [
+        "supabase/migrations/0024_foundation_state_guards.sql"
+      ]
     }
   ],
   "core_fixture_files": [
