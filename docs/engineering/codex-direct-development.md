@@ -1,3 +1,5 @@
+> 历史资料：本文记录ED-23原决定，现行入口为[ED-24执行政策](execution-policy.md)。
+
 # Codex 直接开发（ED-23）
 
 2026-10-16，用户批准执行 `codex-direct-development-adjustment-2026-10-16.md` 的清理方案：

@@ -6,7 +6,7 @@
 
 **Spec Version**: 1.2（2026-10-16：仅同步ED-22执行策略，FR/QR/AC编号及产品范围保留）
 
-**现行工程决定**：[ED-22](../../docs/engineering/business-first-development-decision.md)及宪法5.0.0。现行执行以宪法5.0.0及ED-22业务优先为准：日常目标用例＋直接受影响回归，TDD由执行者判断；Actions按需批次复验，历史红链、准入收据和归档回读不是日常开发或进展门槛。产品、安全和正式功能验收范围保留。
+**现行工程决定**：现行依据宪法6.0.0与[ED-24执行政策](../../docs/engineering/execution-policy.md)：保留现有SK资料与285任务，按阶段后端→集中获批App页面/API→集中实际客户端复检；日常目标测试与影响回归，发布完整适用矩阵。历史工程决定不覆盖当前政策。 本次不改变FR/QR/AC、故事或产品规则。
 
 **Status**: 首版正式规格已编制，依据获批需求基线；规格质量审阅与产品实现验收分别记录
 
@@ -14,7 +14,7 @@
 
 **Feature Directory**: specs/001-agoraweave-v1
 
-**依据与效力**：遵守 [AGENTS.md](../../AGENTS.md) 和 [宪法 v3.0.1](../../.specify/memory/constitution.md)。需求基线为 [PRD v0.10](../../docs/product/PRD.md)，批准登记 S24、获批输入提交 e4aee2a9d00596b9dac3903e0115b8f6f1b66f14，读取时仓库提交为 6ebcaea07e3c937e16b7cd8279dfd37fd1d5adbe。设计输入为 [UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[design-tokens v1.0](../../docs/design/design-tokens.json) 及 [v6 归档草稿](../../docs/design/prototype/index.html)。UI 文档记录其编制时的 PRD v0.9，不据此覆盖 v0.10 的严格撤权或本次明确决定。
+**历史编制依据（现行执行以上文为准）**：当时遵守 [AGENTS.md](../../AGENTS.md) 和 [宪法 v3.0.1](../../.specify/memory/constitution.md)。需求基线为 [PRD v0.10](../../docs/product/PRD.md)，批准登记 S24、获批输入提交 e4aee2a9d00596b9dac3903e0115b8f6f1b66f14，读取时仓库提交为 6ebcaea07e3c937e16b7cd8279dfd37fd1d5adbe。设计输入为 [UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[design-tokens v1.0](../../docs/design/design-tokens.json) 及 [v6 归档草稿](../../docs/design/prototype/index.html)。UI 文档记录其编制时的 PRD v0.9，不据此覆盖 v0.10 的严格撤权或本次明确决定。
 
 本规格中的 MUST／必须表示首版要求。已确认默认值作为初始配置，受授权变更、版本与兼容规则约束；暂定指标和后续核验保持原状态。FR 为本规格需求编号，括号中的 PRD 编号和 AC 编号供追溯。所有用户故事均属首版：P1／P2 仅表示验收组织的重要顺序，不授权删减或延期；独立验收允许准备已授权账号、内容和环境作为前置条件，不要求脱离公共身份与权限能力运行。
 
