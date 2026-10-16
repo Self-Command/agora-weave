@@ -4,6 +4,7 @@ import { admittedResource } from './admission.ts';
 import { listSessions, revokeSession } from './routes/account-security.ts';
 import { refreshSession, registrationDocuments } from './routes/auth.ts';
 import { accountOperation } from './routes/operations.ts';
+import { recoveryCase } from './routes/recovery.ts';
 
 const messages: Record<string, string> = { SESSION_INVALID: '登录已失效，请重新登录',
   NOT_FOUND: '内容不可用', FORBIDDEN: '当前入口不支持此操作', METHOD_NOT_ALLOWED: '不支持此操作',
@@ -28,6 +29,9 @@ Deno.serve(async (request: Request) => {
     if (path === '/auth/refresh') return request.method === 'POST' ? await refreshSession(request,failure) : failure('METHOD_NOT_ALLOWED',405);
     if (path === '/documents/current') return request.method === 'GET' ? await registrationDocuments(request,failure) : failure('METHOD_NOT_ALLOWED',405);
     if (path === '/auth/logout') return request.method === 'POST' ? await revokeSession(request,null,failure) : failure('METHOD_NOT_ALLOWED',405);
+    if (path === '/recovery-cases') return request.method === 'POST' ? await recoveryCase(request,null,failure) : failure('METHOD_NOT_ALLOWED',405);
+    const recoveryTarget = path.match(/^\/recovery-cases\/([a-f0-9-]{36})$/i);
+    if (recoveryTarget) return request.method === 'GET' ? await recoveryCase(request,recoveryTarget[1],failure) : failure('METHOD_NOT_ALLOWED',405);
     const operationTarget = path.match(/^\/operations\/([a-f0-9-]{36})$/i);
     if (operationTarget) return request.method === 'GET' ? await accountOperation(request,operationTarget[1],failure) : failure('METHOD_NOT_ALLOWED',405);
     const sessionTarget = path.match(/^\/me\/sessions\/([a-f0-9-]{36})$/i);

@@ -5,7 +5,8 @@ import { AccountError, type AccountApi, type DeviceSession, type SessionTokens }
 import { Action, useAccountColors } from './components';
 import { confirmRevocation } from './recovery';
 
-export function AccountSecurityScreen({ api,session,onSignedOut }: { api: AccountApi; session: SessionTokens; onSignedOut: () => Promise<void> }) {
+export function AccountSecurityScreen({ api,session,onSignedOut,onRecovery }: { api: AccountApi; session: SessionTokens;
+  onSignedOut: () => Promise<void>; onRecovery: (trusted: boolean) => void }) {
   const colors = useAccountColors();
   const [items,setItems] = useState<DeviceSession[]>([]);
   const [next,setNext] = useState<string | null>(null);
@@ -66,6 +67,7 @@ export function AccountSecurityScreen({ api,session,onSignedOut }: { api: Accoun
     </View>)}
     {next && <Action title="加载更多设备" onPress={() => void load(next)} disabled={loading || busy} />}
     {!!error && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={[styles.body,{ color: colors.error }]}>{error}</Text>}
+    <Action title="申请账号恢复" disabled={busy || loading} onPress={() => onRecovery(items.some(item => item.current && !!item.trusted_at && Date.parse(item.trusted_at) <= Date.now()))} />
     <Action title={busy ? '处理中…' : '退出当前登录'} disabled={busy || loading} onPress={() => Alert.alert('退出登录','将撤销当前会话并清除本机登录信息。',
       [{ text: '取消',style: 'cancel' },{ text: '退出',style: 'destructive',onPress: () => void logout() }])} />
   </ScrollView>;

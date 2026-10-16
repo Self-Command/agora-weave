@@ -3071,6 +3071,13 @@
       "requires_services": true
     },
     {
+      "id": "core.auth-recovery-requests",
+      "command": "ci:service",
+      "files": ["tests/integration/auth/recovery.spec.ts"],
+      "case_count": 4,
+      "requires_services": true
+    },
+    {
       "id": "core.auth-operation-results",
       "command": "ci:service",
       "files": ["tests/integration/auth/operations.spec.ts"],
@@ -3088,7 +3095,7 @@
       "id": "core.auth-mobile-client",
       "command": "ci:core:contracts",
       "files": ["tests/contract/auth/mobile-client.spec.ts"],
-      "case_count": 7,
+      "case_count": 10,
       "requires_services": false
     },
     {
@@ -3099,8 +3106,16 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 98,
+  "core_case_count": 105,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0112_recovery_binding_fix.sql",
+      "depends_on": ["supabase/migrations/0111_recovery_requests.sql"]
+    },
+    {
+      "file": "supabase/migrations/0111_recovery_requests.sql",
+      "depends_on": ["supabase/migrations/0104_session_commands.sql", "supabase/migrations/0101_admission_recovery.sql"]
+    },
     {
       "file": "supabase/migrations/0110_login_session_binding.sql",
       "depends_on": ["supabase/migrations/0106_registration_binding_fix.sql"]

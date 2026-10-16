@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import { once } from 'node:events';
 import { test } from 'node:test';
 import { accountApi, AccountError, normalizePhone } from '../../../apps/mobile/src/features/account/api.ts';
-import { confirmRevocation, recoverChangedTerms } from '../../../apps/mobile/src/features/account/recovery.ts';
+import { confirmRevocation, recoverChangedTerms, submitRecoveryRequest } from '../../../apps/mobile/src/features/account/recovery.ts';
 import { storedSession } from '../../../apps/mobile/src/features/account/session-policy.ts';
 
 test('MC01: phone normalization preserves international numbers and refuses incomplete or non-phone input', () => {
@@ -80,4 +80,62 @@ test('MC07: pending, unrelated or inaccessible operation results cannot turn unc
   await assert.rejects(confirmRevocation({ operation: async () => { throw new AccountError('SESSION_INVALID','已失效'); } },'token','command',failure),
     error => error instanceof AccountError && error.code === 'SESSION_INVALID');
   assert.equal(await confirmRevocation({ operation: async () => { assert.fail('Validation failures must not query operations'); } },'token','command',new AccountError('CONFLICT','冲突')),false);
+});
+test('MC08: recovery commands preserve their logical ID and read the returned case using the current bearer session', async () => {
+  const bodies: unknown[] = [];
+  const server = createServer(async (request,response) => {
+    assert.equal(request.headers.authorization,'Bearer controlled-session');
+    let raw = ''; for await (const chunk of request) raw += chunk;
+    if (request.method === 'POST') { assert.equal(request.url,'/recovery-cases'); bodies.push(JSON.parse(raw)); }
+    else { assert.equal(request.method,'GET'); assert.equal(request.url,'/recovery-cases/case-id'); }
+    response.setHeader('Content-Type','application/json');
+    response.end(JSON.stringify({ data: { id: 'case-id',mode: 'manual',state: 'received' } }));
+  });
+  server.listen(0,'127.0.0.1'); await once(server,'listening');
+  try {
+    const address = server.address() as { port: number },api=accountApi(`http://127.0.0.1:${address.port}`,'test',true);
+    await api.requestRecovery('controlled-session','manual','command'); await api.requestRecovery('controlled-session','manual','command');
+    assert.equal((await api.recoveryCase('controlled-session','case-id')).state,'received');
+    assert.deepEqual(bodies,[{ mode: 'manual',operation_id: 'command' },{ mode: 'manual',operation_id: 'command' }]);
+  } finally { server.close(); await once(server,'close'); }
+});
+
+test('MC09: a recovery submission completing after background and return reads current status before displaying it', async () => {
+  let release!: () => void,arrived!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  const started = new Promise<void>(resolve => { arrived = resolve; });
+  const seen: string[] = [];
+  const server = createServer(async (request,response) => {
+    seen.push(request.method!);
+    if (request.method === 'POST') { arrived(); await pending; }
+    response.setHeader('Content-Type','application/json');
+    response.end(JSON.stringify({ data: { id: 'case-9',mode: 'manual',state: request.method === 'POST' ? 'received' : 'reviewing' } }));
+  });
+  server.listen(0,'127.0.0.1'); await once(server,'listening');
+  try {
+    const address = server.address() as { port: number },api = accountApi(`http://127.0.0.1:${address.port}`,'test',true);
+    let generation = 0,active = true,caseId: string | null = null,display = '';
+    const ticket = generation;
+    const submission = submitRecoveryRequest(() => api.requestRecovery('token','manual','command-9'),{
+      mounted: () => true,active: () => active,current: () => ticket === generation,
+      remember: record => { caseId = record.id; },show: () => { assert.fail('Stale submission must not paint status'); },
+      refresh: async () => { display = (await api.recoveryCase('token',caseId!)).state; },
+    });
+    await started;
+    active = false; generation++; active = true; generation++;
+    assert.equal(caseId,null); release(); await submission;
+    assert.equal(caseId,'case-9'); assert.equal(display,'reviewing'); assert.deepEqual(seen,['POST','GET']);
+  } finally { release(); server.close(); await once(server,'close'); }
+});
+
+test('MC10: late recovery results never display in background or write into an unmounted screen', async () => {
+  const result = { id: 'case-10',mode: 'manual' as const,state: 'received' as const,created_at: '',updated_at: '',row_version: 1 };
+  for (const mounted of [true,false]) {
+    let retained = '';
+    await submitRecoveryRequest(async () => result,{
+      mounted: () => mounted,active: () => false,current: () => false,remember: record => { retained = record.id; },
+      show: () => assert.fail('Background result must stay hidden'),refresh: async () => assert.fail('Background must not refresh'),
+    });
+    assert.equal(retained,mounted ? 'case-10' : '');
+  }
 });
