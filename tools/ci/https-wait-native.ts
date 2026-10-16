@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 
 if (process.env.GITHUB_ACTIONS !== 'true' || process.env.RUNNER_ENVIRONMENT !== 'github-hosted') throw new Error('Native wait is Actions only');
-const expected = [' / native / iOS shell 16.4', ' / native / iOS shell 26.4', ' / native / Android shell API 24', ' / native / Android shell API 36'];
+const expected = ['iOS shell 16.4', 'iOS shell 26.4', 'Android shell API 24', 'Android shell API 36'];
 for (let poll = 0; poll < 110; poll++) {
   const jobs: Record<string, any>[] = [];
   for (let page = 1; page <= 10; page++) {
