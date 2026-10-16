@@ -3032,9 +3032,18 @@
       ],
       "case_count": 5,
       "requires_services": true
+    },
+    {
+      "id": "core.admission-schema",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/admission-schema.spec.ts"
+      ],
+      "case_count": 4,
+      "requires_services": true
     }
   ],
-  "core_case_count": 65,
+  "core_case_count": 69,
   "core_migrations": [
     {
       "file": "supabase/migrations/0001_identity.sql",
@@ -3102,6 +3111,14 @@
         "supabase/migrations/0006_configuration.sql",
         "supabase/migrations/0008_current_authorization.sql",
         "supabase/migrations/0009_output_admission.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0101_admission_recovery.sql",
+      "depends_on": [
+        "supabase/migrations/0001_identity.sql",
+        "supabase/migrations/0003_effects.sql",
+        "supabase/migrations/0007_documents.sql"
       ]
     }
   ],
