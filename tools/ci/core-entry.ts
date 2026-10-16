@@ -48,6 +48,8 @@ if (action === 'all' || action === 'batch') {
     for (const args of invocations) {
       try { execute(...args); } catch { failed = true; }
     }
+    // Re-enter the same installed database to verify incremental immutability too.
+    if(action==='all')try { execute('migrate'); } catch { failed = true; }
     save('execution', { state: failed ? 'blocked' : 'passed', active_commands: [...new Set(targets.map(target => target.command))],
       discovered: selectedTargets.reduce((count, target) => count + target.case_count, 0),
       target_ids: selectedTargets.map(target => target.id), scope: action === 'batch' ? 'selected-business-batch' : 'current-core-only', task_complete: false });
@@ -60,7 +62,7 @@ if (action === 'all' || action === 'batch') {
     throw new Error('Every actual migration requires one explicit dependency registration');
   }
   sql('CREATE SCHEMA IF NOT EXISTS ci_control; CREATE TABLE IF NOT EXISTS ci_control.migrations (file text PRIMARY KEY, digest text NOT NULL, applied_at timestamptz NOT NULL DEFAULT clock_timestamp());');
-  const applied = new Set<string>(), results: object[] = [];
+  const applied = new Set<string>(), results: {file:string;sha256:string;state:string}[] = [];
   while (applied.size < migrations.length) {
     const next = migrations.find(entry => !applied.has(entry.file) && Array.isArray(entry.depends_on) && entry.depends_on.every(file => applied.has(file)));
     if (!next || !/^supabase\/migrations\/[a-zA-Z0-9_-]+\.sql$/.test(next.file)) throw new Error('Missing or cyclic schema dependency');
@@ -77,7 +79,7 @@ if (action === 'all' || action === 'batch') {
     results.push({ file: next.file, sha256: digest, state: previous ? 'verified-existing' : 'applied' });
     applied.add(next.file);
   }
-  const sequence = existsSync(`${directory}/migrate-clean.json`) ? 'incremental' : 'clean';
+  const sequence = results.every(result=>result.state==='applied') ? 'clean' : 'incremental';
   if (migrations.some(entry => entry.file === 'supabase/migrations/0008_current_authorization.sql')) {
     const environment = readFileSync(coreEnvironmentFile(), 'utf8');
     const password = environment.match(/^CORE_DATABASE_PASSWORD=([a-f0-9]{64})$/m)?.[1];
@@ -90,11 +92,14 @@ if (action === 'all' || action === 'batch') {
       sql(`ALTER ROLE core_worker PASSWORD '${workerPassword}';`);
     }
   }
-  save(`migrate-${sequence}`, { state: 'passed', migrations: results, scope: 'isolated-current-schema' });
+  save(`migrate-${sequence}`, { state: 'passed', migrations: results,
+    applied_count:results.filter(result=>result.state==='applied').length,
+    verified_existing_count:results.filter(result=>result.state==='verified-existing').length,scope: 'isolated-current-schema' });
 } else if (action === 'seed') {
   const fixture = 'tests/fixtures/core/seed.sql';
   if (!existsSync(fixture)) throw new Error('Active core suites require the controlled real-service fixture');
-  sql(readFileSync(fixture, 'utf8'));
+  if(!['dev','test'].includes(identity.environment))throw new Error('Synthetic fixtures require a nonproduction environment');
+  sql(`SET agoraweave.fixture_environment='${identity.environment}';\n${readFileSync(fixture, 'utf8')}`);
   save('seed', { state: 'passed', fixture, fixture_sha256: hash(readFileSync(fixture)), synthetic: true });
 } else if (action === 'suite' || action === 'target') {
   const selected = targets.filter(target => action === 'target' ? target.id === process.argv[3] : target.command === process.argv[3]);
