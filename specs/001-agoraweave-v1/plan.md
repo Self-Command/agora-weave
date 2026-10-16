@@ -4,9 +4,9 @@
 
 **Input**: `specs/001-agoraweave-v1/spec.md`；获批[PRD v0.10](../../docs/product/PRD.md)、[UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[追溯表](traceability.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[宪法 v5.0.0](../../.specify/memory/constitution.md)。读取Git HEAD `739e4068947e7e54b9ded691763e2885959e93c7`；输入文件hash与traceability及独立复检一致。名称及换号限制以spec最新明确决定为准。
 
-**Status**: 现行执行以宪法5.0.0及ED-22业务优先为准：日常目标用例＋直接受影响回归，TDD由执行者判断；Actions按需批次复验，历史红链、准入收据和归档回读不是日常开发或进展门槛。产品、安全和正式功能验收范围保留。 保留285个任务及既有局部成果；本次仅同步规则，验证后等待用户指令。
+**Status**: 现行依据宪法6.0.0与[ED-24执行政策](../../docs/engineering/execution-policy.md)：保留现有SK资料与285任务，按阶段后端→集中获批App页面/API→集中实际客户端复检；日常目标测试与影响回归，发布完整适用矩阵。历史工程决定不覆盖当前政策。 产品、安全和正式验收范围保持；当前业务状态见current-development-state。
 
-**本次补充依据**：2026-10-16用户批准[ED-22](../../docs/engineering/business-first-development-decision.md)，取代ED-21中冲突的过程要求；ED-20、既有产品决定和历史结果保留。
+**历史补充依据**：2026-10-16用户批准[ED-22](../../docs/engineering/business-first-development-decision.md)，取代ED-21中冲突的过程要求；ED-20、既有产品决定和历史结果保留。
 
 **最新决定**：用户已对18项问题明确答复，见[规划决定登记](reviews/planning-decisions-2026-10-14.md)。公开仓库、当前Codex审查方式（ED-11取代旧路线）、必要开发资料经核验境外处理、用户本人基准确认、阿里云短信已确认。预算／资源／设计确认／部署上线运营由用户处理，工程仅在实际需要时索取；恢复和申诉参数由工程授权细化。该记录更新候选／待决状态，不表述资源已供给或验证已通过。
 
@@ -48,7 +48,7 @@
 
 ## Constitution Check
 
-以宪法5.0.0核对产品与技术边界、质量、当前授权与隐私、真实测试、环境隔离、原生体验、资源成本、生产内容和用户授权。具体工作流、工具状态和证据格式按ED-22工程说明，不再作宪法硬约束。完整业务能力按真实实现与测试验收；无关基础工程不阻塞当前消费者。
+以宪法6.0.0核对现行稳定原则；具体执行按ED-24。完整复用Kiranism固定版本完整源码（布局/导航/主题/表格/表单组件）和Supabase官方Compose/Auth/PG/Storage/Realtime，优先配置/官方接口/扩展点，必要底层改动保最小可追踪补丁。App/分享具体原型先经人批准，后台直接以官方完整模板为设计基准；实际客户端整页与交互复检仍必需。历史输入和版本仅证明规划时依据，不表示当前验收通过。
 
 ## Project Structure
 

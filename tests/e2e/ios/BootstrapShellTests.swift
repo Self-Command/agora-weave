@@ -35,6 +35,39 @@ final class BootstrapShellTests: XCTestCase {
     app.activate()
     XCTAssertTrue(app.wait(for: .runningForeground, timeout: 5))
     XCTAssertTrue(app.staticTexts["AgoraWeave"].waitForExistence(timeout: 10))
+    XCTAssertTrue(app.staticTexts["手机号登录"].exists)
+    let phone = app.textFields["手机号"]
+    XCTAssertTrue(phone.exists)
+    phone.tap()
+    phone.typeText("123")
+    XCTAssertEqual(phone.value as? String, "123")
+    phone.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 3))
+    let getCode = app.buttons["获取验证码"]
+    for _ in 0..<4 {
+      if getCode.isHittable { break }
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(getCode.exists)
+    XCTAssertTrue(getCode.isHittable)
+    getCode.tap()
+    XCTAssertTrue(app.staticTexts["请输入有效手机号，境外号码请加国家区号"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["手机号登录"].exists)
+    XCTAssertFalse(app.textFields["短信验证码"].exists)
+    let validation = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+    validation.name = "login-empty-phone-validation"
+    validation.lifetime = .keepAlways
+    add(validation)
+    for _ in 0..<5 { app.scrollViews.firstMatch.swipeDown() }
+    let brand = app.staticTexts["AgoraWeave"]
+    XCTAssertTrue(brand.isHittable)
+    brand.tap() // A non-handled ScrollView tap dismisses the phone-pad keyboard.
+    if app.keyboards.firstMatch.exists {
+      // Reopen the same real login page to guarantee a normal, keyboard-free capture.
+      app.terminate()
+      app.launch()
+      XCTAssertTrue(app.staticTexts["手机号登录"].waitForExistence(timeout: 10))
+    }
+    XCTAssertFalse(app.keyboards.firstMatch.exists)
     let resumeScreen = XCUIScreen.main.screenshot()
     try captureAccessibility(app, resumeScreen)
     let resume = XCTAttachment(screenshot: resumeScreen)
@@ -66,8 +99,8 @@ final class BootstrapShellTests: XCTestCase {
     XCTAssertTrue(viewport.contains(title.frame))
     let interactive = app.buttons.count + app.switches.count + app.sliders.count
     let editable = app.textFields.count + app.secureTextFields.count + app.textViews.count
-    XCTAssertEqual(interactive, 0)
-    XCTAssertEqual(editable, 0)
+    XCTAssertGreaterThan(interactive, 0, "Actual login controls must remain accessible")
+    XCTAssertGreaterThan(editable, 0, "Actual login phone field must remain editable")
     var audit: [String: Any]
     if #available(iOS 17.0, *) {
       try app.performAccessibilityAudit()
@@ -85,17 +118,20 @@ final class BootstrapShellTests: XCTestCase {
     rgba.withUnsafeMutableBytes { bytes in
       let context = CGContext(data: bytes.baseAddress, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
         space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-      context.translateBy(x: -CGFloat(pixels.width / 2), y: -CGFloat(pixels.height / 4))
+      // The form occupies the old sample point. Use the safe content edge outside its 24pt padding.
+      let scale = CGFloat(pixels.width) / window.width
+      context.translateBy(x: -2 * scale, y: -(title.frame.midY - window.minY) * scale)
       context.draw(pixels, in: CGRect(x: 0, y: 0, width: CGFloat(pixels.width), height: CGFloat(pixels.height)))
     }
     let light = rgba.prefix(3).allSatisfy { abs(Int($0) - 255) <= 3 }
     let dark = abs(Int(rgba[0]) - 17) <= 3 && abs(Int(rgba[1]) - 17) <= 3 && abs(Int(rgba[2]) - 19) <= 3
-    XCTAssertTrue(light || dark, "Actual shell background must match an expected theme")
+    XCTAssertTrue(light || dark, "Actual login content edge must match an expected theme")
     func rect(_ value: CGRect) -> [String: CGFloat] { ["x": value.minX, "y": value.minY, "width": value.width, "height": value.height] }
     func hash(_ bytes: Data) -> String { SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined() }
     let measurement: [String: Any] = ["theme": light ? "light" : "dark", "font_scale": UIFontMetrics.default.scaledValue(for: 17) / 17,
       "title": title.label, "role": "staticText", "enabled": title.isEnabled, "title_count": leaves.count,
       "title_snapshot_count": snapshots.count, "title_container_count": snapshots.count - leaves.count,
+      "scope": "existing-login-empty-phone-validation-only", "full_account_journey_verified": false,
       "interactive_count": interactive, "editable_count": editable, "frame": rect(title.frame), "viewport": rect(viewport),
       "background_rgb": Array(rgba.prefix(3)), "audit": audit, "tree_sha256": hash(Data(tree.utf8)), "screenshot_sha256": hash(screenshot.pngRepresentation)]
     let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: ["source": "native-xctest", "measurement": measurement], options: [.sortedKeys]), uniformTypeIdentifier: "public.json")

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "current_policy": "ED-23",
-  "minimum_constitution_version": "5.2.1",
+  "current_policy": "ED-24",
+  "minimum_constitution_version": "6.0.0",
   "files": [
     "AGENTS.md",
     ".specify/memory/constitution.md",
@@ -40,7 +40,13 @@
     "package.json",
     ".gitignore",
     "tests/integration/ci/local-services.spec.ts",
-    "tools/ci/https-wait-native.ts"
+    "tools/ci/https-wait-native.ts",
+    "tools/ci/check-ui-bindings.ts",
+    "tests/integration/ci/ui-bindings.spec.ts",
+    "tests/integration/ci/runtime-sync.spec.ts",
+    "tests/e2e/android/BootstrapShellTest.kt",
+    "tests/e2e/ios/BootstrapShellTests.swift",
+    "tools/ci/write-runtime-identity.ts"
   ],
   "directories": [
     ".agents/skills",

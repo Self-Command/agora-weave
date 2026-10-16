@@ -1,4 +1,4 @@
-name: Native shell bootstrap
+name: Existing native login entry checks
 on:
   workflow_dispatch:
     inputs:
@@ -67,7 +67,7 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             infra/ci/toolchain-lock.json
-      - name: Install frozen dependencies and generate no-business native shell
+      - name: Install frozen dependencies and generate actual native app
         shell: bash
         run: |
           node --experimental-strip-types tools/ci/write-runtime-identity.ts native-output
@@ -116,6 +116,7 @@ jobs:
           xcrun simctl ui "$device" content_size large
           xcrun simctl ui "$device" content_size > native-output/ios-font-normal.txt
           xcrun simctl ui "$device" appearance light
+          # Fresh isolated test install; tests exercise only existing login input/validation, not full account acceptance.
           xcodebuild test -workspace apps/mobile/ios/AgoraWeave.xcworkspace -scheme AgoraWeave \
             -configuration Release -destination "platform=iOS Simulator,id=$device" \
             -only-testing:BootstrapShellTests -parallel-testing-enabled NO \
@@ -294,6 +295,7 @@ jobs:
           done
           adb install apps/mobile/android/app/build/outputs/apk/release/app-release.apk
           adb install apps/mobile/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+          adb shell pm clear org.agoraweave.app
           adb shell dumpsys package org.agoraweave.app > native-output/android-target-package.txt
           adb shell dumpsys package org.agoraweave.app.test > native-output/android-test-package.txt
           capture_failure() {

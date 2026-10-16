@@ -4,11 +4,11 @@ description: "AgoraWeave 完整首版：业务优先、本地批次开发与按�
 
 # Tasks: AgoraWeave v1 — 完整首版
 
-**当前执行口径**：现行执行以宪法5.0.0及ED-22业务优先为准：日常目标用例＋直接受影响回归，TDD由执行者判断；Actions按需批次复验，历史红链、准入收据和归档回读不是日常开发或进展门槛。产品、安全和正式功能验收范围保留。
+**当前执行口径**：现行依据宪法6.0.0与[ED-24执行政策](../../docs/engineering/execution-policy.md)：保留现有SK资料与285任务，按阶段后端→集中获批App页面/API→集中实际客户端复检；日常目标测试与影响回归，发布完整适用矩阵。历史工程决定不覆盖当前政策。 产品、安全和正式功能验收范围保留。
 
-**更新日期**：2026-10-16（ED-22）。本文件是项目统一任务基线，所有工作树／分支保持同版；历史实现和测试只证明其记录中的源版本，不表示任意签出的分支已有相同代码。
+**更新日期**：2026-10-17（ED-24，仅流程说明；任务ID、勾选和范围未改变）。本文件是项目统一任务基线，所有工作树／分支保持同版；历史实现和测试只证明其记录中的源版本，不表示任意签出的分支已有相同代码。
 
-**Input / Prerequisites**：已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v5.0.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
+**历史生成输入 / 当前按现行文件读取**：初次生成已完整读取 [AGENTS.md](../../AGENTS.md)、[宪法 v5.0.0](../../.specify/memory/constitution.md)、[spec](spec.md)、[plan](plan.md)、[research](research.md)、[data-model](data-model.md)、[quickstart](quickstart.md)、[traceability](traceability.md)、[PRD](../../docs/product/PRD.md)、[UI-SPEC](../../docs/design/UI-SPEC.md)、[token](../../docs/design/design-tokens.json) 及其草稿档案；以 [最新18项决定与ED-05–08](reviews/planning-decisions-2026-10-14.md)、[计划设计检查](reviews/plan-design-check-2026-10-14.md)、[独立计划复检](reviews/independent-plan-review-2026-10-14.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[质量清单](checklists/requirements.md) 及 [规划修订核对（含I3/I4与ED-10）](reviews/plan-analyze-revision-2026-10-14.md) 为最新依据；ED-10的用户明确A与最新plan TD-07D／HTTP／授权／配置／V12B／V19A约束本次任务更新。
 
 **Contracts**：[HTTP](contracts/http-api.md)、[授权／事件](contracts/authorization-events.md)、[AI](contracts/ai-tools.md)、[配置](contracts/configuration.md)、[SDK](contracts/plugin-sdk.md)、[manifest schema](contracts/plugin-manifest.schema.json)、[发行证据](contracts/release-evidence.md)、[云端验证](contracts/cloud-validation.md) 与 [目录](contracts/README.md)。
 
@@ -20,7 +20,7 @@ description: "AgoraWeave 完整首版：业务优先、本地批次开发与按�
 
 **Organization**：Setup → Foundational → 17故事（P1再P2，各组按US编号）→全量封口。编号是清单引用顺序；执行服从下方实现依赖DAG。P2作为P1真实依赖须提前实施，优先级不删减首版。
 
-**最新执行决定**：2026-10-16 用户批准 [ED-23](../../docs/engineering/codex-direct-development.md)，Codex 直接使用现有 SK 资料实施；SP、桥接和纯流程平台已卸载。285 个 ID 及既有勾选保留；T001–T027 的旧路径和工具描述仅记录历史实现，已移除的文件不要求重建。后续业务任务涉及旧验证编排时使用当前普通目标测试／Actions 入口，验收内容不减少。
+**ED-23历史执行决定**：2026-10-16 用户批准 [ED-23](../../docs/engineering/codex-direct-development.md)，Codex 直接使用现有 SK 资料实施；SP、桥接和纯流程平台已卸载。285 个 ID 及既有勾选保留；T001–T027 的旧路径和工具描述仅记录历史实现，已移除的文件不要求重建。后续业务任务涉及旧验证编排时使用当前普通目标测试／Actions 入口，验收内容不减少。
 
 **前次执行决定（历史）**：[ED-22](../../docs/engineering/business-first-development-decision.md)及宪法5.0.0；SP默认流程服从项目规则。285个ID、产品范围和既有历史保留；所有任务中的旧过程性红链认证／准入收据／重复校验／归档回读要求不再充当日常门槛。
 
