@@ -1,8 +1,10 @@
-# 发布、指定名单、兼容与证据 v1
+# 发布、兼容与真实验证（ED-22现行）
+
+依据宪法5.0.0及[ED-22](../../../docs/engineering/business-first-development-decision.md)。日常开发按实际目标与直接受影响回归验证；Actions按可用业务切片或发布需要复验，历史红链／准入收据／重复认证／归档回读不是任务进展或交接前置。
 
 ## 不可变发行与生产确认
 
-release manifest含`release_id,commit_sha,core/admin/share/mobile/plugin artifact digests,config_version,contract/sdk/ui/native_runtime/native_fingerprint,permission_delta,migration_digests,environment,cohort_version/members_digest,required_evidence_ids,validation_profile/check_set_hash,design_input_digests/baseline_approval_refs,tdd_cycle_refs,ai_review_refs,completion_record_ref,old_client_matrix,health_observation,rollback_limits`；hash整个规范化manifest为plan_digest。任何字段变化视新计划，不能换同标签包。
+release manifest含`release_id,commit_sha,core/admin/share/mobile/plugin artifact digests,config_version,contract/sdk/ui/native_runtime/native_fingerprint,permission_delta,migration_digests,environment,cohort_version/members_digest,required_evidence_ids,validation_profile/check_set_hash,design_input_digests/baseline_approval_refs,ai_review_refs,completion_record_ref,old_client_matrix,health_observation,rollback_limits`；hash整个规范化manifest为plan_digest。任何字段变化视新计划，不能换同标签包。
 
 阶段`prepared→cloud_verified→awaiting_confirmation→approved→deploying→canary_observing→awaiting_expansion_confirmation→expanded`，fail/interrupted/rollback_pending/recovered为独立事实。检查通过不等批准，安装不等启用，部署提交不等渠道完成。
 
@@ -21,35 +23,18 @@ Actions OIDC部署broker验证issuer/audience、实际repository_id/owner_id/ref
 
 混合变更按最高实际要求。服务端取client-release登记×已审插件×当前安装×明确cohort×用户资源权限，客户端自报字段无授权效力。名单是明确account IDs/hash版本，不能百分比rollout替换；名单外获取descriptor/新代码/能力均拒。旧版安全兼容功能继续，局部不兼容仅禁扩展并提供更新去向；核心无法安全兼容才全App强更，原因/有效更新/安全申诉指引保持可达。回滚新发行继续当前安全账本，不能复活已删/撤权或未审权限，不承诺无损down migration。
 
-## 同版证据格式
+## 日常结果与任务进展
 
-index字段：`schema_version,release_id,plan_digest,commit_sha/checkout_sha/event_ref,run_id,run_attempt,workflow_sha,environment/config,runner_image/tool_versions,artifact_id,raw_artifact_sha256,archive_digest,component/runtime/plugin_versions,validation_profile,check_set_hash,required_case_set,cases[{id,requirements,applicability,applicability_reason,activation_node,mandatory,status,duration_ms,report_refs,screenshot_refs/diff_refs,interaction_refs,error}],tdd_cycle_refs,design_input_digests,baseline_candidate/approval_refs,ai_code_review_ref,ai_visual_review_ref,review_disposition_refs,completion_record_ref,started/finished_at,archive_location/expiry/access_policy`。
+保留真实运行结果、必要命令／环境和失败日志；实际实现及对应有效测试支持任务进展，局部范围和未决项分列。关键权限、安全、数据完整性及缺陷修复必须有有效测试。逐行为TDD由执行者判断，不因缺少历史证明重做正常代码。仅规范、checkbox或交接记录变化，不重复执行不受影响的业务验证。
 
-status仅passed/failed/skipped/cancelled/timed_out/missing/unavailable/unknown；mandatory只有真实passed且版本/产物/配置/环境一致才可聚合passed。if条件跳过必需用例仍不通过。attestation仅构建来源，不代测试/安全结论。无文件报告上传error，失败同样保报告；签名后的实际交付包另有digest与适用验收，不能仅测未签版本后无记录改包。
+本地、Actions和历史报告标明各自来源与适用版本；未执行、失败、取消、跳过、超时及环境不可用不得说成通过。handoff／task-done／单个run图标不代产品结果。
 
-`applicability`是清单适用性而非测试状态，required／not_yet_applicable／not_applicable必须附阶段和理由。bootstrap中未实现业务不算通过或抵扣首版；full-release所有首版适用必需项须实际passed。Red目标的原failed状态保留，预期失败确认只进入TDD链，不能充当发行Green。
+## 正式产品验收与发行
 
-### 开发验证关联记录
+保留PRD和spec规定的完整功能、权限安全、跨端、最低／当前受支持系统、真实交互与图像等正式验收范围。实际发行使用匹配提交、产物、配置和环境的真实结果，不能验证一个包后无记录更换另一个包。必要代码／视觉审查和用户具体基准确认保留；没有产品候选时不制造批准。
 
-以下是私有工程证据格式，不新增产品界面／业务数据，不手填进原生handoff固定字段；原生桥接写入会重建字段，项目侧记录独立存储并由未来门禁核验。具体顺序与验收见[cloud-validation](cloud-validation.md)。
+报告仅含必要合成数据和授权状态，秘密与无关私人内容不进日志；必要发行资料按用途受控保存，敏感资料遵更短期限。已配置历史归档工具可按明确需要使用，服务器仍非runner，上传回读不反向成为日常门槛。
 
-| 记录 | 必需关联与语义 |
-| --- | --- |
-| ci_readiness | 初始化最终SHA、契约／清单／toolchain摘要、真实服务／网页／双端壳／采集／审查／拒绝探针报告及资源准入；未适用业务单列，不授feature完成 |
-| tdd_cycle | 目标行为／需求／case、S_R／S_G／final_sha、测试／夹具／oracle摘要、红运行／断言及缺行为原因确认、绿和回归报告；红先于实现 |
-| baseline_candidate／approval | 设计输入摘要、实际捕获SHA、各端页面状态／设备字体配置、截图／参考／差异／交互／AI报告；具体候选摘要的有权确认和范围，不自动批准 |
-| ai_review | 类型code／visual、current／base SHA、输入／图像／报告摘要、工具／模型精确ID、prompt／schema版本、request／run／attempt／用量、覆盖／findings／unknown；真实模型调用 |
-| review_disposition | finding与文件／页面／区域／需求／证据、处置人／理由、修复SHA、当前重审／回归或可核验独立反证；decision_required尚未处理阻塞 |
-| completion_record | feature／task／mode、当前SHA／contract_hash／check_set_hash、有效全部run／attempt／产物／报告摘要、read_by／read_at／summary／unresolved_items、门禁结论；新提交失效 |
+## 扩展工具格式（可选）
 
-GitHub允许skipped／neutral或条件跳过的job满足某些平台状态规则，本项目聚合必须另外按真实用例／原报告判断。完整枚举当前SHA全部必需结果，等待终态并下载校验／读取报告后，才允许任务勾选、handoff complete或完成报告；一个run成功、review已请求、checkbox齐全或模型自评均不足。当前Codex审查记录缺失／空或截断／漏范围、首次基准未确认、报告缺失／无法读取、SHA或产物不符均拒绝。
-
-正式证据分类归档于有权私有存储，测试90天、正式发行初始1年，敏感内容遵更短业务期限/脱敏；价格/存储Q-03/16准入。run URL和artifact默认保留不永久；不得把真实手机号/私信/草稿/AI完整原文写长存报告。引用合成fixture标识、必要授权日志/状态/截图即可。收到旧版结果必须重新验证实际发行，不手改index抹失败。
-
-## 验证条件
-
-Actions覆盖四类/混合变更、同包更换攻击、无超级管理员确认、DEC-001冷却、审批后权限/范围变更、名单内外、扩灰无确认、native不兼容、旧端核心安全/不安全、失败/中断/重试、迁移部分/不可逆、回滚复活攻击及证据缺失。任何未确认生产影响或名单外能力成功为缺陷；不在本轮执行这些操作。
-
-初始化／门禁另验证零用例、尚未存在的业务脚本、必需skip／neutral、前置失败导致聚合未执行、queued／超时／取消、只等一个run、旧SHA／PR merge误配／错误artifact、清单缩减、未读报告、Red环境错误／oracle换绿、AI假报告／漏图／秘密泄露、基准自批／自动重拍和直接旧脚本设complete等拒绝案例。full-release读取所有必需最终报告，不用bootstrap探针替业务验收。
-
-按[ED-11／ED-12](../reviews/execution-decisions-2026-10-15.md)，开发代码／视觉审查由当前Codex分别记录执行者、会话、SHA、输入／实际图像摘要、覆盖、findings和处置；Actions核记录绑定，所有项目执行／采集仍只在Actions。私有原证据归档目标为用户服务器，专用受限存储身份、不公开服务连接、校上传与回读摘要并执行上述分类保留；服务器不作runner。旧独立开发审查API凭据要求取消，产品AI凭据要求不变。
+既有index／artifact_reuse_receipt／tdd_cycle／ai_review／completion_record等schema与旧记录作为历史工具契约保留，按实际诊断或发布用途选用，不自动授予功能完成、生产资格或要求每天生成。原失败和旧SHA事实保持。历史格式说明见Git历史及ED-11～21决定，当前执行仅依据本契约与ED-22。

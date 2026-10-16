@@ -1,11 +1,5 @@
 name: Minimum iOS runtime admission
 on:
-  push:
-    paths:
-      - '.github/workflows/platform-admission.yml'
-  pull_request:
-    paths:
-      - '.github/workflows/platform-admission.yml'
   workflow_call:
 permissions:
   contents: read
