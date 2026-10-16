@@ -2,6 +2,14 @@
 
 观察日期：2026-10-16（Asia/Shanghai）。源分支codex/agoraweave-tdd-rebuild-clean；原批次业务b4c825c及操作恢复／登录绑定3486fe2已提交，并在607def1合入已发布规范历史。恢复申请批次在该分支继续提交；规范同步不自动同步业务实现，也不表示其他分支测试通过。
 
+2026-10-16 最新执行状态：已按 ED-23 清理 SP 插件及其 marketplace、SK–SP 桥接、强制 hook、子模块和纯流程认证／收据平台；由 Codex 直接使用现有 SK 资料推进。原 285 个任务 ID 和 27 个历史勾选保留，业务代码与既有核心测试未因清理删除。旧未提交 bridge 事件及私有运行资料保存在 H 盘 private-backups/sp-removal-20261016，不是现行入口。
+
+服务配置已按原字节迁入 H 盘工作区 .agoraweave/local/dev/runtime；原 project、凭据和数据卷沿用，11 个官方服务健康。清理后保留 18 个 CI 辅助文件及 5 份工具测试。35 项工具测试、工作区全部类型检查与 lint 通过；最终 19 个目标／105 项真实核心测试全部通过，无失败、跳过或取消。首轮整组串行执行在服务组 55/62 项通过时触发旧 150 秒限时，保留原日志，改为逐目标执行后完整复测通过。核心最终日志为 reports/codex-direct-core-final.log；类型、lint、工具和健康日志同目录 codex-direct-*。
+
+独立新 agent 复检发现的原生 HTTPS 联合入口 P2 已修复：verify-release 同时开启服务 ingress 与原生 HTTPS，等待器按同一 run／attempt 的唯一平台版本 job 匹配。工作流 YAML、路径和本地 import 校验通过；本次未重新运行完整原生 Actions 矩阵或编译安装包，不把静态接线复核说成云端原生通过。最终复检结论以交付时的实际复核为准。
+
+当前前端优先事项：账号页面原型草稿已接入现有 docs/design/prototype/index.html（account-pages.css／js），尚未获用户明确验收。先完善并展示统一风格原型，用户通过后才调整生产页面。现有生产账号页面尚未按该草稿重做；不能把旧设备功能检查当作设计符合。真实短信仍暂缓。
+
 当前业务实现：
 
 - 0103修复AM02：邀请只能从unused初态建立，拒绝直接插入used／revoked／expired或附带消费事实；既有迁移未改写。
@@ -24,6 +32,6 @@
 
 日志在H:/Projects/AgoraWeave/development/reports：既有account-batch／refresh／auth系列保留；恢复批次使用account-recovery-lifecycle-green.log、account-recovery-final.log及account-recovery-session-regression-serial.log，失败诊断见account-recovery-requests.log与account-recovery-session-regression.log。源码仍在原工作树，运行／缓存／报告使用H盘。按本轮用户要求，旧套重复容器已删除，目前仅使用agoraweave-local-dev-0e2dc2a715c1这一套11个健康官方服务容器；原数据卷未执行不可逆删除。以后替换开发环境时仅保留当前最新一套项目开发容器。
 
-下一步：真实短信接入及验证按用户明确决定暂缓；继续公开challenge／verify协议与受控Auth连接、认证临时资料到期清理、账号结果未确认的恢复、换号／恢复／注销后续子批。按需在Actions构建开发包并复用热更新，本机只下载安装和实际运行。T033／T052–T064等完整任务保持未勾选，不以本切片代完整US1。
+下一步：先落实前述账号原型验收；等待验收可继续独立的公开challenge／verify协议与受控Auth连接、认证临时资料到期清理、换号／恢复／注销后端子批，真实短信按用户决定暂缓。按需在Actions构建开发包并复用热更新，本机只下载安装和实际运行。T033／T052–T064等完整任务保持未勾选，不以本切片代完整US1。
 
 历史资料：已提交业务检查点8fdfd19及4f58058、旧版本65项核心回归与Actions检查点、ED-22规则工具13项目标和27项回归只证明其原记录版本。本轮未重新开展历史红链认证或归档回读。现有27个完整任务勾选保留；规范同步后仍须核各分支当前源码、Git状态和适用测试结果。
