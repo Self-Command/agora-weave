@@ -14,8 +14,9 @@
     check: '<path d="m5 12 4 4L19 6"/>',file: '<path d="M14 3H5v18h14V8Zm0 0v5h5M8 12h8M8 16h5"/>',
   };
   const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
-  const pages = { login: '手机号登录',register: '邀请加入',otp: '验证码',security: '账号安全',recovery: '恢复申请' };
+  const pages = { login: '手机号登录',register: '邀请加入',otp: '验证码',security: '账号安全',recovery: '恢复申请',components: '基础组件' };
   const scenes = {
+    components: ['正常','加载中','空状态','网络失败','权限不足','目标不可用','提交中','结果未确认','不兼容'],
     login: ['正常','校验错误','服务不可用','请求过频','处理中'],
     register: ['正常','校验错误','邀请码无效','条款加载中','条款加载失败','条款已更新','服务不可用','处理中'],
     otp: ['正常','验证码错误','验证码过期','错误次数用尽','重发倒计时','请求过频','条款已更新','服务不可用','验证中'],
@@ -84,6 +85,14 @@
     group.innerHTML = `<div class="board-account-title">账号页面 · 待验收</div>${Object.entries(pages).map(([id,name]) => `<button class="board-page" data-account-page="${id}">${icon(id === 'security' ? 'shield' : 'phone')}<span>${name}</span></button>`).join('')}`;
     byId('board-pages').append(group);
   }
+  function components() {
+    const states = { '加载中': ['正在加载','正在读取当前内容，请稍候。'],'空状态': ['这里还没有内容','内容就绪后会显示在这里。'],
+      '网络失败': ['暂时无法连接','请检查网络后重试，输入已保留。'],'权限不足': ['暂时无法执行','当前账号不具备此操作资格。'],
+      '目标不可用': ['内容不可用','此内容当前无法查看。'],'提交中': ['正在提交','请等待本次提交结果。'],
+      '结果未确认': ['结果尚未确认','请先查询本次操作结果。'],'不兼容': ['暂不支持此功能','请使用兼容版本或返回继续使用其他功能。'] };
+    const entry = states[state.scene];
+    return `${intro('简单，一致，清楚','跨端基础组件的视觉参考。')}<div class="account-form"><div><label class="account-field-label" for="component-input">输入示例</label><div class="account-input-row"><input id="component-input" placeholder="写下你的想法" value="输入在失败后保留" aria-describedby="component-help"></div><p id="component-help" class="account-helper account-spaced">辅助说明与错误采用文字表达。</p></div>${entry ? `<div class="account-feedback" role="status">${icon(['加载中','提交中'].includes(state.scene) ? 'clock' : 'alert')}<div><strong>${entry[0]}</strong><p>${entry[1]}</p></div></div>` : '<div class="account-device-row"><div class="account-device-icon">'+icon('file')+'</div><div class="account-device-copy"><h3>清晰的内容层级</h3><p>主标题、正文与辅助信息，使用细分隔线组织。</p></div></div>'}<div class="account-actions">${action('component-preview',state.scene === '结果未确认' ? '查询操作结果' : state.scene === '网络失败' ? '重试' : '继续','account-primary',['加载中','提交中','权限不足','目标不可用','不兼容'].includes(state.scene))}${action('component-preview','返回','account-secondary')}</div></div>`;
+  }
   function phoneBackground(active) {
     ['app-header','app-screen','compose-fab'].forEach(id => { byId(id).inert = active; });
     document.querySelector('.tab-bar').inert = active;
@@ -102,8 +111,8 @@
     byId('prototype-scene-label').hidden = false;
     sceneSelect.innerHTML = scenes[state.page].map(scene => `<option${state.scene === scene ? ' selected' : ''}>${scene}</option>`).join('');
     byId('prototype-review-label').textContent = '账号原型 r2 · 待验收 · 全部为合成数据，无真实短信或账号操作';
-    const titles = { login: '登录',register: '邀请加入',otp: '验证码',security: '账号安全',recovery: '账号恢复' };
-    const content = { login,register,otp,security,recovery }[state.page]();
+    const titles = { login: '登录',register: '邀请加入',otp: '验证码',security: '账号安全',recovery: '账号恢复',components: '基础组件' };
+    const content = { login,register,otp,security,recovery,components }[state.page]();
     byId('app-layer').innerHTML = `<section class="layer account-prototype account-${state.page}" role="region" aria-label="${titles[state.page]}"><header class="native-header"><div class="header-left">${tap('back','返回','back')}</div><h2 class="native-title">${titles[state.page]}</h2><div class="header-right">${state.page === 'security' && state.scene !== '会话失效' ? tap('refresh','刷新设备列表','refresh') : tap('close','返回社区','close')}</div></header><div class="layer-body"><div class="account-content">${content}<p id="account-notice" class="account-live-notice" role="status">${escape(state.notice)}</p></div></div><div class="home-indicator" aria-hidden="true"></div></section>`;
     document.querySelectorAll('#board-pages .board-page').forEach(button => button.classList.toggle('selected',button.dataset.accountPage === state.page));
     if (focus) (document.querySelector('.account-prototype [aria-invalid="true"]') || document.querySelector('.account-intro h1'))?.focus();
@@ -181,6 +190,7 @@
     if (button.dataset.accountPage) { open(button.dataset.accountPage); return; }
     if (button.dataset.act === 'account-security') { open('security'); return; }
     const name = button.dataset.accountAction;
+    if (name === 'component-preview') return;
     if (pages[name]) { open(name); return; }
     if (name === 'close') { close(); return; }
     if (name === 'back') { if (state.page === 'recovery') open('security'); else if (state.page === 'otp') open(state.purpose); else if (state.page === 'register') open('login'); else close(); return; }
