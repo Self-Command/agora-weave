@@ -1,17 +1,5 @@
 name: Installed bridge tooling probe
 on:
-  push:
-    paths:
-      - '.github/workflows/tooling-bootstrap.yml'
-      - '.gitmodules'
-      - 'superpowers-v7'
-      - 'tools/ci/gates.ts'
-  pull_request:
-    paths:
-      - '.github/workflows/tooling-bootstrap.yml'
-      - '.gitmodules'
-      - 'superpowers-v7'
-      - 'tools/ci/gates.ts'
   workflow_call:
 permissions:
   contents: read
@@ -28,6 +16,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            infra/ci/toolchain-lock.json
       - name: Derive exact canonical task mapping and probe installed native commands
         shell: bash
         run: |
@@ -36,25 +28,17 @@ jobs:
           adapter="$RUNNER_TEMP/agoraweave-tooling-probe.md"
           trap 'rm -f "$adapter"' EXIT
           export PROBE_ADAPTER="$adapter"
-          node --input-type=module <<'NODE'
+          node --experimental-strip-types --input-type=module <<'NODE'
           import { readFileSync, writeFileSync } from 'node:fs';
           import { execFileSync } from 'node:child_process';
           import { createHash } from 'node:crypto';
+          import { deriveTaskAdapter } from './tools/ci/task-adapter.ts';
           const options = JSON.parse(readFileSync('.specify/init-options.json', 'utf8'));
           if (options.speckit_version !== '1.0.12') throw new Error('Unverified Spec Kit version');
           const tasks = readFileSync('specs/001-agoraweave-v1/tasks.md', 'utf8');
-          const lines = tasks.split(/\r?\n/).filter(line => /^- \[ \] T\d{3}\b/.test(line));
-          const ids = lines.map(line => line.match(/T\d{3}/)[0]);
-          if (!ids.length || new Set(ids).size !== ids.length) throw new Error('Invalid task mapping');
-          const context = ['.specify/memory/constitution.md', 'specs/001-agoraweave-v1/spec.md',
-            'specs/001-agoraweave-v1/plan.md', 'specs/001-agoraweave-v1/tasks.md'];
-          const adapter = '# Disposable native tool compatibility probe\n\nCanonical inputs: ' + context.join(', ') +
-            '\nAll project execution is GitHub-hosted Actions only. This synthetic probe completes no canonical task.\n\n' +
-            lines.map((line, index) => `### Task ${index + 1}: ${ids[index]}\n\n${line}\n\n` +
-              'Expected: current same-SHA Actions evidence; missing evidence refuses completion.\n' +
-              'Interface checks: actual reports, digests and applicable contract.\n' +
-              'Overall regression: every activated required target.\n').join('\n');
-          writeFileSync(process.env.PROBE_ADAPTER, adapter);
+          const derived = deriveTaskAdapter(tasks);
+          if (derived.state !== 'mapped') throw new Error('No valid pending task mapping');
+          writeFileSync(process.env.PROBE_ADAPTER, derived.adapter);
           const submodule = execFileSync('git', ['-C', 'superpowers-v7', 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
           if (submodule !== 'bb92a77741419a4ab5f06e711a283343f1ada0c3') throw new Error('Installed SP gitlink drift');
           writeFileSync('tooling-output/mapping.json', JSON.stringify({ source: 'github-actions',
@@ -64,7 +48,7 @@ jobs:
             check_set_digest: createHash('sha256').update(readFileSync('tools/ci/validation-manifest.json')).digest('hex'),
             toolchain_digest: createHash('sha256').update(readFileSync('infra/ci/toolchain-lock.json')).digest('hex'),
             spec_kit: options.speckit_version, superpowers: '7.0.0', superpowers_commit: submodule,
-            tasks_sha256: createHash('sha256').update(tasks).digest('hex'), mapping: ids.map((id, index) => ({ id, task: index + 1 })),
+            tasks_sha256: createHash('sha256').update(tasks).digest('hex'), mapping: derived.mapping,
             expected_completion: 'refused', readiness: 'not_evaluated' }, null, 2) + '\n');
           NODE
           scripts="$GITHUB_WORKSPACE/superpowers-v7/skills/executing-plans/scripts"
@@ -73,9 +57,14 @@ jobs:
           done
           workspace=$(bash superpowers-v7/skills/subagent-driven-development/scripts/sdd-workspace "$adapter")
           cp "$workspace/task-1-brief.md" tooling-output/first-brief.md
-          cp "$workspace/task-285-brief.md" tooling-output/last-brief.md
-          grep -q 'T001' tooling-output/first-brief.md
-          grep -q 'T285' tooling-output/last-brief.md
+          last=$(node -e 'const rows=JSON.parse(require("fs").readFileSync("tooling-output/mapping.json")).mapping; process.stdout.write(String(rows.at(-1).task))')
+          cp "$workspace/task-$last-brief.md" tooling-output/last-brief.md
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const rows = JSON.parse(readFileSync('tooling-output/mapping.json', 'utf8')).mapping;
+          if (!readFileSync('tooling-output/first-brief.md', 'utf8').includes(rows[0].id) ||
+              !readFileSync('tooling-output/last-brief.md', 'utf8').includes(rows.at(-1).id)) throw new Error('Native task brief mapping differs');
+          NODE
           grep -q 'Expected:' tooling-output/first-brief.md
           grep -q 'Interface checks:' tooling-output/first-brief.md
           grep -q 'Overall regression:' tooling-output/first-brief.md
