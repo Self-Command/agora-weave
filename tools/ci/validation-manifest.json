@@ -1175,6 +1175,13 @@
       "depends_on": [
         "supabase/migrations/0021_journal_unknown_and_restriction_facts.sql"
       ]
+    },
+    {
+      "file": "supabase/migrations/0023_archive_failure_closes_output.sql",
+      "depends_on": [
+        "supabase/migrations/0022_restore_watermark_guard.sql",
+        "supabase/migrations/0012_reliable_effects.sql"
+      ]
     }
   ],
   "core_fixture_files": [
