@@ -1,9 +1,14 @@
 # 执行边界（ED-22现行）
 
-依据宪法5.0.0及[ED-22](business-first-development-decision.md)，业务成果优先，继续使用 SP。
+依据宪法5.2.0及[ED-22](business-first-development-decision.md)，业务成果优先，继续使用 SP。
 原始工作树保留源码，H:/Projects/AgoraWeave/development 承担可配置运行、依赖、缓存、临时内容、产物和报告。
 
 ## 日常推进
+
+所有前端页面先在 `docs/design/prototype/index.html` 统一入口制作原型，沿用 UI-SPEC、token、
+现有原型的导航、主题及组件风格；用户明确验收该版原型后，才开发或调整对应生产页面。
+未通过只继续修改原型。原型可运行、测试或代理审查不代用户验收；HTML 原型不改变移动生产端
+Expo／React Native／Expo UI 路线，不采用先做移动网站再转 App 的方案。
 
 环境足以运行和测试当前功能后直接实施。按可用业务切片组织工作，不等待完整公共基础设施验收。
 先识别当前功能直接依赖；只有相关环境不可用或安全／数据边界未知才暂停其依赖部分。
