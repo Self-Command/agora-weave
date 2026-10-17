@@ -10,7 +10,9 @@ import {setTimeout,clearTimeout} from 'node:timers';
 const prefix='/core/api/v1',origins=new Set(['http://127.0.0.1:3000','http://localhost:3000']);
 const uuid='[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}';
 const routes=[
+  [/^\/feeds\/latest$/,['GET']], [new RegExp(`^/posts/${uuid}$`,'i'),['GET']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
+  [/^\/auth\/password(?:\/(captcha|forgot))?$/,['POST']],
   [new RegExp(`^/auth/operations/${uuid}$`,'i'),['POST']],
   [/^\/documents\/current$/,['GET']], [/^\/me\/sessions$/,['GET']],
   [new RegExp(`^/me/sessions/${uuid}$`,'i'),['DELETE']],
@@ -29,7 +31,7 @@ function target(raw) {
   const pathname=raw.split('?')[0];
   if(pathname.includes('%')||pathname.includes('//')||pathname.split('/').some(part=>part==='.'||part==='..')) return null;
   const path=pathname.slice(prefix.length),route=routes.find(([pattern])=>pattern.test(path));
-  return route?{path:raw,methods:route[1]}:null;
+  return route?{path:raw,methods:route[1],password:/^\/auth\/password(?:\/(captcha|forgot))?$/.test(path)}:null;
 }
 function bodyOf(request) {
   return new Promise((resolve,reject)=>{
@@ -75,6 +77,17 @@ export function createLocalCoreApi({environment,forward}) {
     if(duplicate(request,'authorization')||authorization!==undefined&&(typeof authorization!=='string'||authorization.length>8192||
       !/^Bearer [A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(authorization))||duplicate(request,'x-client-release')||
       release!==undefined&&(typeof release!=='string'||!/^[-\w.]{1,128}$/.test(release)))return fail(response,400,'INVALID_INPUT',origin);
+    const passwordHeaders={};
+    if(route.password) {
+      const proof=[['x-admin-password-time',/^\d{10}$/],['x-admin-password-nonce',new RegExp(`^${uuid}$`,'i')],['x-admin-password-signature',/^[a-f0-9]{64}$/]];
+      const present=proof.some(([name])=>request.headers[name]!==undefined);
+      if(present&&origin)return fail(response,403,'FORBIDDEN',origin);
+      for(const [name,pattern] of proof) {
+        const value=request.headers[name];
+        if(duplicate(request,name)||present&&(typeof value!=='string'||value.trim()!==value||!pattern.test(value)))return fail(response,400,'INVALID_INPUT',origin);
+        if(present)passwordHeaders[name]=value;
+      }
+    }
     const declared=request.headers['content-length'];
     if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>16384))return fail(response,413,'REQUEST_TOO_LARGE',origin);
     const writing=request.method==='POST'||request.method==='DELETE';
@@ -84,7 +97,7 @@ export function createLocalCoreApi({environment,forward}) {
     try {
       let body;
       if(writing)try{body=await bodyOf(request);}catch(status){return fail(response,Number(status),'INVALID_INPUT',origin);}
-      const headers={accept:'application/json','content-type':'application/json',...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{})};
+      const headers={accept:'application/json','content-type':'application/json',...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{}),...passwordHeaders};
       let timer;
       try {
         const result=await Promise.race([Promise.resolve().then(()=>forward({path:route.path,method:request.method,headers,body})),

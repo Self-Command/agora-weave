@@ -1012,7 +1012,7 @@
         "tests/contract/admin/management-bff-refresh.spec.ts",
         "tests/contract/admin/password-fallback.spec.ts"
       ],
-      "case_count": 32,
+      "case_count": 39,
       "requires_services": false
     },
     {
@@ -1041,10 +1041,25 @@
       ],
       "case_count": 4,
       "requires_services": true
+    },
+    {
+      "id": "core.discovery-mobile-client",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/discovery/mobile-client.spec.ts"
+      ],
+      "case_count": 6,
+      "requires_services": false
     }
   ],
-  "core_case_count": 367,
+  "core_case_count": 380,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0043_admin_identity_phone_guard_fix.sql",
+      "depends_on": [
+        "supabase/migrations/0041_admin_password_identity_guard.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0042_public_latest_feed.sql",
       "depends_on": [

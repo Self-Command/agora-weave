@@ -157,7 +157,8 @@ export async function main(options) {
       if (!runtime || !probeServices()) throw new Error('The existing official Supabase stack must be prepared and healthy before starting api');
       privateValues=Object.fromEntries(readFileSync(runtime.environment_file,'utf8').split(/\r?\n/)
         .filter(line=>/^[A-Z][A-Z0-9_]*=/.test(line)).map(line=>[line.slice(0,line.indexOf('=')),line.slice(line.indexOf('=')+1)]));
-      if (!/^[a-f0-9]{64}$/.test(privateValues.AGORAWEAVE_ADMIN_SESSION_KEY || '') || !privateValues.ANON_KEY)
+      if (!/^[a-f0-9]{64}$/.test(privateValues.AGORAWEAVE_ADMIN_SESSION_KEY || '') || !privateValues.ANON_KEY ||
+        !/^[a-f0-9]{64}$/.test(privateValues.CORE_ADMIN_PASSWORD_BFF_KEY || ''))
         throw new Error('Private admin session key is unavailable; explicitly prepare the Supabase configuration first');
     }
     const selected=['api','admin','metro'].filter(name=>services.includes(name));
@@ -183,8 +184,9 @@ export async function main(options) {
         env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development',
           ...(service === 'admin' ? connected ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW:'',
             AGORAWEAVE_ADMIN_CORE_API_URL:`http://127.0.0.1:${apiPort}/core/api/v1`,AGORAWEAVE_ADMIN_ENVIRONMENT:environment,
-            AGORAWEAVE_ADMIN_ANON_KEY:privateValues.ANON_KEY,AGORAWEAVE_ADMIN_SESSION_KEY:privateValues.AGORAWEAVE_ADMIN_SESSION_KEY } :
-            { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW:'1',AGORAWEAVE_ADMIN_CORE_API_URL:'',AGORAWEAVE_ADMIN_ENVIRONMENT:'',AGORAWEAVE_ADMIN_ANON_KEY:'',AGORAWEAVE_ADMIN_SESSION_KEY:'' } : {}),
+            AGORAWEAVE_ADMIN_ANON_KEY:privateValues.ANON_KEY,AGORAWEAVE_ADMIN_SESSION_KEY:privateValues.AGORAWEAVE_ADMIN_SESSION_KEY,
+            AGORAWEAVE_ADMIN_PASSWORD_BFF_KEY:privateValues.CORE_ADMIN_PASSWORD_BFF_KEY } :
+            { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW:'1',AGORAWEAVE_ADMIN_CORE_API_URL:'',AGORAWEAVE_ADMIN_ENVIRONMENT:'',AGORAWEAVE_ADMIN_ANON_KEY:'',AGORAWEAVE_ADMIN_SESSION_KEY:'',AGORAWEAVE_ADMIN_PASSWORD_BFF_KEY:'' } : {}),
           ...(service==='metro' ? {EXPO_PUBLIC_API_URL:connected ? `http://127.0.0.1:${apiPort}/core/api/v1` : ''} : {}),
           EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: 'false' } });
       const entry = { ...startProcess(config, resolve(directory, `${service}-${token}.out.log`), resolve(directory, `${service}-${token}.err.log`)),

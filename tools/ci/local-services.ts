@@ -86,6 +86,15 @@ export function prepareLocalServices() {
   currentPrivate=readFileSync(runtime.environment_file,'utf8');
   if (!/^AGORAWEAVE_ADMIN_SESSION_KEY=/m.test(currentPrivate))
     writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nAGORAWEAVE_ADMIN_SESSION_KEY='+random()+'\n',{mode:0o600});
+  currentPrivate=readFileSync(runtime.environment_file,'utf8');
+  if (!/^CORE_ADMIN_PASSWORD_BFF_KEY=/m.test(currentPrivate))
+    writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_ADMIN_PASSWORD_BFF_KEY='+random()+'\n',{mode:0o600});
+  currentPrivate=readFileSync(runtime.environment_file,'utf8');
+  if (!/^CORE_ADMIN_PASSWORD_AUTH_ENABLED=/m.test(currentPrivate))
+    writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_ADMIN_PASSWORD_AUTH_ENABLED=false\n',{mode:0o600});
+  currentPrivate=readFileSync(runtime.environment_file,'utf8');
+  if (!/^CORE_ADMIN_PASSWORD_BFF_KEY=[a-f0-9]{64}$/m.test(currentPrivate) ||
+    !/^CORE_ADMIN_PASSWORD_AUTH_ENABLED=(true|false)$/m.test(currentPrivate)) throw new Error('Invalid private administrator password configuration');
   const ingressSecret=readFileSync(runtime.environment_file,'utf8').match(/^CORE_INGRESS_TOKEN=([a-f0-9]{64})$/m)?.[1];
   if (!ingressSecret) throw new Error('Private ingress credential is unavailable');
   const ingressPath=resolve(runtime.directory,'auth-ingress.yaml');
