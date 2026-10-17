@@ -42,3 +42,26 @@ test('OP03: one command identifier reused for different actions cannot report an
     assert.doesNotMatch(response.body,/succeeded|unknown/);
   } finally { sql(`DELETE FROM core.operation WHERE operation_id='${command}' AND action='auth.logout';`); }
 });
+
+test('OP04: an actual recovery request has a current-owner operation lookup with an explicit unknown state and no private case details',()=>{
+  const recoveryCommand=randomUUID();
+  try {
+    const submitted=request('/recovery-cases',{method:'POST',token:token(),body:{mode:'manual',operation_id:recoveryCommand}});
+    assert.equal(submitted.status,202,submitted.body);
+    const result=get(recoveryCommand);assert.equal(result.status,200,result.body);
+    assert.deepEqual(result.data.data,{operation_id:recoveryCommand,action:'recovery.request',state:'succeeded'});
+    assert.doesNotMatch(result.body,/payload_hash|result_ref|session_id|account_ref|evidence|reviewer|created_at|updated_at/);
+    assert.equal(get(recoveryCommand,2).status,404);
+    assert.equal(get(recoveryCommand,1,{aud:'share-read'}).status,403);
+    sql(`UPDATE core.operation SET state='unknown' WHERE operation_id='${recoveryCommand}' AND action='recovery.request';`);
+    const unknown=get(recoveryCommand);assert.equal(unknown.status,200,unknown.body);
+    assert.deepEqual(unknown.data.data,{operation_id:recoveryCommand,action:'recovery.request',state:'unknown'});
+    sql(`UPDATE core.operation SET environment='production' WHERE operation_id='${recoveryCommand}' AND action='recovery.request';`);
+    assert.equal(get(recoveryCommand).status,404);
+    sql(`UPDATE core.operation SET environment='${environment}' WHERE operation_id='${recoveryCommand}' AND action='recovery.request';
+      INSERT INTO core.operation(actor,session_id,environment,action,operation_id,payload_hash,state)
+        VALUES('${account()}','${session()}','${environment}','session.revoke','${recoveryCommand}','${'c'.repeat(64)}','succeeded');`);
+    const ambiguous=get(recoveryCommand);assert.equal(ambiguous.status,409,ambiguous.body);
+    assert.equal(ambiguous.data.data,undefined);assert.doesNotMatch(ambiguous.body,/recovery.request|session.revoke|succeeded|unknown/);
+  } finally {sql(`DELETE FROM core.operation WHERE operation_id='${recoveryCommand}';`);}
+});

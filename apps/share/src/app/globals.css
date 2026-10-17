@@ -1,5 +1,9 @@
 :root { color-scheme: light dark; --background: #ffffff; --foreground: #18181b; }
 @media (prefers-color-scheme: dark) { :root { --background: #111113; --foreground: #f2f2f4; } }
 body { margin: 0; color: var(--foreground); background: var(--background); font-family: Arial, 'Microsoft YaHei UI', sans-serif; }
-main { min-height: 100svh; display: grid; place-content: center; padding: 1.5rem; }
-h1 { font-size: 1.4375rem; font-weight: 600; }
+.reading-state { padding:1.5rem 0; border-bottom:1px solid var(--state-line); }
+.reading-state p { color:var(--state-secondary); line-height:1.75; }
+.reading-state button { min-height:44px; min-width:44px; padding:.75rem 1.5rem; border:0; border-radius:22px; color:var(--background); background:var(--foreground); font:inherit; cursor:pointer; }
+.reading-state button:focus-visible { outline:2px solid var(--foreground); outline-offset:3px; }
+:root { --state-secondary:#60606c; --state-line:#eeeef1; }
+@media (prefers-color-scheme:dark) { :root { --state-secondary:#b0b0ba; --state-line:#242429; } }

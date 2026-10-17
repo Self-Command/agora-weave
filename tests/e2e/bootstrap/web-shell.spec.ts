@@ -5,6 +5,26 @@ const clients = [
   { name: 'share', url: 'http://127.0.0.1:3101', heading: 'AgoraWeave' },
 ] as const;
 
+test('retired share route retains framework metadata without claiming a product page', async ({ page }) => {
+  const response = await page.goto('http://127.0.0.1:3101');
+  expect(response?.status()).toBe(200);
+  await expect(page).toHaveTitle('AgoraWeave');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0);
+  await page.reload();
+  await expect(page).toHaveTitle('AgoraWeave');
+});
+
+test('production admin refuses access before real administrator identity and authorization exist', async ({ request }) => {
+  for (const path of ['/', '/dashboard/overview', '/api/products']) {
+    const response = await request.get('http://127.0.0.1:3100' + path, { maxRedirects: 0 });
+    expect(response.status()).toBe(403);
+  }
+});
+
+// Keep the original visual/a11y assertions for restoration against approved product pages.
+// The old heading-only surfaces were explicitly retired; these cases are not product passes.
+test.describe.skip('old presentation retired by user; visual coverage awaits approved product pages', () => {
 for (const client of clients) {
   for (const colorScheme of ['light', 'dark'] as const) {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 800 }]) {
@@ -59,3 +79,4 @@ for (const client of clients) {
     }
   }
 }
+});

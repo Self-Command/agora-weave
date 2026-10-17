@@ -1,19 +1,20 @@
 import { Platform, Pressable, StyleSheet, Text, useColorScheme } from 'react-native';
 import { Button, Host, Text as ComposeText } from '@expo/ui/jetpack-compose';
+import { themeFor } from '../../../../../packages/design/src/tokens';
 
 export function useAccountColors() {
-  return useColorScheme() === 'dark' ? { bg: '#111113',fg: '#f2f2f4',secondary: '#b0b0ba',surface: '#1c1c21',line: '#42424b',accent: '#a49df1',error: '#ffb4ab' }
-    : { bg: '#ffffff',fg: '#18181b',secondary: '#60606c',surface: '#f5f5f7',line: '#d4d4dc',accent: '#6965d8',error: '#b3261e' };
+  return themeFor(useColorScheme());
 }
 export function Action({ title,onPress,disabled = false }: { title: string; onPress: () => void; disabled?: boolean }) {
   const colors = useAccountColors();
-  if (Platform.OS === 'android') return <Host matchContents style={styles.action} seedColor={colors.accent}>
-    <Button enabled={!disabled} onClick={onPress} contentPadding={{ top: 14,bottom: 14,start: 24,end: 24 }}>
+  const colorScheme=useColorScheme()==='dark'?'dark':'light';
+  if (Platform.OS === 'android') return <Host matchContents style={styles.action} colorScheme={colorScheme}>
+    <Button enabled={!disabled} onClick={onPress} colors={{ containerColor:colors.fg,contentColor:colors.bg }} contentPadding={{ top: 14,bottom: 14,start: 24,end: 24 }}>
       <ComposeText>{title}</ComposeText>
     </Button>
   </Host>;
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress}
-    style={[styles.fallback,{ backgroundColor: colors.accent,opacity: disabled ? 0.5 : 1 }]}>
+    style={[styles.fallback,{ backgroundColor: colors.fg,opacity: disabled ? 0.5 : 1 }]}>
     <Text style={{ color: colors.bg,fontSize: 16,fontWeight: '600' }}>{title}</Text>
   </Pressable>;
 }

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { account, session, token, request, sql, rows } from '../../fixtures/core/runtime.ts';
 import { compose } from '../../../tools/ci/core-database.ts';
 
@@ -109,4 +110,17 @@ test('CP08: the actual function runtime has a dedicated non-bypass role and no i
   }
   assert.equal(compose(['exec', '-T', 'functions', 'bash', '-c',
     'if [[ "${SUPABASE_DB_URL-}" == *"://postgres:"* || -n "${SUPABASE_SERVICE_ROLE_KEY-}" ]]; then printf high_privilege; else printf restricted; fi']), 'restricted');
+});
+
+test('CP09: a read sanction on a transitive source hides the entire quote until the current restriction ends',()=>{
+  const sanction=randomUUID();
+  assert.equal(read(2,2).status,200);assert.equal(read(4,2).status,200);
+  try {
+    sql(`INSERT INTO core.sanction(id,target,type,functions,starts_at,reason,state) VALUES
+      ('${sanction}','${resource(2)}','function',ARRAY['read'],clock_timestamp(),'Synthetic dependent read restriction','active');`);
+    deny(read(2,2));deny(read(4,2));
+    const direct=JSON.parse(sql(`SELECT core.resource_action_result('${account(2)}','${session(2)}','${resource(4)}','media.read','read');`).trim());
+    assert.equal(direct.code,'NOT_FOUND');
+  } finally {sql(`UPDATE core.sanction SET state='revoked' WHERE id='${sanction}';`);}
+  assert.equal(read(4,2).status,200);
 });

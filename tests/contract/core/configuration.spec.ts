@@ -38,12 +38,26 @@ test('CFG01: a complete registered bundle resolves one version with global envir
 
 test('CFG02: equal-priority group conflicts fail regardless of input order instead of silently selecting one', () => {
   assert.equal(resolveConfiguration(input()).state, 'resolved');
-  const value = input();
-  value.bundle.scope_values.push({ scope: 'user_group', environment: 'test', owner: 'core', group: 'a', priority: 4, values: { 'content.page_size': 25 } } as never,
-    { scope: 'user_group', environment: 'test', owner: 'core', group: 'b', priority: 4, values: { 'content.page_size': 30 } } as never);
-  assert.equal(resolveConfiguration(value).state, 'blocked');
-  value.bundle.scope_values.reverse();
-  assert.equal(resolveConfiguration(value).state, 'blocked');
+  const competing = [
+    { scope: 'user_group', environment: 'test', owner: 'core', group: 'a', priority: 4, values: { 'content.page_size': 25 } },
+    { scope: 'user_group', environment: 'test', owner: 'core', group: 'b', priority: 4, values: { 'content.page_size': 30 } },
+    { scope: 'user_group', environment: 'test', owner: 'core', group: 'a', priority: 5, values: { 'content.page_size': 40 } },
+  ];
+  for (const order of [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]]) {
+    const value = input();
+    value.bundle.scope_values.push(...order.map(index => competing[index]) as never[]);
+    assert.equal(resolveConfiguration(value).state, 'blocked', `Conflicts remain invalid in order ${order}`);
+  }
+  const shadowed = input();
+  shadowed.bundle.scope_values.push(competing[2] as never,
+    { scope: 'environment', environment: 'test', values: { 'content.page_size': 25 } } as never,
+    { scope: 'environment', environment: 'test', values: { 'content.page_size': 30 } } as never);
+  assert.equal(resolveConfiguration(shadowed).state, 'blocked', 'A user group cannot conceal environment conflicts');
+  const equivalent = input();
+  equivalent.definitions.push(definition('content.settings',{ first: 1, second: 2 },{ type: 'object' }));
+  Object.assign(equivalent.bundle.scope_values[0].values, { 'content.settings': { first: 1, second: 2 } });
+  equivalent.bundle.scope_values.push({ scope: 'global', values: { 'content.settings': { second: 2, first: 1 } } } as never);
+  assert.equal(resolveConfiguration(equivalent).state, 'resolved', 'JSON object property order does not create a conflict');
 });
 
 test('CFG03: incomplete definitions unknown keys illegal scope and invalid JSON schema values block the whole bundle', () => {
@@ -55,6 +69,7 @@ test('CFG03: incomplete definitions unknown keys illegal scope and invalid JSON 
     (v: ReturnType<typeof input>) => { Object.assign(v.bundle.scope_values[0].values, { 'unregistered.key': true }); },
     (v: ReturnType<typeof input>) => { v.bundle.scope_values[0].scope = 'tenant'; },
     (v: ReturnType<typeof input>) => { v.bundle.scope_values[0].values['content.page_size'] = '20' as never; },
+    (v: ReturnType<typeof input>) => { delete (v.bundle.scope_values[0].values as Partial<typeof v.bundle.scope_values[0]['values']>)['content.page_size']; },
   ]) { const value = input(); change(value); assert.equal(resolveConfiguration(value).state, 'blocked'); }
 });
 

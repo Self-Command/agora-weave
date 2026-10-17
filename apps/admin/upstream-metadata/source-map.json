@@ -1,0 +1,3209 @@
+{
+  "repository": "https://github.com/Kiranism/next-shadcn-dashboard-starter",
+  "commit": "7705dfc0d13889e45c26a55ad5908da6a7a9a605",
+  "tree": "7ac574a2d4c2145c938e2f4ab5739320d551f7a0",
+  "files": [
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/SKILL.md",
+      "upstream_sha256": "2ab9df216b849f1963f1249dac3bf24d012967abb66a763d4428d86c52b9ddc6",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/references/charts-guide.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/charts-guide.md",
+      "upstream_sha256": "eb877e2d9af5beb86903bdb6327fa1c859647a88095d6bcdd06a48eab1ec565d",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/charts-guide.md"
+    },
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/references/forms-guide.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/forms-guide.md",
+      "upstream_sha256": "cff74179fafd341606e05cec9c1afd17af195bd0127d51607f9f5b25c22a914c",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/forms-guide.md"
+    },
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/references/mock-api-guide.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/mock-api-guide.md",
+      "upstream_sha256": "c5975f7f443c7cf94ef54154d32857db5c98def93cf8747ed87acdb0a9c7db76",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/mock-api-guide.md"
+    },
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/references/query-abstractions.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/query-abstractions.md",
+      "upstream_sha256": "8aa68ba73b4968ab3b7adf3025c30e536f3aa85cac6c2ed9bbabd5fc324ba499",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/query-abstractions.md"
+    },
+    {
+      "upstream_path": ".agents/skills/kiranism-shadcn-dashboard/references/theming-guide.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/theming-guide.md",
+      "upstream_sha256": "79f99477a5f1abf5805f504f317ebd5cee3b6bf4a6208244495c5f4ee380fe9a",
+      "original_path": "upstream-metadata/originals/.agents/skills/kiranism-shadcn-dashboard/references/theming-guide.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/SKILL.md",
+      "upstream_sha256": "dd00692365ffada4c432152bf945c13fc6c2d078c4d3fdd99081eb428048c409",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/async-patterns.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/async-patterns.md",
+      "upstream_sha256": "7a79abac906e9cf06544994a056fd4c64b4eed50d3023ddb9f179f76005b7445",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/async-patterns.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/bundling.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/bundling.md",
+      "upstream_sha256": "8bb37e99b0420b7a764ab3c8e17e4115203fe543de72d62138acf61a3daa79f8",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/bundling.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/data-patterns.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/data-patterns.md",
+      "upstream_sha256": "17821070cdf826791f224d5c80a19e3e37afcab7f69565b27ec76aca2569ccc7",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/data-patterns.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/debug-tricks.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/debug-tricks.md",
+      "upstream_sha256": "080c1f5f5d3c86e55048f065fe822588bca61c399f388bde08d2b9a9785a4b7a",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/debug-tricks.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/directives.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/directives.md",
+      "upstream_sha256": "fa386c3d391b86dd8b5ffe96ff3440326deda72ddd1ed2f442d7a343bfdf9054",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/directives.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/error-handling.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/error-handling.md",
+      "upstream_sha256": "8f33ec1ad8052b8fd88207caa051cf256f790995994ee0ce2f41b087dcfd24f1",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/error-handling.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/file-conventions.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/file-conventions.md",
+      "upstream_sha256": "c3c5188abc96f33bbbec0082696ac650c9d04389653ad20800c93a57522f6376",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/file-conventions.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/font.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/font.md",
+      "upstream_sha256": "040717fae8d6c90e7eda77c21a0df16b45972022e29e2b2834bc25c1a0a36e07",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/font.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/functions.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/functions.md",
+      "upstream_sha256": "e90bd9658384a909c467e2294793484321a49463237232dc0eb02e02ac761e63",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/functions.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/hydration-error.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/hydration-error.md",
+      "upstream_sha256": "9d38cad6233e9d9cd47611ee9e382d5e73b3217c3a744e4e24f36406a57794d9",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/hydration-error.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/image.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/image.md",
+      "upstream_sha256": "2cf06813030355d773d9261542f7544593b70bb9a5ef0c3364fa3c96ac0711ec",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/image.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/metadata.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/metadata.md",
+      "upstream_sha256": "a873d6951f449789e39ebddf7deb8152df28a7e81c09ac70b3bc9c646083b143",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/metadata.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/parallel-routes.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/parallel-routes.md",
+      "upstream_sha256": "6c5055342b26eac335eb9498fcba3b88cfa959df4b347a49de4d0b823aaa8877",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/parallel-routes.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/route-handlers.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/route-handlers.md",
+      "upstream_sha256": "5781bdb9e3c2780bddbc23619c8c87c8630660a59ab011199ad24bea49f2fbfc",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/route-handlers.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/rsc-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/rsc-boundaries.md",
+      "upstream_sha256": "0e37685d95b6f57c83b85710525ec1f7db43799a6653e737c3be29a9b30374c7",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/rsc-boundaries.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/runtime-selection.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/runtime-selection.md",
+      "upstream_sha256": "915ea408caae597e1ea5aa11f99a4389b3c76794e54512efe9cd378f3446ef40",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/runtime-selection.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/scripts.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/scripts.md",
+      "upstream_sha256": "6c02f93027a4e46cb5a194b4e3a6d7b2df177eb91438bed6ebacb5e52fecf12a",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/scripts.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/self-hosting.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/self-hosting.md",
+      "upstream_sha256": "8b8b8192b0c57c0c6eeb89d5c50fca8e702a87c8e144d654e8c2779106a130d5",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/self-hosting.md"
+    },
+    {
+      "upstream_path": ".agents/skills/next-best-practices/suspense-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/next-best-practices/suspense-boundaries.md",
+      "upstream_sha256": "54bc818132825e3b7ddec937dbc0c714299753c70586f76970971769bc3effea",
+      "original_path": "upstream-metadata/originals/.agents/skills/next-best-practices/suspense-boundaries.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/SKILL.md",
+      "upstream_sha256": "a45cddd4511f8262df05b20506f4d52be8210a9ee05a13d9e36d4ee321bab593",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/agents/openai.yml",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/agents/openai.yml",
+      "upstream_sha256": "35db91b1eef58b2abe01da9b88577de5a44e233b740cd93d692ddeeadd2afe4d",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/agents/openai.yml"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/assets/shadcn-small.png",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/assets/shadcn-small.png",
+      "upstream_sha256": "0ecc62d682727f68fc4937eed19960c706714fa084d44f63028d611ae02bf3d7",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/assets/shadcn-small.png"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/assets/shadcn.png",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/assets/shadcn.png",
+      "upstream_sha256": "7d60ad6fec4d89a0d44ba5a3c9283d2fea0047af5467f9227040e20d927d39b7",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/assets/shadcn.png"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/cli.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/cli.md",
+      "upstream_sha256": "a381e35bf36fe7bb851952c13707e01e82434fd7a4a4e53f6df26c6370838904",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/cli.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/customization.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/customization.md",
+      "upstream_sha256": "84c1d47168c4b8adb5840e4af30a4e373ae3377c1110478c8974f398dd63f5ba",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/customization.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/evals/evals.json",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/evals/evals.json",
+      "upstream_sha256": "58aca2760b0cc5265bb575f76cd8eed344b88544314b8cb2cd53e0b8007dc936",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/evals/evals.json"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/mcp.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/mcp.md",
+      "upstream_sha256": "8d696b4e45b7d0e337367248513bd9acebe8f3bcfd7b748c775e5a337c8f38c8",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/mcp.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/registry.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/registry.md",
+      "upstream_sha256": "4f239be36bd2b58e17047db1ca80ab7da00e15a8b73242e5e4d50d113c4caa05",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/registry.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/base-vs-radix.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/base-vs-radix.md",
+      "upstream_sha256": "2b2deb47d004285220c1fc6b38bb2edc2d0ccbcdafd031b0b189d5d8ed0d1ba8",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/base-vs-radix.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/chat.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/chat.md",
+      "upstream_sha256": "fcbc4eb29a3998fa3e24e9f7f1cbb2b9f33e98cb5b66a153eeccdb74e78f9612",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/chat.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/composition.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/composition.md",
+      "upstream_sha256": "012d2a44373766fd9c13059ac1b971581fbe3982f2b1e92186a963c9990cfdcf",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/composition.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/forms.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/forms.md",
+      "upstream_sha256": "29593e14381e34626f8e0e9c15c59f3394b92a0623af6a6ec94585400123853c",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/forms.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/icons.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/icons.md",
+      "upstream_sha256": "d4a58266648872d9ee07d0c2368843a1cb88b8253b7f528dd7bda9d68b6c2535",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/icons.md"
+    },
+    {
+      "upstream_path": ".agents/skills/shadcn/rules/styling.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/styling.md",
+      "upstream_sha256": "47bd2c3b6216b96af0ab169063a83dfef7f80c58536cf69445a6f4d22753326c",
+      "original_path": "upstream-metadata/originals/.agents/skills/shadcn/rules/styling.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-form/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-form/SKILL.md",
+      "upstream_sha256": "7acb0728ff3dbe1b8a15e53255befb67d7dfcb5667b3ef1c54af2c9aa8b0e1dd",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-form/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-query/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-query/SKILL.md",
+      "upstream_sha256": "00626bc12d96de11d443b333b98433d18053508e3eefb108bcbac3097404970b",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-query/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-query/resources/cache-strategies.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/cache-strategies.md",
+      "upstream_sha256": "f0edf0d73e43ff458cf1481ee7d036e1cb5466bba95a06012c825ff336b1af19",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/cache-strategies.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-query/resources/data-fetching.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/data-fetching.md",
+      "upstream_sha256": "7c0b6e36b224ba97cda8d123893e078f948c625dd6a7bf297f23a71e5f67d7a6",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/data-fetching.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-query/resources/mutation-patterns.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/mutation-patterns.md",
+      "upstream_sha256": "13927ae5bae1d3a0bd114c97eab1a2d821767ec28a5391d96f5c62dafb7d8714",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-query/resources/mutation-patterns.md"
+    },
+    {
+      "upstream_path": ".agents/skills/tanstack-query/skill-rules-fragment.json",
+      "imported_path": "upstream-metadata/originals/.agents/skills/tanstack-query/skill-rules-fragment.json",
+      "upstream_sha256": "cf12acb2dd14528e88d968d3474bc5cb21a84e186664c1444c40a6d3a40a1587",
+      "original_path": "upstream-metadata/originals/.agents/skills/tanstack-query/skill-rules-fragment.json"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/AGENTS.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/AGENTS.md",
+      "upstream_sha256": "146b9d15166bae507e7659f7e3ea43cf96b76f0992ae05efc8de4dde73462d54",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/AGENTS.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/README.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/README.md",
+      "upstream_sha256": "85915a43a6f0b4efe525e3cf6398dd866166da2025837c4460468a24a940da94",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/README.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/SKILL.md",
+      "upstream_sha256": "53d3156e8e76f3e16b264d6a596a93390b559825502646a898beaaa5e45ec0eb",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/_sections.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/_sections.md",
+      "upstream_sha256": "a174213b87e6911e2b766995a2cbaf8d1534057076e82fb79fe3f0ecb38047df",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/_sections.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/_template.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/_template.md",
+      "upstream_sha256": "587f7d16b0660eb61fee4a4d3d7df2b3077d6835de170602c7d6e60bee559131",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/_template.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "upstream_sha256": "d2057a6b3731250408ee96c5f118c91df64987cc114ea3ec97f651891ac53e3f",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/architecture-compound-components.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/architecture-compound-components.md",
+      "upstream_sha256": "66457a50a4490ae0d00a1520a923822a9ba30caeaabf07277a159b44b0f69948",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/architecture-compound-components.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md",
+      "upstream_sha256": "27ccad7c02df6434c0bad812e15194be86e3350928e566574525097f249f0323",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md",
+      "upstream_sha256": "ede8c73d3af024a70b840ecc8efa69e2b0c42c950e044b8453557e3ddcc24bde",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/react19-no-forwardref.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/react19-no-forwardref.md",
+      "upstream_sha256": "21800956a042623552f9724d41bd2eddcae3ce5caeec0bc59fb7861e333728bc",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/react19-no-forwardref.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/state-context-interface.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-context-interface.md",
+      "upstream_sha256": "e12d76b03ffbc7345d25f018247552b97e2868368c2321a32e72757783b26792",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-context-interface.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/state-decouple-implementation.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-decouple-implementation.md",
+      "upstream_sha256": "edf04ef7999e5f7a463536c801bb2cb3af73489f87cd77f24dc1c9850d9fbb1d",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-decouple-implementation.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-composition-patterns/rules/state-lift-state.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-lift-state.md",
+      "upstream_sha256": "d234211deba5f2180262c872f1f69092b2dbb5aa76986ad102b31b7bde473ec7",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-composition-patterns/rules/state-lift-state.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/AGENTS.md",
+      "upstream_sha256": "2fe527956c39421a44ec5c471c657bf6b508de0fbc8e8696e8174e617788d95b",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/AGENTS.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/README.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/README.md",
+      "upstream_sha256": "3e655903c32e4b0d0f65d0124d594d992ad1447e3b3fe6df6c149a979c54f97e",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/README.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/SKILL.md",
+      "upstream_sha256": "1ae78d98a5e4431deeadab37354446c4b60db8977c8ba66e2a68ffa7152dd08c",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/SKILL.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/_sections.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/_sections.md",
+      "upstream_sha256": "01c59969e4e867f0708c8f8ef9c6d87fab9a07d0586244f429ff84013db8a115",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/_sections.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/_template.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/_template.md",
+      "upstream_sha256": "fee4f1bc27a105bd82662c259018e6a2d115b01d355ca04b8ee72ccaf6c7e434",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/_template.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md",
+      "upstream_sha256": "9457f3e30de24fadd858c8dc260cf5a0f5de0d5bd994b8c20dfa5427a9187c4d",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/advanced-init-once.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-init-once.md",
+      "upstream_sha256": "9e41179610d597081728d4f8102506e7ccee06a9c027caf1552d4ab5b3ed042f",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-init-once.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/advanced-use-latest.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-use-latest.md",
+      "upstream_sha256": "d2ae80ee214769a403b939d8385286e3cee2352ce7ed5af9c1b02d0fc521c8dd",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/advanced-use-latest.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/async-api-routes.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-api-routes.md",
+      "upstream_sha256": "242c9d7a00ba5083c12c233a64108755f7c6ef59925a7c50dcb436f0b1edd3f8",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-api-routes.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/async-defer-await.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-defer-await.md",
+      "upstream_sha256": "25e779b155a764780643b4f7ca96770ecf76aaad7421d66664d4fe6fbb3b18d5",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-defer-await.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/async-dependencies.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-dependencies.md",
+      "upstream_sha256": "e0f88f3f3a10c7aba33fc6e0c6848ea88bbdef66166ac16a69d0cee2a1b94c67",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-dependencies.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/async-parallel.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-parallel.md",
+      "upstream_sha256": "7faedef899d93d30cb03c0508bfa15190edbed7855c6bf88c1b1400e236a728c",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-parallel.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md",
+      "upstream_sha256": "6fae5c16cc3f84e96ed7a20c063d7561ad5368feebca758f2b70600dbd9076d4",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md",
+      "upstream_sha256": "bcf2bad42ddd42ba9e272e3fb119c7cedbc3894874e1386f050e21958ed0396e",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/bundle-conditional.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-conditional.md",
+      "upstream_sha256": "0bc06eb12a712410d5943b849ac4a70fa498ecf5ce4a7c1ee3e0181737f5dbed",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-conditional.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md",
+      "upstream_sha256": "910ce6212a5b1846aef60f679179140af88e4bb266a711133dd6a8bdd28ac90a",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md",
+      "upstream_sha256": "afd4de5bdd7293df676da87630d494210d58dee03f78f25434a950cea7d47dce",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/bundle-preload.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-preload.md",
+      "upstream_sha256": "8c50148668c30f59ab9a65b1dd4bc1498426c85990fb0ac5922af53a27345863",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/bundle-preload.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/client-event-listeners.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-event-listeners.md",
+      "upstream_sha256": "9a7b759ed386742c24182040e46c16d23ab72d528c8d9aa6d961b278a456a499",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-event-listeners.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "upstream_sha256": "dc9fc731b6d64617f6f074ceb5fe8bfd5339bd32b1d1fe3c7fd2bce1288e1902",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md",
+      "upstream_sha256": "150f0687e51f4448cf2fba1e622249a9dfd04e34c73df60feb262a1cee07ea7c",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "upstream_sha256": "8ad50393ebf4ff649a748b88a6655ca5c48352e299c403901e238d2049f015c4",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/client-swr-dedup.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-batch-dom-css.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-batch-dom-css.md",
+      "upstream_sha256": "1cdd085823ac67f05befdb627b033614d054ab6a83038eb0324a293d36211055",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-batch-dom-css.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-cache-function-results.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-function-results.md",
+      "upstream_sha256": "f0942105ba394eb6d42b421bd5c1929e9fef9a27bfe41608e6c91e299260abc2",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-function-results.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-cache-property-access.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-property-access.md",
+      "upstream_sha256": "7bdf71639e95132223ebf4309580a4a8979e2a9c6d0551409843d0eea81f8117",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-property-access.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "upstream_sha256": "a2562a5d6855ecfd57132adaa09880011f6199020de417628fd0c57821f7db39",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-cache-storage.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-combine-iterations.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-combine-iterations.md",
+      "upstream_sha256": "8f054989560a25f72d53f202443d5fc2ff79375aaff881f7966fd4d9fa223ecb",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-combine-iterations.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-early-exit.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-early-exit.md",
+      "upstream_sha256": "8ab3f2655171beb4dbe0cb7f4a8fffcc9df20be2dd0a285a39f00a200ff44072",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-early-exit.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "upstream_sha256": "046a287a88aeeadb002fbc590d459c8f12920ccc0c2d335228ea469bd9cc4b5f",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-flatmap-filter.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-hoist-regexp.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-hoist-regexp.md",
+      "upstream_sha256": "ed394d4bb875f1d5edfa35327f60fbb2f14939640b25cf276a702563a716f51c",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-hoist-regexp.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "upstream_sha256": "3534dfd74d5ae9d9b5989d74f5dd5a88db80be1c3cda87b8eeec7bc9feea847d",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-index-maps.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-length-check-first.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-length-check-first.md",
+      "upstream_sha256": "e5efeb8ff1ddad9286e4ae842ef42a517925ee03edb46e9c2a5a794d9e077ea9",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-length-check-first.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-min-max-loop.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-min-max-loop.md",
+      "upstream_sha256": "beb6df30fab6d299169d27693da43201d1999010b778fe743679860ae8a03af5",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-min-max-loop.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-set-map-lookups.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-set-map-lookups.md",
+      "upstream_sha256": "a7fd781a6ba9ad49065961b6f9a90ef486bf6b648390e1a08704025f98e1642b",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-set-map-lookups.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md",
+      "upstream_sha256": "62dc2921621cfe50b377979b0cf0118d9284fc73f92d88e89baccf8fecd76692",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-activity.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-activity.md",
+      "upstream_sha256": "2b6eae1cea6e563bf9ae06533fce6d97412d2761c3f6baa045052fab64abdb56",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-activity.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "upstream_sha256": "9e3f2c3251275895de1924861c3b7afc376b88b64bb1e0d3864695cc07b2c2ef",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-conditional-render.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-conditional-render.md",
+      "upstream_sha256": "fcd5e34c9c5a8e4d8d338795962e29c6b7fa5e72d5c78a91553639dcd5cf22ce",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-conditional-render.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-content-visibility.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-content-visibility.md",
+      "upstream_sha256": "e60b65fee43ff160d5120045042be2b6cd003f1b4965f5ad0dbae36ec39e2dd0",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-content-visibility.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "upstream_sha256": "95015be928f18093e054c6f40953e0f0989ccc5fcd06f50fa547ecac4ecc5374",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "upstream_sha256": "961bde1f2cf45eb8f4f1e97480a3ec5608b80c7d585068b8b4b86e08ce975f02",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "upstream_sha256": "f2ca794aa650534f31f4c94ef75ff0002edaee56207950297743300a568072f9",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-resource-hints.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-resource-hints.md",
+      "upstream_sha256": "42f3b6d0fe62c5ff0e594ad1985e84929fe3aebf4d24cb3a96b8dca0ce79b2ca",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-resource-hints.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md",
+      "upstream_sha256": "c646fa3de737c23a5bf11ca209c8b3c6126100677258e2dec42a857021f87605",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-svg-precision.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-svg-precision.md",
+      "upstream_sha256": "ed468533f6e95f622859c884b122cf21f9f593ed6bb3d500a54de4b9f9bcb9fb",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-svg-precision.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md",
+      "upstream_sha256": "9ac7c316921bbcffd9a581861040e43ef0ff231c904d5b03e1c0331c60dba1cc",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "upstream_sha256": "37f18cd455ceff8e37e01cb5b9e567f515f11c91a5ca98b52e3415af953d7e2c",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-dependencies.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-dependencies.md",
+      "upstream_sha256": "25aa43d6aaf40cb1edb97d36eb8684678c929560934c9731d50ac602284fe93a",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-dependencies.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "upstream_sha256": "6739d9fd6fcc6b75c4d625148d0d2500703570d9949f01dd82e9f6a3622a37a2",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-derived-state.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-derived-state.md",
+      "upstream_sha256": "19008f006a98222d8ef26324138b4e66e46ec0a309c91e02e4462624bfb05e52",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-derived-state.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md",
+      "upstream_sha256": "eee97f073a757b0448cc76aebbfaff8bbcab1e06de4423b60114bd9adc7c48ca",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "upstream_sha256": "95d223feb3ff4c7c7475d58a11017fe5c8ef9107ff978cf0c24357f40f9b5d4b",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "upstream_sha256": "97044a6c30973672df6be20cbcd7e1e3582ca7550a46b661021c3ade93759354",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "upstream_sha256": "bd1f0d21b55e68685468d883d8e6d385a6f8feb8fcd9628066ac4144d7087ba6",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-memo.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md",
+      "upstream_sha256": "2b4c32822c552ac5f6aec6c71d13be412a6234a0108df2a2ef337423354e3771",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md",
+      "upstream_sha256": "36db8bb48ab9a93086215729e94e796849fc2645216c72dd6ca01c11cdfad1f7",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "upstream_sha256": "147dfd4acab2c64f20ab9f0476e966d9445abebbcc400eb51dd407037e1bc998",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md",
+      "upstream_sha256": "31ac6e7d9198b0d530f4ad1a556131b3726c9d935750a63ce98fa0bd2f055415",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-transitions.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-transitions.md",
+      "upstream_sha256": "10d4af57b01ccf89c40f6ebf4235254eafe2cb2b8945f6fbcf572e4a7eb0a56e",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-transitions.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md",
+      "upstream_sha256": "10646f9b6ac88da8e1bac9bad9972a70736ee8a488ace743438a127bc7f90b77",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "upstream_sha256": "e3ee81310ac342563e324887af261febe44ddf57600976946ad1a627c0908b3d",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-after-nonblocking.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-after-nonblocking.md",
+      "upstream_sha256": "e32ab4a518f25bd8848561ac84a8db42bcf766972c6342ce5209da21674522db",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-after-nonblocking.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "upstream_sha256": "944714b1b23fb629b11938c47e5d8d528243a016ed65a6cc9954134d32e90fcf",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-auth-actions.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-cache-lru.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-cache-lru.md",
+      "upstream_sha256": "c2df0bb5e8d58c23b48a98aa2964613d58fc9398057c3ed04db6eb84a1fbc25e",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-cache-lru.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-cache-react.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-cache-react.md",
+      "upstream_sha256": "c39479a986592cf2d98033a5db18b4220be2ebe34be72a3caf094172b21b917b",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-cache-react.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-dedup-props.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-dedup-props.md",
+      "upstream_sha256": "13b4bb95bcc12d8ed2b714dc2caa879f981e60e97d37c96e7ec2d711f9436240",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-dedup-props.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "upstream_sha256": "dc360147eeacb7bbc147485ca21ff1fc57dc343e4c61639f5c3054f88c3b3f7a",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-parallel-fetching.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-parallel-fetching.md",
+      "upstream_sha256": "cd68caf2eb3946f12bd236c5a4e668e03dd3e7a54acf8d84bd54a199126d6018",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-parallel-fetching.md"
+    },
+    {
+      "upstream_path": ".agents/skills/vercel-react-best-practices/rules/server-serialization.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-serialization.md",
+      "upstream_sha256": "b11b92cbe3720f404ecf7712528493ba0da87bd4f77ae7bfecd18b461165ca85",
+      "original_path": "upstream-metadata/originals/.agents/skills/vercel-react-best-practices/rules/server-serialization.md"
+    },
+    {
+      "upstream_path": ".agents/skills/web-design-guidelines/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.agents/skills/web-design-guidelines/SKILL.md",
+      "upstream_sha256": "c2bd6243267c97f5a735156649e17422233fe1c081c2556cb398e2362b12e936",
+      "original_path": "upstream-metadata/originals/.agents/skills/web-design-guidelines/SKILL.md"
+    },
+    {
+      "upstream_path": ".claude/skills/kiranism-shadcn-dashboard/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/kiranism-shadcn-dashboard/SKILL.md",
+      "upstream_sha256": "503d8005d63ba6034dcf786e441c0bf38614356749f94fd50e3d60c047e497d0",
+      "original_path": "upstream-metadata/originals/.claude/skills/kiranism-shadcn-dashboard/SKILL.md"
+    },
+    {
+      "upstream_path": ".claude/skills/kiranism-shadcn-dashboard/references/theming-guide.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/kiranism-shadcn-dashboard/references/theming-guide.md",
+      "upstream_sha256": "79f99477a5f1abf5805f504f317ebd5cee3b6bf4a6208244495c5f4ee380fe9a",
+      "original_path": "upstream-metadata/originals/.claude/skills/kiranism-shadcn-dashboard/references/theming-guide.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/SKILL.md",
+      "upstream_sha256": "dd00692365ffada4c432152bf945c13fc6c2d078c4d3fdd99081eb428048c409",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/SKILL.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/async-patterns.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/async-patterns.md",
+      "upstream_sha256": "7a79abac906e9cf06544994a056fd4c64b4eed50d3023ddb9f179f76005b7445",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/async-patterns.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/bundling.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/bundling.md",
+      "upstream_sha256": "8bb37e99b0420b7a764ab3c8e17e4115203fe543de72d62138acf61a3daa79f8",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/bundling.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/data-patterns.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/data-patterns.md",
+      "upstream_sha256": "17821070cdf826791f224d5c80a19e3e37afcab7f69565b27ec76aca2569ccc7",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/data-patterns.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/debug-tricks.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/debug-tricks.md",
+      "upstream_sha256": "080c1f5f5d3c86e55048f065fe822588bca61c399f388bde08d2b9a9785a4b7a",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/debug-tricks.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/directives.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/directives.md",
+      "upstream_sha256": "fa386c3d391b86dd8b5ffe96ff3440326deda72ddd1ed2f442d7a343bfdf9054",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/directives.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/error-handling.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/error-handling.md",
+      "upstream_sha256": "8f33ec1ad8052b8fd88207caa051cf256f790995994ee0ce2f41b087dcfd24f1",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/error-handling.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/file-conventions.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/file-conventions.md",
+      "upstream_sha256": "c3c5188abc96f33bbbec0082696ac650c9d04389653ad20800c93a57522f6376",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/file-conventions.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/font.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/font.md",
+      "upstream_sha256": "040717fae8d6c90e7eda77c21a0df16b45972022e29e2b2834bc25c1a0a36e07",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/font.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/functions.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/functions.md",
+      "upstream_sha256": "e90bd9658384a909c467e2294793484321a49463237232dc0eb02e02ac761e63",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/functions.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/hydration-error.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/hydration-error.md",
+      "upstream_sha256": "9d38cad6233e9d9cd47611ee9e382d5e73b3217c3a744e4e24f36406a57794d9",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/hydration-error.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/image.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/image.md",
+      "upstream_sha256": "2cf06813030355d773d9261542f7544593b70bb9a5ef0c3364fa3c96ac0711ec",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/image.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/metadata.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/metadata.md",
+      "upstream_sha256": "a873d6951f449789e39ebddf7deb8152df28a7e81c09ac70b3bc9c646083b143",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/metadata.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/parallel-routes.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/parallel-routes.md",
+      "upstream_sha256": "6c5055342b26eac335eb9498fcba3b88cfa959df4b347a49de4d0b823aaa8877",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/parallel-routes.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/route-handlers.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/route-handlers.md",
+      "upstream_sha256": "5781bdb9e3c2780bddbc23619c8c87c8630660a59ab011199ad24bea49f2fbfc",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/route-handlers.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/rsc-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/rsc-boundaries.md",
+      "upstream_sha256": "0e37685d95b6f57c83b85710525ec1f7db43799a6653e737c3be29a9b30374c7",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/rsc-boundaries.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/runtime-selection.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/runtime-selection.md",
+      "upstream_sha256": "915ea408caae597e1ea5aa11f99a4389b3c76794e54512efe9cd378f3446ef40",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/runtime-selection.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/scripts.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/scripts.md",
+      "upstream_sha256": "6c02f93027a4e46cb5a194b4e3a6d7b2df177eb91438bed6ebacb5e52fecf12a",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/scripts.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/self-hosting.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/self-hosting.md",
+      "upstream_sha256": "8b8b8192b0c57c0c6eeb89d5c50fca8e702a87c8e144d654e8c2779106a130d5",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/self-hosting.md"
+    },
+    {
+      "upstream_path": ".claude/skills/next-best-practices/suspense-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/next-best-practices/suspense-boundaries.md",
+      "upstream_sha256": "54bc818132825e3b7ddec937dbc0c714299753c70586f76970971769bc3effea",
+      "original_path": "upstream-metadata/originals/.claude/skills/next-best-practices/suspense-boundaries.md"
+    },
+    {
+      "upstream_path": ".claude/skills/shadcn",
+      "imported_path": "upstream-metadata/originals/.claude/skills/shadcn",
+      "upstream_sha256": "572ec2c773258e635701c6e95381c2029f25d0e9ac4139d4c902cfe3265ce966",
+      "original_path": "upstream-metadata/originals/.claude/skills/shadcn"
+    },
+    {
+      "upstream_path": ".claude/skills/tanstack-form",
+      "imported_path": "upstream-metadata/originals/.claude/skills/tanstack-form",
+      "upstream_sha256": "47590335f7e9d81f61173d9d698fbf85033ea5577119f1c14f417836392f056f",
+      "original_path": "upstream-metadata/originals/.claude/skills/tanstack-form"
+    },
+    {
+      "upstream_path": ".claude/skills/tanstack-query",
+      "imported_path": "upstream-metadata/originals/.claude/skills/tanstack-query",
+      "upstream_sha256": "51759cc30052786bb0495acfff4be06ea8b837834d375bc7aebec84ed01a14d9",
+      "original_path": "upstream-metadata/originals/.claude/skills/tanstack-query"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/AGENTS.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/AGENTS.md",
+      "upstream_sha256": "146b9d15166bae507e7659f7e3ea43cf96b76f0992ae05efc8de4dde73462d54",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/AGENTS.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/README.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/README.md",
+      "upstream_sha256": "85915a43a6f0b4efe525e3cf6398dd866166da2025837c4460468a24a940da94",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/README.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/SKILL.md",
+      "upstream_sha256": "53d3156e8e76f3e16b264d6a596a93390b559825502646a898beaaa5e45ec0eb",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/SKILL.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/_sections.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/_sections.md",
+      "upstream_sha256": "a174213b87e6911e2b766995a2cbaf8d1534057076e82fb79fe3f0ecb38047df",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/_sections.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/_template.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/_template.md",
+      "upstream_sha256": "587f7d16b0660eb61fee4a4d3d7df2b3077d6835de170602c7d6e60bee559131",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/_template.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md",
+      "upstream_sha256": "d2057a6b3731250408ee96c5f118c91df64987cc114ea3ec97f651891ac53e3f",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/architecture-avoid-boolean-props.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/architecture-compound-components.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/architecture-compound-components.md",
+      "upstream_sha256": "66457a50a4490ae0d00a1520a923822a9ba30caeaabf07277a159b44b0f69948",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/architecture-compound-components.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md",
+      "upstream_sha256": "27ccad7c02df6434c0bad812e15194be86e3350928e566574525097f249f0323",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/patterns-children-over-render-props.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md",
+      "upstream_sha256": "ede8c73d3af024a70b840ecc8efa69e2b0c42c950e044b8453557e3ddcc24bde",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/patterns-explicit-variants.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/react19-no-forwardref.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/react19-no-forwardref.md",
+      "upstream_sha256": "21800956a042623552f9724d41bd2eddcae3ce5caeec0bc59fb7861e333728bc",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/react19-no-forwardref.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/state-context-interface.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-context-interface.md",
+      "upstream_sha256": "e12d76b03ffbc7345d25f018247552b97e2868368c2321a32e72757783b26792",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-context-interface.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/state-decouple-implementation.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-decouple-implementation.md",
+      "upstream_sha256": "edf04ef7999e5f7a463536c801bb2cb3af73489f87cd77f24dc1c9850d9fbb1d",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-decouple-implementation.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-composition-patterns/rules/state-lift-state.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-lift-state.md",
+      "upstream_sha256": "d234211deba5f2180262c872f1f69092b2dbb5aa76986ad102b31b7bde473ec7",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-composition-patterns/rules/state-lift-state.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/AGENTS.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/AGENTS.md",
+      "upstream_sha256": "2fe527956c39421a44ec5c471c657bf6b508de0fbc8e8696e8174e617788d95b",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/AGENTS.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/README.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/README.md",
+      "upstream_sha256": "3e655903c32e4b0d0f65d0124d594d992ad1447e3b3fe6df6c149a979c54f97e",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/README.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/SKILL.md",
+      "upstream_sha256": "1ae78d98a5e4431deeadab37354446c4b60db8977c8ba66e2a68ffa7152dd08c",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/SKILL.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/_sections.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/_sections.md",
+      "upstream_sha256": "01c59969e4e867f0708c8f8ef9c6d87fab9a07d0586244f429ff84013db8a115",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/_sections.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/_template.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/_template.md",
+      "upstream_sha256": "fee4f1bc27a105bd82662c259018e6a2d115b01d355ca04b8ee72ccaf6c7e434",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/_template.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md",
+      "upstream_sha256": "9457f3e30de24fadd858c8dc260cf5a0f5de0d5bd994b8c20dfa5427a9187c4d",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/advanced-init-once.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-init-once.md",
+      "upstream_sha256": "9e41179610d597081728d4f8102506e7ccee06a9c027caf1552d4ab5b3ed042f",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-init-once.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/advanced-use-latest.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-use-latest.md",
+      "upstream_sha256": "d2ae80ee214769a403b939d8385286e3cee2352ce7ed5af9c1b02d0fc521c8dd",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/advanced-use-latest.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/async-api-routes.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-api-routes.md",
+      "upstream_sha256": "242c9d7a00ba5083c12c233a64108755f7c6ef59925a7c50dcb436f0b1edd3f8",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-api-routes.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/async-defer-await.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-defer-await.md",
+      "upstream_sha256": "25e779b155a764780643b4f7ca96770ecf76aaad7421d66664d4fe6fbb3b18d5",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-defer-await.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/async-dependencies.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-dependencies.md",
+      "upstream_sha256": "e0f88f3f3a10c7aba33fc6e0c6848ea88bbdef66166ac16a69d0cee2a1b94c67",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-dependencies.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/async-parallel.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-parallel.md",
+      "upstream_sha256": "7faedef899d93d30cb03c0508bfa15190edbed7855c6bf88c1b1400e236a728c",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-parallel.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md",
+      "upstream_sha256": "6fae5c16cc3f84e96ed7a20c063d7561ad5368feebca758f2b70600dbd9076d4",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md",
+      "upstream_sha256": "bcf2bad42ddd42ba9e272e3fb119c7cedbc3894874e1386f050e21958ed0396e",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/bundle-conditional.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-conditional.md",
+      "upstream_sha256": "0bc06eb12a712410d5943b849ac4a70fa498ecf5ce4a7c1ee3e0181737f5dbed",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-conditional.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md",
+      "upstream_sha256": "910ce6212a5b1846aef60f679179140af88e4bb266a711133dd6a8bdd28ac90a",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md",
+      "upstream_sha256": "afd4de5bdd7293df676da87630d494210d58dee03f78f25434a950cea7d47dce",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/bundle-preload.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-preload.md",
+      "upstream_sha256": "8c50148668c30f59ab9a65b1dd4bc1498426c85990fb0ac5922af53a27345863",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/bundle-preload.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/client-event-listeners.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-event-listeners.md",
+      "upstream_sha256": "9a7b759ed386742c24182040e46c16d23ab72d528c8d9aa6d961b278a456a499",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-event-listeners.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "upstream_sha256": "dc9fc731b6d64617f6f074ceb5fe8bfd5339bd32b1d1fe3c7fd2bce1288e1902",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-localstorage-schema.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md",
+      "upstream_sha256": "150f0687e51f4448cf2fba1e622249a9dfd04e34c73df60feb262a1cee07ea7c",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "upstream_sha256": "8ad50393ebf4ff649a748b88a6655ca5c48352e299c403901e238d2049f015c4",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/client-swr-dedup.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-batch-dom-css.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-batch-dom-css.md",
+      "upstream_sha256": "1cdd085823ac67f05befdb627b033614d054ab6a83038eb0324a293d36211055",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-batch-dom-css.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-cache-function-results.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-function-results.md",
+      "upstream_sha256": "f0942105ba394eb6d42b421bd5c1929e9fef9a27bfe41608e6c91e299260abc2",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-function-results.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-cache-property-access.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-property-access.md",
+      "upstream_sha256": "7bdf71639e95132223ebf4309580a4a8979e2a9c6d0551409843d0eea81f8117",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-property-access.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "upstream_sha256": "a2562a5d6855ecfd57132adaa09880011f6199020de417628fd0c57821f7db39",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-cache-storage.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-combine-iterations.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-combine-iterations.md",
+      "upstream_sha256": "8f054989560a25f72d53f202443d5fc2ff79375aaff881f7966fd4d9fa223ecb",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-combine-iterations.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-early-exit.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-early-exit.md",
+      "upstream_sha256": "8ab3f2655171beb4dbe0cb7f4a8fffcc9df20be2dd0a285a39f00a200ff44072",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-early-exit.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "upstream_sha256": "046a287a88aeeadb002fbc590d459c8f12920ccc0c2d335228ea469bd9cc4b5f",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-flatmap-filter.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-hoist-regexp.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-hoist-regexp.md",
+      "upstream_sha256": "ed394d4bb875f1d5edfa35327f60fbb2f14939640b25cf276a702563a716f51c",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-hoist-regexp.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "upstream_sha256": "3534dfd74d5ae9d9b5989d74f5dd5a88db80be1c3cda87b8eeec7bc9feea847d",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-index-maps.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-length-check-first.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-length-check-first.md",
+      "upstream_sha256": "e5efeb8ff1ddad9286e4ae842ef42a517925ee03edb46e9c2a5a794d9e077ea9",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-length-check-first.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-min-max-loop.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-min-max-loop.md",
+      "upstream_sha256": "beb6df30fab6d299169d27693da43201d1999010b778fe743679860ae8a03af5",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-min-max-loop.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-set-map-lookups.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-set-map-lookups.md",
+      "upstream_sha256": "a7fd781a6ba9ad49065961b6f9a90ef486bf6b648390e1a08704025f98e1642b",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-set-map-lookups.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md",
+      "upstream_sha256": "62dc2921621cfe50b377979b0cf0118d9284fc73f92d88e89baccf8fecd76692",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-activity.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-activity.md",
+      "upstream_sha256": "2b6eae1cea6e563bf9ae06533fce6d97412d2761c3f6baa045052fab64abdb56",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-activity.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "upstream_sha256": "9e3f2c3251275895de1924861c3b7afc376b88b64bb1e0d3864695cc07b2c2ef",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-conditional-render.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-conditional-render.md",
+      "upstream_sha256": "fcd5e34c9c5a8e4d8d338795962e29c6b7fa5e72d5c78a91553639dcd5cf22ce",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-conditional-render.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-content-visibility.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-content-visibility.md",
+      "upstream_sha256": "e60b65fee43ff160d5120045042be2b6cd003f1b4965f5ad0dbae36ec39e2dd0",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-content-visibility.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "upstream_sha256": "95015be928f18093e054c6f40953e0f0989ccc5fcd06f50fa547ecac4ecc5374",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "upstream_sha256": "961bde1f2cf45eb8f4f1e97480a3ec5608b80c7d585068b8b4b86e08ce975f02",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "upstream_sha256": "f2ca794aa650534f31f4c94ef75ff0002edaee56207950297743300a568072f9",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-resource-hints.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-resource-hints.md",
+      "upstream_sha256": "42f3b6d0fe62c5ff0e594ad1985e84929fe3aebf4d24cb3a96b8dca0ce79b2ca",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-resource-hints.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md",
+      "upstream_sha256": "c646fa3de737c23a5bf11ca209c8b3c6126100677258e2dec42a857021f87605",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-svg-precision.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-svg-precision.md",
+      "upstream_sha256": "ed468533f6e95f622859c884b122cf21f9f593ed6bb3d500a54de4b9f9bcb9fb",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-svg-precision.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md",
+      "upstream_sha256": "9ac7c316921bbcffd9a581861040e43ef0ff231c904d5b03e1c0331c60dba1cc",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "upstream_sha256": "37f18cd455ceff8e37e01cb5b9e567f515f11c91a5ca98b52e3415af953d7e2c",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-defer-reads.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-dependencies.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-dependencies.md",
+      "upstream_sha256": "25aa43d6aaf40cb1edb97d36eb8684678c929560934c9731d50ac602284fe93a",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-dependencies.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "upstream_sha256": "6739d9fd6fcc6b75c4d625148d0d2500703570d9949f01dd82e9f6a3622a37a2",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-derived-state.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-derived-state.md",
+      "upstream_sha256": "19008f006a98222d8ef26324138b4e66e46ec0a309c91e02e4462624bfb05e52",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-derived-state.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md",
+      "upstream_sha256": "eee97f073a757b0448cc76aebbfaff8bbcab1e06de4423b60114bd9adc7c48ca",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "upstream_sha256": "95d223feb3ff4c7c7475d58a11017fe5c8ef9107ff978cf0c24357f40f9b5d4b",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "upstream_sha256": "97044a6c30973672df6be20cbcd7e1e3582ca7550a46b661021c3ade93759354",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "upstream_sha256": "bd1f0d21b55e68685468d883d8e6d385a6f8feb8fcd9628066ac4144d7087ba6",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-memo.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md",
+      "upstream_sha256": "2b4c32822c552ac5f6aec6c71d13be412a6234a0108df2a2ef337423354e3771",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md",
+      "upstream_sha256": "36db8bb48ab9a93086215729e94e796849fc2645216c72dd6ca01c11cdfad1f7",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "upstream_sha256": "147dfd4acab2c64f20ab9f0476e966d9445abebbcc400eb51dd407037e1bc998",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md",
+      "upstream_sha256": "31ac6e7d9198b0d530f4ad1a556131b3726c9d935750a63ce98fa0bd2f055415",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-transitions.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-transitions.md",
+      "upstream_sha256": "10d4af57b01ccf89c40f6ebf4235254eafe2cb2b8945f6fbcf572e4a7eb0a56e",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-transitions.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md",
+      "upstream_sha256": "10646f9b6ac88da8e1bac9bad9972a70736ee8a488ace743438a127bc7f90b77",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "upstream_sha256": "e3ee81310ac342563e324887af261febe44ddf57600976946ad1a627c0908b3d",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-after-nonblocking.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-after-nonblocking.md",
+      "upstream_sha256": "e32ab4a518f25bd8848561ac84a8db42bcf766972c6342ce5209da21674522db",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-after-nonblocking.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "upstream_sha256": "944714b1b23fb629b11938c47e5d8d528243a016ed65a6cc9954134d32e90fcf",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-auth-actions.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-cache-lru.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-cache-lru.md",
+      "upstream_sha256": "c2df0bb5e8d58c23b48a98aa2964613d58fc9398057c3ed04db6eb84a1fbc25e",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-cache-lru.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-cache-react.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-cache-react.md",
+      "upstream_sha256": "c39479a986592cf2d98033a5db18b4220be2ebe34be72a3caf094172b21b917b",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-cache-react.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-dedup-props.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-dedup-props.md",
+      "upstream_sha256": "13b4bb95bcc12d8ed2b714dc2caa879f981e60e97d37c96e7ec2d711f9436240",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-dedup-props.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "upstream_sha256": "dc360147eeacb7bbc147485ca21ff1fc57dc343e4c61639f5c3054f88c3b3f7a",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-hoist-static-io.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-parallel-fetching.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-parallel-fetching.md",
+      "upstream_sha256": "cd68caf2eb3946f12bd236c5a4e668e03dd3e7a54acf8d84bd54a199126d6018",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-parallel-fetching.md"
+    },
+    {
+      "upstream_path": ".claude/skills/vercel-react-best-practices/rules/server-serialization.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-serialization.md",
+      "upstream_sha256": "b11b92cbe3720f404ecf7712528493ba0da87bd4f77ae7bfecd18b461165ca85",
+      "original_path": "upstream-metadata/originals/.claude/skills/vercel-react-best-practices/rules/server-serialization.md"
+    },
+    {
+      "upstream_path": ".claude/skills/web-design-guidelines/SKILL.md",
+      "imported_path": "upstream-metadata/originals/.claude/skills/web-design-guidelines/SKILL.md",
+      "upstream_sha256": "c2bd6243267c97f5a735156649e17422233fe1c081c2556cb398e2362b12e936",
+      "original_path": "upstream-metadata/originals/.claude/skills/web-design-guidelines/SKILL.md"
+    },
+    {
+      "upstream_path": ".dockerignore",
+      "imported_path": ".dockerignore",
+      "upstream_sha256": "6eaee722616dca86735d0101e0b8e9306759d044fcc5d3fe149554322127f06c"
+    },
+    {
+      "upstream_path": ".github/FUNDING.yml",
+      "imported_path": "upstream-metadata/originals/.github/FUNDING.yml",
+      "upstream_sha256": "2876d160bba6c3e3cdb3e8e4e97140d98111f72e5bea66ed5d50a63a76e0c1ad",
+      "original_path": "upstream-metadata/originals/.github/FUNDING.yml"
+    },
+    {
+      "upstream_path": ".gitignore",
+      "imported_path": "upstream-metadata/originals/.gitignore",
+      "upstream_sha256": "cc3ff426151f18d6b7a87ed13e2c3d87b196458fef3ac86ce2f8baa32ac2da28",
+      "original_path": "upstream-metadata/originals/.gitignore"
+    },
+    {
+      "upstream_path": ".husky/pre-commit",
+      "imported_path": "upstream-metadata/originals/.husky/pre-commit",
+      "upstream_sha256": "e2b7c9733375d7182af2033bda9a7d2a05d0db5eef5be53d26eb7b5f3df8fbc3",
+      "original_path": "upstream-metadata/originals/.husky/pre-commit"
+    },
+    {
+      "upstream_path": ".husky/pre-push",
+      "imported_path": "upstream-metadata/originals/.husky/pre-push",
+      "upstream_sha256": "dbe8a9e2c64d84bd2d8ce1e2a7a2c9f7065a368739b34bd88dd7bb4e233b7e94",
+      "original_path": "upstream-metadata/originals/.husky/pre-push"
+    },
+    {
+      "upstream_path": ".npmrc",
+      "imported_path": "upstream-metadata/originals/.npmrc",
+      "upstream_sha256": "e81591150b713114437c841dcd83cabc46ebaf34a75243a3e0271ab5331ce922",
+      "original_path": "upstream-metadata/originals/.npmrc"
+    },
+    {
+      "upstream_path": ".nvmrc",
+      "imported_path": "upstream-metadata/originals/.nvmrc",
+      "upstream_sha256": "f14b4987904bcb5814e4459a057ed4d20f58a633152288a761214dcd28780b56",
+      "original_path": "upstream-metadata/originals/.nvmrc"
+    },
+    {
+      "upstream_path": ".oxfmtrc.json",
+      "imported_path": ".oxfmtrc.json",
+      "upstream_sha256": "24e449da787f8fa2838f0e7c8a40b821f7876a2647294a360cbdc7607e2e177f"
+    },
+    {
+      "upstream_path": ".oxlintrc.json",
+      "imported_path": ".oxlintrc.json",
+      "upstream_sha256": "e4cb48a738de8b33d90c1657b4fee4e36c527b8647896c1aa9641fa8b8fd7b43"
+    },
+    {
+      "upstream_path": ".vercelignore",
+      "imported_path": ".vercelignore",
+      "upstream_sha256": "4a97614bd153f0c16716bdfd87bc713a93b187e44da9c3faa17255145e7cc619"
+    },
+    {
+      "upstream_path": ".vscode/launch.json",
+      "imported_path": "upstream-metadata/originals/.vscode/launch.json",
+      "upstream_sha256": "6b1a553bd1174c413b79da40311285417bfc9ed4958a4139ec837675993f9762",
+      "original_path": "upstream-metadata/originals/.vscode/launch.json"
+    },
+    {
+      "upstream_path": "AGENTS.md",
+      "imported_path": "upstream-metadata/originals/AGENTS.md",
+      "upstream_sha256": "9f7c1db0806b69336b1362462b23a62c5fd67cebd3660b22cd7d6b89501ee7c3",
+      "original_path": "upstream-metadata/originals/AGENTS.md"
+    },
+    {
+      "upstream_path": "CLAUDE.md",
+      "imported_path": "upstream-metadata/originals/CLAUDE.md",
+      "upstream_sha256": "fe96cab6f3f379fa82abee955af77cafe878438aea7fb4912d59db3df4790dff",
+      "original_path": "upstream-metadata/originals/CLAUDE.md"
+    },
+    {
+      "upstream_path": "Dockerfile",
+      "imported_path": "Dockerfile",
+      "upstream_sha256": "fbb164126dc497ae64b850553f5387c4e4d79a70dc8f61dc29b11452b2080309"
+    },
+    {
+      "upstream_path": "Dockerfile.bun",
+      "imported_path": "Dockerfile.bun",
+      "upstream_sha256": "ab3573d2aa4f34b96b2bc3d7b1cd8aebb3dcb55b9de71fcebb1c849d2848ae45"
+    },
+    {
+      "upstream_path": "LICENSE",
+      "imported_path": "LICENSE",
+      "upstream_sha256": "05646aa1de2bce8773ee583fc10c2c2cdcb8cabc67cb12aaa2a2e4d6cca46c1c"
+    },
+    {
+      "upstream_path": "README.md",
+      "imported_path": "README.md",
+      "upstream_sha256": "7fbcf427ef68a7202078811f418edd888e619169737d38420cf388dd31b99e63"
+    },
+    {
+      "upstream_path": "bun.lock",
+      "imported_path": "bun.lock",
+      "upstream_sha256": "7d309ea8acbe80c83ffba159f73ed97d58cc981835dd3a22ead4c265d41ac698"
+    },
+    {
+      "upstream_path": "bunfig.toml",
+      "imported_path": "bunfig.toml",
+      "upstream_sha256": "aef007e5c83f0dab127c1a2f3c99752bc2b713087e1346029b98d94ee4f2b2d9"
+    },
+    {
+      "upstream_path": "components.json",
+      "imported_path": "components.json",
+      "upstream_sha256": "5812427a7237c9254225a56fb4d6d76d506bdbb3c15c43942fd6add181731285",
+      "original_path": "upstream-metadata/originals/components.json",
+      "adapted": true
+    },
+    {
+      "upstream_path": "docs/clerk_setup.md",
+      "imported_path": "docs/clerk_setup.md",
+      "upstream_sha256": "3f7d316cd2ce1a0487e0f5ac8085bed7a598de48af4de8202ee7b72c40704024"
+    },
+    {
+      "upstream_path": "docs/deployment.md",
+      "imported_path": "docs/deployment.md",
+      "upstream_sha256": "b44b942c6a7c280d5ec18bc81572afbb0fbcc32b65b66f05304f137036a00596"
+    },
+    {
+      "upstream_path": "docs/forms.md",
+      "imported_path": "docs/forms.md",
+      "upstream_sha256": "e780e12f9f15ddbbf4bdeafe54d1a8331227ae22f3911560a0dc30df4fdec57f"
+    },
+    {
+      "upstream_path": "docs/nav-rbac.md",
+      "imported_path": "docs/nav-rbac.md",
+      "upstream_sha256": "e7874558b0b6a6c0823e30ee56b25855d6973ae808d0b2973836c02487616660"
+    },
+    {
+      "upstream_path": "docs/themes.md",
+      "imported_path": "docs/themes.md",
+      "upstream_sha256": "65a489daf4c865adfdbd901948e7acd7f6cb86eb0f1ef5135792dff3fc2d38f3"
+    },
+    {
+      "upstream_path": "env.example.txt",
+      "imported_path": "env.example.txt",
+      "upstream_sha256": "ebb32bbea4191a07c792c6fc2d87361ecae249b72c31c3fd41df7d0fad078936"
+    },
+    {
+      "upstream_path": "next.config.ts",
+      "imported_path": "next.config.ts",
+      "upstream_sha256": "facdf53dac5ee64088d04771bfdfba8d964ba068c899bee89ffa24ad9c1115fb",
+      "original_path": "upstream-metadata/originals/next.config.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "package.json",
+      "imported_path": "package.json",
+      "upstream_sha256": "0723ed40dd8164098ebae0a770590cf4a3f76d08179800f02ed76399d8bd1d69",
+      "original_path": "upstream-metadata/originals/package.json",
+      "adapted": true
+    },
+    {
+      "upstream_path": "postcss.config.js",
+      "imported_path": "postcss.config.js",
+      "upstream_sha256": "c06158288a5b1bdbc759a8f32f6bf18bc10c4794dd096db4194ee358e9be4a05"
+    },
+    {
+      "upstream_path": "public/robots.txt",
+      "imported_path": "public/robots.txt",
+      "upstream_sha256": "bc69f70ae502bdad59a75d8c45f42099e5fd2d5ca68b3b9af019a530c8cb5200"
+    },
+    {
+      "upstream_path": "public/shadcn-dashboard.png",
+      "imported_path": "public/shadcn-dashboard.png",
+      "upstream_sha256": "539600369b46487471f1dd02f0ff7facb9d3d30f80cf6530b71e01adac96598b"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/app/dashboard/page.tsx",
+      "imported_path": "scripts/cleanup-templates/clerk/src/app/dashboard/page.tsx",
+      "upstream_sha256": "1246635ba612f00f0586919151ad023d2d31529ee1765b8a9dcac658694abc67"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/app/page.tsx",
+      "imported_path": "scripts/cleanup-templates/clerk/src/app/page.tsx",
+      "upstream_sha256": "38651f73730685f698e03be9a5048b2d3c531a297258f64a882f6e4491207724"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/components/layout/app-sidebar.tsx",
+      "imported_path": "scripts/cleanup-templates/clerk/src/components/layout/app-sidebar.tsx",
+      "upstream_sha256": "40be08461fd8242554982ccc115e33c71276f21572ccf136fbc777285e27ee22"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/components/layout/providers.tsx",
+      "imported_path": "scripts/cleanup-templates/clerk/src/components/layout/providers.tsx",
+      "upstream_sha256": "5c2e91a462a0b24a015d2e4c4ba6bc546363c5cea75edb85c37cb0882cc9c3f7"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/components/layout/user-nav.tsx",
+      "imported_path": "scripts/cleanup-templates/clerk/src/components/layout/user-nav.tsx",
+      "upstream_sha256": "2bdc52d63f0450251c99fdfc25750e8f1eeea838e8a071c76e0f4fbaf216a562"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/config/infoconfig.ts",
+      "imported_path": "scripts/cleanup-templates/clerk/src/config/infoconfig.ts",
+      "upstream_sha256": "cbccee86d8b604b3e6c257860ff8539c4b7d3124c986556497db1a403b014853"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/hooks/use-nav.ts",
+      "imported_path": "scripts/cleanup-templates/clerk/src/hooks/use-nav.ts",
+      "upstream_sha256": "ad0cbe9247f620fa88aff833912b1c7146ec82c7e81bccc03a22b3691f6dc635"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/clerk/src/proxy.ts",
+      "imported_path": "scripts/cleanup-templates/clerk/src/proxy.ts",
+      "upstream_sha256": "0f19eabb1f862eadf012fe8c0e709f260329d915c6e7bf18c00501c56bdd703c"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/sentry/next.config.ts",
+      "imported_path": "scripts/cleanup-templates/sentry/next.config.ts",
+      "upstream_sha256": "8f4797f387f21b04566303dddefa7382b8e38aae99fc779d2e9bf08b956807b2"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/sentry/src/app/dashboard/overview/@bar_stats/error.tsx",
+      "imported_path": "scripts/cleanup-templates/sentry/src/app/dashboard/overview/@bar_stats/error.tsx",
+      "upstream_sha256": "f0f4180f53299017b429dad4428281592adbb3375c2f64e465de426481774d6e"
+    },
+    {
+      "upstream_path": "scripts/cleanup-templates/sentry/src/app/global-error.tsx",
+      "imported_path": "scripts/cleanup-templates/sentry/src/app/global-error.tsx",
+      "upstream_sha256": "981d47b322f981d0df46a9a613686ffea1d6a6fefca84154bb1ceb8638d29b5c"
+    },
+    {
+      "upstream_path": "scripts/cleanup.js",
+      "imported_path": "scripts/cleanup.js",
+      "upstream_sha256": "af70872d9c06ce9b68b3dd0375d61960a407a75d1abb41bc22a9e717020b34aa"
+    },
+    {
+      "upstream_path": "skills-lock.json",
+      "imported_path": "upstream-metadata/originals/skills-lock.json",
+      "upstream_sha256": "af447c2806f79f42b122304d0e52f71e004ab94a5a3ac1fb6130d84b41821f69",
+      "original_path": "upstream-metadata/originals/skills-lock.json"
+    },
+    {
+      "upstream_path": "src/app/api/products/[id]/route.ts",
+      "imported_path": "src/app/api/products/[id]/route.ts",
+      "upstream_sha256": "2873d822e1ef2199a857262b04dc38c14cfd109cd48d4a1474e2ecc388cac36f"
+    },
+    {
+      "upstream_path": "src/app/api/products/route.ts",
+      "imported_path": "src/app/api/products/route.ts",
+      "upstream_sha256": "2187564a13c2d11fc0976a48bfa66cd695b365339e6b8c824542c0a6fed3d23b"
+    },
+    {
+      "upstream_path": "src/app/api/users/[id]/route.ts",
+      "imported_path": "src/app/api/users/[id]/route.ts",
+      "upstream_sha256": "848b084625750baab029c96b1fb34ea841051c73087d021775586cd502d282dc"
+    },
+    {
+      "upstream_path": "src/app/api/users/route.ts",
+      "imported_path": "src/app/api/users/route.ts",
+      "upstream_sha256": "eea427d7de134c1a9e975b7f3f4f1019a3415f318a00e1743158ae2b73508e6e"
+    },
+    {
+      "upstream_path": "src/app/auth/layout.tsx",
+      "imported_path": "src/app/auth/layout.tsx",
+      "upstream_sha256": "29c578b42f80eb7f05e15f4094e0f407ed39cd4d821c0a0d238e6a1b86ce39d0"
+    },
+    {
+      "upstream_path": "src/app/auth/page.tsx",
+      "imported_path": "src/app/auth/page.tsx",
+      "upstream_sha256": "8590ae4a40277f65ad149131a32cc456f3055d60700397a8277a0c20a31d7cb4"
+    },
+    {
+      "upstream_path": "src/app/auth/sign-in/[[...sign-in]]/page.tsx",
+      "imported_path": "src/app/auth/sign-in/[[...sign-in]]/page.tsx",
+      "upstream_sha256": "9235ca48d1e262cc32b0af73f275c39ce96eaff5b506086bd232e04beb80df87"
+    },
+    {
+      "upstream_path": "src/app/auth/sign-up/[[...sign-up]]/page.tsx",
+      "imported_path": "src/app/auth/sign-up/[[...sign-up]]/page.tsx",
+      "upstream_sha256": "18f6a5ff08301eb711af09d2f9aeb941c0035b264029a570718ca8e72d493567"
+    },
+    {
+      "upstream_path": "src/app/dashboard/ai-chat/page.tsx",
+      "imported_path": "src/app/dashboard/ai-chat/page.tsx",
+      "upstream_sha256": "a49f7a00d73f3abab6cfe8fe8acf7868912d631da17962987d23724780800e9d"
+    },
+    {
+      "upstream_path": "src/app/dashboard/billing/page.tsx",
+      "imported_path": "src/app/dashboard/billing/page.tsx",
+      "upstream_sha256": "ddea9eb45df116c0efdcf4d28d187b45aad43f67791a14f017a79b513c5161aa"
+    },
+    {
+      "upstream_path": "src/app/dashboard/chat/page.tsx",
+      "imported_path": "src/app/dashboard/chat/page.tsx",
+      "upstream_sha256": "0ba997673c94e82a555e9d832b5692507b7a776334778d1bb22c13ff9a7ed5cf"
+    },
+    {
+      "upstream_path": "src/app/dashboard/elements/icons/page.tsx",
+      "imported_path": "src/app/dashboard/elements/icons/page.tsx",
+      "upstream_sha256": "ff44ce28187dab4551112b4f22135896846612cb00bf2ac766a806dc15d9818a"
+    },
+    {
+      "upstream_path": "src/app/dashboard/exclusive/page.tsx",
+      "imported_path": "src/app/dashboard/exclusive/page.tsx",
+      "upstream_sha256": "6a448782929378a59c53623100d94733be21cd9aad8efcccae36bfe8f1413c8a"
+    },
+    {
+      "upstream_path": "src/app/dashboard/forms/advanced/page.tsx",
+      "imported_path": "src/app/dashboard/forms/advanced/page.tsx",
+      "upstream_sha256": "aff0c0357fc035fc46bbb8e5d0d57aac82e190731ee9bbb024cb501202ad7794"
+    },
+    {
+      "upstream_path": "src/app/dashboard/forms/basic/page.tsx",
+      "imported_path": "src/app/dashboard/forms/basic/page.tsx",
+      "upstream_sha256": "ae0bc3989fdcf0f1eba827424f60788dc93524d9edab1db358b84b816446363d"
+    },
+    {
+      "upstream_path": "src/app/dashboard/forms/multi-step/page.tsx",
+      "imported_path": "src/app/dashboard/forms/multi-step/page.tsx",
+      "upstream_sha256": "1e0a7e9b2fba4cafe843e2a580238e8963f15a1600fcfcdcf67f0664a9c2024a"
+    },
+    {
+      "upstream_path": "src/app/dashboard/forms/page.tsx",
+      "imported_path": "src/app/dashboard/forms/page.tsx",
+      "upstream_sha256": "6c09b96c0a53d3b8b8edee71c1ccc052487f4974742670420b0261a5ad829a11"
+    },
+    {
+      "upstream_path": "src/app/dashboard/forms/sheet-form/page.tsx",
+      "imported_path": "src/app/dashboard/forms/sheet-form/page.tsx",
+      "upstream_sha256": "72962ef2d4c9b783269aee1c119948b9c7df06cd904d64e46709cd500b2537f2"
+    },
+    {
+      "upstream_path": "src/app/dashboard/kanban/page.tsx",
+      "imported_path": "src/app/dashboard/kanban/page.tsx",
+      "upstream_sha256": "73e642ed2fd04971c3f46b163662ba2b3fab79c0092ef1585e0450648fac8b59"
+    },
+    {
+      "upstream_path": "src/app/dashboard/layout.tsx",
+      "imported_path": "src/app/dashboard/layout.tsx",
+      "upstream_sha256": "ec20364ddb834d8f7c909f922f1bd9c83af32b698b0d2667420bd471ae10d38c",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/layout.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/notifications/page.tsx",
+      "imported_path": "src/app/dashboard/notifications/page.tsx",
+      "upstream_sha256": "08844654b21fd3fe5611a1ff7f70f27f585799d79b8a73016389fb333d0e0f70"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@area_stats/default.tsx",
+      "imported_path": "src/app/dashboard/overview/@area_stats/default.tsx",
+      "upstream_sha256": "3c9879df21f2527cf4f23632114e840a559ddceb1ac12ab7eff1edf085279768"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@area_stats/error.tsx",
+      "imported_path": "src/app/dashboard/overview/@area_stats/error.tsx",
+      "upstream_sha256": "11b58ba004e62ae982bc661e44a0c451afd3a5699b8b406f48b420ddc54cf1d8",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/overview/@area_stats/error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@area_stats/loading.tsx",
+      "imported_path": "src/app/dashboard/overview/@area_stats/loading.tsx",
+      "upstream_sha256": "9da5b6ff3e12defea58de99ef25d6865cc80b729b9423b7281b2498bd29d6c9f"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@area_stats/page.tsx",
+      "imported_path": "src/app/dashboard/overview/@area_stats/page.tsx",
+      "upstream_sha256": "9b58d047780c377f61c934583ceb3856102e541fce189d5c44b32ec861309cb3"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@bar_stats/default.tsx",
+      "imported_path": "src/app/dashboard/overview/@bar_stats/default.tsx",
+      "upstream_sha256": "3c9879df21f2527cf4f23632114e840a559ddceb1ac12ab7eff1edf085279768"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@bar_stats/error.tsx",
+      "imported_path": "src/app/dashboard/overview/@bar_stats/error.tsx",
+      "upstream_sha256": "a83a11bd462dedac1dfeced03e3a489c77178628eacc163beba62ea9f137d4bd",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/overview/@bar_stats/error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@bar_stats/loading.tsx",
+      "imported_path": "src/app/dashboard/overview/@bar_stats/loading.tsx",
+      "upstream_sha256": "64fb96186662967863b811960ff6422ef3fb20e049ec7eb51ac21cf99d90095d"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@bar_stats/page.tsx",
+      "imported_path": "src/app/dashboard/overview/@bar_stats/page.tsx",
+      "upstream_sha256": "993811535511c0232603fda6c72e31a6e88cbb76f8fb866c876afcb723add644"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@pie_stats/default.tsx",
+      "imported_path": "src/app/dashboard/overview/@pie_stats/default.tsx",
+      "upstream_sha256": "3c9879df21f2527cf4f23632114e840a559ddceb1ac12ab7eff1edf085279768"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@pie_stats/error.tsx",
+      "imported_path": "src/app/dashboard/overview/@pie_stats/error.tsx",
+      "upstream_sha256": "340d70afb0b02a188e02abf5fc25e7fa3b90a4bb9be9e999f1ebdbd874c111e7",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/overview/@pie_stats/error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@pie_stats/loading.tsx",
+      "imported_path": "src/app/dashboard/overview/@pie_stats/loading.tsx",
+      "upstream_sha256": "e4f826d5caef0c180142141e3bccca58aac86d05685dc4d29099ef2aea57c1fb"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@pie_stats/page.tsx",
+      "imported_path": "src/app/dashboard/overview/@pie_stats/page.tsx",
+      "upstream_sha256": "76b8df65d3ba454e431b08c5a588edf905448a4e945f96a8fc27a35811fa743c"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@sales/default.tsx",
+      "imported_path": "src/app/dashboard/overview/@sales/default.tsx",
+      "upstream_sha256": "3c9879df21f2527cf4f23632114e840a559ddceb1ac12ab7eff1edf085279768"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@sales/error.tsx",
+      "imported_path": "src/app/dashboard/overview/@sales/error.tsx",
+      "upstream_sha256": "c5d0bfe915d17f8ff63d0fbfe428cc773a2759bf416f19f33f1d9a3fb138de2e",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/overview/@sales/error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@sales/loading.tsx",
+      "imported_path": "src/app/dashboard/overview/@sales/loading.tsx",
+      "upstream_sha256": "5fcf1cd50308b1d233f44b268b9e5ac076104ebb0f71472f73f91f9af9a18d26"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/@sales/page.tsx",
+      "imported_path": "src/app/dashboard/overview/@sales/page.tsx",
+      "upstream_sha256": "612988ef2cec57172be13c954ac5b0502c6ae89c2d671f57b67f46b5563028bf"
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/error.tsx",
+      "imported_path": "src/app/dashboard/overview/error.tsx",
+      "upstream_sha256": "52d6cbe050fc8551d559f14e06d90fd91e10be51341c8884cf3c33e242ac61b8",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/overview/error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/overview/layout.tsx",
+      "imported_path": "src/app/dashboard/overview/layout.tsx",
+      "upstream_sha256": "c1cc894a2c4233ad95bf3ae6e7f76315d18cd5b638752b0160c44173c77d29c4"
+    },
+    {
+      "upstream_path": "src/app/dashboard/page.tsx",
+      "imported_path": "src/app/dashboard/page.tsx",
+      "upstream_sha256": "1557fcd1efe719fc9e6d5a9e4ff649e87e69afe40a4c6c4955746660b92fe7cf",
+      "original_path": "upstream-metadata/originals/src/app/dashboard/page.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/dashboard/product/[productId]/page.tsx",
+      "imported_path": "src/app/dashboard/product/[productId]/page.tsx",
+      "upstream_sha256": "5a798971d69feddd3fe37d747656ccd0e9634916c637be7325afbbcbb1ed782a"
+    },
+    {
+      "upstream_path": "src/app/dashboard/product/loading.tsx",
+      "imported_path": "src/app/dashboard/product/loading.tsx",
+      "upstream_sha256": "53f176e27202a870df64a8f24155a3c566ba5f120f1e98d2d3e0890f98766866"
+    },
+    {
+      "upstream_path": "src/app/dashboard/product/page.tsx",
+      "imported_path": "src/app/dashboard/product/page.tsx",
+      "upstream_sha256": "8e505b3e01b0df2101bf40279f648af6ff605f9240161ef73296853f13e4415c"
+    },
+    {
+      "upstream_path": "src/app/dashboard/profile/[[...profile]]/page.tsx",
+      "imported_path": "src/app/dashboard/profile/[[...profile]]/page.tsx",
+      "upstream_sha256": "b4d19a24f10a3be4d9c82027d6b62aa885ac511962728bfe2db63bbc2835d510"
+    },
+    {
+      "upstream_path": "src/app/dashboard/react-query/page.tsx",
+      "imported_path": "src/app/dashboard/react-query/page.tsx",
+      "upstream_sha256": "6654a6b811e38df1b8553c05d7435eab070b682df2d858bec14d4b37048b876d"
+    },
+    {
+      "upstream_path": "src/app/dashboard/users/loading.tsx",
+      "imported_path": "src/app/dashboard/users/loading.tsx",
+      "upstream_sha256": "6695a051cb3dd237bd6bb43b99a3ab2a797d2497220e5cecc362724d778f9106"
+    },
+    {
+      "upstream_path": "src/app/dashboard/users/page.tsx",
+      "imported_path": "src/app/dashboard/users/page.tsx",
+      "upstream_sha256": "dead123fdb049a5033f9bb089fbdee1aa8a4198ed3ddaa05df66a2cd84483b28"
+    },
+    {
+      "upstream_path": "src/app/dashboard/workspaces/page.tsx",
+      "imported_path": "src/app/dashboard/workspaces/page.tsx",
+      "upstream_sha256": "c4b23e6f88441fbcfae3bf51260a9684a36e0e9328b0e6d1097d1b1596d2b1f8"
+    },
+    {
+      "upstream_path": "src/app/dashboard/workspaces/team/[[...rest]]/page.tsx",
+      "imported_path": "src/app/dashboard/workspaces/team/[[...rest]]/page.tsx",
+      "upstream_sha256": "05e8175872bbfb36bb9efd34eebd2639f28eeafde3d2ee6e31d360b884a34027"
+    },
+    {
+      "upstream_path": "src/app/favicon.ico",
+      "imported_path": "src/app/favicon.ico",
+      "upstream_sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932"
+    },
+    {
+      "upstream_path": "src/app/global-error.tsx",
+      "imported_path": "src/app/global-error.tsx",
+      "upstream_sha256": "edf105e8a05b067c79fceb9b853a090f6b13164c55b4011571e3ae7fe6df5e7e",
+      "original_path": "upstream-metadata/originals/src/app/global-error.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/app/layout.tsx",
+      "imported_path": "src/app/layout.tsx",
+      "upstream_sha256": "ad84d2b0b9aa0ae73a33b2d21cd82f78373f2bcb2746857e534b084c9213fafb"
+    },
+    {
+      "upstream_path": "src/app/not-found.tsx",
+      "imported_path": "src/app/not-found.tsx",
+      "upstream_sha256": "466241206ed005228b508276a9d6ac2d0fb8bb1822c857737d432860029c2ed4"
+    },
+    {
+      "upstream_path": "src/app/page.tsx",
+      "imported_path": "src/app/page.tsx",
+      "upstream_sha256": "0033fe16e453cad107df1451544b07665c9719bf87b7b2a023a758638bb54d41",
+      "original_path": "upstream-metadata/originals/src/app/page.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/components/breadcrumbs.tsx",
+      "imported_path": "src/components/breadcrumbs.tsx",
+      "upstream_sha256": "da28471315fab8318904018c0f4ce9bb975be433a0b04f5925f0038c5989587c"
+    },
+    {
+      "upstream_path": "src/components/file-uploader.tsx",
+      "imported_path": "src/components/file-uploader.tsx",
+      "upstream_sha256": "9fca422b8f99d41b801c75e2681b2151f201120b3ae4317b0a8ff9d19d4ca277"
+    },
+    {
+      "upstream_path": "src/components/form-card-skeleton.tsx",
+      "imported_path": "src/components/form-card-skeleton.tsx",
+      "upstream_sha256": "b60185880274012a03118362d0068ce4795b5f18aee4349f85ba8ab9ed7a4d8b"
+    },
+    {
+      "upstream_path": "src/components/forms/demo-form.tsx",
+      "imported_path": "src/components/forms/demo-form.tsx",
+      "upstream_sha256": "6c06c079e0120ed9b8a861a1e386bb33611aa9095b542108375c970717c85822"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/checkbox-field.tsx",
+      "imported_path": "src/components/forms/fields/checkbox-field.tsx",
+      "upstream_sha256": "3c52f832bc325ecdabe53c0a46b58d171dec55654f302420fab51696987a7625"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/checkbox-group-field.tsx",
+      "imported_path": "src/components/forms/fields/checkbox-group-field.tsx",
+      "upstream_sha256": "5a1f9003da60532c8961aeec99d0c3475b3c203650e0d3dbd7885cc743b0fa55"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/color-field.tsx",
+      "imported_path": "src/components/forms/fields/color-field.tsx",
+      "upstream_sha256": "e434e8b31aa03e8b6588ceced00665d223be5149dc595bce0273936aa20be96b"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/combobox-field.tsx",
+      "imported_path": "src/components/forms/fields/combobox-field.tsx",
+      "upstream_sha256": "71b150e3876d8fb6ebb16a9eb787da085564a88c8a5295b21d4e588a40ba2b1d"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/date-picker-field.tsx",
+      "imported_path": "src/components/forms/fields/date-picker-field.tsx",
+      "upstream_sha256": "9020fe4fe8268ba65815354cfa81cfa5e6fde3ad77af92fb03c3cb998bd67f80"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/file-upload-field.tsx",
+      "imported_path": "src/components/forms/fields/file-upload-field.tsx",
+      "upstream_sha256": "992b7885d7149d0b24a650b056ddd0e611ee129ff0edf75796d3c082dacc6857"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/otp-field.tsx",
+      "imported_path": "src/components/forms/fields/otp-field.tsx",
+      "upstream_sha256": "1017d08eac41efb52a2221a3cf86c0d9bef9c3770cc5ac35fb15b9530e621366"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/radio-group-field.tsx",
+      "imported_path": "src/components/forms/fields/radio-group-field.tsx",
+      "upstream_sha256": "0732a40704289eaaa0b863c14df7ee413c07f40da29f42e4abdb6e4f836b3a8c"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/select-field.tsx",
+      "imported_path": "src/components/forms/fields/select-field.tsx",
+      "upstream_sha256": "6afce54c700b1b0d7e12f8f3aca987501f1c81ae0bb9ddc803ab043c5edc55a8"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/slider-field.tsx",
+      "imported_path": "src/components/forms/fields/slider-field.tsx",
+      "upstream_sha256": "7936609f991d863f1d9e1ec1f3dce98cc4c4256a558b5b6ab8e609fb8c6d0840"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/switch-field.tsx",
+      "imported_path": "src/components/forms/fields/switch-field.tsx",
+      "upstream_sha256": "a6082e033f869e452a0c29e62079ab360d08284a46e97f4d98874c8f47cffb64"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/tags-field.tsx",
+      "imported_path": "src/components/forms/fields/tags-field.tsx",
+      "upstream_sha256": "240a8ebde355f4f38c257bc9d55562a46f4bbc170eebf7c6e73d8a0a6b8f4b91"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/text-field.tsx",
+      "imported_path": "src/components/forms/fields/text-field.tsx",
+      "upstream_sha256": "a9e4449ffa9e614b86b4f23f3dc92415615dc7d6cc3ab4727aa6aee43d3df78c"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/textarea-field.tsx",
+      "imported_path": "src/components/forms/fields/textarea-field.tsx",
+      "upstream_sha256": "2bd66623a162bab3e9d3f4b40ed2fed61fe73947a9ae1e0fe51dd72f255cb449"
+    },
+    {
+      "upstream_path": "src/components/forms/fields/toggle-group-field.tsx",
+      "imported_path": "src/components/forms/fields/toggle-group-field.tsx",
+      "upstream_sha256": "9539ecd89fbda20510765a2c84388b7965496b4ac925ed7966e70b741e7fecf7"
+    },
+    {
+      "upstream_path": "src/components/forms/submit-button.tsx",
+      "imported_path": "src/components/forms/submit-button.tsx",
+      "upstream_sha256": "82622995ea539a864bb366115ddd9a3a8def73490afc5cf9d7c4d9a2a18f5ddb"
+    },
+    {
+      "upstream_path": "src/components/icons.tsx",
+      "imported_path": "src/components/icons.tsx",
+      "upstream_sha256": "baf608bd7d8b2f9831302ed1d4ca81b153eaaa42672d6d2ad646b6d02cd793b7"
+    },
+    {
+      "upstream_path": "src/components/kbar/index.tsx",
+      "imported_path": "src/components/kbar/index.tsx",
+      "upstream_sha256": "8e0b2a6a26d12a93576769bd5154523afca334ba7fab1b28074a6b7570a65d55"
+    },
+    {
+      "upstream_path": "src/components/kbar/render-result.tsx",
+      "imported_path": "src/components/kbar/render-result.tsx",
+      "upstream_sha256": "d799d4795f0965faef88cfa3922daaee5bcc2d90217be4dd9b8cd1262d54d25a"
+    },
+    {
+      "upstream_path": "src/components/kbar/result-item.tsx",
+      "imported_path": "src/components/kbar/result-item.tsx",
+      "upstream_sha256": "0b51749570b5ac63eb273494b1c8a6fff73fb3797885c33d311d40d965ddba97"
+    },
+    {
+      "upstream_path": "src/components/kbar/use-theme-switching.tsx",
+      "imported_path": "src/components/kbar/use-theme-switching.tsx",
+      "upstream_sha256": "1b43c4ebb029709e5a17cf82f959f5619900045004e90ade96352ab97a558b88"
+    },
+    {
+      "upstream_path": "src/components/layout/app-sidebar.tsx",
+      "imported_path": "src/components/layout/app-sidebar.tsx",
+      "upstream_sha256": "ce82bdbaec1a5c890ec3c6d1121b992e498d12218d0d3ad7c078b0837c87b5f0",
+      "original_path": "upstream-metadata/originals/src/components/layout/app-sidebar.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/components/layout/cta-github.tsx",
+      "imported_path": "src/components/layout/cta-github.tsx",
+      "upstream_sha256": "5defd150fdbfad470c77291356537c6c2f9a68fc76c126d8945ccd98f1127db2"
+    },
+    {
+      "upstream_path": "src/components/layout/header.tsx",
+      "imported_path": "src/components/layout/header.tsx",
+      "upstream_sha256": "e25914162ae1aece3b3cdaabed91ff694f8b742b67e0ea2d41d89c809f0f284d"
+    },
+    {
+      "upstream_path": "src/components/layout/info-sidebar.tsx",
+      "imported_path": "src/components/layout/info-sidebar.tsx",
+      "upstream_sha256": "754666fe3b26405674b8e181191a0a362081dbda86f022a43239a98f08f438ad"
+    },
+    {
+      "upstream_path": "src/components/layout/page-container.tsx",
+      "imported_path": "src/components/layout/page-container.tsx",
+      "upstream_sha256": "33ac649d4cf40bbc62309eca67c296bc3222e2f9ecded4dadc8d2fe3de7ad8b5"
+    },
+    {
+      "upstream_path": "src/components/layout/providers.tsx",
+      "imported_path": "src/components/layout/providers.tsx",
+      "upstream_sha256": "b22e3f3acd875b169702976d8d06a1426b79d0cc7afcdfd7f0a249a49aa5a6d4",
+      "original_path": "upstream-metadata/originals/src/components/layout/providers.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/components/layout/query-provider.tsx",
+      "imported_path": "src/components/layout/query-provider.tsx",
+      "upstream_sha256": "c95e7533367e74cfa1205899dc4a474aca856c15e7e02773b2feb6790e27101a"
+    },
+    {
+      "upstream_path": "src/components/layout/user-nav.tsx",
+      "imported_path": "src/components/layout/user-nav.tsx",
+      "upstream_sha256": "278fe469ee61c98aeab72da95b069df61037bb4f1b52b1e2a92ce1e893a87247",
+      "original_path": "upstream-metadata/originals/src/components/layout/user-nav.tsx",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/components/modal/alert-modal.tsx",
+      "imported_path": "src/components/modal/alert-modal.tsx",
+      "upstream_sha256": "26b681cf93c6102b888daae291de95b77ada5e1bc99aab565dec5bfa2613ef5d"
+    },
+    {
+      "upstream_path": "src/components/nav-main.tsx",
+      "imported_path": "src/components/nav-main.tsx",
+      "upstream_sha256": "78762f46afb664fff0ff3e760b4258eb7dee73375363679b89bb584650abdd9f"
+    },
+    {
+      "upstream_path": "src/components/nav-projects.tsx",
+      "imported_path": "src/components/nav-projects.tsx",
+      "upstream_sha256": "80ab0c71149da5b13935cde2f238839260213e9e59607ca58ad5303af1382a93"
+    },
+    {
+      "upstream_path": "src/components/nav-user.tsx",
+      "imported_path": "src/components/nav-user.tsx",
+      "upstream_sha256": "0882c40174e3ab0e0859bb110c62b8e7ea174dcf6b5cc5628726a2851a981b21"
+    },
+    {
+      "upstream_path": "src/components/org-switcher.tsx",
+      "imported_path": "src/components/org-switcher.tsx",
+      "upstream_sha256": "3f397e08df48424b76fd8834eb3f8eaf9613bc93784897535f6218d531d87a64"
+    },
+    {
+      "upstream_path": "src/components/search-input.tsx",
+      "imported_path": "src/components/search-input.tsx",
+      "upstream_sha256": "5a79bbc0c64d4b466caf5a5bbaef904b060ca3ee4232cb15d0d4b36d3be93bbf"
+    },
+    {
+      "upstream_path": "src/components/themes/active-theme.tsx",
+      "imported_path": "src/components/themes/active-theme.tsx",
+      "upstream_sha256": "293c57cebba3f94c2877f436eefaee0a5a710e670060399ea73ba9301f877eae"
+    },
+    {
+      "upstream_path": "src/components/themes/font.config.ts",
+      "imported_path": "src/components/themes/font.config.ts",
+      "upstream_sha256": "78e1394b855c854592795204e02e25c273afa1549ab6ef582d50346b99637bb7",
+      "original_path": "upstream-metadata/originals/src/components/themes/font.config.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/components/themes/theme-mode-toggle.tsx",
+      "imported_path": "src/components/themes/theme-mode-toggle.tsx",
+      "upstream_sha256": "715427ffc87ef148a89d5f72951505b6e73db2a045038204541ecee4b38877ec"
+    },
+    {
+      "upstream_path": "src/components/themes/theme-provider.tsx",
+      "imported_path": "src/components/themes/theme-provider.tsx",
+      "upstream_sha256": "1f0fff98c19031341b4a73b8ad6b345df285e4e802c16143b7954f2bcb82552e"
+    },
+    {
+      "upstream_path": "src/components/themes/theme-selector.tsx",
+      "imported_path": "src/components/themes/theme-selector.tsx",
+      "upstream_sha256": "235a7c84d39fb185098cface1dbcdfc4fa419607305453d0adf82b2c31a182b9"
+    },
+    {
+      "upstream_path": "src/components/themes/theme.config.ts",
+      "imported_path": "src/components/themes/theme.config.ts",
+      "upstream_sha256": "803bb8762cf601586f66a2f3ce03c82a49d8574e05800a55b2f287f290b6854b"
+    },
+    {
+      "upstream_path": "src/components/ui/accordion.tsx",
+      "imported_path": "src/components/ui/accordion.tsx",
+      "upstream_sha256": "94ea1ec2ef3e13feb25f068a8f97f3c768864585c7de1ec4f60bcf58fca665dc"
+    },
+    {
+      "upstream_path": "src/components/ui/alert-dialog.tsx",
+      "imported_path": "src/components/ui/alert-dialog.tsx",
+      "upstream_sha256": "6d3935065e19696654a92474db938d31f1d560ab9f38f285634b7ad2b209cb61"
+    },
+    {
+      "upstream_path": "src/components/ui/alert.tsx",
+      "imported_path": "src/components/ui/alert.tsx",
+      "upstream_sha256": "d87a34294418112f69a28bb3020fc79edff41a35a50f5616b0e88f25c70e2a59"
+    },
+    {
+      "upstream_path": "src/components/ui/aspect-ratio.tsx",
+      "imported_path": "src/components/ui/aspect-ratio.tsx",
+      "upstream_sha256": "136ad230f1a39fcd0676d7d52e8e17a43104a137179acc78d97422f2444a278f"
+    },
+    {
+      "upstream_path": "src/components/ui/attachment.tsx",
+      "imported_path": "src/components/ui/attachment.tsx",
+      "upstream_sha256": "1e8e18e8c8e4e6a038d0e8d4350a4fa798c5d995847df1dc6fa1ae3d04c93214"
+    },
+    {
+      "upstream_path": "src/components/ui/avatar.tsx",
+      "imported_path": "src/components/ui/avatar.tsx",
+      "upstream_sha256": "793134025c2e00df8a0162fabe617fc69f6efdb004c64bfdc8b58c326d402677"
+    },
+    {
+      "upstream_path": "src/components/ui/badge.tsx",
+      "imported_path": "src/components/ui/badge.tsx",
+      "upstream_sha256": "2e6050bfb1742fd2dc68bcc9ea8349d4d2a980d8d4acf92e59eb49e2962b291c"
+    },
+    {
+      "upstream_path": "src/components/ui/breadcrumb.tsx",
+      "imported_path": "src/components/ui/breadcrumb.tsx",
+      "upstream_sha256": "04698e226dba7158458f48fad6dc3df0499cafca3d61b113d40dd5617f06ad1e"
+    },
+    {
+      "upstream_path": "src/components/ui/bubble.tsx",
+      "imported_path": "src/components/ui/bubble.tsx",
+      "upstream_sha256": "857fefcce06ea4a73a9f28a0d3333dc02a1073984b85b493998e7ccc9c1a045c"
+    },
+    {
+      "upstream_path": "src/components/ui/button-group.tsx",
+      "imported_path": "src/components/ui/button-group.tsx",
+      "upstream_sha256": "a5b2ba2fc6a72f27042c9f929ed6c94d5157473d191447036b7d1ec818dbe70b"
+    },
+    {
+      "upstream_path": "src/components/ui/button.tsx",
+      "imported_path": "src/components/ui/button.tsx",
+      "upstream_sha256": "879c9358423d24d2badb90c09e9ac33de72b785beaea1e2e6b1d768dc55b4369"
+    },
+    {
+      "upstream_path": "src/components/ui/calendar.tsx",
+      "imported_path": "src/components/ui/calendar.tsx",
+      "upstream_sha256": "95d22a61a794bf1b1da43f3d702ade6261b4c679288d29bd04615cd818572cd3"
+    },
+    {
+      "upstream_path": "src/components/ui/card.tsx",
+      "imported_path": "src/components/ui/card.tsx",
+      "upstream_sha256": "ea0a2911f5fcaf23b4ebf553d38efd03315fa158f983ca51744aa1fda4d99f4d"
+    },
+    {
+      "upstream_path": "src/components/ui/carousel.tsx",
+      "imported_path": "src/components/ui/carousel.tsx",
+      "upstream_sha256": "29209d7c7f398c90df6ea379e40e959bbe978473cd6aa73fdab367bc1278d0f6"
+    },
+    {
+      "upstream_path": "src/components/ui/chart.tsx",
+      "imported_path": "src/components/ui/chart.tsx",
+      "upstream_sha256": "118377ace72f185b2468ab8976fa83db7aba29aba7e51afe72d99988ff289e41"
+    },
+    {
+      "upstream_path": "src/components/ui/checkbox.tsx",
+      "imported_path": "src/components/ui/checkbox.tsx",
+      "upstream_sha256": "80808718e4ba71ba683a765f59984d2d46f4f424cdced20144f608b1413483cc"
+    },
+    {
+      "upstream_path": "src/components/ui/collapsible.tsx",
+      "imported_path": "src/components/ui/collapsible.tsx",
+      "upstream_sha256": "c2148830a404aadf6c61b09803a6baf25505f3f28c1401f0548b20ca0b18b31d"
+    },
+    {
+      "upstream_path": "src/components/ui/combobox.tsx",
+      "imported_path": "src/components/ui/combobox.tsx",
+      "upstream_sha256": "7acf62fc1f0dcc2f7416743f70814e8c4cc2605aa93fe927ba5b35c363c146ca"
+    },
+    {
+      "upstream_path": "src/components/ui/command.tsx",
+      "imported_path": "src/components/ui/command.tsx",
+      "upstream_sha256": "88e5925c67d24cd8c398416983e6dcd469d47210b771066c0fcfcacd178f9948"
+    },
+    {
+      "upstream_path": "src/components/ui/context-menu.tsx",
+      "imported_path": "src/components/ui/context-menu.tsx",
+      "upstream_sha256": "716149111a83078961cf8121019f842ad35f38b3db33e520c8e2edcca8291b5e"
+    },
+    {
+      "upstream_path": "src/components/ui/dialog.tsx",
+      "imported_path": "src/components/ui/dialog.tsx",
+      "upstream_sha256": "b645ff102a981bb4f7d78cac3497034a256433a9778c99d889c3c999c6a90fa6"
+    },
+    {
+      "upstream_path": "src/components/ui/direction.tsx",
+      "imported_path": "src/components/ui/direction.tsx",
+      "upstream_sha256": "5a75481f1871361a34a9a06b864ac462d711aa08ef91a10331aee4107eea3f05"
+    },
+    {
+      "upstream_path": "src/components/ui/drawer.tsx",
+      "imported_path": "src/components/ui/drawer.tsx",
+      "upstream_sha256": "154b07a92806a355517ab9363840ee82c659c264d3edb66dbd6fe24edcb0ad8f"
+    },
+    {
+      "upstream_path": "src/components/ui/dropdown-menu.tsx",
+      "imported_path": "src/components/ui/dropdown-menu.tsx",
+      "upstream_sha256": "51070b8faa590f5350749418c9f78227826d4487d2d84b4a2805875ea8356808"
+    },
+    {
+      "upstream_path": "src/components/ui/empty.tsx",
+      "imported_path": "src/components/ui/empty.tsx",
+      "upstream_sha256": "ab6dcd73075f7af0b44028086973160b200793382b101a8903bee83fd309c581"
+    },
+    {
+      "upstream_path": "src/components/ui/field.tsx",
+      "imported_path": "src/components/ui/field.tsx",
+      "upstream_sha256": "e5e6b07f559cc311478e72b807694ee845384b56dbb54c53799a767526cfaa4f"
+    },
+    {
+      "upstream_path": "src/components/ui/file-preview.tsx",
+      "imported_path": "src/components/ui/file-preview.tsx",
+      "upstream_sha256": "b3eac1ef48d0451564730810a6c3c891f08d5f887b5e281cb26a57649cf957a7"
+    },
+    {
+      "upstream_path": "src/components/ui/frame.tsx",
+      "imported_path": "src/components/ui/frame.tsx",
+      "upstream_sha256": "8ece42768b65691bc65497d65bb006ba27487a2fd6638b2fb423c6efa146d064"
+    },
+    {
+      "upstream_path": "src/components/ui/heading.tsx",
+      "imported_path": "src/components/ui/heading.tsx",
+      "upstream_sha256": "42a3be118c42c1d7cb0c37b3fd43934bb3d67543842c569f9253b3e2b09babe4"
+    },
+    {
+      "upstream_path": "src/components/ui/hover-card.tsx",
+      "imported_path": "src/components/ui/hover-card.tsx",
+      "upstream_sha256": "2be7069139a2d45f7e7f27c938eda29c21ecffe27e330ae8e7561ef85ce07455"
+    },
+    {
+      "upstream_path": "src/components/ui/info-button.tsx",
+      "imported_path": "src/components/ui/info-button.tsx",
+      "upstream_sha256": "372038e9ad129705bf632d181fd10e82c41a2d9ee283db9647af3c6072d16928"
+    },
+    {
+      "upstream_path": "src/components/ui/infobar.tsx",
+      "imported_path": "src/components/ui/infobar.tsx",
+      "upstream_sha256": "96deac52fb2e3bea0be1b54688158cd0f469866dbdcb6e4e089ee90270b152d9"
+    },
+    {
+      "upstream_path": "src/components/ui/input-group.tsx",
+      "imported_path": "src/components/ui/input-group.tsx",
+      "upstream_sha256": "dd76da61c95bd2981ca2d178bb1263bac8d0d70b7303313f7b180ea57b0a7c61"
+    },
+    {
+      "upstream_path": "src/components/ui/input-otp.tsx",
+      "imported_path": "src/components/ui/input-otp.tsx",
+      "upstream_sha256": "f168cdcd84c3d9438a94f6f9b9ec096354313e18937f2e4714f35d07db93ed3b"
+    },
+    {
+      "upstream_path": "src/components/ui/input.tsx",
+      "imported_path": "src/components/ui/input.tsx",
+      "upstream_sha256": "8eb5638db3ce2d0fbe5bf3b9f3fd0dab127679ff6c7c344760ab5a24a4156190"
+    },
+    {
+      "upstream_path": "src/components/ui/item.tsx",
+      "imported_path": "src/components/ui/item.tsx",
+      "upstream_sha256": "e0d7b507f92c5af16bedd2b5413db2d1a54d0ac38ffe0198910a622d7fdf44ed"
+    },
+    {
+      "upstream_path": "src/components/ui/kanban.tsx",
+      "imported_path": "src/components/ui/kanban.tsx",
+      "upstream_sha256": "c4f68aa7d19cccb43c0fba773f36386a1e8b6efd941b740fa4b0903bb274a598"
+    },
+    {
+      "upstream_path": "src/components/ui/kbd.tsx",
+      "imported_path": "src/components/ui/kbd.tsx",
+      "upstream_sha256": "b459186f21095eb429183efd45788c9cae72ea6442e8e688d675b82683be9f56"
+    },
+    {
+      "upstream_path": "src/components/ui/label.tsx",
+      "imported_path": "src/components/ui/label.tsx",
+      "upstream_sha256": "67acc96100d17177ab260be96c9c8e19bfdc8c793dc29b11d0bd600825af88f2"
+    },
+    {
+      "upstream_path": "src/components/ui/loading-button.tsx",
+      "imported_path": "src/components/ui/loading-button.tsx",
+      "upstream_sha256": "0063e28fbc3a0eae99b32e8ae305a69bb06f347a25eaf66b88b8c5299dfd24bf"
+    },
+    {
+      "upstream_path": "src/components/ui/marker.tsx",
+      "imported_path": "src/components/ui/marker.tsx",
+      "upstream_sha256": "4952b12a021500d488cdd6a77ebd0c8ad5737aaf655418f1fcb215705fad152c"
+    },
+    {
+      "upstream_path": "src/components/ui/menubar.tsx",
+      "imported_path": "src/components/ui/menubar.tsx",
+      "upstream_sha256": "aba905139a5fc97da9222304fb15fd35fbbf68687bc661a681cb9436338f04ca"
+    },
+    {
+      "upstream_path": "src/components/ui/message-scroller.tsx",
+      "imported_path": "src/components/ui/message-scroller.tsx",
+      "upstream_sha256": "5dc65d476b197b3f1cece69a094e349ea73bc1ad9c66efe6722cb64f09e2296c"
+    },
+    {
+      "upstream_path": "src/components/ui/message.tsx",
+      "imported_path": "src/components/ui/message.tsx",
+      "upstream_sha256": "f303b065930ebb206b932033ddf9b6c14908561722a96227ecf1d192b759570a"
+    },
+    {
+      "upstream_path": "src/components/ui/modal.tsx",
+      "imported_path": "src/components/ui/modal.tsx",
+      "upstream_sha256": "52c460f46977c499faeffcf454fa0a094e7752d05efc0f4100250d069fe0501c"
+    },
+    {
+      "upstream_path": "src/components/ui/native-select.tsx",
+      "imported_path": "src/components/ui/native-select.tsx",
+      "upstream_sha256": "62c3082dbb2b3f269849da4f66368c626aea412e43893bf4a0feacc2033d4214"
+    },
+    {
+      "upstream_path": "src/components/ui/navigation-menu.tsx",
+      "imported_path": "src/components/ui/navigation-menu.tsx",
+      "upstream_sha256": "48d94a125b904fd075c85ad19586917cbdaa23c91c5c2360ff4530acb6c2cbd6"
+    },
+    {
+      "upstream_path": "src/components/ui/notification-card.tsx",
+      "imported_path": "src/components/ui/notification-card.tsx",
+      "upstream_sha256": "129b777dbd06ee2fadc621adc8bd7e4c439f677b4311556c30a79660056d921d"
+    },
+    {
+      "upstream_path": "src/components/ui/pagination.tsx",
+      "imported_path": "src/components/ui/pagination.tsx",
+      "upstream_sha256": "429766c92f4037fa882b0cc19ff7d5c431c862ad128636a6b55f32a4799c0c79"
+    },
+    {
+      "upstream_path": "src/components/ui/popover.tsx",
+      "imported_path": "src/components/ui/popover.tsx",
+      "upstream_sha256": "3a28b0e6450c6e3bdf221cbf560b775b593d6e694a4c3b959bfb1be92c3d2538"
+    },
+    {
+      "upstream_path": "src/components/ui/progress.tsx",
+      "imported_path": "src/components/ui/progress.tsx",
+      "upstream_sha256": "8fcfed82866a5fd3a22f4a1fe8cd14c3a9e4ff1a52544af2ef3864da1e35dcce"
+    },
+    {
+      "upstream_path": "src/components/ui/radio-group.tsx",
+      "imported_path": "src/components/ui/radio-group.tsx",
+      "upstream_sha256": "5cb82c833c8e8fcc1f7e1211a75251e9c4342c06f45688a92f45d5b80c797f89"
+    },
+    {
+      "upstream_path": "src/components/ui/resizable.tsx",
+      "imported_path": "src/components/ui/resizable.tsx",
+      "upstream_sha256": "d72d60b05ddfd65ff3c671fee427c31ad6a2fa41e5cfc9dec8dd9162ac2f040a"
+    },
+    {
+      "upstream_path": "src/components/ui/scroll-area.tsx",
+      "imported_path": "src/components/ui/scroll-area.tsx",
+      "upstream_sha256": "4fb80628f2a24a384bc040bbe03d0df17ef872652a370e9e4928da3114436e1a"
+    },
+    {
+      "upstream_path": "src/components/ui/select.tsx",
+      "imported_path": "src/components/ui/select.tsx",
+      "upstream_sha256": "d2ff17fe73dce50e60ccff602b4f7261210d15ea01f9875caadfe30c4f1f7a8e"
+    },
+    {
+      "upstream_path": "src/components/ui/separator.tsx",
+      "imported_path": "src/components/ui/separator.tsx",
+      "upstream_sha256": "ea4c2148595fb77be858b81d92488c3193e99d19288a8856cebc614f32c271ad"
+    },
+    {
+      "upstream_path": "src/components/ui/sheet.tsx",
+      "imported_path": "src/components/ui/sheet.tsx",
+      "upstream_sha256": "62658a3a26712597f130f43be36b74260bd7b2caf0797d3780863d159e3bf8e5"
+    },
+    {
+      "upstream_path": "src/components/ui/sidebar.tsx",
+      "imported_path": "src/components/ui/sidebar.tsx",
+      "upstream_sha256": "aece506cfe4fc31b77ae43f980bf09c1b6505b6474278ed1358ee11ba0820c38"
+    },
+    {
+      "upstream_path": "src/components/ui/skeleton.tsx",
+      "imported_path": "src/components/ui/skeleton.tsx",
+      "upstream_sha256": "448ef4aa0ff3181ebc59eb889c876c1c6ce359d3edff803f9e069f8ddf3dfe63"
+    },
+    {
+      "upstream_path": "src/components/ui/slider.tsx",
+      "imported_path": "src/components/ui/slider.tsx",
+      "upstream_sha256": "2b55a0a48589c14848d8a2c338220f73de5e555aa8c1626a106bb5170c7ade8a"
+    },
+    {
+      "upstream_path": "src/components/ui/sonner.tsx",
+      "imported_path": "src/components/ui/sonner.tsx",
+      "upstream_sha256": "dbe7e3f595e921903b8eebc699734c90b57560c214592eb3c04ef431a2de7ae1"
+    },
+    {
+      "upstream_path": "src/components/ui/spinner.tsx",
+      "imported_path": "src/components/ui/spinner.tsx",
+      "upstream_sha256": "04b54c90d8abc6ad3c1e4354510dd80b656598929d5bd32e00867614de93d48d"
+    },
+    {
+      "upstream_path": "src/components/ui/switch.tsx",
+      "imported_path": "src/components/ui/switch.tsx",
+      "upstream_sha256": "5bc732f7bef2679fdc7d30b2e31317b1b382f71f3f48cdb19bd32763f4969af3"
+    },
+    {
+      "upstream_path": "src/components/ui/table.tsx",
+      "imported_path": "src/components/ui/table.tsx",
+      "upstream_sha256": "3338d3187d3e051fe2ba78d5e6afa6df5e3b45dfe46f12185eb9f2a35dab2bf3"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-column-header.tsx",
+      "imported_path": "src/components/ui/table/data-table-column-header.tsx",
+      "upstream_sha256": "e2b205fad93a2bcef51053446505ef5b592dd04c110b254d1b05b1b7613aa1bd"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-date-filter.tsx",
+      "imported_path": "src/components/ui/table/data-table-date-filter.tsx",
+      "upstream_sha256": "5f0c063d66f03238ce7c76a2b0cce74ef44f8fce4b2ea3242fc7893dc244edce"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-faceted-filter.tsx",
+      "imported_path": "src/components/ui/table/data-table-faceted-filter.tsx",
+      "upstream_sha256": "98ff6e79dc76c3fd4c0df2fdad6a14902ad2c991d85ed77fe1becb72c9f797f5"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-filter-clear.tsx",
+      "imported_path": "src/components/ui/table/data-table-filter-clear.tsx",
+      "upstream_sha256": "394812176e2cbce567346d27166212e64da183040bfab734fc6dbd51a40adf11"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-pagination.tsx",
+      "imported_path": "src/components/ui/table/data-table-pagination.tsx",
+      "upstream_sha256": "ce5bcff61364a9af05bf76481d94941b141bbc29fc9f85a9489480d9e36f1e12"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-skeleton.tsx",
+      "imported_path": "src/components/ui/table/data-table-skeleton.tsx",
+      "upstream_sha256": "62ba1c137d2eaabd72f0e93b5f3758b2085c116a4ffd09ebca1715d572f37b08"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-slider-filter.tsx",
+      "imported_path": "src/components/ui/table/data-table-slider-filter.tsx",
+      "upstream_sha256": "74fd3848647698bae4ac71987b30b123f6c9f8a3405d32d03e2086a9b9ffc8a7"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-toolbar.tsx",
+      "imported_path": "src/components/ui/table/data-table-toolbar.tsx",
+      "upstream_sha256": "1404509abe8bf99fb15435ce39410048a815223997949c4d26fbde3f50deffd6"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table-view-options.tsx",
+      "imported_path": "src/components/ui/table/data-table-view-options.tsx",
+      "upstream_sha256": "da3a321ee3fd1b0fe6b518f5e3f2a07fe6057516c892a532b4a51f922943bb97"
+    },
+    {
+      "upstream_path": "src/components/ui/table/data-table.tsx",
+      "imported_path": "src/components/ui/table/data-table.tsx",
+      "upstream_sha256": "f2d67a5fa315741cbd3453eb20d60fbfade1256c739e82d851f0b3d7507e75ec"
+    },
+    {
+      "upstream_path": "src/components/ui/tabs.tsx",
+      "imported_path": "src/components/ui/tabs.tsx",
+      "upstream_sha256": "55bbd8d023edcf2093acf770ce4379aab5e05f8dcc1d0b324465ba654356b13d"
+    },
+    {
+      "upstream_path": "src/components/ui/textarea.tsx",
+      "imported_path": "src/components/ui/textarea.tsx",
+      "upstream_sha256": "2e2fd11da362c60a40e4ef7dd4df812f13923b0242d038e7bedc08820a84a4b3"
+    },
+    {
+      "upstream_path": "src/components/ui/toast.tsx",
+      "imported_path": "src/components/ui/toast.tsx",
+      "upstream_sha256": "1efbbbd72418961a110d3dc162c4169a580071245e917a840bff2584caa80ab2"
+    },
+    {
+      "upstream_path": "src/components/ui/toggle-group.tsx",
+      "imported_path": "src/components/ui/toggle-group.tsx",
+      "upstream_sha256": "281da8cf6e6ec1278abfe2d3236ac96d095ce7141f2cdb5c171a035a8ed9dd96"
+    },
+    {
+      "upstream_path": "src/components/ui/toggle.tsx",
+      "imported_path": "src/components/ui/toggle.tsx",
+      "upstream_sha256": "99fdb898bd069ece08a95265d2a3fcf2a4f34fd373b61fa69be3fa65cc2f412d"
+    },
+    {
+      "upstream_path": "src/components/ui/tooltip.tsx",
+      "imported_path": "src/components/ui/tooltip.tsx",
+      "upstream_sha256": "12819d75b039180d7410478a3c5da2e3be10895e088211f9868516d79bf7305a"
+    },
+    {
+      "upstream_path": "src/components/user-avatar-profile.tsx",
+      "imported_path": "src/components/user-avatar-profile.tsx",
+      "upstream_sha256": "170934a3d4300e16cbb69c9813e718c6000fb69e157ea0919d53a260ea349719"
+    },
+    {
+      "upstream_path": "src/config/data-table.ts",
+      "imported_path": "src/config/data-table.ts",
+      "upstream_sha256": "c0233ce3f23b36f063bb556f34c4f1cd6005f46094d2cbe8fd873e6c34757ce7"
+    },
+    {
+      "upstream_path": "src/config/infoconfig.ts",
+      "imported_path": "src/config/infoconfig.ts",
+      "upstream_sha256": "717a7fa2298b53d691a29a1c0def9726611bae20c0e02af871e7d28c57ba1829"
+    },
+    {
+      "upstream_path": "src/config/nav-config.ts",
+      "imported_path": "src/config/nav-config.ts",
+      "upstream_sha256": "4c85c7b7daa07d8ed43a8044c1446c91a5ecdeb888bc43381d2440de34c7e8cb"
+    },
+    {
+      "upstream_path": "src/constants/mock-api-users.ts",
+      "imported_path": "src/constants/mock-api-users.ts",
+      "upstream_sha256": "3445c3c93c9f727fd0ea933a942179d5ad6feed25dd0bdf1a2a36d9da47a4baf"
+    },
+    {
+      "upstream_path": "src/constants/mock-api.ts",
+      "imported_path": "src/constants/mock-api.ts",
+      "upstream_sha256": "19261d675f01d9ebd3bce9c544c66f13cc0311f60a975aa70a74545e7fd47534"
+    },
+    {
+      "upstream_path": "src/features/ai-chat/chat.ts",
+      "imported_path": "src/features/ai-chat/chat.ts",
+      "upstream_sha256": "45f536dc5a2ac162012da7c219c0c4690bee42dcb72efdf0667821ef4f127443"
+    },
+    {
+      "upstream_path": "src/features/ai-chat/components/ai-chat-demo.tsx",
+      "imported_path": "src/features/ai-chat/components/ai-chat-demo.tsx",
+      "upstream_sha256": "62d47c310de00f4c6ec01724343ccdea7ff42f1dee35b2291aa8c55b0fe93d32"
+    },
+    {
+      "upstream_path": "src/features/auth/components/github-auth-button.tsx",
+      "imported_path": "src/features/auth/components/github-auth-button.tsx",
+      "upstream_sha256": "cdc523d26758e90b6a473547c31c463d3fbdcb9bb52a831f8a5055d8fe64c960"
+    },
+    {
+      "upstream_path": "src/features/auth/components/interactive-grid.tsx",
+      "imported_path": "src/features/auth/components/interactive-grid.tsx",
+      "upstream_sha256": "9c4fd495b9991a0b92a33814375bd1cb554ced8ca50da5dededd859a9cb65e7f"
+    },
+    {
+      "upstream_path": "src/features/auth/components/sign-in-view.tsx",
+      "imported_path": "src/features/auth/components/sign-in-view.tsx",
+      "upstream_sha256": "e395d9fd5200ee01252724e550dcd4e24e02df0ff9f18ee5278ee884bc5e944e"
+    },
+    {
+      "upstream_path": "src/features/auth/components/sign-up-view.tsx",
+      "imported_path": "src/features/auth/components/sign-up-view.tsx",
+      "upstream_sha256": "4579443d4a84d2faa1ba4e90225471c5a48a1ea16485d7a90b4957b99b3ef3ae"
+    },
+    {
+      "upstream_path": "src/features/auth/components/user-auth-form.tsx",
+      "imported_path": "src/features/auth/components/user-auth-form.tsx",
+      "upstream_sha256": "cdae1c1c12d9e48646bd2dbef04eea8fdc9f03ea2cab0d1349dfebbf79c2a913"
+    },
+    {
+      "upstream_path": "src/features/chat/components/chat-area.tsx",
+      "imported_path": "src/features/chat/components/chat-area.tsx",
+      "upstream_sha256": "7984f80d35ce1d22e2b8c590104cae99a562ca897a812cb277da21a046c96262"
+    },
+    {
+      "upstream_path": "src/features/chat/components/chat-header.tsx",
+      "imported_path": "src/features/chat/components/chat-header.tsx",
+      "upstream_sha256": "c34993cea4bb5563fc0695d57f219d9d003f092c30e6ac80d1e87b2816e87702"
+    },
+    {
+      "upstream_path": "src/features/chat/components/chat-view-page.tsx",
+      "imported_path": "src/features/chat/components/chat-view-page.tsx",
+      "upstream_sha256": "fb8c7d7e59d7328c49be59b8b4c2cbd7e5314f9d82823965284e825927bae6ac"
+    },
+    {
+      "upstream_path": "src/features/chat/components/conversation-list.tsx",
+      "imported_path": "src/features/chat/components/conversation-list.tsx",
+      "upstream_sha256": "fde8b92349f46ba8b100cbff95521f1d5242da1b5626f5c8f9d9b8c8716b0321"
+    },
+    {
+      "upstream_path": "src/features/chat/components/conversation-select.tsx",
+      "imported_path": "src/features/chat/components/conversation-select.tsx",
+      "upstream_sha256": "4abe81a1ad9437624bb82518d2887e5457199265a87974da5ebf04dd5b0f263a"
+    },
+    {
+      "upstream_path": "src/features/chat/components/message-bubble.tsx",
+      "imported_path": "src/features/chat/components/message-bubble.tsx",
+      "upstream_sha256": "554daa6dce14b003355dda603a5855c55811ba966b0a4fc413948ccaf4a974f5"
+    },
+    {
+      "upstream_path": "src/features/chat/components/message-composer.tsx",
+      "imported_path": "src/features/chat/components/message-composer.tsx",
+      "upstream_sha256": "54abf8d4c492333277c27dc558a6ccad2aa53c474406dde37c52a6b8cfbef9db"
+    },
+    {
+      "upstream_path": "src/features/chat/components/messenger.tsx",
+      "imported_path": "src/features/chat/components/messenger.tsx",
+      "upstream_sha256": "399db3e333ff9e6fb7abdbabbc4cacd9ed0ada8cd64ad3a69374b747b5797d52"
+    },
+    {
+      "upstream_path": "src/features/chat/utils/data.ts",
+      "imported_path": "src/features/chat/utils/data.ts",
+      "upstream_sha256": "f928c843f70a5399d9916c978dbbdb68053557531392b450ca936ea58088f866"
+    },
+    {
+      "upstream_path": "src/features/chat/utils/store.ts",
+      "imported_path": "src/features/chat/utils/store.ts",
+      "upstream_sha256": "7af12b442a3de0d03e41b52048236fd34b5e4a1463f5ca845ddc15a62baace49"
+    },
+    {
+      "upstream_path": "src/features/chat/utils/types.ts",
+      "imported_path": "src/features/chat/utils/types.ts",
+      "upstream_sha256": "119733927b74b66d52239452d3b63a4beced8a340fe19503e66b9a0e5f9db177"
+    },
+    {
+      "upstream_path": "src/features/elements/components/icons-view-page.tsx",
+      "imported_path": "src/features/elements/components/icons-view-page.tsx",
+      "upstream_sha256": "548d680a8f45563e942e90f883a3841803ddaa452613e6cc695879ede179135d"
+    },
+    {
+      "upstream_path": "src/features/forms/components/advanced-form-patterns.tsx",
+      "imported_path": "src/features/forms/components/advanced-form-patterns.tsx",
+      "upstream_sha256": "0f129492b532abe0481d5cbe474f982294b86cc473a8ab7004ff05520f4cfdb6"
+    },
+    {
+      "upstream_path": "src/features/forms/components/forms-showcase-page.tsx",
+      "imported_path": "src/features/forms/components/forms-showcase-page.tsx",
+      "upstream_sha256": "8b9b0f46bd70635fb72dde9d64dd9ff020356fde48d17718707aae73c7ee495a"
+    },
+    {
+      "upstream_path": "src/features/forms/components/multi-step-product-form.tsx",
+      "imported_path": "src/features/forms/components/multi-step-product-form.tsx",
+      "upstream_sha256": "a493f516c0086401237aaca971a9bc20062549a2be8c8751569250ae6a1e004a"
+    },
+    {
+      "upstream_path": "src/features/forms/components/sheet-form-demo.tsx",
+      "imported_path": "src/features/forms/components/sheet-form-demo.tsx",
+      "upstream_sha256": "887a9b7c385f47e11021c2abcf47fcddc7844a9408c7b156d6d3a0d0cc38f01a"
+    },
+    {
+      "upstream_path": "src/features/forms/components/sheet-product-form.tsx",
+      "imported_path": "src/features/forms/components/sheet-product-form.tsx",
+      "upstream_sha256": "32ab7354a88aa490d7e3f4228210f1f4a03704b8b0d7d187f97fc48f9d294a1d"
+    },
+    {
+      "upstream_path": "src/features/kanban/components/board-column.tsx",
+      "imported_path": "src/features/kanban/components/board-column.tsx",
+      "upstream_sha256": "f23b9ed2a3939150c08e1d226f0499ea1e17c280835f859f795bef9874ead4fc"
+    },
+    {
+      "upstream_path": "src/features/kanban/components/kanban-board.tsx",
+      "imported_path": "src/features/kanban/components/kanban-board.tsx",
+      "upstream_sha256": "445c2d754e233052cf213ffb9182fc968807d14af665f5eb0991c12ce3d24a68"
+    },
+    {
+      "upstream_path": "src/features/kanban/components/kanban-view-page.tsx",
+      "imported_path": "src/features/kanban/components/kanban-view-page.tsx",
+      "upstream_sha256": "e03490f1572b0cce7df4d9aacfa9de0b121bbaa312044436b9b84068d77b8bc0"
+    },
+    {
+      "upstream_path": "src/features/kanban/components/new-task-dialog.tsx",
+      "imported_path": "src/features/kanban/components/new-task-dialog.tsx",
+      "upstream_sha256": "f60089477cfd3b58451577ee2fc8b36c0bb8325271b15c14601076a2d54db14a"
+    },
+    {
+      "upstream_path": "src/features/kanban/components/task-card.tsx",
+      "imported_path": "src/features/kanban/components/task-card.tsx",
+      "upstream_sha256": "61f5f883394c28cb11d3cac70ccdd6fdcb5dd9d083fa7d6bc6aadeb50b2303de"
+    },
+    {
+      "upstream_path": "src/features/kanban/utils/restrict-to-container.ts",
+      "imported_path": "src/features/kanban/utils/restrict-to-container.ts",
+      "upstream_sha256": "918327ce8faf9849abf48c7647dfaf0a5509a339757676e3dd40d089882ff833"
+    },
+    {
+      "upstream_path": "src/features/kanban/utils/store.ts",
+      "imported_path": "src/features/kanban/utils/store.ts",
+      "upstream_sha256": "dd4e2b35018cbba577622347697a1c7a7b19ee16b6a49220ed333d3c65ae2b39"
+    },
+    {
+      "upstream_path": "src/features/notifications/components/notification-center.tsx",
+      "imported_path": "src/features/notifications/components/notification-center.tsx",
+      "upstream_sha256": "4a88724e2f3665f4b0fe8bc07cb46ef0aba2df6d23265d161bc42b2f014fcdee"
+    },
+    {
+      "upstream_path": "src/features/notifications/components/notifications-page.tsx",
+      "imported_path": "src/features/notifications/components/notifications-page.tsx",
+      "upstream_sha256": "d8737cb0ba06df50edf82498eca5f9f49b06682e772d8ac23a90770641206078"
+    },
+    {
+      "upstream_path": "src/features/notifications/utils/store.ts",
+      "imported_path": "src/features/notifications/utils/store.ts",
+      "upstream_sha256": "215344f2db3430a787dd6e2aac459bf57f8c3ed34aeed756e5112dd7afec3c1a"
+    },
+    {
+      "upstream_path": "src/features/overview/components/area-graph-skeleton.tsx",
+      "imported_path": "src/features/overview/components/area-graph-skeleton.tsx",
+      "upstream_sha256": "c078bbaed46c2577160e207df84dcf20b87929d2d4a7447b7f4a2569408c2bcb"
+    },
+    {
+      "upstream_path": "src/features/overview/components/area-graph.tsx",
+      "imported_path": "src/features/overview/components/area-graph.tsx",
+      "upstream_sha256": "b4b0a850984aba282d95f4435f7f971ad87a6035522122bde7c1e70542ab6d06"
+    },
+    {
+      "upstream_path": "src/features/overview/components/bar-graph-skeleton.tsx",
+      "imported_path": "src/features/overview/components/bar-graph-skeleton.tsx",
+      "upstream_sha256": "f1360589c64e4bc90fd0daa5301a27a264f1be3ba17ac1c6c18e6c0740a5bc06"
+    },
+    {
+      "upstream_path": "src/features/overview/components/bar-graph.tsx",
+      "imported_path": "src/features/overview/components/bar-graph.tsx",
+      "upstream_sha256": "c512a70faec97d1fc254ea66be2f4fca4098acfd393db8fc02590e1839f45b2b"
+    },
+    {
+      "upstream_path": "src/features/overview/components/overview.tsx",
+      "imported_path": "src/features/overview/components/overview.tsx",
+      "upstream_sha256": "c5689f6c578c6df84a0cdbea30d4f4737a98ecb32d30b9ac0eabb2d7e4ba93d9"
+    },
+    {
+      "upstream_path": "src/features/overview/components/pie-graph-skeleton.tsx",
+      "imported_path": "src/features/overview/components/pie-graph-skeleton.tsx",
+      "upstream_sha256": "6938158371cc597c21c6e0528fe93759416ab52a954358dcb6fb892d944fca1d"
+    },
+    {
+      "upstream_path": "src/features/overview/components/pie-graph.tsx",
+      "imported_path": "src/features/overview/components/pie-graph.tsx",
+      "upstream_sha256": "81f6c0c26369bfe9b2b499aea7531108eb2872da556feb956ab602e6ca77895b"
+    },
+    {
+      "upstream_path": "src/features/overview/components/recent-sales-skeleton.tsx",
+      "imported_path": "src/features/overview/components/recent-sales-skeleton.tsx",
+      "upstream_sha256": "0dbabc7c0db840b97bf31ba4a6ff7822601bc3092b64c671f7b8c738f7029741"
+    },
+    {
+      "upstream_path": "src/features/overview/components/recent-sales.tsx",
+      "imported_path": "src/features/overview/components/recent-sales.tsx",
+      "upstream_sha256": "f161dcedae34de5074f315b4c27223824c379cda7b8c106c466d09c2b3d1a17e"
+    },
+    {
+      "upstream_path": "src/features/overview/components/stats-error.tsx",
+      "imported_path": "src/features/overview/components/stats-error.tsx",
+      "upstream_sha256": "1af70b1d0f5b0d4b591e9f02ab216d722c0b25334d0883e23b61bdf06c601950"
+    },
+    {
+      "upstream_path": "src/features/products/api/mutations.ts",
+      "imported_path": "src/features/products/api/mutations.ts",
+      "upstream_sha256": "7fcca6d0c8ac11fd446c872000a24558791270b36fd1db0fffb1dce1ffad1bd7"
+    },
+    {
+      "upstream_path": "src/features/products/api/queries.ts",
+      "imported_path": "src/features/products/api/queries.ts",
+      "upstream_sha256": "63c8d6e79f2746a99e06544dbcf29a53c5982218696b9e9c3958155a8933daf5"
+    },
+    {
+      "upstream_path": "src/features/products/api/service.ts",
+      "imported_path": "src/features/products/api/service.ts",
+      "upstream_sha256": "25349f5d72e8c4d5f6cf5c955a72e384512eda88bcde9bf4b5972ec269767ee4"
+    },
+    {
+      "upstream_path": "src/features/products/api/types.ts",
+      "imported_path": "src/features/products/api/types.ts",
+      "upstream_sha256": "2c86e7baee56e1d1b973abe2c82df455b7bac62669f4496352d80756afb66181"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-form.tsx",
+      "imported_path": "src/features/products/components/product-form.tsx",
+      "upstream_sha256": "cf567c30f7f36e43af4fe64994ef9274528420ecf749063fae186e19f465e748"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-listing.tsx",
+      "imported_path": "src/features/products/components/product-listing.tsx",
+      "upstream_sha256": "8beb4d77a6fd516b944cab2d2a1ad6c0cfdbac3849baab09393b3cd5cd27a0cd"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-tables/cell-action.tsx",
+      "imported_path": "src/features/products/components/product-tables/cell-action.tsx",
+      "upstream_sha256": "666e6360486c6c3d8c0801ea1b64b7b0f1c62f2dfaa8d9d757b4de29c22ab33c"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-tables/columns.tsx",
+      "imported_path": "src/features/products/components/product-tables/columns.tsx",
+      "upstream_sha256": "34651dcc3fdef6297a120ee6dcc9e310a3e5d1be7e7d569db0cf76fda4ffaff2"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-tables/index.tsx",
+      "imported_path": "src/features/products/components/product-tables/index.tsx",
+      "upstream_sha256": "c19674f8ce3d560404e6efc5d95de45450d0927c7387964a89970d416bba3f43"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-tables/options.tsx",
+      "imported_path": "src/features/products/components/product-tables/options.tsx",
+      "upstream_sha256": "d0a15408cd9f90c053ce5a7e29f85f3d2e81821392c9294f398a9337bec8222b"
+    },
+    {
+      "upstream_path": "src/features/products/components/product-view-page.tsx",
+      "imported_path": "src/features/products/components/product-view-page.tsx",
+      "upstream_sha256": "80412cd7648a2bcd32577a16a6fb1dba7152d6720485b0b97404d0ea1e031934"
+    },
+    {
+      "upstream_path": "src/features/products/constants/product-options.ts",
+      "imported_path": "src/features/products/constants/product-options.ts",
+      "upstream_sha256": "1da9a881e6b281dec6b8cf4632f49c12e593b2bdd0edf4e21b52f2845482c3b1"
+    },
+    {
+      "upstream_path": "src/features/products/schemas/product.ts",
+      "imported_path": "src/features/products/schemas/product.ts",
+      "upstream_sha256": "213f61eabb82de7555d326d15f2bd33811ac6d1787ff5cda29fc843eda51810f"
+    },
+    {
+      "upstream_path": "src/features/profile/components/profile-view-page.tsx",
+      "imported_path": "src/features/profile/components/profile-view-page.tsx",
+      "upstream_sha256": "e58eb0dfbc7238bac9ddb9cabec3495343362a94b889242e5538de674f56ea23"
+    },
+    {
+      "upstream_path": "src/features/profile/utils/form-schema.ts",
+      "imported_path": "src/features/profile/utils/form-schema.ts",
+      "upstream_sha256": "873f68834b5ab8c04aa6a2beacb686444898f09e6c70f9790549befdca85ef0e"
+    },
+    {
+      "upstream_path": "src/features/react-query-demo/api/queries.ts",
+      "imported_path": "src/features/react-query-demo/api/queries.ts",
+      "upstream_sha256": "a488f41d030663f0d7b41fc358073bfc58fe7f7267a49ae7eee2c7b2d369c9c1"
+    },
+    {
+      "upstream_path": "src/features/react-query-demo/components/pokemon-info.tsx",
+      "imported_path": "src/features/react-query-demo/components/pokemon-info.tsx",
+      "upstream_sha256": "2119389a056f52f02ddc76019d96b6fda8fdff875482f4a73568c8e720c91803"
+    },
+    {
+      "upstream_path": "src/features/react-query-demo/components/pokemon-skeleton.tsx",
+      "imported_path": "src/features/react-query-demo/components/pokemon-skeleton.tsx",
+      "upstream_sha256": "f9848c6479a422c459d18a366d6e0caeab8b8169f7a1984b14048091e6fd1d11"
+    },
+    {
+      "upstream_path": "src/features/react-query-demo/info-content.ts",
+      "imported_path": "src/features/react-query-demo/info-content.ts",
+      "upstream_sha256": "517d3cf0009a47b3dd4ab44e9bfa5348da4c8462e15065c032c3e18c83adaea1"
+    },
+    {
+      "upstream_path": "src/features/users/api/mutations.ts",
+      "imported_path": "src/features/users/api/mutations.ts",
+      "upstream_sha256": "799934106b630cb15a4fa32da4d8d6e16e6236c737a95a6cc4ace8e3b995bc79"
+    },
+    {
+      "upstream_path": "src/features/users/api/queries.ts",
+      "imported_path": "src/features/users/api/queries.ts",
+      "upstream_sha256": "2a7ef0feee710236f3fe9ca2b89670c4c598d39c24d2490eafb5a1d8a65a963d"
+    },
+    {
+      "upstream_path": "src/features/users/api/service.ts",
+      "imported_path": "src/features/users/api/service.ts",
+      "upstream_sha256": "77330b172d538b28450fbdf19c6f2a5422fad23aafef4fbe33703563ead6e6fe"
+    },
+    {
+      "upstream_path": "src/features/users/api/types.ts",
+      "imported_path": "src/features/users/api/types.ts",
+      "upstream_sha256": "d3681f9f17d435e35eeeb949ac21f3cb27f26136015ec500358e182b26b681ab"
+    },
+    {
+      "upstream_path": "src/features/users/components/user-form-sheet.tsx",
+      "imported_path": "src/features/users/components/user-form-sheet.tsx",
+      "upstream_sha256": "d3f75e5d0bea924b760cfddf689b217dd0aaf3c6830df228c5aadce36c8a6909"
+    },
+    {
+      "upstream_path": "src/features/users/components/user-listing.tsx",
+      "imported_path": "src/features/users/components/user-listing.tsx",
+      "upstream_sha256": "f38b7f783d51b2951dbcddb0c2b0476885b33d310b7ed1aa6bf0c4aecd627513"
+    },
+    {
+      "upstream_path": "src/features/users/components/users-table/cell-action.tsx",
+      "imported_path": "src/features/users/components/users-table/cell-action.tsx",
+      "upstream_sha256": "d2225f43cf2e524f765a2b632ccc58aa717f3bd13fded51ce92196b4727be4d5"
+    },
+    {
+      "upstream_path": "src/features/users/components/users-table/columns.tsx",
+      "imported_path": "src/features/users/components/users-table/columns.tsx",
+      "upstream_sha256": "718c0f14841c58dd9758ada50e768184c9db7e81a7cf3ae43e764e5863906310"
+    },
+    {
+      "upstream_path": "src/features/users/components/users-table/index.tsx",
+      "imported_path": "src/features/users/components/users-table/index.tsx",
+      "upstream_sha256": "94ff5900347e506b264a7653ec15f572f3fb82cd9e27fb492fa1604302e874df"
+    },
+    {
+      "upstream_path": "src/features/users/components/users-table/options.tsx",
+      "imported_path": "src/features/users/components/users-table/options.tsx",
+      "upstream_sha256": "59656f0060664a708285446b11815b1cbb9660e98c79eb6678e81171efbd155a"
+    },
+    {
+      "upstream_path": "src/features/users/info-content.ts",
+      "imported_path": "src/features/users/info-content.ts",
+      "upstream_sha256": "0f3040a13186356158895b908f7b1f210e55aeb79a6c9a4fbe6428db7c9e4dde"
+    },
+    {
+      "upstream_path": "src/features/users/schemas/user.ts",
+      "imported_path": "src/features/users/schemas/user.ts",
+      "upstream_sha256": "92f69e1f113243bbdd4cfc5ab1101684ac39da524d1d085d20fa5192e37dca77"
+    },
+    {
+      "upstream_path": "src/hooks/use-breadcrumbs.tsx",
+      "imported_path": "src/hooks/use-breadcrumbs.tsx",
+      "upstream_sha256": "c5a7231da334788b5c865623246fb3834407508afc9225a42b485f0fa7917d55"
+    },
+    {
+      "upstream_path": "src/hooks/use-callback-ref.tsx",
+      "imported_path": "src/hooks/use-callback-ref.tsx",
+      "upstream_sha256": "68d4b44f640183aaff53249a0061ccfb381543adb1010768618997ba7058bc51"
+    },
+    {
+      "upstream_path": "src/hooks/use-controllable-state.tsx",
+      "imported_path": "src/hooks/use-controllable-state.tsx",
+      "upstream_sha256": "77b2754f385b661c62dfe54ef262e6ad34ebff7bf821740cf39fc90d4402fb91"
+    },
+    {
+      "upstream_path": "src/hooks/use-data-table.ts",
+      "imported_path": "src/hooks/use-data-table.ts",
+      "upstream_sha256": "09879c80025734f53896212404dcee7c544cdf5b78493e57c166d1ce2cafcc5e"
+    },
+    {
+      "upstream_path": "src/hooks/use-debounce.tsx",
+      "imported_path": "src/hooks/use-debounce.tsx",
+      "upstream_sha256": "b3025da9a94d7d2cc212d2c9d7d27e000a80b0ad257afc15d0abbd549c3c4a24"
+    },
+    {
+      "upstream_path": "src/hooks/use-debounced-callback.ts",
+      "imported_path": "src/hooks/use-debounced-callback.ts",
+      "upstream_sha256": "49de5425a53d74b4070c459e349f5102250cd6bc180410dfec42863c8b4a831d"
+    },
+    {
+      "upstream_path": "src/hooks/use-media-query.ts",
+      "imported_path": "src/hooks/use-media-query.ts",
+      "upstream_sha256": "78f37e64309449d87f93786c4f832485f3d403eca8961f80ebaf67fc4d849fe4"
+    },
+    {
+      "upstream_path": "src/hooks/use-mobile.ts",
+      "imported_path": "src/hooks/use-mobile.ts",
+      "upstream_sha256": "58b2cc5fa259358e9192125abf072c832144193d87f3d66a90b13089a0196cef"
+    },
+    {
+      "upstream_path": "src/hooks/use-mobile.tsx",
+      "imported_path": "src/hooks/use-mobile.tsx",
+      "upstream_sha256": "58b2cc5fa259358e9192125abf072c832144193d87f3d66a90b13089a0196cef"
+    },
+    {
+      "upstream_path": "src/hooks/use-nav.ts",
+      "imported_path": "src/hooks/use-nav.ts",
+      "upstream_sha256": "3d324c277dcfce390ec2785db2b1860b9d521637c37fcf73e2b686110502ecc7",
+      "original_path": "upstream-metadata/originals/src/hooks/use-nav.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/hooks/use-stepper.tsx",
+      "imported_path": "src/hooks/use-stepper.tsx",
+      "upstream_sha256": "c37f959c558b13a1ebeacb1ba3f47ad368f9a197cd90b4eebc99ec7cd6da9642"
+    },
+    {
+      "upstream_path": "src/instrumentation-client.ts",
+      "imported_path": "src/instrumentation-client.ts",
+      "upstream_sha256": "1b8b8b9499832d06ebaefcd22ff1cefa2ef1fe93693d42c960b9fcf3e74e6241",
+      "original_path": "upstream-metadata/originals/src/instrumentation-client.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/instrumentation.ts",
+      "imported_path": "src/instrumentation.ts",
+      "upstream_sha256": "057b6f63735205178e99177425322cde08601415279be4b9a9132c07d1833a82",
+      "original_path": "upstream-metadata/originals/src/instrumentation.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/lib/api-client.ts",
+      "imported_path": "src/lib/api-client.ts",
+      "upstream_sha256": "09015f59b757c1204b7e903370732e9867c1ad4a11feb3b4988a3516891915ca"
+    },
+    {
+      "upstream_path": "src/lib/compose-refs.ts",
+      "imported_path": "src/lib/compose-refs.ts",
+      "upstream_sha256": "79bb63b6dd8e008cf4fc91f14c905aebe66278dcb260d4675dd7eeefc57445c3"
+    },
+    {
+      "upstream_path": "src/lib/data-table.ts",
+      "imported_path": "src/lib/data-table.ts",
+      "upstream_sha256": "e1452744a503adfeba2d77b46dce5a9f06c0db33affe65d1f6445823d640bd58"
+    },
+    {
+      "upstream_path": "src/lib/form-context.ts",
+      "imported_path": "src/lib/form-context.ts",
+      "upstream_sha256": "301c91974dc92d8e19cf1f38ecf7a82a5e990c8b543d2028beeae0fbd7f12e8f"
+    },
+    {
+      "upstream_path": "src/lib/form.ts",
+      "imported_path": "src/lib/form.ts",
+      "upstream_sha256": "b555cc90133746107f5a9b141d3614b5fc10ab2ea7b71283e58165c7561460eb"
+    },
+    {
+      "upstream_path": "src/lib/format.ts",
+      "imported_path": "src/lib/format.ts",
+      "upstream_sha256": "d5578ef760a9e40da1393d210d13ce9441dd436da6e879b9b02eea590ea80f83"
+    },
+    {
+      "upstream_path": "src/lib/parsers.ts",
+      "imported_path": "src/lib/parsers.ts",
+      "upstream_sha256": "0d554e10fbdeb019426ca2774643ead2e82d153e09525bd15eec0e82ea520e26"
+    },
+    {
+      "upstream_path": "src/lib/query-client.ts",
+      "imported_path": "src/lib/query-client.ts",
+      "upstream_sha256": "f7e6fb87e22a0c1057cfd675b034d0f191bd91039861dabdbc97d5aa03bd2a2d"
+    },
+    {
+      "upstream_path": "src/lib/searchparams.ts",
+      "imported_path": "src/lib/searchparams.ts",
+      "upstream_sha256": "24cc3312b009f207b888d2631e964a55d2cc4d58c6ca1188750f9030e2fdaa74"
+    },
+    {
+      "upstream_path": "src/lib/theme-transition.ts",
+      "imported_path": "src/lib/theme-transition.ts",
+      "upstream_sha256": "70dc3d33e1318742b41f25266f5ed3555e63057a92ed8d842e50e97e131d23a3"
+    },
+    {
+      "upstream_path": "src/lib/utils.ts",
+      "imported_path": "src/lib/utils.ts",
+      "upstream_sha256": "df461508a4fdc22379f002ab33cc90b34d6ac0b1ddce6a723388b958b836dbc4"
+    },
+    {
+      "upstream_path": "src/proxy.ts",
+      "imported_path": "src/proxy.ts",
+      "upstream_sha256": "52877dd466352d17fb4c00a1cb3b014df8bf247968fe0b12430b7bd116ae41bc",
+      "original_path": "upstream-metadata/originals/src/proxy.ts",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/styles/globals.css",
+      "imported_path": "src/styles/globals.css",
+      "upstream_sha256": "530e6cb7842cdad605147f32d17627d94ae9f64e521b162f07616d974dffe14c",
+      "original_path": "upstream-metadata/originals/src/styles/globals.css",
+      "adapted": true
+    },
+    {
+      "upstream_path": "src/styles/theme.css",
+      "imported_path": "src/styles/theme.css",
+      "upstream_sha256": "946f3f25f334de599453b34361dac078b39dcb27c4c82fb8874a2eb3f467a6c9"
+    },
+    {
+      "upstream_path": "src/styles/themes/astro-vista.css",
+      "imported_path": "src/styles/themes/astro-vista.css",
+      "upstream_sha256": "b7885a880dcabad966efba0641f072f62929304c19ccf4264b5f74f22d85ec74"
+    },
+    {
+      "upstream_path": "src/styles/themes/claude.css",
+      "imported_path": "src/styles/themes/claude.css",
+      "upstream_sha256": "8e8424965a7d0416708beb736ffddf480be65f066b03c84fab983d0ad80b54cf"
+    },
+    {
+      "upstream_path": "src/styles/themes/discord.css",
+      "imported_path": "src/styles/themes/discord.css",
+      "upstream_sha256": "39eee618db016e81c677e4472cd56378d74153000c7b8eb109a1379c72044905"
+    },
+    {
+      "upstream_path": "src/styles/themes/light-green.css",
+      "imported_path": "src/styles/themes/light-green.css",
+      "upstream_sha256": "0367cd0c966f39da098596defca16d1ff2685b41edd4cc22a7845e11068f9207"
+    },
+    {
+      "upstream_path": "src/styles/themes/mono.css",
+      "imported_path": "src/styles/themes/mono.css",
+      "upstream_sha256": "e23c96f58ee7bd10c13139258c79905f7ec01beabc8784ddcf295693d3241b72"
+    },
+    {
+      "upstream_path": "src/styles/themes/notebook.css",
+      "imported_path": "src/styles/themes/notebook.css",
+      "upstream_sha256": "c0ac1dcc40b6d40fa359cc42ebc45a6e71aeb9097245a6eeeafd042c0533e699"
+    },
+    {
+      "upstream_path": "src/styles/themes/supabase.css",
+      "imported_path": "src/styles/themes/supabase.css",
+      "upstream_sha256": "7b1d1ecc12602cd6f9e8803ad8074b4c6948ab391f5edf4e1fa825c699db609a"
+    },
+    {
+      "upstream_path": "src/styles/themes/vercel.css",
+      "imported_path": "src/styles/themes/vercel.css",
+      "upstream_sha256": "182ee5e9ba7ac87776238ef39790dc7d1e08336d543a0156c73f8ae932e858da"
+    },
+    {
+      "upstream_path": "src/styles/themes/whatsapp.css",
+      "imported_path": "src/styles/themes/whatsapp.css",
+      "upstream_sha256": "f3c58c3aa203f770b27b3b8ff450f6ac7d53d10c8b3ca784f33c0fe11f7c10ec"
+    },
+    {
+      "upstream_path": "src/styles/themes/zen.css",
+      "imported_path": "src/styles/themes/zen.css",
+      "upstream_sha256": "2fd8f07e33e4433fef5217355ee6bb2998685c181c63f953d4841e857a9b40a4"
+    },
+    {
+      "upstream_path": "src/types/data-table.ts",
+      "imported_path": "src/types/data-table.ts",
+      "upstream_sha256": "6963c224c3a9bd58066c6810b9a1eebf6bb32be0fc2740b886a0b363219ddba1"
+    },
+    {
+      "upstream_path": "src/types/index.ts",
+      "imported_path": "src/types/index.ts",
+      "upstream_sha256": "788042578cd4178abf6d36948cb763c870c5525fefcaed9e6f68137401484e00"
+    },
+    {
+      "upstream_path": "tsconfig.json",
+      "imported_path": "tsconfig.json",
+      "upstream_sha256": "ad2c90c64d26bc6e05aaaa7f068fb3f040d871a8fe1098b3d35da7a3be4e2853",
+      "original_path": "upstream-metadata/originals/tsconfig.json",
+      "adapted": true
+    }
+  ]
+}

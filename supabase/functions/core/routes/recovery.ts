@@ -1,6 +1,7 @@
 import { database } from '../database.ts';
 import { principal } from '../identity.ts';
 import { readCommandJson } from '../request-body.ts';
+import { jsonOutput,outputIsOpen,responseConfigVersion } from '../output.ts';
 
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const status = (code: string) => code === 'SESSION_INVALID' ? 401 : code === 'FORBIDDEN' ? 403 :
@@ -17,9 +18,18 @@ export async function recoveryCase(request: Request,target: string | null,failur
     if (typeof input.operation_id !== 'string' || !uuid.test(input.operation_id) ||
       typeof input.mode !== 'string' || !['trusted','manual'].includes(input.mode) ||
       Object.keys(input).some(key => !['operation_id','mode'].includes(key))) return failure('INVALID_INPUT',422);
-    const [row] = await database()`SELECT core.request_recovery_result(${actor.account}::uuid,${actor.session}::uuid,
-      ${input.operation_id}::uuid,${input.mode},${environment}) AS result`;
-    if (row.result.code !== 'OK') return failure(row.result.code,status(row.result.code));
+    const row=await database().begin(async tx=>{
+      await tx`SELECT pg_advisory_xact_lock(17013,1)`;
+      if(!await outputIsOpen(tx))return {result:{code:'SERVICE_UNAVAILABLE'}};
+      const [result]=await tx`SELECT core.request_recovery_result(${actor.account}::uuid,${actor.session}::uuid,
+        ${input.operation_id}::uuid,${input.mode},${environment}) AS result`;
+      if (result.result.code === 'OK') await responseConfigVersion(tx);
+      return result;
+    }).catch(error => {
+      if (error instanceof Error && error.message === 'CONFIG_UNAVAILABLE') return { result: { code: 'CONFIG_UNAVAILABLE' } };
+      throw error;
+    });
+    if (row.result.code !== 'OK') return failure(row.result.code,['SERVICE_UNAVAILABLE','CONFIG_UNAVAILABLE'].includes(row.result.code)?503:status(row.result.code));
     target = row.result.id;
   }
   const caseRef = target;
@@ -28,9 +38,10 @@ export async function recoveryCase(request: Request,target: string | null,failur
     const deliver = (response: Response) => { if (!delivered) { delivered = true; resolve(response); } };
     void database().begin(async tx => {
       await tx`SELECT pg_advisory_xact_lock_shared(17013,1)`;
+      if (!await outputIsOpen(tx)) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       const [row] = await tx`SELECT core.recovery_case_result(${actor.account}::uuid,${actor.session}::uuid,${caseRef}::uuid,${environment}) AS result`;
       if (row.result.code !== 'OK') { deliver(failure(row.result.code,status(row.result.code))); return; }
-      const bytes = new TextEncoder().encode(JSON.stringify({ request_id: crypto.randomUUID(),data: row.result.data }));
+      const output = await jsonOutput(tx,row.result.data),bytes=output.bytes!;
       let done!: () => void;
       const handedOff = new Promise<void>(finish => { done = finish; });
       let controller: ReadableStreamDefaultController<Uint8Array> | undefined;
@@ -43,6 +54,6 @@ export async function recoveryCase(request: Request,target: string | null,failur
       deliver(new Response(stream,{ status: request.method === 'POST' ? 202 : 200,
         headers: { 'Content-Type': 'application/json; charset=utf-8','Cache-Control': 'no-store' } }));
       await handedOff;
-    }).catch(() => deliver(failure('SERVICE_UNAVAILABLE',503)));
+    }).catch(error => deliver(failure(error instanceof Error && error.message==='CONFIG_UNAVAILABLE' ? 'CONFIG_UNAVAILABLE' : 'SERVICE_UNAVAILABLE',503)));
   });
 }

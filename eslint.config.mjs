@@ -10,4 +10,6 @@ export default defineConfig([
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }] } },
   // REST and raw report collectors narrow external JSON at the authenticated boundary.
   { files: ['tools/ci/**/*.ts'], rules: { '@typescript-eslint/no-explicit-any': 'off' } },
+  { files: ['apps/mobile/metro.config.js'],languageOptions: { sourceType:'commonjs',globals:{ __dirname:'readonly' } },
+    rules: { '@typescript-eslint/no-require-imports':'off' } },
 ]);

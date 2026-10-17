@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+@source './app';
+@source './src';
+@source '../../packages/design/src';
+
+/* Native adaptations from packages/design/src/tokens.ts (UI-SPEC v1.1).
+   Keep the readable contrast values, rather than copying draft-only colors. */
+@theme {
+  --spacing: 4px;
+  --radius-input: 13px;
+  --radius-button: 22px;
+  --text-title: 19px;
+  --text-body: 16px;
+  --text-caption: 14px;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      --color-bg: #ffffff;
+      --color-fg: #18181b;
+      --color-secondary: #60606c;
+      --color-line: #eeeef1;
+      --color-control-line: #767680;
+      --color-surface: #f5f5f7;
+      --color-accent: #6965d8;
+      --color-error: #b3261e;
+    }
+    @variant dark {
+      --color-bg: #111113;
+      --color-fg: #f2f2f4;
+      --color-secondary: #b0b0ba;
+      --color-line: #242429;
+      --color-control-line: #888894;
+      --color-surface: #1c1c21;
+      --color-accent: #a49df1;
+      --color-error: #ffb4ab;
+    }
+  }
+}

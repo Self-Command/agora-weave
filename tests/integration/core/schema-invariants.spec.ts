@@ -66,6 +66,14 @@ test('DB04: resources bind their own revisions and dependencies cannot create se
     INSERT INTO core.resource_dependency(dependent,source,kind,purposes) VALUES ('${id(10)}','${id(11)}','quote',ARRAY['read']);
     ${reject(`INSERT INTO core.resource_dependency(dependent,source,kind,purposes) VALUES ('${id(11)}','${id(10)}','quote',ARRAY['read'])`)}
     ${reject(`INSERT INTO core.resource_dependency(dependent,source,kind,purposes) VALUES ('${id(10)}','${id(10)}','quote',ARRAY['read'])`)}
+    INSERT INTO core.media_object(id,owner,plugin,bucket,object_internal_key,size_bytes,state,data_class)
+      VALUES ('${id(13)}','${account(1)}','core','private','synthetic-transition',1,'allocated','user_media');
+    ${reject(`INSERT INTO core.media_derivative(parent_media,kind,hash,size,state) VALUES ('${id(13)}','arbitrary','${'a'.repeat(64)}',1,'pending')`)}
+    INSERT INTO core.media_derivative(parent_media,kind,hash,size,state)
+      SELECT '${id(13)}',kind,'${'a'.repeat(64)}',1,'pending' FROM unnest(ARRAY['thumbnail','preview','segment']) kind;
+    ${reject(`UPDATE core.media_object SET state='bound',bound_resource='${id(10)}' WHERE id='${id(13)}'`)}
+    UPDATE core.media_object SET state='cleaned' WHERE id='${id(13)}';
+    ${reject(`UPDATE core.media_object SET state='uploading' WHERE id='${id(13)}'`)}
   `);
 });
 
@@ -78,6 +86,13 @@ test('DB05: retention and deletion clocks remain ordered and durable audit facts
       VALUES ('${id(21)}','${account(1)}','${session(1)}','fixture.write','${id(20)}','test','core','synthetic','succeeded','${id(22)}');
     ${reject(`UPDATE core.audit_event SET result='failed' WHERE id='${id(21)}'`)}
     ${reject(`DELETE FROM core.audit_event WHERE id='${id(21)}'`)}
+    INSERT INTO core.deletion(id,target,actor,kind,deleted_at,undo_until,restore_until,state)
+      VALUES ('${id(23)}','${id(20)}','${account(1)}','user',clock_timestamp(),NULL,NULL,'physical_removed');
+    ${reject(`UPDATE core.deletion SET state='restored' WHERE id='${id(23)}'`)}
+    ${reject(`UPDATE core.deletion SET deleted_at=deleted_at+interval '1 day' WHERE id='${id(23)}'`)}
+    INSERT INTO core.retention_record(id,target,class,owner_plugin,trigger_at,due_at,rule_version,purge_state)
+      VALUES ('${id(24)}','${id(20)}','active_delete','core',clock_timestamp(),clock_timestamp()+interval '30 days','fixture-v1','pending');
+    ${reject(`UPDATE core.retention_record SET trigger_at=trigger_at+interval '1 day' WHERE id='${id(24)}'`)}
   `);
 });
 
@@ -90,6 +105,11 @@ test('DB06: registered configuration keys are globally unique and an immutable b
     INSERT INTO core.config_bundle(version,scoped_values,schema_version,compat,state,preview_digest)
       VALUES ('fixture-v1','{"global":{"fixture.page":20}}',1,'{}','draft','${'c'.repeat(64)}');
     ${reject(`UPDATE core.config_bundle SET scoped_values='{"global":{"fixture.page":50}}' WHERE version='fixture-v1'`)}
+    ${reject(`UPDATE core.config_bundle SET state='active' WHERE version='fixture-v1'`)}
+    UPDATE core.config_bundle SET state='validated' WHERE version='fixture-v1';
+    UPDATE core.config_bundle SET state='ready' WHERE version='fixture-v1';
+    UPDATE core.config_bundle SET state='active',effective_at=clock_timestamp() WHERE version='fixture-v1';
+    ${reject(`UPDATE core.config_bundle SET state='draft' WHERE version='fixture-v1'`)}
   `);
 });
 
@@ -104,6 +124,8 @@ test('DB07: ready document bodies and release bindings are immutable while lawfu
       VALUES ('${id(32)}','${id(30)}','${id(31)}','${'d'.repeat(64)}','{"environment":"test","surfaces":["app"],"purposes":["register"]}','prepared','${account(1)}');
     ${reject(`UPDATE core.document_release SET content_digest='${'e'.repeat(64)}' WHERE id='${id(32)}'`)}
     UPDATE core.document_release SET state='published',published_at=clock_timestamp() WHERE id='${id(32)}';
+    ${reject(`UPDATE core.document_release SET state='prepared' WHERE id='${id(32)}'`)}
     UPDATE core.document_release SET state='withdrawn' WHERE id='${id(32)}';
+    ${reject(`UPDATE core.document_release SET state='published' WHERE id='${id(32)}'`)}
   `);
 });

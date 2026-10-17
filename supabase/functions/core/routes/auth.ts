@@ -1,6 +1,7 @@
 import { database } from '../database.ts';
 import { principal } from '../identity.ts';
 import { readCommandJson } from '../request-body.ts';
+import { jsonOutput,outputIsOpen } from '../output.ts';
 
 export async function refreshSession(request: Request,failure: (code: string,status: number) => Response): Promise<Response> {
   let input;
@@ -32,9 +33,10 @@ export async function refreshSession(request: Request,failure: (code: string,sta
     const deliver = (response: Response) => { if (!delivered) { delivered = true; resolve(response); } };
     void database().begin(async tx => {
       await tx`SELECT pg_advisory_xact_lock_shared(17013,1)`;
+      if (!await outputIsOpen(tx)) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       const [row] = await tx`SELECT core.current_identity(${verified.account}::uuid,${verified.session}::uuid) AS active`;
       if (!row.active) { deliver(failure('SESSION_INVALID',401)); return; }
-      const bytes = new TextEncoder().encode(JSON.stringify({ request_id: crypto.randomUUID(),data: { session: tokens } }));
+      const output = await jsonOutput(tx,{ session: tokens }),bytes=output.bytes!;
       let done!: () => void;
       const handedOff = new Promise<void>(finish => { done = finish; });
       let controller: ReadableStreamDefaultController<Uint8Array> | undefined;
@@ -46,7 +48,7 @@ export async function refreshSession(request: Request,failure: (code: string,sta
       },{ highWaterMark: 0 });
       deliver(new Response(stream,{ headers: { 'Content-Type': 'application/json; charset=utf-8','Cache-Control': 'no-store' } }));
       await handedOff;
-    }).catch(() => deliver(failure('SERVICE_UNAVAILABLE',503)));
+    }).catch(error => deliver(failure(error instanceof Error && error.message==='CONFIG_UNAVAILABLE' ? 'CONFIG_UNAVAILABLE' : 'SERVICE_UNAVAILABLE',503)));
   });
 }
 
@@ -62,11 +64,12 @@ export function registrationDocuments(request: Request, failure: (code: string,s
     const deliver = (response: Response) => { if (!delivered) { delivered = true; resolve(response); } };
     void database().begin(async tx => {
       await tx`SELECT pg_advisory_xact_lock_shared(17013,1)`;
+      if (!await outputIsOpen(tx)) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       const [row] = await tx`SELECT core.registration_documents_result(${environment}) AS result`;
       if (row.result.code !== 'OK') { deliver(failure(row.result.code,503)); return; }
       const data = { documents: row.result.documents,document_set_digest: row.result.document_set_digest,
         age_declaration_version: row.result.age_declaration_version };
-      const bytes = new TextEncoder().encode(JSON.stringify({ request_id: crypto.randomUUID(),data }));
+      const output = await jsonOutput(tx,data),bytes=output.bytes!;
       if (bytes.length > 1024 * 1024) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       let done!: () => void;
       const handedOff = new Promise<void>(finish => { done = finish; });
@@ -79,6 +82,6 @@ export function registrationDocuments(request: Request, failure: (code: string,s
       },{ highWaterMark: 0 });
       deliver(new Response(stream,{ headers: { 'Content-Type': 'application/json; charset=utf-8','Cache-Control': 'no-store' } }));
       await handedOff;
-    }).catch(() => deliver(failure('SERVICE_UNAVAILABLE',503)));
+    }).catch(error => deliver(failure(error instanceof Error && error.message==='CONFIG_UNAVAILABLE' ? 'CONFIG_UNAVAILABLE' : 'SERVICE_UNAVAILABLE',503)));
   });
 }

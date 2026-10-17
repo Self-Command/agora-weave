@@ -1,6 +1,7 @@
 import { database } from '../database.ts';
 import { principal } from '../identity.ts';
 import { readCommandJson } from '../request-body.ts';
+import { outputIsOpen,responseConfigVersion } from '../output.ts';
 
 type Cursor = { position: string; subject: string; environment: string; limit: number; client_release: string; config_version: string };
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
@@ -46,12 +47,21 @@ export async function revokeSession(request: Request, target: string | null,
   const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256',text.encode(JSON.stringify({
     target,base_version: body.base_version ?? null,operation_id: body.operation_id,
   }))))].map(value => value.toString(16).padStart(2,'0')).join('');
-  const [row] = await database()`SELECT core.revoke_session_result(${actor.account}::uuid,${actor.session}::uuid,
-    ${target}::uuid,${body.base_version ?? null}::bigint,${body.operation_id}::uuid,${digest},${environment},${logout}) AS result`;
+  const row=await database().begin(async tx=>{
+    await tx`SELECT pg_advisory_xact_lock(17013,1)`;
+    if(!await outputIsOpen(tx))return {result:{code:'SERVICE_UNAVAILABLE'}};
+    const [result]=await tx`SELECT core.revoke_session_result(${actor.account}::uuid,${actor.session}::uuid,
+      ${target}::uuid,${body.base_version ?? null}::bigint,${body.operation_id}::uuid,${digest},${environment},${logout}) AS result`;
+    if (result.result.code === 'OK') return { ...result,config_version: await responseConfigVersion(tx) };
+    return result;
+  }).catch(error => {
+    if (error instanceof Error && error.message === 'CONFIG_UNAVAILABLE') return { result: { code: 'CONFIG_UNAVAILABLE' } };
+    throw error;
+  });
   const result = row.result;
-  if (result.code !== 'OK') return failure(result.code,result.code === 'SESSION_INVALID' ? 401 :
+  if (result.code !== 'OK') return failure(result.code,['SERVICE_UNAVAILABLE','CONFIG_UNAVAILABLE'].includes(result.code) ? 503 : result.code === 'SESSION_INVALID' ? 401 :
     result.code === 'NOT_FOUND' ? 404 : result.code === 'CONFLICT' ? 409 : 422);
-  return Response.json({ request_id: body.operation_id,data: {
+  return Response.json({ request_id: body.operation_id,config_version: row.config_version,data: {
     revoked: result.revoked,clear_restricted_cache: result.clear_restricted_cache,
   } },{ headers: { 'Cache-Control': 'no-store' } });
 }
@@ -73,6 +83,7 @@ export function listSessions(request: Request, failure: (code: string, status: n
     const deliver = (response: Response) => { if (!resolved) { resolved = true; resolve(response); } };
     void database().begin(async tx => {
       await tx`SELECT pg_advisory_xact_lock_shared(17013,1)`;
+      if (!await outputIsOpen(tx)) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       const actor = await principal(request);
       if (!actor || actor.audience !== 'authenticated') { deliver(failure('SESSION_INVALID',401)); return; }
       const scope = { subject: actor.account, environment, limit: Number(limit), client_release: release };

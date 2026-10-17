@@ -21,6 +21,25 @@ const create = (mode: string,command = randomUUID(),patch = {}) => request('/rec
   method: 'POST',token: token(1,patch),body: { mode,operation_id: command },
 });
 test('RC01: manual requests create a real received case, reuse pending cases and disclose only its owner status', () => {
+  const environment=process.env.AGORAWEAVE_LOCAL_ENVIRONMENT || process.env.CI_ENVIRONMENT;
+  const active=String(rows(`SELECT active_ptr FROM core.config_activation WHERE environment='${environment}'`)[0].active_ptr);
+  const counts=()=>rows(`SELECT
+    (SELECT count(*)::int FROM core.recovery_case WHERE account_ref='${account()}') AS cases,
+    (SELECT count(*)::int FROM core.operation WHERE actor='${account()}' AND action='recovery.request') AS operations,
+    (SELECT count(*)::int FROM core.audit_event WHERE actor='${account()}' AND operation='recovery.request') AS audits`)[0];
+  const beforeMissing=counts(),blockedCommand=randomUUID();
+  try {
+    sql(`DELETE FROM core.config_activation WHERE environment='${environment}';`);
+    const unavailable=create('manual',blockedCommand);
+    assert.equal(unavailable.status,503,unavailable.body);assert.equal(unavailable.data.code,'CONFIG_UNAVAILABLE');
+    assert.equal(unavailable.data.data,undefined);assert.deepEqual(counts(),beforeMissing,
+      'Missing configuration rolls back the recovery case, audit and operation in the submission transaction');
+    assert.equal(create('trusted').status,403,'Current recovery qualification retains its failure precedence');
+    assert.equal(create('invalid').status,422);
+  } finally {
+    sql(`INSERT INTO core.config_activation(environment,active_ptr) VALUES('${environment}','${active.replaceAll("'","''")}')
+      ON CONFLICT(environment) DO UPDATE SET active_ptr=excluded.active_ptr;`);
+  }
   const command = randomUUID(),response = create('manual',command);
   assert.equal(response.status,202,response.body);
   const data = response.data.data as { id: string; state: string; mode: string };

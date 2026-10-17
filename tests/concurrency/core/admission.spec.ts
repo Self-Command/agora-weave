@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
+import { createHash,randomUUID } from 'node:crypto';
 import { setTimeout as pause } from 'node:timers/promises';
-import { account, session, request, token, sql } from '../../fixtures/core/runtime.ts';
+import { account,environment,session,request,token,sql } from '../../fixtures/core/runtime.ts';
+import { compose } from '../../../tools/ci/core-database.ts';
 import { asynchronousCompose, heldTransaction, readConcurrently } from '../../fixtures/core/concurrency.ts';
 
 const target = '40000000-0000-4000-8000-000000000002';
@@ -41,4 +43,42 @@ test('AD02: actual session mutation takes the same exclusive admission lock and 
     await pending;
     for (let number = 0; number < 3; number++) assert.equal(request(`/posts/${target}`, { token: token(2) }).status, 401);
   } finally { await pending.catch(() => {}); sql(`UPDATE core.session_registry SET revoked_at=NULL WHERE session_id='${session(2)}';`); }
+});
+
+test('AD03: multi-unit media and actual ETag hits recheck current access behind the policy writer before any new Range or conditional output',async()=>{
+  const id=randomUUID(),key=`admission/${id}`,body='SYNTHETIC_STREAM_UNIT_'.repeat(8192),digest=createHash('sha256').update(body).digest('hex');
+  const etag=`"${digest}"`,path=`/media/${id}`,env=environment();
+  sql(`INSERT INTO storage.buckets(id,name,public) VALUES('private','private',false) ON CONFLICT(id) DO NOTHING;
+    INSERT INTO core.media_object(id,owner,plugin,bucket,object_internal_key,size_bytes,sha256,detected_mime,state,data_class,bound_resource)
+      VALUES('${id}','${account()}','core','private','${key}',${body.length},'${digest}','application/octet-stream','bound','user_media','${target}');`);
+  const upload=[`url = "http://storage:5000/object/private/${key}"`,'request = "POST"','silent','show-error','fail',
+    `header = ${JSON.stringify(`Authorization: Bearer ${env.SERVICE_ROLE_KEY}`)}`,'header = "Content-Type: application/octet-stream"',
+    `data = ${JSON.stringify(body)}`].join('\n');
+  compose(['exec','-T','db','curl','--config','-'],upload+'\n');
+  try {
+    const full=request(path,{token:token(2)});assert.equal(full.status,200);assert.equal(full.body,body);
+    const partial=request(path,{token:token(2),headers:{Range:'bytes=0-131071'}});assert.equal(partial.status,206);assert.equal(partial.body,body.slice(0,131072));
+    const hit=request(path,{token:token(2),headers:{'If-None-Match':etag}});assert.equal(hit.status,304);assert.equal(hit.body,'');
+    const writer=await heldTransaction(`UPDATE core.resource SET visibility='self',policy_epoch=policy_epoch+1 WHERE id='${target}'`);
+    let completed=0;
+    const pending=[{Range:'bytes=0-131071'},{'If-None-Match':etag}].map(async headers=>{
+      const config=[`url = "http://api-gw:8000/functions/v1/core/api/v1${path}"`,'silent','show-error','max-time = 15','write-out = "\\n%{http_code}"',
+        `header = ${JSON.stringify(`apikey: ${env.ANON_KEY}`)}`,`header = ${JSON.stringify(`Authorization: Bearer ${token(2)}`)}`,
+        ...Object.entries(headers).map(([name,value])=>`header = ${JSON.stringify(`${name}: ${value}`)}`)].join('\n');
+      const raw=await asynchronousCompose(['exec','-T','db','curl','--config','-'],config+'\n');completed++;
+      const split=raw.lastIndexOf('\n');return {status:Number(raw.slice(split+1)),body:raw.slice(0,split)};
+    });
+    pending.forEach(result=>{void result.catch(()=>{});});
+    try {
+      await pause(250);assert.equal(completed,0,'New media reads must wait behind the uncommitted current policy restriction');
+    } finally {await writer.commit();}
+    const denied=await Promise.all(pending);
+    for(const result of denied){assert.equal(result.status,404);assert.doesNotMatch(result.body,/SYNTHETIC_STREAM_UNIT|object_internal_key|source-key/);}
+    assert.equal(request(path,{method:'HEAD',token:token(2),headers:{'If-None-Match':etag}}).status,404);
+  } finally {
+    sql(`UPDATE core.resource SET visibility='followers' WHERE id='${target}';UPDATE core.media_object SET state='cleaned' WHERE id='${id}';`);
+    const cleanup=[`url = "http://storage:5000/object/private/${key}"`,'request = "DELETE"','silent','show-error','fail',
+      `header = ${JSON.stringify(`Authorization: Bearer ${env.SERVICE_ROLE_KEY}`)}`].join('\n');
+    compose(['exec','-T','db','curl','--config','-'],cleanup+'\n');
+  }
 });
