@@ -35,10 +35,10 @@ test('NC01: the actual named primary control binds its action and renders disabl
 test('NC02: the actual text input forwards typed text and focus callbacks while preserving field-error accessibility',async()=>{
   const values:string[]=[];let focused=0,blurred=0;const root=createRoot();
   try {
-    await act(async()=>{root.render(createElement(component('AccountField'),{label:'手机号',value:'',error:'请检查手机号',
+    await act(async()=>{root.render(createElement(component('AccountField'),{label:'手机号',value:'',error:'请输入有效手机号',
       onChangeText:(value:string)=>values.push(value),onFocus:()=>focused++,onBlur:()=>blurred++}));});
     const input=find(root.container,node=>node.type==='TextInput');
-    assert.equal(input.props.accessibilityLabel,'手机号');assert.equal(input.props.accessibilityHint,'请检查手机号');
+    assert.equal(input.props.accessibilityLabel,'手机号');assert.equal(input.props.accessibilityHint,'请输入有效手机号');
     await act(async()=>{input.props.onChangeText('13800138000');input.props.onFocus({nativeEvent:{}});});
     await act(async()=>{find(root.container,node=>node.type==='TextInput').props.onBlur({nativeEvent:{}});});
     assert.deepEqual(values,['13800138000']);assert.equal(focused,1);assert.equal(blurred,1);

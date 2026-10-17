@@ -206,17 +206,28 @@ test('MC12: transient session refresh failure retains secure credentials while s
 
 test('MC13: auth controller rejects invalid input and retains the same challenge command only until an input edit', async () => {
   const bodies: unknown[] = [];
-  let ids = 0;
-  const controller = createAuthController(controllerApi({ challenge: async body => {
-    bodies.push(body); throw new AccountError('RATE_LIMITED','稍后重试',30);
+  let ids = 0,unavailable = false;
+  const controller = createAuthController(controllerApi({ documents: async () => documents,challenge: async body => {
+    bodies.push(body); throw unavailable ? new AccountError('SERVICE_UNAVAILABLE','账号服务暂时不可用，请稍后重试') : new AccountError('RATE_LIMITED','稍后重试',30);
   } }),async () => assert.fail('Challenge failure cannot authenticate'),() => `challenge-${++ids}`,() => 1000);
-  await controller.sendCode(); assert.equal(bodies.length,0); assert.match(controller.getSnapshot().error,/有效手机号/);
+  await controller.sendCode(); assert.equal(bodies.length,0); assert.equal(controller.getSnapshot().error,'请输入有效手机号');
+  assert.equal(controller.getSnapshot().fieldErrors.phone,'请输入有效手机号');
   controller.setPhone('13800138000'); await controller.sendCode(); await controller.sendCode();
   assert.equal(controller.getSnapshot().retryAt,31_000); assert.equal(controller.remaining(),30);
   assert.deepEqual(bodies[0],bodies[1]);
   controller.setPhone('13900139000'); await controller.sendCode();
   assert.deepEqual(bodies[2],{ phone: '+8613900139000',purpose: 'login',operation_id: 'challenge-2' });
   assert.equal(controller.getSnapshot().phone,'13900139000'); assert.equal(controller.getSnapshot().busy,false);
+  unavailable = true;
+  await controller.sendCode();
+  assert.equal(controller.getSnapshot().error,'短信服务暂时不可用，请稍后重试。输入已保留。');
+  assert.equal(controller.getSnapshot().phone,'13900139000');assert.equal(controller.getSnapshot().step,'details');
+  controller.changeMode();await idleTurn();
+  controller.setInvitation('invite');controller.setAdult(true);controller.setConsent(true);await controller.sendCode();
+  assert.equal(controller.getSnapshot().error,'短信服务暂时不可用，请稍后重试。输入已保留。');
+  assert.equal(controller.getSnapshot().phone,'13900139000');assert.equal(controller.getSnapshot().invitation,'invite');
+  assert.equal(controller.getSnapshot().consent,true);assert.equal(controller.getSnapshot().adult,true);
+  controller.dispose();
 });
 
 test('MC14: registration terms changes invalidate consent, OTP and commands before loading the current document set', async () => {

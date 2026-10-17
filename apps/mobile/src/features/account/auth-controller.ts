@@ -41,7 +41,7 @@ export function createAuthController(api: AccountApi,onAuthenticated: (session: 
     const ticket = ++generation;
     const value = state.getSnapshot(),normalized = normalizePhone(value.phone);
     const fieldErrors: typeof value.fieldErrors = {};
-    if (!normalized) fieldErrors.phone = '请输入有效手机号，境外号码请加国家区号';
+    if (!normalized) fieldErrors.phone = '请输入有效手机号';
     if (value.mode === 'register' && !value.invitation.trim()) fieldErrors.invitation = '请输入邀请码';
     if (Object.keys(fieldErrors).length) {
       state.update({ error: fieldErrors.phone || fieldErrors.invitation || '',errorCode: 'INVALID_INPUT',fieldErrors }); return;
@@ -59,8 +59,9 @@ export function createAuthController(api: AccountApi,onAuthenticated: (session: 
       verifyCommand = null; challengeCommand = null;
     } catch (failure) {
       if (!current(ticket)) return;
-      const error = failure instanceof Error ? failure.message : '验证码发送失败，请重试';
       const errorCode = failure instanceof AccountError ? failure.code : 'SERVICE_UNAVAILABLE';
+      const error = errorCode === 'SERVICE_UNAVAILABLE' ? '短信服务暂时不可用，请稍后重试。输入已保留。' :
+        failure instanceof Error ? failure.message : '验证码发送失败，请重试';
       state.update({ error,errorCode,fieldErrors: errorCode === 'INVITATION_INVALID' ? { invitation: error } : {} });
       if (failure instanceof AccountError && failure.retryAfter > 0) state.update({ retryAt: now() + failure.retryAfter*1000 });
       if (await recoverChangedTerms(failure,() => { state.update({ consent: false }); challengeCommand = null; },reloadDocuments) && current(ticket)) {

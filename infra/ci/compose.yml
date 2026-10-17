@@ -10,6 +10,7 @@ services:
         hard: 100000
   auth:
     environment:
+      GOTRUE_JWT_ISSUER: http://api-gw:8000/auth/v1
       GOTRUE_DISABLE_SIGNUP: 'true'
       GOTRUE_EXTERNAL_EMAIL_ENABLED: 'false'
       GOTRUE_EXTERNAL_PHONE_ENABLED: 'false'

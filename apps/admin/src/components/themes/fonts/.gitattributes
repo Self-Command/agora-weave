@@ -1,0 +1,4 @@
+# Keep downloaded asset bytes identical to provenance on every checkout.
+**/OFL.txt -text
+**/google.css -text
+**/*.woff2 -text
