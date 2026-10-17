@@ -127,8 +127,17 @@ class BootstrapShellTest {
     phone.text = "123"
     assertEquals("123", phone.text)
     device.pressBack()
+    // Android's keyboard dismissal may finish after the back action returns.
+    device.waitForIdle()
     var getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
-    if (getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) {
+    val actionDeadline = SystemClock.uptimeMillis() + 5000
+    while ((getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) &&
+      SystemClock.uptimeMillis() < actionDeadline) {
+      SystemClock.sleep(100)
+      getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
+    }
+    if ((getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) &&
+      device.hasObject(By.pkg(targetPackage).scrollable(true))) {
       UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().description("获取验证码"))
       getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
     }
@@ -136,7 +145,9 @@ class BootstrapShellTest {
     assertTrue("A named enabled action must remain reachable", action.isEnabled)
     assertTrue("Android action touch height", action.visibleBounds.height() / context.resources.displayMetrics.density >= 48f)
     action.click()
-    UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
+    if (device.hasObject(By.pkg(targetPackage).scrollable(true))) {
+      UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
+    }
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertEquals("123", device.findObject(By.pkg(targetPackage).desc("手机号")).text)
     val root = context.getExternalFilesDir(null)!!
