@@ -22,11 +22,19 @@
 当前没有连接的Android设备；服务就绪与bundle编译不等于原生产品旅程或Fast Refresh客户端交互通过。
 
 本次实际检查：三端与工具typecheck通过；完整现行lint通过（后台使用固定官方oxlint1.65.0，290文件/213规则0错误0警告）；
-工具回归56/56通过，移动控制器与设计组件32/32通过，后台来源/安全/本地字体8/8通过。两个账号异步竞态已修复并独立复核关闭。
+工具回归56/56通过，移动控制器与设计组件32/32通过，后台来源/安全/本地字体初次8/8通过。两个账号异步竞态已修复并独立复核关闭。
 当前登记27 core targets/159 cases/37 migrations（移动客户端从10增至30），没有运行完整159、云端dev/test或原生矩阵。
 原139最近完整失败及后续局部修复事实仍保留；不能勾Phase2完成。旧UI视觉断言保留并明确暂缓，未把空路由当UI通过。
 日志在H:/Projects/AgoraWeave/development/reports，ui-retirement-*、admin-official-*及development-services-reuse-final.json。
 首次启动模块格式/在线字体、Metro CI空值及IPv6绑定失败日志保留；已修对应原因并实际启动通过。
+
+独立UI复检发现本机预览规则误拦编码的Next静态chunk、造成hydration失败；已仅对合法静态资源编码放行并补AT07回归。
+18个实际编码资源均HTTP200；同一复检agent撤掉请求改写后，以普通浏览器请求确认无console/pageerror/403，
+CmdK打开/搜索/Esc、浅深主题及Claude主题、桌面侧栏和390宽抽屉通过；产品表与表单入口实际可见可操作，390宽无横向溢出。
+截图在reports/admin-ui-review-20261017；只证明本机官方模板，真实管理身份/MFA/API及业务验收仍未完成。
+
+Uniwind已按用户建议评估为后续App优先样式方案，免费版/现有token/必要原生适配；本次未安装，
+实际兼容、bundle和热更新须接入时验证，见prototype-development-research-2026-10-17.md。
 
 原64个未提交业务文件中，本次仅授权的admin旧CSS删除、share旧首页CSS变化，其余62个原字节未变；285条任务及勾选未改。
 Phase2剩余后端、真实SMS、App新页面批准与实际客户端验收仍未完成；本次环境与模板恢复不增加产品完成结论。
