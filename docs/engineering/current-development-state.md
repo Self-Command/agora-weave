@@ -15,7 +15,7 @@ outbox未claim时NULL lease原缺陷已在真实DB复现；失败TAP保留于H:/
 
 本机已查到并启动原有FlowCommunity_API_35（emulator-5554，x86_64，API35），安装已有Actions 38875978439的development-x86_64 APK，复用Metro加载当前JS，无本机构建或新增原生依赖。原型84张page/scene/theme画面已实际渲染检查；当前App常规样式沿用Uniwind，同一H运行区增量同步。
 固定gpt-5.6-luna/xhigh独立UI复检已检查可达登录正常/校验错误/服务不可用、注册条款加载失败与面板/重试、浅深主题、键盘、返回、输入保留、48dp触区及1.3大字（已恢复1.0浅色）。资料在上述目录ui-review/account-r2-ui-review-20261017.md。
-发现的失败后错误busy读屏状态已修正为明确按钮名称及仅真实处理时busy，等待该节点定向复测；不重复已测且未受影响的整批画面。
+发现的失败后错误busy读屏状态已修正；独立复检仅定向读取登录错误后的可用按钮、注册条款失败后的禁用按钮两个真实节点，名称均为“获取验证码”且不含busy，该必修项关闭；未重复其余整批画面。
 App API_URL仍未配置可达产品入口，公有challenge/verify和真实SMS尚缺，所以OTP、账号安全、恢复页面及对应全部真实状态仍未验证；没有注入假session/条款来冒充可达旅程。后台仍为完整Kiranism本机合成模板，真实管理身份/MFA/权限及业务未完成。
 
 Phase2 T028–T051核实边界（保285任务ID及原勾选）：
