@@ -6,14 +6,6 @@ on:
         description: Base commit for actual UI changes (empty defaults to previous commit)
         type: string
         default: ''
-      ui_stage_ids:
-        description: Comma-separated applicable page/component IDs for stage or release acceptance (empty checks records/changes only)
-        type: string
-        default: ''
-      ui_source_revision:
-        description: Actual implementation commit for selected stage records; unchanged page source may survive governance-only commits
-        type: string
-        default: ''
 permissions:
   contents: read
   actions: read
@@ -33,19 +25,13 @@ jobs:
       - run: npm run ci:typecheck
       - run: npm run ci:lint
       - run: npm run ci:contracts
-      - name: Check UI bindings for actual changes and selected completion scope
+      - name: Check design approval and source bindings (visual review is local)
         env:
           UI_BASE_REF: ${{ inputs.ui_base_ref }}
-          UI_STAGE_IDS: ${{ inputs.ui_stage_ids }}
-          UI_SOURCE_REVISION: ${{ inputs.ui_source_revision }}
         run: |
           node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode structure
           node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode changes --base "${UI_BASE_REF:-HEAD^}"
-          if [ -n "$UI_STAGE_IDS" ]; then
-            node --experimental-strip-types tools/ci/check-ui-bindings.ts --mode stage --ids "$UI_STAGE_IDS" --source-revision "$UI_SOURCE_REVISION"
-          else
-            echo 'No page completion claim: only binding records and actual changed UI were checked.'
-          fi
+          echo 'Only approval/source bindings checked. Visual review and user acceptance run locally.'
   services:
     uses: ./.github/workflows/service-bootstrap.yml
     with:

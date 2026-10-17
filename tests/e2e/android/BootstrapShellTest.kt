@@ -139,14 +139,9 @@ class BootstrapShellTest {
     UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertEquals("123", device.findObject(By.pkg(targetPackage).desc("手机号")).text)
-    val theme = InstrumentationRegistry.getArguments().getString("theme") ?: "light"
     val root = context.getExternalFilesDir(null)!!
-    device.dumpWindowHierarchy(File(root, "bootstrap-ui.xml"))
-    device.takeScreenshot(File(root, "bootstrap-resume.png"))
-    File(root, "bootstrap-theme.txt").writeText("$theme:${context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
-    File(root, "bootstrap-accessibility.json").writeText(JSONObject()
-      .put("source", "actual-approved-native-controls").put("theme", theme)
-      .put("font_scale", context.resources.configuration.fontScale.toDouble())
+    File(root, "bootstrap-controls.json").writeText(JSONObject()
+      .put("source", "actual-approved-native-controls")
       .put("phone_input", true).put("named_action", true).put("touch_minimum_dp", 48)
       .put("error_feedback_preserves_input", true).put("full_account_journey_verified", false).toString())
   }

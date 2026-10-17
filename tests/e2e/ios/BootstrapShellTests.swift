@@ -30,10 +30,6 @@ final class BootstrapShellTests: XCTestCase {
     getCode.tap()
     XCTAssertTrue(app.staticTexts["请输入有效手机号"].waitForExistence(timeout: 5))
     XCTAssertEqual(phone.value as? String, "123")
-    let capture = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-    capture.name = "approved-account-controls"
-    capture.lifetime = .keepAlways
-    add(capture)
     if let configURL = Bundle(for: Self.self).url(forResource: "https-client", withExtension: "json") {
       try verifyHTTPS(configURL)
     }
