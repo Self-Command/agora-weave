@@ -4,6 +4,12 @@
 阶段App截图按页面/状态/主题标注后拼图批量检查；复检期间保持该批运行源码稳定，集中修复后只复测受影响项。
 细则统一见execution-policy；本次仅调整既有文档，不新增工具、测试框架或产品范围，不增加下述业务/设备通过结论。
 
+2026-10-17后续验证码安全批次（T043/US1 T054/T058前置）：真实DB先复现过期challenge重放仍OK且pending，新增0029_otp_replay_guards后重放严格匹配原用途/上下文/IP/code摘要/环境；仅未过期pending可复用，过期持久标记，其他终态拒绝；返回表内真实expires_at及剩余冷却秒数。
+注册重放及消费重新核当前资料集合、年龄声明和有效未使用邀请码；NULL环境的旧记录不允许消费。未重造Auth会话或启用短信旁路，受控phone/IP摘要仍由可信入口提供。
+真实目标16/16通过：core.auth-otp-policy 9、core.auth-concurrency 2、core.auth-registration 5；目标lint及目标发现通过，独立只读代码复核无新增P1/P2。0029已显式增量迁移应用，40条原摘要验证，原容器组/数据卷保留。
+首轮8/9中OT05夹具修改created_at被现有保护触发器拒改，已改为INSERT时构造过冷却期的独立记录，保留原断言后9/9通过；原失败TAP/JSON及缺陷复现日志均保留于H:/Projects/AgoraWeave/development/reports/phase2-otp-20261017。
+现登记27目标/193用例/41迁移，不代表完整核心或云端矩阵通过。本批无UI改动/复检；公开challenge/verify、真实SMS和完整账号旅程仍未接通，原任务勾选保持。
+
 2026-10-17用户已明确恢复按新规范快速开发。T048通用当前资料集合与合法历史读取本批已完成目标验证：当前集合带服务端digest、最多50项且不截断；历史明确非current，缺当前版不回退；未发布/撤下/未来或NULL发布时间/草稿/错误环境或入口不可读，GET不产生同意记录。原注册集合协议保持兼容。
 0028_document_read_sets已通过显式本地增量迁移应用，39条原迁移摘要验证，未清seed或另建服务组；11个原Supabase容器健康复用。
 真实目标19/19通过：core.gateways 11（新增GW06–GW11六例）、core.auth-registration 5、core.internal-boundaries 3，无失败/跳过。对应4文件目标lint与目标发现通过，复用此前对同版后端差异的独立代码复核，本批没有UI改动或重复UI复检。
