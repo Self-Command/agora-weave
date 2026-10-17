@@ -1055,6 +1055,14 @@
   "core_case_count": 380,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0044_auth_session_retirement.sql",
+      "depends_on": [
+        "supabase/migrations/0043_admin_identity_phone_guard_fix.sql",
+        "supabase/migrations/0009_output_admission.sql",
+        "supabase/migrations/0011_independent_security_journal.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0043_admin_identity_phone_guard_fix.sql",
       "depends_on": [
         "supabase/migrations/0041_admin_password_identity_guard.sql"
