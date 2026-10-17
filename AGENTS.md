@@ -2,7 +2,8 @@
 
 - 开始工作先读 `.specify/memory/constitution.md`、`docs/engineering/execution-policy.md` 和 `docs/engineering/current-development-state.md`；宪法缺失或不可读即报告并请求用户处理，不得推断或代替。
 - 本会话首次工作、切换工作树/分支或规范变化后，在仓库根运行 `pwsh -NoProfile -File tools/dev/sync-governance.ps1 -Verify`；未变更时复用结果。失败先同步，不使用旧规范开发。
-- 一切规格、计划、实现、测试、复检与交付须遵宪法；实质冲突按第九条取得决定。既有 SK spec/plan/tasks 是唯一规格基线，保留 285 个任务 ID、产品范围和真实未完成边界，不重生成、不恢复 SP/桥接/认证收据或另建执行框架。
+- 一切规格、计划、实现、测试、复检与交付须遵宪法；实质冲突按第九条取得决定。既有PRD/spec/plan/tasks是唯一业务基线，保留 285 个任务 ID、产品范围和真实未完成边界，直接维护、不重生成；Spec Kit已按用户授权退役，不恢复SP/桥接/认证收据或另建执行框架。
+- 文档职责与长期决定见 `docs/engineering/development-decisions.md`；有界批次说明复用 `specs/001-agoraweave-v1/implementation/`，不另建目标/路线/报告平台。
 - 实际生产业务优先，按阶段后端→集中获批 App 页面/状态/真实 API→集中视觉交互集成复检。除 HTML 原型外不新增演示产品页面、临时功能或测试壳；不删除有效合成测试。细则统一见执行政策。
 - 用户已批准按执行政策分工并行：主 agent 统筹架构、接口、复杂风险、集成与交付；所有开发子 agent（含后端/App/后台与代码复检）统一显式使用 `gpt-6.1-sol`、`high`，UI 复检沿用固定配置。按独立文件与依赖拆分，不同时启动全部角色；共享 DB、运行区和设备串行使用，规范由主 agent 集中同步。
 - 为减少重复上下文与 token，分派前优先复用可访问、同职责且模型配置匹配的既有子 agent，只补增量任务；不可用、上下文过长、必要并行或独立审查才新建。开发与独立复检不得混用，详见执行政策。

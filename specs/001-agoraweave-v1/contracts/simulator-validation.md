@@ -1,6 +1,6 @@
 # 模拟器验收范围（ED-14）
 
-批准依据：ED-14、ED-20及[ED-21](../../../docs/engineering/local-cloud-responsibility-decision.md)。开发期可在本地Android模拟器进行真实日常交互和反馈，标清实际环境；正式验收仍由Actions云端iOS Simulator/Android Emulator独立执行，不要求未来真机。iOS在后续跨平台阶段恢复验证，既定系统范围不删。原生结论须来自对应原生产物实际模拟器运行，网页/策略单元或本地演示不能替代正式云端验收。
+批准依据：ED-14、ED-20及[ED-21](../../../docs/engineering/development-decisions.md)。开发期可在本地Android模拟器进行真实日常交互和反馈，标清实际环境；正式验收仍由Actions云端iOS Simulator/Android Emulator独立执行，不要求未来真机。当前交付按适用最低/当前iOS及Android执行功能验证，视觉仅本地，既定系统范围不删。原生结论须来自对应原生产物实际模拟器运行，网页/策略单元或本地演示不能替代正式云端验收。
 
 | 范围 | 必需证据 |
 | --- | --- |
@@ -20,6 +20,6 @@ iOS16.4／26.4.1 的 VoiceOver 流程不记为执行成功。Apple 新 `XCUIVoic
 
 初始化空壳只有一个标题，没有可操作控件或文本输入。此阶段实际采集标题语义、名称／状态、Android 语义焦点、对应系统审计、浅深主题、普通／大字的原生边界和原图；键盘／IME、触区、提交与失权状态仍随业务控件激活，不从静态标题推导通过。iOS 大字使用实际 Simulator content-size 设置并记录字体测量；Android 设置并读回系统 font_scale=1.0／2.0，读取真实 TextView 字号并与对应平台的 SP 转换核对。Android 14 起采用非线性字体缩放，200%系统设置不等于每个字号的像素高度恰好翻倍；必须同时验证实际字号、布局增长、无截断、可读对比度和安全区。依据：[Android 200%非线性缩放](https://developer.android.com/about/versions/14/features#non-linear-font-scaling)。
 
-ED-18限定例外：仅API24、实际PowerManager省电开启、实际深色和原图测得系统警示色RGB244/81/30时，系统自有警示栏记not_applicable，保留实际对比度、原失败和风险，不计为达到4.5。应用内容、浅色和其他版本仍执行原标准；缺少身份、状态、像素、原图绑定或决定引用则阻塞。详见ED-18及android7-system-chrome-decision.md。
+ED-18限定例外：仅API24、实际PowerManager省电开启、实际深色和原图测得系统警示色RGB244/81/30时，系统自有警示栏记not_applicable，保留实际对比度、原失败和风险，不计为达到4.5。应用内容、浅色和其他版本仍执行原标准；缺少身份、状态、像素、原图绑定或决定引用则阻塞。详见[决定汇总](../../../docs/engineering/development-decisions.md)中ED-18。
 
-ED-19限定例外：仅API24、实际font_scale=2的系统自身Clock截断，经实际边缘像素、系统字号与固定栏边界、全幅原图和语义树绑定后记not_applicable，不计passed。明暗两组保留原图及风险；其他版本／字号、应用内容和原对比度要求不变。不得隐藏系统栏、减小全局字体或修改SystemUI。见ED-19与android7-large-clock-decision.md。
+ED-19限定例外：仅API24、实际font_scale=2的系统自身Clock截断，经实际边缘像素、系统字号与固定栏边界、全幅原图和语义树绑定后记not_applicable，不计passed。明暗两组保留原图及风险；其他版本／字号、应用内容和原对比度要求不变。不得隐藏系统栏、减小全局字体或修改SystemUI。见[决定汇总](../../../docs/engineering/development-decisions.md)中ED-19。

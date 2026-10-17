@@ -1,14 +1,14 @@
-> 研究历史：原技术与业务分析继续供参考；旧 SP／桥接与工程认证决定由 ED-23 取代，不是执行入口。
+> 技术研究记录：版本/能力结论仅证明所记日期，执行入口见现行政策；失效桥接/生成器调查已清理。
 
 # AgoraWeave 首版技术研究与工程决定
 
 日期：2026-10-14。依据：获批 PRD v0.10 §21.3／22.2、spec v1.0（DEC-001、ED-01–04）、UI-SPEC v1.0、宪法 v3.0.1、独立规格复检。研究为只读官方资料调查；没有安装产品依赖或执行产品。本文的工程决定在既有授权内成立，产品及费用／真实服务／生产准入不因研究完成而自动批准。
 
-**最新答复效力**：[决定登记](reviews/planning-decisions-2026-10-14.md)更新本文初次研究的候选／待确认描述。用户已确认公开仓库、Codex路线、工程核定模型、必要开发资料经核验境外处理、本人基准确认及阿里云短信。预算资源与部署上线运营用户处理，需要时具体索取；ED-05／06恢复与申诉参数已授权工程决定。实际API／设备通道、供应商策略与真实云端结果仍须核验，未选具体模型ID不等于重新向用户询问选型。
+**最新答复效力**：[决定登记](../../docs/engineering/development-decisions.md)更新本文初次研究的候选／待确认描述。用户已确认公开仓库、Codex路线、工程核定模型、必要开发资料经核验境外处理、本人基准确认及阿里云短信。预算资源与部署上线运营用户处理，需要时具体索取；ED-05／06恢复与申诉参数已授权工程决定。实际API／设备通道、供应商策略与真实云端结果仍须核验，未选具体模型ID不等于重新向用户询问选型。
 
 ## 研究范围与核验方法
 
-按 speckit-plan Phase 0 分派三个只读研究代理，分别核验移动／网页／云端设备，Supabase／撤权／恢复，以及插件／隔离／交付；均先读取仓库 AGENTS 与宪法。主代理合并原始来源、核对需求和技术缺口。所有实际兼容性、性能、安全及原生体验结论仍须来自后续 GitHub Actions；官方声明不能替代产品验证。
+初始研究核验移动/网页、Supabase/撤权/恢复及插件/隔离/交付等官方资料。所有实际兼容性、性能、安全及原生体验结论仍须来自后续 GitHub Actions；官方声明不能替代产品验证。
 
 技术上下文的工程机制已作如下选择；本次追加RD-11–13，具体化初始化、桥接和审查路线。开发AI工具是待准入候选，模型、代码／截图处理条件、账户／预算以及首个实际基准确认未作既定决定。Q-02／03／04／08／10／11／16与新增CV-D01／02、CV-V01按plan节点登记，不能视为机制已规划就允许外发、付费、业务开发或上线。
 
@@ -157,62 +157,11 @@ Actions Linux 跑整套真实 Compose／权限／并发／生命周期／浏览�
 
 ## 研究结论及剩余节点
 
-本节原研究结论继续有效，本次补充决定／候选见下方RD-11–13；不改变获批产品基线。
+本文保留技术/业务研究，原RD-11–13的生成器/桥接/云端AI审查调查已退役；现行边界见执行政策，不改变产品基线。
 
 未发现要求修改获批范围、栈、严格撤权或验收标准的实质性冲突。官方默认能力的缺口已被明确的网关、隔离和交付设计承接；不可据此宣称实际成功。新冲突按宪法第九条仅暂停依赖工作、报告影响和选项等待用户决定，不自行改变条件。
 
-计划可以进入 Phase 1。以下仍是执行前条件：Q-02 实际大陆服务器／网络／备份；Q-03 预算／日期；Q-04 合格短信／审核／推送／AI 真实准入；Q-08 参数风险验证／性能／备份与 RPO-RTO；Q-11 域名／制度／处理告知／申诉合格责任人；Q-16 Actions 云端模拟器资源／预览／真实外部测试许可（ED-14不再要求物理设备）。Q-10 新范围默认不启用。没有把任一条件记作通过，也没有重问已确认决定。
-
-## RD-11 — 先验证CI基础设施，再开发业务
-
-**Decision**：同一个项目聚合check按受审阶段清单检查；bootstrap-only只初始化固定工具／锁文件、真实Compose、网页与双端原生壳、采集／归档／审查通道、门禁拒绝探针。全部实际结果齐备才ci-ready。未实现业务在该阶段not_yet_applicable、不计通过；相关业务开始激活，首版全量检查不能豁免。详细执行与拒绝语义见[cloud-validation §2](contracts/cloud-validation.md)。
-
-**Rationale**：现有quickstart先要求业务脚本和lockfile，却没有首个工作流／脚本如何产生及验真路径。GitHub自身接受部分skipped／neutral结果，路径过滤会使必需check挂起，依赖失败会跳过后续job；因此需始终运行聚合、显式审报告并检查必需集合。首次解析锁文件回传新SHA后重新验证，避免旧结果证明新输入。
-
-**Alternatives considered**：先写业务再补CI、要求所有未实现业务test阻断首次初始化、缺脚本用--if-present、全部skip后绿色、取消后不产报告视成功、手动关闭保护均不选。dispatch用于控制运行，push／PR产生必需check；保护状态与项目验收分开。
-
-来源：[GitHub必需状态排障](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)、[手动运行前置条件](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)、[workflow runs API](https://docs.github.com/en/rest/actions/workflow-runs)、[check runs API](https://docs.github.com/en/rest/checks/runs)、[gh run watch](https://cli.github.com/manual/gh_run_watch)。核验日2026-10-14。watch只等待一个run，且不支持fine-grained PAT的checks:read；不能作为全集合证据检查。
-
-## RD-12 — 现有桥接缺口与云端TDD／完成协议
-
-**Decision**：保留SK canonical契约和SP执行职责，规划项目start／complete证据适配与单一状态转换入口、非bridge自身命名空间mandatory before／after_implement检查，实施时云端验证其无法绕过。证据索引独立存储，不手加现有handoff固定字段。bootstrap-only与business双模式，开始业务要ci-ready；完成要当前最终SHA全部必需结果、实际报告读取、TDD链／AI审查／基准与必要回归满足。
-
-TDD S_R先测试提交，Actions真实断言因行为缺失／真实缺陷失败、读取确认后才实现；S_G同测试Green与已有适用套件／回归，最终SHA再验。测试从FR／AC／边界／异常推导，不固定数量；环境错误不作Red、修改oracle重新建有效Red。SP临时adapter只派生canonical任务与本验证契约，任务测试命令在本地仅控制Actions，不能套用技能npm test的本地示例。
-
-**Rationale**：只读核现有脚本：guard五条职责规则并默认allow，无云端结果检查；update-handoff的complete对缺规格豁免、契约漂移／未勾任务仅警告，且重建固定字段；convergence看规格快照／任务ID／事件不校实现SHA和实际云端报告。SP task-done只看给定命令exit0，故未来须让该命令消费当前任务／SHA的真实门禁结论，不能直接gh watch就勾选。
-
-**Alternatives considered**：只提示代理“记得检查”、仅打印钩子、review requested即通过、只校checkbox、一个run绿或旧SHA绿、在handoff手填证据、自动把延期首版任务排除均不选。修复和等待保未完成，直接旧脚本的complete不能作项目有效结论。
-
-本地依据：[bridge执行协议](../../.agents/skills/speckit-superpowers-bridge/SKILL.md)、[guard实际规则](../../.specify/extensions/speckit-superpowers-bridge/scripts/powershell/guard-command.ps1)、[handoff实际写入](../../.specify/extensions/speckit-superpowers-bridge/scripts/powershell/update-handoff.ps1)、[convergence校验](../../.specify/extensions/speckit-superpowers-bridge/scripts/powershell/prepare-convergence.ps1)、[hooks注册](../../.specify/extensions.yml)。同时只读核安装的SP7执行／TDD／verification技能，不在本轮执行实现技能或改脚本。
-
-桥接文字仍为SP6.4.2 adapter，实际安装SP7.0.0可识别Task N，但还需红绿／Expected／接口预检／整体测试等完整适配。仓库init-options为SK1.0.12，已验证组合记录SK1.1.3／SP7／bridge1.4.0，不能继承其兼容声明。初始化以当前组合执行云端任务提取、远端task-done和错误SHA／缺报告拒绝探针；失败且既定条件无法解决才按宪法九报告选择，不自动升级或更改原生技能。这里只读调查，没有创建adapter／handoff或运行探针。
-
-## RD-13 — 开发AI代码与视觉审查候选（历史路线）
-
-**2026-10-15已被ED-11取代**：用户明确要求并确认当前Codex完成代码与Actions实际图像／报告审查，取消额外独立云端AI／API资源要求。以下保留原调查历史，不是当前实施门禁；当前规则见cloud-validation §6及[执行决定](reviews/execution-decisions-2026-10-15.md)。
-
-**Decision（候选，尚待CV-D01准入）**：独立Linux Actions job分别使用官方Codex Action运行非交互代码审查和图像视觉审查，冻结action／CLI／proxy；输入只读、结果结构化。具体模型必须显式配置获准ID，不使用默认模型隐含决定。代码读final diff、必要完整源码、需求契约及真实验证报告；视觉通过--image实际附各端截图、基准／参考和UI-SPEC／页面状态／交互报告。每批覆盖和图像digest都登记，不能只给模型文件名。
-
-| 候选对象 | 已核验能力／实施约束 |
-| --- | --- |
-| openai/codex-action | 固定完整SHA `bdf19a4a223ec2549a3e2274a0cf61556bc07675`；v1标签于2026-10-05指向此提交，不使用浮动标签 |
-| CLI／Responses proxy | 候选固定0.162.1；官方npm均2026-10-09发布，action codex-version约束两者；实际初始化再核下载完整性 |
-| action输入 | permission-profile为`:read-only`，safety-strategy为drop-sudo；prompt-file、output-schema-file、output-file、显式model与codex-args；不同时设legacy sandbox |
-| 视觉参数 | codex-args传--image及实际截图路径（可重复／逗号分隔）、--ephemeral；schema约束最终结构；超批量限制按受审manifest拆批不漏页 |
-| job隔离 | action内部Node24与产品Node22 job分开；只读必要输入／受保护prompt和schema，无生产秘密、部署权、仓库写／评论权限，checkout不持久化凭据 |
-| 凭据 | 独立获准API Key通过action openai-api-key／proxy注入，不放入执行仓库代码的job环境；不复用产品AI Key或桌面登录 |
-
-action／CLI支持这些参数只是工具能力依据，不证明安全组合、模型图片可用、数据政策或本项目审查已通过；必须在bootstrap实际探针。只读权限本身不保护高权进程内秘密，须drop-sudo／独立受限身份及输入／网络隔离；不采用Windows unsafe或让受审仓库脚本与密钥同job执行。`codex review --base/--commit`有目标与自定义prompt互斥限制，本候选采用exec便于统一契约／结构化报告。
-
-**Rationale**：复用一个已有开发审查工具家族，但代码和视觉为独立实际调用／报告，不引入产品AI新能力。只读审阅＋固定schema适合门禁消费；像素diff／lint仍保留但不代语义审查。视觉可能误读小字、中文或位置，保全图并附必要裁图；真实交互／权限／读屏另验，模型不从截图推定通过。
-
-**Alternatives considered**：本地AI自评、仅lint／pixel、GitHub展示图标或评论作为完整证据均不选。可另评估Actions中无工具Responses API图像输入＋strict JSON Schema候选，使用受信任包装器、无tools、测试截图base64、store:false；该参数不证明供应商不保留／大陆处理，不自动作为fallback。供应商／模型可用性、地域／训练／保留、源代码／截图授权和费用均须独立确认，当前未选定或调用任何模型。
-
-官方能力来源：[固定Action源码](https://github.com/openai/codex-action/blob/bdf19a4a223ec2549a3e2274a0cf61556bc07675/action.yml)、[Action使用和密钥隔离](https://learn.chatgpt.com/docs/github-action)、[非交互／结构输出](https://learn.chatgpt.com/docs/non-interactive-mode)、[CLI图像／review参数](https://learn.chatgpt.com/docs/developer-commands?surface=cli)、[固定CLI参数源码](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/exec/src/cli.rs)、[CLI官方包](https://registry.npmjs.org/@openai%2Fcodex)、[proxy官方包](https://registry.npmjs.org/@openai%2Fcodex-responses-api-proxy)、[图像输入](https://developers.openai.com/api/docs/guides/images-vision)、[structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses)。核验日2026-10-14；能力与版本调查未包含模型调用或云端运行。
-
-实际通过要求：真实调用成功／图像实际输入／结构可读、覆盖齐全、适用缺陷均处置并final SHA重审及回归、无未知／拒绝／截断。误报须独立核事实和反证，实质冲突留decision_required。first baseline另外按CV-D02由用户或明确获权验收人确认，AI no_findings不能替代。CV-D01／02和Q-03／16未满足只阻塞依赖步骤，不给本地或静态替代。
-
-最新5A／6B将上述“尚待用户选型／外发批准”转为明确授权：路线已选，API资源提供后工程核定代码／视觉模型并记录必要资料／合成截图范围，真实用户／生产数据禁发；具体训练／分包／保留删除条款工程核查，不冒称用户已批未给定的天数。产品AI大陆／不训练政策不变。用户本人确认实际基准，未供资源按ED-07具体索取，不反复问预算或部署运营偏好。
+当前阶段及真实未完成条件见current-development-state和plan；资源按需索取，未验证不计通过，不把历史预算/日期或已被取代的工具调查重新当前置。
 
 ## RD-14 — 三项独立复检缺口的工程闭环
 
@@ -222,20 +171,20 @@ action／CLI支持这些参数只是工具能力依据，不证明安全组合�
 
 **Alternatives considered**：分享全部GET通行或所有受限404、只在网页加noindex而无作者状态、复用AI开关控制收录、用模板帮助／虚构条款或只要求用户提供文案均不采用。资料展示不等于用户同意，也不引入老用户登录或普通公开AI逐次强制同意；真实服务准入与来源资格继续独立。
 
-依据：本仓库PRD WEB-01–06／AI-04／08–10／ADM-01–07、spec FR-078／090–107、UI-SPEC §5设置与发布入口、[最新决定ED-08](reviews/planning-decisions-2026-10-14.md)及[独立发现](reviews/independent-plan-review-2026-10-14.md)。本节是依据既有材料的设计修订，不包含新外部技术选型或实际执行结论。
+依据：本仓库PRD WEB-01–06／AI-04／08–10／ADM-01–07、spec FR-078／090–107、UI-SPEC §5设置与发布入口、[最新决定ED-08](../../docs/engineering/development-decisions.md)及[独立发现](../../docs/engineering/development-decisions.md)。本节是依据既有材料的设计修订，不包含新外部技术选型或实际执行结论。
 
 ## RD-15 — Analyze四项缺口的修订边界
 
-**Decision**：按既有FR／PRD／UI-SPEC恢复四项约束并把验证责任落到可派生任务：FR-065使用规范化无向账号pair的单一pending部分唯一约束和A→B／B→A并发断言；在共享核心Green前，ci-ready必须能真实调用business-increment验证作业，US14只扩充完整发行与受控部署；US2实现同时依赖US1与US3实现；FR-113拆为播放器、偏好设置和所有实际媒体消费入口，并在云端验证网络／视区／声音／预加载／省流量／减少动效行为。
+**Decision**：按既有FR／PRD／UI-SPEC恢复四项约束并把验证责任落到可派生任务：FR-065使用规范化无向账号pair的单一pending部分唯一约束和A→B／B→A并发断言；当前核心功能必须有真实可调用的增量验证入口，US14只扩充完整发行与受控部署；US2实现同时依赖US1与US3实现；FR-113拆为播放器、偏好设置和所有实际媒体消费入口，并在云端验证网络／视区／声音／预加载／省流量／减少动效行为。
 
 **Rationale**：FR-065原文“每对至多一个”与旧任务的“同方向／每向”不相容；只建立聚合门禁不能证明核心前已有可执行验证作业；DAG和前置表不一致会允许US2过早启动；FR-113的真实行为不能由编辑器或一般媒体截图覆盖。上述修订只澄清并恢复已批准行为，不增加用户范围或新产品选择。
 
 **Alternatives rejected**：保留有向pending、让US14首次创建增量工作流、只在文字前置表补US2而不改DAG、把播放器行为并入编辑器或最终通用视觉任务，均会留下同类跨产物缺口。
 
-**Verification mapping**：plan TD-07A／TD-07D／TD-07E；data-model与HTTP/configuration契约；quickstart V09／V19；下一次speckit-tasks需把模型、云端作业调用链、依赖图／前置表、播放器消费入口和Red／Green／回归断言一并派生。此处未修改既有tasks或交接状态。
+**Verification mapping**：plan TD-07A／TD-07D／TD-07E；data-model与HTTP/configuration契约；quickstart V09／V19；当前tasks已承接模型、运行调用链、依赖图/表、播放器消费入口及对应测试，后续直接维护现有ID，不重新生成。
 
 ### 后续I3／I4核对
 
-I3不引入新方法选择，HTTP已有GET/PATCH为准，计划／HTTP／V19A补足部分更新／CAS／幂等及PUT拒绝；现有任务需同步。I4不能由“各端同语义”推导share-read可读取账号偏好，/config/effective非敏感平台投影也不授个人数据用途。曾呈现A默认／页面内操作与B最小本人只读投影待决，用户随后明确选择A，以下最新决定生效。
+I3不引入新方法选择，HTTP已有GET/PATCH为准，计划／HTTP／V19A补足部分更新／CAS／幂等及PUT拒绝；现有任务已承接对应方法与语义。I4不能由“各端同语义”推导share-read可读取账号偏好，/config/effective非敏感平台投影也不授个人数据用途。曾呈现A默认／页面内操作与B最小本人只读投影待决，用户随后明确选择A，以下最新决定生效。
 
-**Decision（ED-10）**：匿名与登录分享均用合法平台默认＋当前页面操作，不读取／同步账号preferences，账号设置由App管理。保留现有share-read白名单，配置／SSR／hydration／缓存／认证响应不派生私人偏好投影，页面操作不写账号。**Rationale**：完整实现播放控件和默认策略即可满足本次明确选择，登录仅提升当前合法内容读取资格。**Alternative rejected**：B最小本人只读端点未获选择，更不能开放整个GET/PATCH preferences。**Verification**：quickstart V12B与V19A测试账号已有相反偏好、匿名／登录同默认来源、无私人读取及页面操作不写回，同时保持当前媒体gate；下一次tasks按真实来源同步实现、配置consumer和安全／浏览器回归。
+**Decision（ED-10）**：匿名与登录分享均用合法平台默认＋当前页面操作，不读取／同步账号preferences，账号设置由App管理。保留现有share-read白名单，配置／SSR／hydration／缓存／认证响应不派生私人偏好投影，页面操作不写账号。**Rationale**：完整实现播放控件和默认策略即可满足本次明确选择，登录仅提升当前合法内容读取资格。**Alternative rejected**：B最小本人只读端点未获选择，更不能开放整个GET/PATCH preferences。**Verification**：quickstart V12B与V19A测试账号已有相反偏好、匿名／登录同默认来源、无私人读取及页面操作不写回，同时保持当前媒体gate；当前tasks继续按真实来源维护实现、配置consumer和安全/浏览器回归。

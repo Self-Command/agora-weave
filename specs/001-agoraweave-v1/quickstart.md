@@ -1,51 +1,36 @@
-# AgoraWeave 本地开发与Actions独立验证指南
+# 开发与验证指南
 
-现行依据宪法7.0.0与[ED-24](../../docs/engineering/execution-policy.md)：业务优先，本地批次开发测试，日常目标＋直接受影响回归，Actions按需复验。逐行为TDD由执行者判断，历史红链／收据／归档回读不是日常前置。
+执行规则统一见[执行政策](../../docs/engineering/execution-policy.md)，状态见[当前状态](../../docs/engineering/current-development-state.md)。保全部产品验证场景，按当前分期/实际消费者激活，不把后置需求当失效资料删除。Spec Kit已退役，直接维护现有spec/plan/tasks。
 
-当前切片仅要求实际使用的身份／授权／RLS／隔离／审计撤销／可靠写入依赖；媒体／Realtime／完整配置随消费者激活，T051保完整核心收口。按功能批次实现、测试和审查，是否逐行为TDD由执行者判断。
+## 1. 当前批次与运行入口
 
-App/分享页新增或设计变更先在统一HTML原型补具体页面/状态并获人明确批准；设计不变修复沿用匹配批准。后台以完整Kiranism官方模板为基准，无需重画同款HTML，仍实际后台复检。账号r2整页未批准；基础组件批准独立。所有安装包均由 Actions 编译，本机仅下载安装及通过开发包热更新复检。
+下一批见[真实账号与必要配置](implementation/01-core-accounts.md)。先查Git及当前目标发现，复用已有核心/账号逻辑。账号r2五页已批准，准确版本见page-registry；新增页面或设计变化先原型批准。后台完整官方模板接真实业务，不作假管理身份。
 
-## 1. 当前功能与H盘入口
+源码留当前工作树，运行/依赖/缓存/报告在H:/Projects/AgoraWeave/development。统一local.ps1按内容增量同步、复用既有服务，不创建重复容器或自动清seed；Status确认后按需Up，缺依赖才Install，新迁移才显式Migrate。App常规Uniwind语义className/JS/TS复用Metro，原生变化才Actions重建，所有安装包仅云端编译。
 
-2026-10-17统一常驻入口：先`pwsh -NoProfile -File tools/dev/local.ps1 -Status`检查；
-`-Up -Services supabase,admin,metro`按需复用/启动同一组并等待就绪，`-Logs`查日志，`-Stop`停止但不删卷。
-后台`http://127.0.0.1:3000/dashboard/overview`仅显式本机开发模板，非真实管理业务；Metro状态在8081/status。
-缺依赖才显式-Install，普通编辑用Next/Metro热更新；迁移仅显式-Up -Services supabase -Migrate，不重置seed。
-页面开发用prototype/README精确定位；已批设计忠实还原并允许必要原生适配，细微渲染差异不单独阻塞阶段。
-旧账号/分享呈现已按用户要求退役，空路由不算UI完成；后台完整官方源码保留，按开发模块接业务，当前状态优先。
+```powershell
+pwsh -NoProfile -File tools/dev/local.ps1 -Status
+pwsh -NoProfile -File tools/dev/local.ps1 -Prepare
+# 按需 -Up -Services supabase,admin,metro；迁移单独显式 -Migrate
+pwsh -NoProfile -File tools/dev/local.ps1 -Command @('npm','run','ci:discover')
+pwsh -NoProfile -File tools/dev/local.ps1 -Command @('node','--experimental-strip-types','tools/ci/core-entry.ts','target','core.auth-otp-policy')
+```
 
-App已接入Uniwind1.12.2/Tailwind4.3.3，常规样式优先className；入口apps/mobile/global.css及metro.config.js。
-使用现有原生token语义类（bg-bg/text-fg/text-secondary/bg-accent/rounded-input等），不要套用默认调色板重设计。
-Expo UI原生modifier及必要动态style保留。样式/类名改动沿用Metro热更新，改Metro配置才重启该服务；不因此重编APK。
-新增获批页面直接复用此接入，账号r2仍待人的具体批准。
+共享DB目标串行；target/suite从当前发现选择，ci:core是全登记集合。typecheck/lint按改动包选，ci:contracts为现有工具检查。不要伪造runner身份运行。后台仅本机模板预览，入口是否可达每次实查，不以历史URL声称当前服务就绪。
 
-源码工作树保持原路径。运行 `./tools/dev/local.ps1 -Prepare -Install` 准备H盘项目运行副本及环境；之后在输出的H盘工作区运行当前目标用例和直接受影响回归。配置见 `infra/development/policy.json`。后续通过同一入口传入 `-Command @('node','--experimental-strip-types','--test','tests/目标.spec.ts')`，入口先同步源码，再在H盘执行并保留真实退出状态。
+## 2. 批次、配置与实际结果
 
-依赖、构建、当前数据库和测试通道可用后直接推进业务；无关工程完善记后续，完整共享核心验收不作全部消费者前置。可配置运行副本、依赖、缓存、临时内容、产物和报告使用H:/Projects/AgoraWeave/development；系统管理工具及全局Docker存储记录例外，保留旧副本。
+日常目标及直接影响回归，权限/安全/数据完整性/缺陷修复须有效测试；是否逐行为TDD自主判断。编译/mock/截图不能代真实业务/交互。Actions verify-increment按core_targets选择目标，空值为当前全部核心；verify-release只证明当前适用范围，不证明所有后续产品已完成。
 
-## 2. 功能批次与按需Actions
+配置为已有FR-130–141/T141–T148责任，每批贯通行为、key/默认/范围/修改权、后台位置/API、服务端/客户端消费、生效/回滚；当前必要入口随业务交付，高级控制台后置。登记不等完成，不把个人偏好或安全不变量任意开关化。
 
-由 Codex 依据现有 SK 规格、任务和代码直接实施、调试、审查和验证。逐行为TDD由执行者判断；关键权限、安全、数据完整性和修复缺陷须有效测试。批次完成需要真实功能运行和对应测试，编译不能单独证明完成。
+按实际实现/测试更新任务，完整任务才勾选，局部进展/未验分列；记录版本/环境/命令/结果及必要原日志路径。失败/跳过/未执行/取消不记通过。历史不要求重认证，不因证明缺口重做健康代码。
 
-日常不调用历史红链认证、准入收据、重复报告校验或归档回读。Actions通过手动／显式调用按可用业务切片复验，等待期间继续不受影响开发。现有核心批次手动运行 verify-increment，填写 core_targets（manifest 中的 ID，逗号分隔）；空值运行当前全部核心用例。该入口只证明所选范围。verify-release 汇总当前工具、服务、网页入口和原生登录入口检查，不能当作全部尚未实现产品已验收。旧流程不再提供 legacy-full 入口。
+## 3. 分工与页面验证
 
-## 3. 任务、结果与确认
+多agent配置/职责、优先复用、同文件单写者及共享DB/运行区/设备串行统一按执行政策。业务单元/API/集成、组件触发、原生操作及本地视觉分层，复用同源适用结果，不重复完整矩阵。稳定版本阶段集中复检，修复仅复测影响项。
 
-多agent按[已批准分工](../../docs/engineering/execution-policy.md#已批准的多-agent-分工)启用：主agent先按现有任务与源码分清模块、接口和写入文件，
-所有开发子agent（含后端/App/后台与代码复检）统一显式 `gpt-6.1-sol` / `high`，复杂工作由主agent或按同一配置委派；阶段UI复检 `gpt-5.6-luna` / `xhigh`。指定配置不可用报告，不自行替换。
-每个任务包给仓库根、宪法路径及遵守要求、既有任务ID、文件范围、契约、预期行为和目标测试；核实际模型，不继承完整会话。
-通常主agent加两名开发者，活动数不超过工具上限；同文件单写者，公共依赖/契约/迁移编号/规范由主agent协调。
-共享DB夹具、H盘运行副本、Metro及模拟器/浏览器串行交接，工作树不能隔离这些资源；不同时同步不同分支覆盖运行区。
-集成后集中交独立UI角色检查真实页面和交互，修复后优先复测受影响项，再交用户验收；AI不能代替人的批准。
-
-轻量页面检查沿用现有Actions手动入口，不表示已配置PR required status：`verify-increment`和`verify-release`检查页面清单结构，
-再用有效base的实际源码差异检查生产UI绑定及批准（默认HEAD^；整批需显式传批次起点ui_base_ref）。纯后端差异不被pending页面阻塞。
-阶段完成/发布产品时必须给全部适用页面ID及真实实现commit，执行 `check-ui-bindings.ts --mode stage --ids <ids> --source-revision <commit>`，
-逐平台×状态×主题匹配同设计版本/内容的实际截图和交互记录。CLI同时核当前所选源码与该commit无变化、无未跟踪组件；
-纯规范提交未改变页面源码时可沿用原实现版本。未给阶段范围仅为当前工具/入口验证，不产生页面完成或正式发布资格。
-
-局部进展与剩余验证分列，完整任务才勾选；每批简报实现、实际测试及未完成项。不删有价值测试、不伪造通过、不因历史证明缺口重做正常代码。产品正式验收保留。普通工程自主处理，产品／技术栈／安全隐私／费用／不可逆数据／生产操作才确认。
+页面来源检查沿用check-ui-bindings.ts现有changes/stage入口；核实际批次差异、页面ID及源版本，纯后端不被未开发页面阻塞。CI仅证明记录和路径，不授人类批准或视觉通过；页面完成须真实整页设计对照与交互。视觉仅本地，Actions保真实构建/功能/原生交互/HTTPS/Hermes。
 
 ## 4. 验证场景与判定（全部首版）
 
@@ -83,17 +68,13 @@ Expo UI原生modifier及必要动态style保留。样式/类名改动沿用Metro
 
 最新答复16的资料管理／版本预览／发布结果、移动及网页的条款／隐私／规则／处理告知／帮助页和本人适用记录同样纳入实际页面／状态矩阵，使用既有组件语义和样式。UI资料尚无该页精确画面时按文档补全流程呈现候选供本人审查，不自称已批准原型；正式文案仍用户提供，CI只用标识清楚的合成内容。
 
-首次由Actions真实各端生成baseline-candidate，附已确认原型／UI-SPEC／token摘要、平台适配理由、AI视觉报告和交互／无障碍证据。无旧基准时按design_reference审查，不制造零diff；由用户或其明确授权的设计验收人确认具体候选摘要／覆盖矩阵后才成为基准，确认尚未发生时awaiting_confirmation，不宣称视觉通过。初始化壳和历史HTML自身均不作产品基准。
-
-后续同设备/OS/字体快照0.5%像素差异作为告警，动态区域须预登记遮罩且不能遮内容/错误/授权状态；布局/遮挡/触达/业务状态为独立硬断言。即使低于告警值，AI语义／交互／权限失败仍拒绝。保存before／after／diff和审查结论；不能自动接受差异、update-snapshots或重拍择优。需改基准时保旧图与失败，附设计依据及适当批准，实质改变先用户决定，再审查Actions采集的新候选并云端重验。阈值是工程起点，稳定性核验后登记，不把像素相近代AI视觉或交互通过。
-
-按ED-11，当前Codex分别记录代码和视觉审查：执行者／会话、目标SHA、代码／图像／报告摘要、覆盖、findings、处置与未知项。原图和运行报告从Actions取得并校验，记录存受控私有库，由Actions核绑定；不部署额外审查AI或要求API Key。缺图／漏文件／未处理缺陷／无法判断仍阻塞，修复后当前SHA重审与真实回归。静态图不能证明读屏或按钮已执行，代码阅读不能代测试。
+阶段视觉在本地由固定独立UI角色对稳定版本按页面/状态/主题批量整页对照获批原型/官方模板，保原图和必要差异/交互来源。明显设计偏离/功能问题必修，细微渲染差异不单独阻塞；不自动更新基准或用像素阈值抹失败。首次实际产品基准由用户确认，不以已有原型批准替代实现验收。云端不执行视觉/主题字号截图矩阵。
 
 按ED-14在对应原生模拟器执行注册、发布、评论、私信、举报、处罚、申诉等流程，保语义标签/状态/顺序、焦点/键盘/操作及可用系统审计报告；可执行的辅助技术另保真实导航输出。当前runtime不支持的VoiceOver/硬件流程单列排除，不把树或截图称为已执行朗读。视频/GIF检验播放/暂停/Wi-Fi蜂窝/静音/省流量/减少动效、文件真实格式，iOS/Android都必须通过；GIF picker不能静默降首帧。
 
 ### V19A — FR-113播放器、设置与消费行为矩阵（G1）
 
-按实际改动执行播放器／设置／入口目标及直接受影响回归，读取真实失败并复测修复；Actions按需批次复验。正式平台覆盖和真实播放结果保留（iOS按ED-20后置）。网络／系统及硬件边界按ED-14；网页逐浏览器验证允许或点击回退，不用上传／编辑器截图代FR-113。
+按实际改动执行播放器／设置／入口目标及直接受影响回归，读取真实失败并复测修复；Actions按需批次复验。正式平台覆盖和真实播放结果保留（按当前交付范围覆盖适用平台）。网络／系统及硬件边界按ED-14；网页逐浏览器验证允许或点击回退，不用上传／编辑器截图代FR-113。
 
 | 条件／操作 | 必须观察的行为断言 | 所需证据 |
 | --- | --- | --- |
@@ -119,4 +100,4 @@ Expo UI原生modifier及必要动态style保留。样式/类名改动沿用Metro
 
 生产另经超级管理员当前MFA和DEC-001核验对准确版本/权限/迁移/环境/名单确认，观察后扩大再确认；Actions通过不自动部署。预览/验证工作流不能写生产配置或执行迁移。实际生产发布/采购/外部真实消息均非本轮授权内容。
 
-最新审查与服务器证据存储决定见 [ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)。
+最新审查与服务器证据存储决定见 [ED-11／ED-12](../../docs/engineering/development-decisions.md)。

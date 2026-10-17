@@ -1,26 +1,8 @@
-# Implementation Plan: AgoraWeave 首版通用社交与完整插件平台
+# Implementation Plan: AgoraWeave
 
-**Branch**: `main`（实际Git分支；setup-plan返回`001-agoraweave-v1`为功能标识，未创建分支） | **Date**: 2026-10-14 | **Spec**: [spec.md](spec.md)
+技术与完整交付路线以本文件及[spec](spec.md)为准，需求依据[PRD](../../docs/product/PRD.md)、[追溯](traceability.md)、[宪法](../../.specify/memory/constitution.md)。保留285任务，当前状态见[开发状态](../../docs/engineering/current-development-state.md)。Spec Kit已退役，直接维护现有资料，不重生成规划或恢复桥接。
 
-**Input**: `specs/001-agoraweave-v1/spec.md`；获批[PRD v0.10](../../docs/product/PRD.md)、[UI-SPEC v1.0](../../docs/design/UI-SPEC.md)、[追溯表](traceability.md)、[独立规格复检](reviews/independent-spec-review-2026-10-14.md)、[宪法 v5.0.0](../../.specify/memory/constitution.md)。读取Git HEAD `739e4068947e7e54b9ded691763e2885959e93c7`；输入文件hash与traceability及独立复检一致。名称及换号限制以spec最新明确决定为准。
-
-**Status**: 现行依据宪法7.0.0与[ED-24执行政策](../../docs/engineering/execution-policy.md)：保留现有SK资料与285任务，按阶段后端→集中获批App页面/API→集中实际客户端复检；日常目标测试与影响回归，发布完整适用矩阵。历史工程决定不覆盖当前政策。 产品、安全和正式验收范围保持；当前业务状态见current-development-state。
-
-**执行分工（2026-10-17已批准，开发模型按同日最新要求）**：主agent统筹架构、接口、复杂风险、集成验证和交付；所有开发子agent（含后端/App/后台与代码复检）统一显式用 `gpt-6.1-sol` / `high`，复杂子任务由主agent或按同一配置委派。UI复检独立用 `gpt-5.6-luna` / `xhigh`，不参与开发。按独立文件和依赖分批启用，活动数服从工具上限；共享DB、H盘运行区与设备串行，公共契约/锁文件/迁移编号/规范由主agent协调。委派及复检边界统一见[执行政策](../../docs/engineering/execution-policy.md#已批准的多-agent-分工)，不改变产品架构或生成新任务集。
-
-**历史补充依据**：2026-10-16用户批准[ED-22](../../docs/engineering/business-first-development-decision.md)，取代ED-21中冲突的过程要求；ED-20、既有产品决定和历史结果保留。
-
-**最新决定**：用户已对18项问题明确答复，见[规划决定登记](reviews/planning-decisions-2026-10-14.md)。公开仓库、当前Codex审查方式（ED-11取代旧路线）、必要开发资料经核验境外处理、用户本人基准确认、阿里云短信已确认。预算／资源／设计确认／部署上线运营由用户处理，工程仅在实际需要时索取；恢复和申诉参数由工程授权细化。该记录更新候选／待决状态，不表述资源已供给或验证已通过。
-
-**独立复检补齐**：用户已授权直接补齐[独立计划复检](reviews/independent-plan-review-2026-10-14.md)发现的三项缺口。当前模型／HTTP／授权／配置／AI帮助来源及验证指南同步分享白名单和有权受限读取、作者收录状态与接口、正式资料版本／发布／适用记录；依据及方案见RD-14和ED-08。未修改获批需求，不进入tasks或产品实现。
-
-**先前独立复检结论（历史）**：原审阅agent针对当时分享／收录／正式资料三项P2确认关闭；该结论不覆盖随后tasks分析提出的C1／I1／I2／G1，也不代表当前任务清单通过。实际实现、资源及云端验证仍在原节点，不以规划复检代验收。
-
-**本次analyze修订**：用户明确要求按四项建议更新plan。C1恢复FR-065无向pair唯一pending；I1将可运行的增量验证作业／调用链前置到共享核心Green之前，US14只扩充完整发行与受控部署；I2明确US1／US3实现均前置US2；G1将FR-113分配到播放器、设置与实际消费入口并细化真实行为矩阵。落点见TD-03／07A／07D／07E、配套契约及[修订核对记录](reviews/plan-analyze-revision-2026-10-14.md)。既有285个任务已按对应模型、断言、DAG和追溯维护；后续局部修订保留ID，不重生成规划，相关规范同步全工作树／分支。
-
-**后续I3／I4状态**：I3按现有HTTP契约补全GET/PATCH部分更新／CAS／幂等及错误PUT拒绝。I4用户明确选A：匿名和登录分享页均使用默认播放策略及页面内操作，不读取或同步账号偏好；账号设置由App管理。TD-07D与HTTP／授权／配置／验证同步该决定。T192／T198及T228／T233已采用对应方法和权限要求；历史快照不再作为当前入口。
-
-**ED-20历史阶段决定（过程要求由ED-22覆盖）**：2026-10-15 最新执行决定 ED-20：用户明确要求先按 Android 可开发条件收口 Phase1、完成任务清单并进入正式开发；当前不做 iOS 验证，后续跨平台阶段再验证。Phase1 的完成口径改为真实 development-ready 与已实现工程能力可供 Android 业务 TDD，T026/T027 的原完整跨平台正式验收前置后置。详见 [Android 优先与阶段一收口决定](../../docs/engineering/android-first-development-decision.md)。该决定不设置全平台 ci-ready、feature complete、合并或生产批准；Android 当前业务行为仍须目标云端 Red/Green、必要回归及其正式产品验收。
+执行分工、验证、原型批准和运行统一见[执行政策](../../docs/engineering/execution-policy.md)，长期产品/资源/工程决定见[决定汇总](../../docs/engineering/development-decisions.md)。当前先交基础运营版，下一批见[真实账号实施说明](implementation/01-core-accounts.md)；本文件分期不宣称业务已完成。
 
 ## Summary
 
@@ -34,7 +16,7 @@
 现有Phase2只证明基础核心及适用功能验证，不代表真实登录、社区业务或生产运行已完成。
 用户原生卡片已明确批准先交基础运营版，以真实用户注册→发帖→审核→浏览→互动→举报处理为首个完整生产闭环。
 这是对原“完整通用社交及插件首版同时交付”的已批准分期调整；以下延期清单具有本轮交付效力，完整产品范围保留供后续交付。
-保留285任务ID及原正文，按下表抽取原任务的实际切片推进，不重生成任务集、不以切片完成勾选整个故事。
+保留285任务ID、状态与全部产品/模型/验收语义，按下表抽取原任务的实际切片推进，不重生成任务集、不以切片完成勾选整个故事。
 
 | 顺序与业务结果 | 现有任务中的直接切片 | 本轮边界 |
 | --- | --- | --- |
@@ -71,7 +53,7 @@ global.css映射packages/design/src/tokens.ts的原生适配token，Expo UI保�
 
 **Storage**: 官方Postgres17.6.1.136、私有Storage对象；PG全文/trigram、关系与依赖索引、事务outbox、配置bundle、审计／独立安全恢复账本。不预置独立搜索／队列集群。主库判授权，DB与对象分别备份。
 
-**Testing**: 按功能批次及实际风险安排真实功能、接口、权限安全、数据完整性、并发和必要端到端／原生验证。日常仅执行目标及直接受影响回归；缺陷修复须有有效测试。SP逐行为TDD由执行者选择，普通编辑不重跑完整集合。批次审查结合实际结果，Actions按可用切片按需复验；结果及必要日志真实保留，不以编译或mock代产品行为。
+**Testing**: 按功能批次及实际风险安排真实功能、接口、权限安全、数据完整性、并发和必要端到端／原生验证。日常仅执行目标及直接受影响回归；缺陷修复须有有效测试。逐行为TDD由执行者选择，普通编辑不重跑完整集合。批次审查结合实际结果，Actions按可用切片按需复验；结果及必要日志真实保留，不以编译或mock代产品行为。
 
 **Target Platform**: iOS≥16.4、Android≥7、compile/target SDK36；macos-26选择Xcode26.4.1，Linux运行Android emulator/Compose/browser。最低OS与当前OS模拟器资源须Q-16准入，不把编译下限当实际覆盖。中国大陆独立服务器生产，实际环境Q-02核验。
 
@@ -91,22 +73,7 @@ global.css映射packages/design/src/tokens.ts的原生适配token，Expo UI保�
 
 ### Documentation (this feature)
 
-```text
-specs/001-agoraweave-v1/
-├── spec.md、traceability.md                 # 已有基线不改历史
-├── plan.md、research.md、data-model.md、quickstart.md
-├── contracts/
-│   ├── README.md、http-api.md、authorization-events.md
-│   ├── configuration.md、ai-tools.md、plugin-sdk.md
-│   ├── plugin-manifest.schema.json、release-evidence.md
-│   └── cloud-validation.md                  # 初始化／桥接／TDD／视觉／AI审查
-└── reviews/plan-design-check-2026-10-14.md
-    reviews/planning-decisions-2026-10-14.md  # 最新答复／责任及授权细化
-    reviews/independent-plan-review-2026-10-14.md  # 发现／修订与针对性复检
-    reviews/plan-analyze-revision-2026-10-14.md  # C1／I1／I2／G1修订与任务再生成要求
-```
-
-tasks.md依据实际实现与对应测试局部维护，保留285个ID；不要求重生成。任何宪法／plan／tasks等现行规范变更按AGENTS.md同步全工作树和分支树。
+spec.md为需求、plan.md为技术与分期、tasks.md为任务索引、traceability.md保202项需求及55AC追溯；data-model.md、research.md和contracts保模型/研究/契约，quickstart保运行命令及验证场景。implementation/仅描述当前有界批次。工程规则/状态/决定各有唯一入口，不复制一套目标和路线。
 
 ### Source Code (repository root，拟建布局，本轮不创建)
 
@@ -128,7 +95,7 @@ tests/{contract,integration,security,concurrency,e2e,visual,performance,recovery
 .github/workflows/               # 按需云端复验/预览/受控发布
 ```
 
-**Structure Decision**: 共享无React公共DTO/schema/字符计数；端内UI保留各端依赖；核心服务与插件容器分开。工程资料不进生产包。工程工具不属于产品源码；SP 工具已按 ED-23 卸载。
+**Structure Decision**: 共享无React公共DTO/schema/字符计数；端内UI保留各端依赖；核心服务与插件容器分开。工程资料不进生产包。工程工具不属于产品源码；SP/桥接及Spec Kit生成器已退役。
 
 ## TD-01 — 运行拓扑与当前授权
 
@@ -175,6 +142,9 @@ FR-065的pending唯一性按`(min(account_a,account_b),max(account_a,account_b))
 
 ## TD-04 — 配置与数据恢复
 
+每批开放业务先明确行为→现有key/默认/范围/修改权→后台设置位置/API→服务端与客户端消费→生效/回滚验证。FR-130–141和T141–T148原已覆盖此责任，配置登记不等完成；高级可视化控制台可后交，当前必要入口不能统统后置。个人偏好、核心安全不变量及尚无运行能力不变管理员任意开关。
+
+
 [configuration.md](contracts/configuration.md)定义注册/bundle/覆盖/consumer/旧对象；全局→环境→该模块/插件→显式授权用户组，同层冲突无唯一优先级拒绝。业务固定一个兼容bundle，当前撤权事实独立实时核。需要重载的consumer全部就绪才激活，失败保旧完整版；普通配置不可关核心不变量。
 
 spec所有初值/ED-02及RD-10均注册。媒体MB工程口径为十进制1,000,000字节；视频合法边界200,000,000字节，Auth/代理/Storage等部署投影联动同配置，官方默认约50MiB不能照抄。期限默认新对象生效，现有expiry/恢复截止/投票原截止/保留起点固化，专门迁移须预览且不复活终态/权限或早毁恢复副本。回滚新bundle不回滚安全事实。
@@ -211,7 +181,7 @@ spec所有初值/ED-02及RD-10均注册。媒体MB工程口径为十进制1,000,
 
 ## TD-07 — 本地批次开发与按需云端复验
 
-现行执行以宪法5.0.0及ED-22业务优先为准：日常目标用例＋直接受影响回归，TDD由执行者判断；Actions按需批次复验，历史红链、准入收据和归档回读不是日常开发或进展门槛。产品、安全和正式功能验收范围保留。
+现行执行以宪法7.0.0及执行政策为准：日常目标用例＋直接受影响回归，TDD由执行者判断；Actions按需批次复验，历史红链、准入收据和归档回读不是日常开发或进展门槛。产品、安全和正式功能验收范围保留。
 
 ### TD-07A — 当前功能与环境
 
@@ -221,7 +191,7 @@ spec所有初值/ED-02及RD-10均注册。媒体MB工程口径为十进制1,000,
 
 ### TD-07B — Codex 直接开发、测试与进展
 
-按 ED-23 由 Codex 直接实施、调试、审查和验证，使用现有 SK 资料；SP、桥接和纯流程平台已卸载。每天只执行目标和直接受影响回归；关键权限、安全、数据完整性和缺陷修复必须有有效测试。无关改动不触发完整矩阵。
+由Codex直接实施、调试、审查和验证，使用现有规格/计划/任务；生成器、桥接和纯流程平台已退役。每天只执行目标和直接受影响回归；关键权限、安全、数据完整性和缺陷修复必须有有效测试。无关改动不触发完整矩阵。
 
 Actions通过手动／显式调用按可用业务切片复验，云端排队期间继续不受影响的开发。工具问题集中修一次，不反复补同类台账、重读资料或重建正常代码的历史证明。
 
@@ -229,7 +199,7 @@ Actions通过手动／显式调用按可用业务切片复验，云端排队期�
 
 ### TD-07C — 真实界面与批次审查
 
-原生／Web交互与图像来自对应客户端真实运行，按实际变更、适用平台和风险做批次审查。首次正式产品图像基准仍由用户确认；布局图或源码不能冒充原生结果。审查记录以必要内容为限，不新增认证平台或日常归档回读门槛。
+先核具体原型/模板与批准版本；已有账号r2批准沿用，其他新页/设计变化需明确批准。后端就绪后集中接真实API，业务测试、组件触发、原生操作与本地视觉分别承担相应结论。稳定集成版本由固定独立UI角色批量整页对照与交互复检，集中修复后仅复测影响项。云端构建/功能/HTTPS/Hermes不作视觉通过，详细边界见执行政策和cloud-validation。
 
 ### TD-07D — 媒体播放偏好与消费入口
 
@@ -273,7 +243,7 @@ flowchart TD
 | US14实现 | 直接依赖的共享核心、US1／US11／US13相关已实现能力；消费既有增量验证链，未激活能力不作前置 | 扩充所有已激活发行检查和生产拒绝／同版产物验证；完整AC待全部consumer，不阻塞早期核心验证 |
 | FR-113 | US3共享播放器、US2偏好、各故事真实消费接入均明确实现／测试责任 | US16及最终门禁汇总各实际端和入口的行为／网络／读屏／视觉证据 |
 
-ED-21已批准执行原则：首个Android注册登录切片先实现身份会话、当前授权/RLS、环境隔离、必要审计耐久撤销、幂等可靠写入、条款及必要组件；媒体、Realtime、完整配置随实际消费者激活。plan/tasks图表正文现按此同步，原有US1、US3→US2故事依赖、17故事及最终验收保留。16条改进责任与未完成迁移逐项见[ED-21](../../docs/engineering/local-cloud-responsibility-decision.md)。
+ED-21已批准执行原则：首个Android注册登录切片先实现身份会话、当前授权/RLS、环境隔离、必要审计耐久撤销、幂等可靠写入、条款及必要组件；媒体、Realtime、完整配置随实际消费者激活。plan/tasks图表正文现按此同步，原有US1、US3→US2故事依赖、17故事及最终验收保留。当前执行边界见[执行政策](../../docs/engineering/execution-policy.md)，实际未完成项以当前状态/源码为准。
 
 任务编号与canonical顺序保持不变；ED-21拆分原则已批准并直接生效，不再写作待定提案。
 
@@ -325,9 +295,9 @@ ED-21已批准执行原则：首个Android注册登录切片先实现身份会�
 | Q-11 | 公司运营；做内容管理／版本／发布／展示与适用流程，真实制度／告知／条款／帮助由用户提供；ED-06申诉参数由工程决定，复核账号用户配置 | 真实内容／治理节点，不造运营文件 |
 | Q-16 | 设备／最低OS／签名渠道／预览／测试资源用户处理，工程实际需用时索取；工具锁与证据验真工程负责 | 必需原生／集成验证前，缺资源仍未通过 |
 | Q-10 | AI附件/语音/外联网/完整认证新明确批准 | 后续范围；首版默认不启用 |
-| CV-D01 | ED-11已确认当前Codex审查代码和实际云端图像报告，取消额外审查API账号；受审输入、覆盖、findings和未知项分项存证 | ci-ready前核记录／图像绑定，缺审查或真实证据仍拒绝 |
-| CV-D02 | 用户本人确认具体首个基准及需要批准的变更；确认人已定，候选实际未产生 | 候选可审阅后具体确认，未确认不宣称视觉通过 |
-| CV-V01（新增核验） | Actions首次事件／必需check和套餐、工具锁／报告链、桥接版本适配／强制拒绝探针、审查通道／资源 | 当前功能环境可运行即按ED-22开发；按风险测试，正式产品验收保留 |
+| CV-D01 | 当前Codex审查代码，固定独立UI角色在本地检查真实画面；无需额外审查API账号 | 按实际批次风险核适用输入、发现、处置和未验项 |
+| CV-D02 | 用户本人确认具体设计/首次实际产品基准及必要变更，按当前页面登记核已有批准 | 候选可审阅后具体确认，未确认不宣称视觉通过 |
+| CV-V01（新增核验） | 当前工具锁、真实目标执行/报告来源、适用运行资源及审查输入 | 当前功能环境可运行即按ED-22开发；按风险测试，正式产品验收保留 |
 
 已确认S21/S23/DEC-001/栈/首版不重问。条件待核验不减AI或原生验收；云端实测不能满足现有要求则按宪法九报告冲突影响/选项并等待明确决定，只暂停依赖部分。
 
@@ -336,13 +306,3 @@ ED-21已批准执行原则：首个Android注册登录切片先实现身份会�
 ## Complexity Tracking
 
 本次无新增架构复杂性或宪法豁免；后续发现的规范问题局部修正并同步所有工作树／分支。媒体/实时broker解决严格撤权，声明式SDK/独立容器解决受邀隔离，安全日志解决旧备份复活，生产broker解决管理员确认，证据档案解决云端保留。均对应明确需求，复用既定栈并列维护/费用，不能凭复杂性绕门禁。
-
-## 技能流程记录（历史；当前按ED-22）
-
-extensions.yml解析成功；before_plan唯一enabled/condition为空mandatory guard已实际执行且allow，setup-plan -Json成功。Phase0三项研究完成，工程未知已选择；Phase1模型/契约/quickstart完成并复核宪法。after_plan无注册项。本轮止于技术计划，没有tasks/实现/生产自动推进。
-
-本次补充再次读取宪法及输入／既有计划，解析hooks并执行before_plan guard允许；只读核验现有桥接及官方AI／Actions能力，补RD-11–13、cloud-validation、quickstart与证据字段。当前必需实现前／完成后验证适配均只是规划，未安装；不把这次规划guard允许或文档检查当实现门禁已满足。after_plan在结束前再次读取，无注册项。
-
-本次analyze修订再次读取AGENTS／宪法、规格／PRD／UI依据和现有tasks／ready交接；before_plan guard实际allow，setup-plan定位原文件且不覆盖。本轮仅更新规划及配套设计／核对记录，未改tasks、交接JSON／快照、技能、脚本或工作流；guard自然追加真实事件。没有新外部工具／版本选择或研究未知，RD-15依据既有资料闭环；不新建研究任务或触发Actions。结束再次解析after_plan，实际结果记入修订核对记录。
-
-最新执行决定见 [ED-11／ED-12](reviews/execution-decisions-2026-10-15.md)：当前 Codex 负责代码及真实云端图像审阅，用户服务器保存私有证据；历史路线按该记录取代。
