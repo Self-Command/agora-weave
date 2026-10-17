@@ -1,6 +1,37 @@
 # 项目源码检查点与实际范围
 
-## 2026-10-17 当前交接状态（ED-24）
+## 2026-10-17 本次UI退役与环境恢复
+
+用户已批准宪法7.0.0的忠实还原与必要原生适配口径；明显设计偏离/功能问题必修，细微渲染差异不阻塞阶段。
+用户明确确认删除原型“基础组件”预览页，该页已从同一入口移除；已批准的共享组件/token继续保留。
+账号r2五页仍pending；新增page/scene/theme直达参数不代表页面已批准。
+本次授权移除旧App/分享/后台呈现，先提取保留真实逻辑与有效测试；空框架路由不代表产品页面完成。
+全量UI相关备份位于H:/Projects/AgoraWeave/development/backups/ui-retirement-20261017，含49文件与SHA256清单。
+旧账号4个整页TSX及其样式已移除，真实逻辑提取为6个无呈现controller/原生装配文件；账号与分享入口暂为null。
+已批准组件、API、安全存储、恢复辅助及有效测试保留。不能沿用下节“旧账号页面可见/后台h1”描述恢复旧呈现。
+原型“基础组件”预览页已删除；实际浏览器验证page/scene/theme直达、浅深主题和选项移除，无脚本错误。
+
+后台完整582文件已从固定commit7705dfc0d13889e45c26a55ad5908da6a7a9a605导入apps/admin，逐文件原件及映射保全，
+不是再精简模板。后续按模块将对应官方页面接入真实业务；当前仅本机官方合成模板，无真实管理员身份/MFA/业务完成结论。
+默认拒绝生产及未开放入口，不使用Clerk/keyless，不外发Sentry。实际HTTP确认身份/计费/管理/外部示例及非loopback Host拒绝403。
+16族原字体用同款本地19个WOFF2，保留字重/变量/主题及官方许可/来源摘要，避免启动/构建依赖Google下载。
+
+统一local.ps1已实际启动原有11个Supabase服务及后台、Metro；重复Up复用原容器ID和相同admin/metro PID，未新增第二组或清卷。
+入口为-Up/-Status/-Logs/-Stop，按-Services supabase,admin,metro选择；缺依赖才显式-Install，迁移仅显式-Migrate，不自动重置夹具。
+后台本机预览http://127.0.0.1:3000/dashboard/overview实际200，Metro http://127.0.0.1:8081/status实际ready。
+当前没有连接的Android设备；服务就绪与bundle编译不等于原生产品旅程或Fast Refresh客户端交互通过。
+
+本次实际检查：三端与工具typecheck通过；完整现行lint通过（后台使用固定官方oxlint1.65.0，290文件/213规则0错误0警告）；
+工具回归56/56通过，移动控制器与设计组件32/32通过，后台来源/安全/本地字体8/8通过。两个账号异步竞态已修复并独立复核关闭。
+当前登记27 core targets/159 cases/37 migrations（移动客户端从10增至30），没有运行完整159、云端dev/test或原生矩阵。
+原139最近完整失败及后续局部修复事实仍保留；不能勾Phase2完成。旧UI视觉断言保留并明确暂缓，未把空路由当UI通过。
+日志在H:/Projects/AgoraWeave/development/reports，ui-retirement-*、admin-official-*及development-services-reuse-final.json。
+首次启动模块格式/在线字体、Metro CI空值及IPv6绑定失败日志保留；已修对应原因并实际启动通过。
+
+原64个未提交业务文件中，本次仅授权的admin旧CSS删除、share旧首页CSS变化，其余62个原字节未变；285条任务及勾选未改。
+Phase2剩余后端、真实SMS、App新页面批准与实际客户端验收仍未完成；本次环境与模板恢复不增加产品完成结论。
+
+## 2026-10-17 前一批检查点（历史，以下源码数量与UI状态已被上节更新）
 
 源码分支 `codex/agoraweave-tdd-rebuild-clean`，现有Phase2 T028–T051成果仍含未提交业务：Git状态55个路径，展开64个实际文件。
 父agent已保存原文件SHA256于H盘reports/workflow-optimization-existing-business.json；本轮流程优化不修改或夹带这些业务文件。

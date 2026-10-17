@@ -1,12 +1,19 @@
 # AgoraWeave 本地开发与Actions独立验证指南
 
-现行依据宪法6.0.0与[ED-24](../../docs/engineering/execution-policy.md)：业务优先，本地批次开发测试，日常目标＋直接受影响回归，Actions按需复验。逐行为TDD由执行者判断，历史红链／收据／归档回读不是日常前置。
+现行依据宪法7.0.0与[ED-24](../../docs/engineering/execution-policy.md)：业务优先，本地批次开发测试，日常目标＋直接受影响回归，Actions按需复验。逐行为TDD由执行者判断，历史红链／收据／归档回读不是日常前置。
 
 当前切片仅要求实际使用的身份／授权／RLS／隔离／审计撤销／可靠写入依赖；媒体／Realtime／完整配置随消费者激活，T051保完整核心收口。按功能批次实现、测试和审查，是否逐行为TDD由执行者判断。
 
 App/分享页新增或设计变更先在统一HTML原型补具体页面/状态并获人明确批准；设计不变修复沿用匹配批准。后台以完整Kiranism官方模板为基准，无需重画同款HTML，仍实际后台复检。账号r2整页未批准；基础组件批准独立。所有安装包均由 Actions 编译，本机仅下载安装及通过开发包热更新复检。
 
 ## 1. 当前功能与H盘入口
+
+2026-10-17统一常驻入口：先`pwsh -NoProfile -File tools/dev/local.ps1 -Status`检查；
+`-Up -Services supabase,admin,metro`按需复用/启动同一组并等待就绪，`-Logs`查日志，`-Stop`停止但不删卷。
+后台`http://127.0.0.1:3000/dashboard/overview`仅显式本机开发模板，非真实管理业务；Metro状态在8081/status。
+缺依赖才显式-Install，普通编辑用Next/Metro热更新；迁移仅显式-Up -Services supabase -Migrate，不重置seed。
+页面开发用prototype/README精确定位；已批设计忠实还原并允许必要原生适配，细微渲染差异不单独阻塞阶段。
+旧账号/分享呈现已按用户要求退役，空路由不算UI完成；后台完整官方源码保留，按开发模块接业务，当前状态优先。
 
 源码工作树保持原路径。运行 `./tools/dev/local.ps1 -Prepare -Install` 准备H盘项目运行副本及环境；之后在输出的H盘工作区运行当前目标用例和直接受影响回归。配置见 `infra/development/policy.json`。后续通过同一入口传入 `-Command @('node','--experimental-strip-types','--test','tests/目标.spec.ts')`，入口先同步源码，再在H盘执行并保留真实退出状态。
 

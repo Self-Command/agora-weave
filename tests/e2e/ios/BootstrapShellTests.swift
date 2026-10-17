@@ -9,7 +9,29 @@ private final class HTTPSRedirectRefusal: NSObject, URLSessionTaskDelegate {
 }
 
 final class BootstrapShellTests: XCTestCase {
+  func testRuntimeLifecycleAndHTTPS() throws {
+    continueAfterFailure = false
+    let app = XCUIApplication(bundleIdentifier: "org.agoraweave.app")
+    app.launch()
+    XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15))
+    if let configURL = Bundle(for: Self.self).url(forResource: "https-client", withExtension: "json") {
+      try verifyHTTPS(configURL)
+    }
+    XCUIDevice.shared.press(.home)
+    let background = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+      app.state == .runningBackground || app.state == .runningBackgroundSuspended
+    }, object: app)
+    XCTAssertEqual(XCTWaiter.wait(for: [background], timeout: 5), .completed)
+    app.activate()
+    XCTAssertTrue(app.wait(for: .runningForeground, timeout: 5))
+    let scope = XCTAttachment(string: "runtime-lifecycle-and-optional-https-only; account UI retired; product UI not verified")
+    scope.name = "runtime-only-scope"
+    scope.lifetime = .keepAlways
+    add(scope)
+  }
+
   func testLaunchAndBackgroundResume() throws {
+    try XCTSkipIf(true, "Old account presentation retired by user on 2026-10-17; preserve assertions for approved replacement UI. Not a native UI pass.")
     continueAfterFailure = false
     let app = XCUIApplication(bundleIdentifier: "org.agoraweave.app")
     app.launch()
