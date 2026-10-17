@@ -867,7 +867,7 @@
       "files": [
         "tests/contract/auth/mobile-client.spec.ts"
       ],
-      "case_count": 10,
+      "case_count": 20,
       "requires_services": false
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 139,
+  "core_case_count": 149,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1237,6 +1237,34 @@
       "files": [
         "tests/integration/ci/local-services.spec.ts"
       ]
+    },
+    {
+      "files": [
+        "tests/integration/ci/ui-bindings.spec.ts"
+      ],
+      "id": "ci.ui-bindings",
+      "command": "ci:contracts"
+    },
+    {
+      "files": [
+        "tests/integration/ci/runtime-sync.spec.ts"
+      ],
+      "id": "ci.runtime-sync",
+      "command": "ci:contracts"
+    },
+    {
+      "files": [
+        "tests/integration/ci/local-development.spec.ts"
+      ],
+      "id": "ci.local-development",
+      "command": "ci:contracts"
+    },
+    {
+      "files": [
+        "tests/security/admin/template-preview.spec.ts"
+      ],
+      "id": "ci.admin-template-preview",
+      "command": "ci:contracts"
     }
   ]
 }

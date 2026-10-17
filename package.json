@@ -12,7 +12,7 @@
     "packages/*"
   ],
   "scripts": {
-    "ci:contracts": "node --experimental-strip-types --test --test-concurrency=1 tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts",
+    "ci:contracts": "node --experimental-strip-types --test --test-concurrency=1 tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts tests/security/admin/*.spec.ts",
     "ci:typecheck": "tsc -p tools/ci/tsconfig.json && npm run typecheck --workspaces",
     "ci:build:web": "npm run build --workspace apps/admin && npm run build --workspace apps/share",
     "ci:e2e:web": "playwright test --config tests/e2e/bootstrap/playwright.config.ts",
@@ -28,7 +28,7 @@
     "ci:concurrency": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:concurrency",
     "ci:recovery": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:recovery",
     "ci:components": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:components",
-    "ci:lint": "eslint apps tools/ci tests --max-warnings 0 --format json --output-file lint-output/report.json",
+    "ci:lint": "eslint apps/mobile apps/share tools/ci tests --max-warnings 0 --format json --output-file lint-output/report.json && npm run lint:strict --workspace apps/admin",
     "ci:e2e": "playwright test --config tests/e2e/bootstrap/playwright.config.ts"
   },
   "dependencies": {
