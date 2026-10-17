@@ -32,14 +32,19 @@
       ],
       "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
-        "state": "pending"
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "用户在本会话原生卡片明确：批准 r2 五页及选择器全部状态，浅色与深色均可按稿实现",
+        "design_version": "account-r2",
+        "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
         "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
-      "implementation": "retired-presentation-awaiting-approved-design",
+      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
+      "implementation": "approved-design-awaiting-implementation",
       "reviews": [],
       "retirement": {
         "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
@@ -86,14 +91,19 @@
       ],
       "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
-        "state": "pending"
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "用户在本会话原生卡片明确：批准 r2 五页及选择器全部状态，浅色与深色均可按稿实现",
+        "design_version": "account-r2",
+        "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
         "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
-      "implementation": "retired-presentation-awaiting-approved-design",
+      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
+      "implementation": "approved-design-awaiting-implementation",
       "reviews": [],
       "retirement": {
         "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
@@ -141,14 +151,19 @@
       ],
       "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
-        "state": "pending"
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "用户在本会话原生卡片明确：批准 r2 五页及选择器全部状态，浅色与深色均可按稿实现",
+        "design_version": "account-r2",
+        "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
         "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
-      "implementation": "retired-presentation-awaiting-approved-design",
+      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
+      "implementation": "approved-design-awaiting-implementation",
       "reviews": [],
       "retirement": {
         "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
@@ -195,14 +210,19 @@
       ],
       "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
-        "state": "pending"
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "用户在本会话原生卡片明确：批准 r2 五页及选择器全部状态，浅色与深色均可按稿实现",
+        "design_version": "account-r2",
+        "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
         "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
-      "implementation": "retired-presentation-awaiting-approved-design",
+      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
+      "implementation": "approved-design-awaiting-implementation",
       "reviews": [],
       "retirement": {
         "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
@@ -253,14 +273,19 @@
       ],
       "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
-        "state": "pending"
+        "state": "approved",
+        "by": "user",
+        "date": "2026-10-17",
+        "reference": "用户在本会话原生卡片明确：批准 r2 五页及选择器全部状态，浅色与深色均可按稿实现",
+        "design_version": "account-r2",
+        "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
         "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
-      "implementation": "retired-presentation-awaiting-approved-design",
+      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
+      "implementation": "approved-design-awaiting-implementation",
       "reviews": [],
       "retirement": {
         "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",

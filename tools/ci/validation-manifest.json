@@ -894,7 +894,7 @@
       "files": [
         "tests/recovery/core/security-journal.spec.ts"
       ],
-      "case_count": 7,
+      "case_count": 11,
       "requires_services": true
     },
     {
@@ -903,7 +903,7 @@
       "files": [
         "tests/integration/core/effects.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 6,
       "requires_services": true
     },
     {
@@ -912,7 +912,7 @@
       "files": [
         "tests/integration/core/gateways.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 5,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 159,
+  "core_case_count": 166,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1193,6 +1193,20 @@
       "file": "supabase/migrations/0025_remaining_engineering_parameters.sql",
       "depends_on": [
         "supabase/migrations/0024_foundation_state_guards.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0026_effect_lease_guards.sql",
+      "depends_on": [
+        "supabase/migrations/0025_remaining_engineering_parameters.sql",
+        "supabase/migrations/0013_effect_claim_binding.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0027_document_release_clock.sql",
+      "depends_on": [
+        "supabase/migrations/0026_effect_lease_guards.sql",
+        "supabase/migrations/0016_gateway_binding_fixes.sql"
       ]
     }
   ],
