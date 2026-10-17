@@ -1,0 +1,31 @@
+# Overlay only: the complete official source remains under supabase/upstream/docker.
+services:
+  api-gw:
+    ports: !reset []
+  supavisor:
+    ports: !reset []
+    ulimits:
+      nofile:
+        soft: 100000
+        hard: 100000
+  auth:
+    environment:
+      GOTRUE_DISABLE_SIGNUP: 'true'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'false'
+      GOTRUE_EXTERNAL_PHONE_ENABLED: 'false'
+      GOTRUE_SMS_AUTOCONFIRM: 'false'
+  studio:
+    environment:
+      OPENAI_API_KEY: ''
+  functions:
+    environment:
+      VERIFY_JWT: 'false'
+      SUPABASE_SERVICE_ROLE_KEY: ''
+      SUPABASE_DB_URL: postgresql://core_runtime:${CORE_DATABASE_PASSWORD}@db:5432/postgres
+      CORE_JWT_ISSUER: http://api-gw:8000/auth/v1
+      CORE_ENVIRONMENT: ${AGORAWEAVE_LOCAL_ENVIRONMENT:-${CI_ENVIRONMENT}}
+    volumes:
+      - ${AGORAWEAVE_WORKSPACE:-${GITHUB_WORKSPACE}}/supabase/functions/core:/home/deno/functions/core:ro
+networks:
+  default:
+    internal: true

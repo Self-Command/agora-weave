@@ -1,0 +1,393 @@
+{
+  "repository": "https://github.com/supabase/supabase",
+  "ref": "self-hosted/v0.8.2",
+  "commit": "564eab8ad7840b13324f68b1bfac074ef8d51c21",
+  "subtree": "docker",
+  "tree": "c11bb48f7619a1224cfe107c275e4dc9953b967c",
+  "files": [
+    {
+      "path": ".env.example",
+      "sha": "eb130e1cfe9da16117e5f1d9b11ebb9805b21f55",
+      "mode": "100644",
+      "size": 12294
+    },
+    {
+      "path": ".gitattributes",
+      "sha": "95aa9f9114204497683680cfe7c54b722015f806",
+      "mode": "100644",
+      "size": 200
+    },
+    {
+      "path": ".gitignore",
+      "sha": "1f9c3436196b0344538482ffbca81676e0a67759",
+      "mode": "100644",
+      "size": 340
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha": "8eafb86b66c2f3b8b6f0f2921e004aafd5b78a41",
+      "mode": "100644",
+      "size": 51024
+    },
+    {
+      "path": "CONFIG.md",
+      "sha": "0cc6a74784b9f548194afedd42943381e8c5248a",
+      "mode": "100644",
+      "size": 144887
+    },
+    {
+      "path": "README.md",
+      "sha": "8d6f6774b48a0309db7ec7de234b923f6f6e5cc2",
+      "mode": "100644",
+      "size": 5267
+    },
+    {
+      "path": "dev/data.sql",
+      "sha": "2328004184a72a636355b286410b83a5b7dcbfc9",
+      "mode": "100644",
+      "size": 1275
+    },
+    {
+      "path": "dev/docker-compose.dev.yml",
+      "sha": "e6b2e76cbde48e6151288612b9159a6dac410ad8",
+      "mode": "100644",
+      "size": 956
+    },
+    {
+      "path": "docker-compose.caddy.yml",
+      "sha": "9f99ff3b2a84569517dcbfa66f0d3378e84e399f",
+      "mode": "100644",
+      "size": 1170
+    },
+    {
+      "path": "docker-compose.envoy.yml",
+      "sha": "93ff2b0cfbc8939f286881a5e26541a2ea95958c",
+      "mode": "100644",
+      "size": 487
+    },
+    {
+      "path": "docker-compose.kong.yml",
+      "sha": "74793f6dd559827d4c4ad4c0c1ae08693e36d255",
+      "mode": "100644",
+      "size": 2054
+    },
+    {
+      "path": "docker-compose.logs.yml",
+      "sha": "ef31af0305128ed784c6abd813ab2dab37eaa764",
+      "mode": "100644",
+      "size": 3019
+    },
+    {
+      "path": "docker-compose.nginx.yml",
+      "sha": "5e6fb54d233546077476953b8d63fdf2216e60be",
+      "mode": "100644",
+      "size": 1396
+    },
+    {
+      "path": "docker-compose.pg15.yml",
+      "sha": "f87fe8c4828f354d6f73ba171d5d3f6295ed7370",
+      "mode": "100644",
+      "size": 707
+    },
+    {
+      "path": "docker-compose.pg17.yml",
+      "sha": "a8e37117e1bc3287686886ce5937a46e64d28e67",
+      "mode": "100644",
+      "size": 808
+    },
+    {
+      "path": "docker-compose.pgbouncer.yml",
+      "sha": "d745ed484d506bd4b11a3c9794fa95fec25ffda1",
+      "mode": "100644",
+      "size": 1801
+    },
+    {
+      "path": "docker-compose.rustfs.yml",
+      "sha": "0f6552b70ffa5666d538069cbf738cd4a7982cde",
+      "mode": "100644",
+      "size": 1269
+    },
+    {
+      "path": "docker-compose.s3.yml",
+      "sha": "165463f9d01285abdaafd5c305c3a316fe31113b",
+      "mode": "100644",
+      "size": 1197
+    },
+    {
+      "path": "docker-compose.yml",
+      "sha": "a37d39dc7c797b0487a8342855dda3cd1e66e0aa",
+      "mode": "100644",
+      "size": 21240
+    },
+    {
+      "path": "reset.sh",
+      "sha": "af0302a8227eedc9504b6a5520deef4591bb5f5a",
+      "mode": "100755",
+      "size": 1760
+    },
+    {
+      "path": "run.sh",
+      "sha": "397816869d651cfb27cde92ea1cc76866fc838a3",
+      "mode": "100755",
+      "size": 10768
+    },
+    {
+      "path": "setup.sh",
+      "sha": "007d0c2464789703bac58548fbb4a4380d3d9c6d",
+      "mode": "100755",
+      "size": 16530
+    },
+    {
+      "path": "tests/docker-compose.rustfs.test.yml",
+      "sha": "e7a7641c8e8a127b6eafa14732ddda2dfbc52778",
+      "mode": "100644",
+      "size": 281
+    },
+    {
+      "path": "tests/docker-compose.s3.test.yml",
+      "sha": "c2e34f4d1ae15ef11e46c202a2473cbc5421189c",
+      "mode": "100644",
+      "size": 399
+    },
+    {
+      "path": "tests/test-auth-keys.sh",
+      "sha": "1f58ae35a6968ea21050250c84365dbce2c0ab59",
+      "mode": "100644",
+      "size": 15072
+    },
+    {
+      "path": "tests/test-container-logs.sh",
+      "sha": "85a64b6d78e15fba0080a622b0745e038a519dc3",
+      "mode": "100644",
+      "size": 4511
+    },
+    {
+      "path": "tests/test-pg17-upgrade.sh",
+      "sha": "16aeb1f8f1aa5f3cca73a40c47cced89e296053e",
+      "mode": "100644",
+      "size": 11476
+    },
+    {
+      "path": "tests/test-s3-backend.sh",
+      "sha": "9c0d619a6fa72120a0bcb78efbe4935ddaa54311",
+      "mode": "100644",
+      "size": 13764
+    },
+    {
+      "path": "tests/test-s3.sh",
+      "sha": "36518dfdc3ce2393c2b7db7fed126b0f614f42c8",
+      "mode": "100644",
+      "size": 10716
+    },
+    {
+      "path": "tests/test-self-hosted.sh",
+      "sha": "d842cc9dcfc119f621c50afab09687365d190b8f",
+      "mode": "100644",
+      "size": 20435
+    },
+    {
+      "path": "tests/test-update.sh",
+      "sha": "c1bc0e770c1a909a4a410e708668507d2020966a",
+      "mode": "100644",
+      "size": 19398
+    },
+    {
+      "path": "tests/test-upgrades-manifest.sh",
+      "sha": "4fa6a3e2e67b87048d5b82057afa84a96c3e81ea",
+      "mode": "100644",
+      "size": 3566
+    },
+    {
+      "path": "update.sh",
+      "sha": "cf3313b639ff2d05429f4937fd1b7c05d1521c14",
+      "mode": "100755",
+      "size": 24236
+    },
+    {
+      "path": "upgrades.json",
+      "sha": "21704448b09e5642a8b414c33b7a9c3f78278348",
+      "mode": "100644",
+      "size": 2902
+    },
+    {
+      "path": "utils/add-new-auth-keys.sh",
+      "sha": "f921b6e876ab783de4077434c07bace2741a27e1",
+      "mode": "100644",
+      "size": 7601
+    },
+    {
+      "path": "utils/db-passwd.sh",
+      "sha": "40c9122f3733895a305c73219c84c538367119a8",
+      "mode": "100644",
+      "size": 4466
+    },
+    {
+      "path": "utils/generate-keys.sh",
+      "sha": "da1fc19218cf50146e9ca6f7313248ba94d22a2e",
+      "mode": "100644",
+      "size": 4727
+    },
+    {
+      "path": "utils/reassign-owner.sh",
+      "sha": "d13b1707337679b2ceb70fb112b093e54b3f7516",
+      "mode": "100644",
+      "size": 4295
+    },
+    {
+      "path": "utils/rotate-new-api-keys.sh",
+      "sha": "7ab951670add659a92e71450429a7e697d652e1c",
+      "mode": "100644",
+      "size": 3363
+    },
+    {
+      "path": "utils/upgrade-pg17.sh",
+      "sha": "c05a7b25718934dd214ab9eed8b3ccb1e0a5aa08",
+      "mode": "100644",
+      "size": 34854
+    },
+    {
+      "path": "versions.md",
+      "sha": "6eb4e17fe2d16247fcb3e5275b79600de9169286",
+      "mode": "100644",
+      "size": 7891
+    },
+    {
+      "path": "volumes/api/envoy/cds.yaml",
+      "sha": "2d47842d6b44dfc0e05619086c00a5a17d28fcd1",
+      "mode": "100644",
+      "size": 5901
+    },
+    {
+      "path": "volumes/api/envoy/docker-entrypoint.sh",
+      "sha": "2c67584a30e151879e11b21939b9f1ed9857a38f",
+      "mode": "100755",
+      "size": 1366
+    },
+    {
+      "path": "volumes/api/envoy/envoy.yaml",
+      "sha": "def443b68817921d98180b58d558006a2f86233f",
+      "mode": "100644",
+      "size": 677
+    },
+    {
+      "path": "volumes/api/envoy/lds.template.yaml",
+      "sha": "1a3c3451886177d9361d7ed5762a0f823ada0a13",
+      "mode": "100644",
+      "size": 50085
+    },
+    {
+      "path": "volumes/api/kong-entrypoint.sh",
+      "sha": "daf1d5e9a1a91e5cc6ce9cad7151ba465b4a9d40",
+      "mode": "100755",
+      "size": 2743
+    },
+    {
+      "path": "volumes/api/kong.yml",
+      "sha": "84433c13657d4fd7131e87e0122bee98a1e494d4",
+      "mode": "100644",
+      "size": 12695
+    },
+    {
+      "path": "volumes/db/_supabase.sql",
+      "sha": "6236ae1bccc21f929362bb617947174ccd1519d3",
+      "mode": "100644",
+      "size": 83
+    },
+    {
+      "path": "volumes/db/init/data.sql",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100755",
+      "size": 0
+    },
+    {
+      "path": "volumes/db/jwt.sql",
+      "sha": "09a728366624abe35e2a54cdda333a5c5d5f3ebe",
+      "mode": "100644",
+      "size": 98
+    },
+    {
+      "path": "volumes/db/logs.sql",
+      "sha": "255c0f407b8d5b1c72b75c4daad0ca4fe3ff3eef",
+      "mode": "100644",
+      "size": 144
+    },
+    {
+      "path": "volumes/db/pooler.sql",
+      "sha": "162c5b96aae50ab4c03b034a2d096898b1df4cd0",
+      "mode": "100644",
+      "size": 144
+    },
+    {
+      "path": "volumes/db/realtime.sql",
+      "sha": "4d4b9ffb912b9312dd78257956c180f12913264d",
+      "mode": "100644",
+      "size": 117
+    },
+    {
+      "path": "volumes/db/roles.sql",
+      "sha": "8f7161a6db66d75288722b60577ed30c81cc4f62",
+      "mode": "100644",
+      "size": 379
+    },
+    {
+      "path": "volumes/db/webhooks.sql",
+      "sha": "fe273decb89efc18c75e6f4a77953402c8f36555",
+      "mode": "100644",
+      "size": 9070
+    },
+    {
+      "path": "volumes/functions/deno.jsonc",
+      "sha": "db206e8f4672a6a07efdc38f487de0ecfd3dee52",
+      "mode": "100644",
+      "size": 136
+    },
+    {
+      "path": "volumes/functions/hello/index.ts",
+      "sha": "50d0e6be8c46df9090503441a92f2fc4c522f93c",
+      "mode": "100644",
+      "size": 1341
+    },
+    {
+      "path": "volumes/functions/main/index.ts",
+      "sha": "6bfad388a8aaa122d15b14d17d7cf720a2dd4aa3",
+      "mode": "100644",
+      "size": 6901
+    },
+    {
+      "path": "volumes/logs/vector.yml",
+      "sha": "f63bfd8ad10182a677811f66cfd58ad4217cbe50",
+      "mode": "100644",
+      "size": 8367
+    },
+    {
+      "path": "volumes/pooler/pooler.exs",
+      "sha": "06f05e1b4acde4c34b25a136c6a701e651655a44",
+      "mode": "100644",
+      "size": 1103
+    },
+    {
+      "path": "volumes/proxy/caddy/Caddyfile",
+      "sha": "b899e5ecf1d4b7fa7d33590928aaae536ed9b700",
+      "mode": "100644",
+      "size": 482
+    },
+    {
+      "path": "volumes/proxy/nginx/supabase-nginx.conf.tpl",
+      "sha": "f7dd77b5dad37fa8e7a11feab2d4bd4366d76884",
+      "mode": "100644",
+      "size": 2479
+    },
+    {
+      "path": "volumes/snippets/.gitkeep",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "size": 0
+    },
+    {
+      "path": "volumes/storage/.gitkeep",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "size": 0
+    }
+  ]
+}

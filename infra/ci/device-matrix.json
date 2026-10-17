@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "decisions": [
+    "ED-14",
+    "ED-17"
+  ],
+  "runner_policy": "github-actions-github-hosted-only",
+  "devices": [
+    {
+      "id": "ios-current-simulator",
+      "runner": "macos-26",
+      "xcode": "26.4.1",
+      "state": "runtime_capture_observed",
+      "source_run": "38603527452",
+      "source_sha": "14df8c3b824e201f16f2be5fa6aa06302e161826",
+      "limit": "Historical build/install/light-dark capture only; final XCTest and backend connectivity still required"
+    },
+    {
+      "id": "android-current-emulator",
+      "runner": "ubuntu-24.04",
+      "api": 36,
+      "abi": "x86_64",
+      "state": "not_evaluated",
+      "limit": "Release build observed; actual UIAutomator execution remains required"
+    },
+    {
+      "id": "ios-minimum",
+      "os": "16.4",
+      "state": "historical_runtime_observed_final_validation_required",
+      "reason": "Actual iOS16.4 XCTest succeeded in run38664125035; the final SHA still requires its own complete simulator results."
+    },
+    {
+      "id": "android-minimum",
+      "os": "7.0",
+      "api": 24,
+      "state": "historical_runtime_observed_final_validation_required",
+      "reason": "Actual API24 instrumentation succeeded in run38664125035; the final SHA still requires its own complete emulator results."
+    },
+    {
+      "id": "ios-accessibility-simulator",
+      "runner": "macos-26",
+      "state": "required",
+      "required": [
+        "semantic-tree",
+        "focus",
+        "keyboard",
+        "media",
+        "supported-a11y-audit"
+      ],
+      "reason": "ED-14: simulator-only validation"
+    },
+    {
+      "id": "android-accessibility-emulator",
+      "runner": "ubuntu-24.04",
+      "state": "required",
+      "required": [
+        "semantic-tree",
+        "focus",
+        "keyboard",
+        "media",
+        "supported-a11y-service"
+      ],
+      "reason": "ED-14: emulator-only validation"
+    }
+  ],
+  "native_backend_connectivity": {
+    "state": "approved_implementation_in_validation",
+    "reason": "ED-17 temporary HTTPS ingress is implemented in GitHub-hosted Actions; partial native results do not satisfy the complete final matrix and cleanup.",
+    "server_role": "private-evidence-storage-only"
+  },
+  "readiness": "not_evaluated",
+  "unavailable_required_resources_block_ci_ready": true
+}

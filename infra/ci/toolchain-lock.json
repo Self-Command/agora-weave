@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "scope": "bootstrap-initial-resolution",
+  "readiness": "not_evaluated",
+  "checkout_sha": "c14cd1cf5aa0ed6dabad9ff2169759f4dded7ac1",
+  "run_id": "38767859481",
+  "attempt": "1",
+  "node": "v22.23.3",
+  "npm": "10.9.9",
+  "runner_image": "20261012.334.1",
+  "runner_os": "Linux",
+  "lockfile_version": 3,
+  "lock_sha256": "ce37a9e9c5b03b77dd9e55185bd2b56978c4d0ffbcb54433a03b7d5634ba44ed",
+  "workflow_actions": {
+    "checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "setup_node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
+    "upload_artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+  },
+  "created_at": "2026-10-15T16:18:46.185Z"
+}
