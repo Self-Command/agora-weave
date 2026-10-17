@@ -1,6 +1,6 @@
 # 批次01：真实账号入口与必要配置
 
-状态：实施中。2026-10-17完成首个私有SQL切片：OTP配置消费及challenge到Auth准入的原子完成事务。公有HTTP、短信适配和完整客户端旅程尚未接通；285任务仍51勾选，不以本切片勾完整任务。
+状态：实施中。2026-10-17完成OTP配置/私有原子准入及公有手机号认证后端两个切片，公开HTTP与官方Auth已隔离联调；阿里云适配未调用真实短信，App完整旅程尚未接入。285任务仍51勾选，不以局部切片勾完整任务。
 
 ## 目标、输入与边界
 
@@ -8,7 +8,7 @@
 
 输入：[spec](../spec.md) FR-001–008/130–141、[HTTP契约](../contracts/http-api.md)、[配置契约](../contracts/configuration.md)、[模型](../data-model.md)、[任务](../tasks.md)、[当前状态](../../../docs/engineering/current-development-state.md)。先查当前源码、已有target与运行配置，不重写已有原子准入、刷新/撤销/退出、恢复申请、operation查询与OTP重放保护。
 
-主要现有文件：supabase/functions/core/identity.ts、routes/auth.ts、routes/account-security.ts、documents/read.ts（后三者均位于supabase/functions/core/），packages/config/src/definitions.ts，移动account特性及相关测试；准入/登录/OTP已有0105、0107、0110及0029等迁移。identity/和adapters/子目录是原计划新增定位，当前不存在，不作现有实现。新增短信适配器路径在本批明确后建立。迁移只追加未占用编号，不原地改已应用迁移。公共契约/配置/编号由主agent协调；后台真实设置入口依当前管理权限/MFA完成次序接入，未就绪明确列剩余。
+主要现有文件：supabase/functions/core/identity.ts、routes/auth.ts、routes/account-security.ts、routes/public-auth.ts、documents/read.ts（后四者均位于supabase/functions/core/），新增identity/与adapters/承载公有输入/入口校验及Auth/短信适配；另有packages/config/src/definitions.ts、移动account特性及相关测试。准入/登录/OTP已有0105、0107、0110及0029等迁移，本批追加0034–0037。迁移只追加未占用编号，不原地改已应用迁移。公共契约/配置/编号由主agent协调；后台真实设置入口依当前管理权限/MFA完成次序接入，未就绪明确列剩余。
 
 本批不开发内容/关系/AI/插件等后续能力。账号r2批准可复用；未获批新页面/新状态先原型批准。短信签名/模板/凭据/获准接收对象与生产资源由用户搭建，合成适配器不得成为生产旁路或对外成功事实。
 
@@ -84,3 +84,34 @@ pwsh -NoProfile -File tools/dev/local.ps1 -Command @('node','--experimental-stri
 原始失败：`H:/Projects/AgoraWeave/development/reports/core-accounts-20261017/attempt1/`；最终8个目标TAP/JSON/stderr及增量迁移报告：同目录`final/`。独立代码复检已定向闭合配置部分校验及schema方言P2，修复均在正式应用前；开发/代码复检工具显式`gpt-6.1-sol/high`，实际服务端型号工具未暴露，记未知。
 
 下一步先补受信IP/手机号摘要、受控Auth与阿里云短信适配、公有challenge/verify及unknown同operation查询，再集中接账号r2及必要真实配置管理入口。真实短信签名/模板/凭据/获准对象仍需用户资源；App/原生交互/整页复检、配置后台发布/回滚、恢复/换号/注销及管理员MFA尚未完成。本切片不勾T052–T064或T141–T148整项。
+
+### 2026-10-17公有手机号认证后端切片
+
+业务及测试提交：`1654a216ffa5b599e31127bad9586dab131fd946`；配套网关/Runner/清单及HTTP契约已随治理同步提交，最近同步为`40f2e98`。测试运行时业务尚在工作区，最终报告的测试/迁移摘要及25个受影响源码文件已与运行副本逐文件核对；提交后再次核摘要，不把报告旧HEAD冒充提交后重跑。
+
+- 新增`POST /auth/challenges`、`POST /auth/verify`及携同一验证body的`POST /auth/operations/{id}`。App的login/register入口严格校验输入，注册复用当前邀请/年龄/条款原子准入；换号和分享登录仍待各自完整受控流程。未开放匿名配置snapshot、客户端自报身份或摘要。
+- 完整官方Envoy模板只注入私有入口证明及真实对端IP，覆盖伪造头；手机号/IP/OTP使用环境独立keyed摘要。官方Auth生成验证码，Postgres Send SMS Hook只接收唯一预留challenge，短期加密交接OTP，HTTP单次领取后调用阿里云ACS3 SendSms；只有明确接受才可返回发送成功，未知结果不重发。
+- 验证先核本地OTP及当前准入条件，再由官方Auth实际`/verify`签发会话；签名、手机号、actor/session及OTP AMR交叉校验后完成0035事务。精确重试只读最多5分钟且不超过JWT期限的加密回执，换payload冲突、错误证明限次，撤销后拒绝；未知查询不再次调用Auth或建立会话。
+- 追加`0036_public_otp_broker.sql`及`0037_public_otp_hook_binding.sql`。后者修复真实联调发现的Hook局部变量/列名歧义；已应用0036不改写。worker每轮独立执行有界过期密文清理，业务效果或安全journal失败不阻止该清理；元数据30日到期拒读，完整分类物理清理仍属US17未完成责任。
+- Auth OTP上界由同一`AUTH_SMS_OTP_EXP`注入Auth和core，按Hook原签发时刻验证challenge期限，不能以处理时刻延长。默认CI/dev关闭手机号发送；`infra/deployment/phone-auth.compose.yml`是资源审查后显式启用配置，本轮只验证Compose解析，不应用或声称生产就绪。模板变量为`code`，真实签名/模板/凭据及获准接收对象仍缺。
+
+实际继续复用唯一dev组`agoraweave-local-dev-0e2dc2a715c1`，两次显式`local.ps1 -Up -Services supabase -Migrate`各追加1条，最终49条摘要匹配（最近增量报告为追加1条、核原48条），未reset/seed。Node固定22.23.3，官方Auth固定2.196.0；无App或后台UI改动，也无本机原生构建。
+
+下列目标使用`local.ps1 -Command @('node','H:/Projects/AgoraWeave/development/tmp/otp-targets.mjs',<目标列表>)`串行执行既有`tools/ci/core-entry.ts target <id>`：
+
+| 目标 | 实际通过 |
+| --- | --- |
+| core.auth-adapters | 30/30：阿里云/Auth边界、入口输入、固定签发期限及独立清理 |
+| core.auth-public-broker | 20/20：真实SQL、当前资格、租约/幂等、错误预算、回执/密文过期及并发锁 |
+| core.auth-public-routes | 6/6：真实网关/公开HTTP/官方Auth会话、条款准入、精确回读、撤销、unknown |
+| core.auth-otp-policy / auth-registration / auth-concurrency | 15/15、17/17、3/3 |
+| core.auth-refresh / auth-session-commands / effective-configuration | 2/2、3/3、4/4 |
+| core.gateways / security-journal | 12/12、12/12 |
+
+共11目标124/124。`npm run ci:discover`等价入口通过，清单279项不表示全量执行；`npm run ci:contracts`等价57项命令通过。tools TypeScript及上述6个纯运行模块/6个新增测试strict TypeScript通过，17个受影响TS文件ESLint零警告，`git diff --check`通过；Deno路由及worker由实际服务启动/HTTP运行验证，未把Node类型检查冒充完整Deno检查。
+
+另以`local.ps1 -Command @('node','--experimental-strip-types','H:/Projects/AgoraWeave/development/tmp/public-otp-hook-probe.mjs')`临时只开启隔离Auth的真实Postgres Hook，公有发送仍关闭：无预留请求403；预留后官方`/otp`200并交接其真实生成的验证码；官方`/verify`200，创建1个真实session及OTP AMR，`/user`接受令牌。未调用任何外部短信，未伪造此会话。结束后撤销合成入口、清密文并恢复Auth配置；单独Compose配置解析与实际容器检查确认官方11服务保留且Auth/core发送均关闭。
+
+原始证据集中在`H:/Projects/AgoraWeave/development/reports/core-accounts-public-20261017/`：`final/`保11目标原始TAP/JSON/stderr、最近增量迁移及源码摘要，`static/`保实际命令/结果，`auth-hook-probe.json`与`deployment-check.json`保额外隔离验证。`attempt1–5/`保原失败：Hook歧义、PB19/PB20夹具非法配置状态转换、API夹具遗漏/不匹配客户端版本及适配器TypeScript收窄；分别追加0037、改事务内本次激活指针、携fixture-v1及命名never函数后窄复测通过。配置解析辅助脚本的属性访问拼写错误也已修正，不改变产品代码。独立代码复检已关闭固定签发期限、worker清理独立性及外部结果耐久保存问题，0037定向复检无新问题；开发/代码复检显式gpt-6.1-sol/high，工具未暴露服务端实际型号，记未知。
+
+下一步集中接已批准账号r2页面/controller与这些真实协议，补组件触发、原生交互和本地整页复检；无短信资源时继续独立集成，明确真实SMS旅程未验。随后按依赖落实真实管理身份/MFA及必要配置管理入口，恢复/换号/注销、分类物理清理及完整故事验收仍未完成。本切片不勾T052–T064或T141–T148整项。
