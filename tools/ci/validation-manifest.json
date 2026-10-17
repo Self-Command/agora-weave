@@ -899,7 +899,16 @@
       "files": [
         "tests/integration/auth/public-otp-broker.spec.ts"
       ],
-      "case_count": 18,
+      "case_count": 20,
+      "requires_services": true
+    },
+    {
+      "id": "core.auth-public-routes",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/auth/public-otp-routes.spec.ts"
+      ],
+      "case_count": 6,
       "requires_services": true
     },
     {
@@ -976,7 +985,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 270,
+  "core_case_count": 278,
   "core_migrations": [
     {
       "file": "supabase/migrations/0036_public_otp_broker.sql",
