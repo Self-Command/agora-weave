@@ -113,7 +113,9 @@ jobs:
           import { createHash } from 'node:crypto';
           const api = endpoint => JSON.parse(execFileSync('gh', ['api', `repos/${process.env.GH_REPO}/${endpoint}`], {encoding:'utf8'}));
           const tag = api(`git/ref/tags/${process.env.RELEASE_TAG}`);
-          const release = api(`releases/tags/${process.env.RELEASE_TAG}`);
+          const releases = api('releases?per_page=100').filter(release => release.tag_name === process.env.RELEASE_TAG);
+          if (releases.length !== 1) throw Error('Release draft missing or ambiguous');
+          const release = releases[0];
           const files = ['agoraweave-preview-arm64-v8a.apk','agoraweave-preview-x86_64.apk','SHA256SUMS'];
           if (tag.object.sha !== process.env.SOURCE_SHA || !release.draft || !release.prerelease || release.assets.length !== files.length) throw Error('Release draft identity mismatch');
           for (const file of files) {
