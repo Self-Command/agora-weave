@@ -181,3 +181,161 @@ test('OT09: null purpose or context cannot consume an OTP or change attempts bef
     SELECT state || ':' || attempts FROM (${legacy.row}) c;`),
   ['OK','OTP_INVALID','OTP_INVALID','OTP_INVALID','OTP_INVALID','OTP_INVALID','pending:0','OK','consumed','OTP_INVALID','pending:0']);
 });
+
+const jsonLiteral=(value:unknown)=>`'${JSON.stringify(value).replaceAll("'","''")}'::jsonb`;
+// Every configuration fixture is inside transaction() and is rolled back with its activation.
+function otpBundle(values:Record<string,unknown>={},layers:Record<string,unknown>[]=[],
+  options:{scopeValues?:string;compat?:Record<string,unknown>;state?:string;schema?:number;future?:boolean}={}) {
+  const version=`synthetic-otp-${randomUUID()}`;
+  const scopes=options.scopeValues || `jsonb_build_array(jsonb_build_object('scope','global','values',
+    (SELECT jsonb_object_agg(key,default_value) FROM core.config_definition)||${jsonLiteral(values)}))||${jsonLiteral(layers)}`;
+  return `INSERT INTO core.config_bundle(version,scoped_values,schema_version,compat,state,effective_at,preview_digest,consumers_ready)
+    VALUES('${version}',${scopes},${options.schema||1},${jsonLiteral(options.compat||{sql:['0.0.0']})},'${options.state||'active'}',
+      clock_timestamp()${options.future?"+interval '1 hour'":''},repeat('f',64),ARRAY['sql']);
+    INSERT INTO core.config_activation(environment,active_ptr) VALUES('${environment}','${version}')
+      ON CONFLICT(environment) DO UPDATE SET active_ptr=excluded.active_ptr;`;
+}
+
+test('OT10: configured lifetime resend and failure budget bind new challenges and survive a rollback without reviving locked codes',()=>{
+  const vector=challengeVector(),fresh=challengeVector();
+  assert.deepEqual(transaction(`
+    ${otpBundle({'auth.otp_lifetime_seconds':120,'auth.otp_resend_seconds':90,'auth.otp_max_failures':7})}
+    SELECT ${vector.call()}->>'code';
+    SELECT extract(epoch FROM expires_at-created_at)=120 AND resend_seconds=90 AND max_failures=7
+      AND config_version=(SELECT active_ptr FROM core.config_activation WHERE environment='${environment}') FROM (${vector.row}) c;
+    ${otpBundle()}
+    SELECT ${vector.call()}->>'reused';
+    SELECT (${vector.call()}->>'retry_after')::int BETWEEN 61 AND 90;
+    SELECT ${vector.call({command:randomUUID()})}->>'code';
+    SELECT core.consume_otp_challenge(id,'${wrong}','login','{}')->>'code' FROM (${vector.row}) c,generate_series(1,6);
+    SELECT state||':'||attempts FROM (${vector.row}) c;
+    SELECT core.consume_otp_challenge(id,'${wrong}','login','{}')->>'code' FROM (${vector.row}) c;
+    ${otpBundle({'auth.otp_max_failures':9})}
+    SELECT core.consume_otp_challenge(id,'${vector.code}','login','{}')->>'code' FROM (${vector.row}) c;
+    SELECT state||':'||attempts FROM (${vector.row}) c;
+    ${otpBundle()}
+    SELECT ${fresh.call()}->>'code';
+    SELECT extract(epoch FROM expires_at-created_at)=300 AND resend_seconds=60 AND max_failures=5 FROM (${fresh.row}) c;`),
+  ['OK','t','true','t','RATE_LIMITED',...Array(6).fill('OTP_INVALID'),'pending:6','OTP_INVALID','OTP_INVALID','locked:7','OK','t']);
+});
+
+test('OT11: global environment and core-owner precedence cannot be overridden by another environment owner or an anonymous user group',()=>{
+  const vector=challengeVector();
+  assert.deepEqual(transaction(`
+    ${otpBundle({'auth.otp_lifetime_seconds':110},[
+      {scope:'environment',environment,values:{'auth.otp_lifetime_seconds':120}},
+      {scope:'environment',environment:environment==='dev'?'test':'dev',values:{'auth.otp_lifetime_seconds':700}},
+      {scope:'module',environment,owner:'auth',values:{'auth.otp_lifetime_seconds':710}},
+      {scope:'plugin',environment,owner:'other-plugin',values:{'auth.otp_lifetime_seconds':720}},
+      {scope:'module',environment,owner:'core',values:{'auth.otp_lifetime_seconds':130}},
+      {scope:'user_group',environment,owner:'core',group:'untrusted-client-group',priority:99,values:{'auth.otp_lifetime_seconds':730}},
+    ])}
+    SELECT ${vector.call()}->>'code';
+    SELECT extract(epoch FROM expires_at-created_at)=130 FROM (${vector.row}) c;`),['OK','t']);
+});
+
+test('OT12: each current send quota counts existing history after activation and rollback',()=>{
+  for(const [key,age,sharePhone] of [
+    ['auth.otp_phone_hourly','3 minutes',true],['auth.otp_phone_daily','2 hours',true],['auth.otp_ip_hourly','3 minutes',false],
+  ] as const) {
+    const vector=challengeVector();
+    const oldPhone=sharePhone?vector.phone:digest();
+    assert.deepEqual(transaction(`
+      INSERT INTO core.otp_challenge(phone_hash,ip_hash,purpose,otp_hash,command,binding,created_at,environment)
+        VALUES('${oldPhone}','${vector.ip}','login','${correct}',gen_random_uuid(),'{}',clock_timestamp()-interval '${age}','${environment}');
+      ${otpBundle({[key]:1})}
+      SELECT ${vector.call()}->>'code';
+      ${otpBundle({[key]:2})}
+      SAVEPOINT quota_probe;
+      SELECT ${vector.call()}->>'code';
+      ROLLBACK TO SAVEPOINT quota_probe;
+      ${otpBundle({[key]:1})}
+      SELECT ${vector.call({phone:sharePhone?vector.phone:digest(),command:randomUUID()})}->>'code';
+      SELECT count(*) FROM core.otp_challenge WHERE ip_hash='${vector.ip}';`),
+    ['RATE_LIMITED','OK','RATE_LIMITED','1'],key);
+  }
+});
+
+test('OT13: invalid OTP types ranges scopes dependencies and incomplete bundles fail closed without reserving or consuming',()=>{
+  const vector=challengeVector();
+  const invalid=[
+    ...['60',0,-1,1.5,9007199254740992,null,true].map(value=>otpBundle({'auth.otp_resend_seconds':value})),
+    otpBundle({},[{scope:'environment',values:{'auth.otp_resend_seconds':10}}]),
+    otpBundle({},[{scope:'module',environment,values:{'auth.otp_resend_seconds':10}}]),
+    otpBundle({},[{scope:'environment',environment,values:{'auth.otp_resend_seconds':10}},
+      {scope:'environment',environment,values:{'auth.otp_resend_seconds':20}}]),
+    otpBundle({},[{scope:'environment',environment:environment==='dev'?'test':'dev',values:{'auth.otp_resend_seconds':'10'}}]),
+    otpBundle({'unregistered.otp_key':1}),
+    otpBundle({'content.body_limit':'bad'}),
+    otpBundle({},[{scope:'environment',environment,values:{'content.body_limit':20}},
+      {scope:'environment',environment,values:{'content.body_limit':25}},
+      {scope:'module',environment,owner:'core',values:{'content.body_limit':30}}]),
+    otpBundle({},[],{compat:{sql:['incompatible']}}),otpBundle({},[],{schema:2}),
+    otpBundle({},[],{compat:{sql:['0.0.0',42]}}),
+    otpBundle({},[],{state:'ready'}),otpBundle({},[],{future:true}),
+    otpBundle({},[],{scopeValues:`jsonb_build_array(jsonb_build_object('scope','global','values',
+      (SELECT jsonb_object_agg(key,default_value) FROM core.config_definition WHERE key<>'auth.otp_phone_daily')))`}),
+    `UPDATE core.config_definition SET dependencies=ARRAY['unregistered.otp_dependency'] WHERE key='auth.otp_max_failures';`,
+    `UPDATE core.config_definition SET description='' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET default_value='"bad"' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET schema='{"type":123}' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET schema=schema||'{"unsupportedValidation":true}' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET schema='{"minimum":1}' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET schema='{"type":["integer","string"]}' WHERE key='content.body_limit';`,
+    `UPDATE core.config_definition SET schema=jsonb_set(schema,'{properties,amount,unsupportedValidation}','true')
+      WHERE key='retention.cancelled_account';`,
+    `UPDATE core.config_definition SET schema=jsonb_set(schema,'{items,unsupportedValidation}','true')
+      WHERE key='ui.supported_themes';`,
+    `UPDATE core.config_definition SET conflicts=ARRAY['auth.jwt_lifetime_seconds'] WHERE key='auth.otp_max_failures';`,
+    `UPDATE core.config_definition SET scopes=ARRAY['environment'] WHERE key='auth.otp_max_failures';`,
+    `UPDATE core.config_definition SET range='{"type":"integer","minimum":1,"maximum":2}' WHERE key='auth.otp_max_failures';`,
+    `DELETE FROM core.config_activation WHERE environment='${environment}';`,
+  ];
+  assert.deepEqual(transaction(`
+    ${otpBundle()}
+    SELECT ${vector.call()}->>'code';
+    ${invalid.map(change=>`SAVEPOINT invalid_configuration; ${change}
+      SELECT ${vector.call({command:randomUUID()})}->>'code';
+      SELECT core.consume_otp_challenge(id,'${vector.code}','login','{}')->>'code' FROM (${vector.row}) c;
+      SELECT count(*)||':'||min(state)||':'||min(attempts) FROM core.otp_challenge WHERE phone_hash='${vector.phone}';
+      ROLLBACK TO SAVEPOINT invalid_configuration;`).join('\n')}
+    SAVEPOINT business_schema_data;
+    UPDATE core.config_definition SET schema='{"const":{"unsupportedValidation":true,"items":{"type":"business-value"}}}',
+      default_value='{"unsupportedValidation":true,"items":{"type":"business-value"}}' WHERE key='content.body_limit';
+    ${otpBundle()}
+    SELECT ${vector.call()}->>'reused';
+    UPDATE core.config_definition SET schema='{"enum":[{"unsupportedValidation":true,"items":{"type":"business-value"}}]}'
+      WHERE key='content.body_limit';
+    ${otpBundle()}
+    SELECT ${vector.call()}->>'reused';
+    ROLLBACK TO SAVEPOINT business_schema_data;
+    SELECT core.consume_otp_challenge(id,'${vector.code}','login','{}')->>'code' FROM (${vector.row}) c;`),
+  ['OK',...invalid.flatMap(()=>['CONFIG_UNAVAILABLE','CONFIG_UNAVAILABLE','1:pending:0']),'true','true','OK']);
+});
+
+test('OT14: private configuration consumption leaves runtime table access and unauthenticated snapshots forbidden',()=>{
+  assert.equal(rows(`SELECT has_function_privilege(role,'core.otp_configuration_result(text)','EXECUTE') AS allowed
+    FROM unnest(ARRAY['anon','authenticated','service_role','core_runtime']) role`).every(row=>row.allowed===false),true);
+  assert.equal(rows(`SELECT has_function_privilege(role,'core.otp_configuration_schema_supported(jsonb)','EXECUTE') AS allowed
+    FROM unnest(ARRAY['anon','authenticated','service_role','core_runtime']) role`).every(row=>row.allowed===false),true);
+  assert.equal(rows(`SELECT has_table_privilege('core_runtime',table_name,'SELECT') AS allowed
+    FROM unnest(ARRAY['core.config_definition','core.config_bundle','core.config_activation']) table_name`).every(row=>row.allowed===false),true);
+  assert.equal(rows(`SELECT has_function_privilege('core_runtime',
+    'core.configuration_snapshot(uuid,uuid,text,text,text)','EXECUTE') AS allowed`)[0].allowed,true);
+  assert.deepEqual(transaction(`
+    SELECT core.configuration_snapshot(NULL,NULL,'${environment}','sql','authenticated')->>'code';`),['FORBIDDEN']);
+});
+
+test('OT15: failure budgets accept the registered safe-integer boundary and unrepresentable deadlines refuse reservation',()=>{
+  const vector=challengeVector(),overflow=challengeVector();
+  assert.deepEqual(transaction(`
+    ${otpBundle({'auth.otp_max_failures':Number.MAX_SAFE_INTEGER})}
+    SELECT ${vector.call()}->>'code';
+    UPDATE core.otp_challenge SET attempts=9007199254740990 WHERE phone_hash='${vector.phone}';
+    SELECT core.consume_otp_challenge(id,'${wrong}','login','{}')->>'code' FROM (${vector.row}) c;
+    SELECT state||':'||attempts FROM (${vector.row}) c;
+    ${otpBundle({'auth.otp_lifetime_seconds':Number.MAX_SAFE_INTEGER})}
+    SELECT ${overflow.call()}->>'code';
+    SELECT count(*) FROM core.otp_challenge WHERE phone_hash='${overflow.phone}';`),
+  ['OK','OTP_INVALID','locked:9007199254740991','CONFIG_UNAVAILABLE','0']);
+});
