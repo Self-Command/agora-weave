@@ -132,10 +132,10 @@ class BootstrapShellTest {
       UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().description("获取验证码"))
       getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
     }
-    assertNotNull(getCode)
-    assertTrue("A named enabled action must remain reachable", getCode.isEnabled)
-    assertTrue("Android action touch height", getCode.visibleBounds.height() / context.resources.displayMetrics.density >= 48f)
-    getCode.click()
+    val action = requireNotNull(getCode) { "The named get-code action must exist" }
+    assertTrue("A named enabled action must remain reachable", action.isEnabled)
+    assertTrue("Android action touch height", action.visibleBounds.height() / context.resources.displayMetrics.density >= 48f)
+    action.click()
     UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertEquals("123", device.findObject(By.pkg(targetPackage).desc("手机号")).text)
