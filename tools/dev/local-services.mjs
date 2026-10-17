@@ -165,11 +165,14 @@ export async function main(options) {
         [require.resolve('expo/bin/cli'), 'start', '--dev-client', '--localhost', '--port', String(port)];
       write(config, { executable: process.execPath, args, cwd: service === 'admin' ? workspace : resolve(workspace, 'apps/mobile'),
         env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development',
-          ...(service === 'admin' ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW: '1' } : {}), EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: '' } });
+          ...(service === 'admin' ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW: '1' } : {}), EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: 'false' } });
       const entry = { ...startProcess(config, resolve(directory, `${service}-${token}.out.log`), resolve(directory, `${service}-${token}.err.log`)),
         service, port, url: `http://127.0.0.1:${port}${service === 'metro' ? '/status' : '/'}`, ...identity };
       state.processes[service] = entry; Object.assign(state, identity); write(statePath, state);
-      await waitUntil(() => endpointReady(entry), timeout, service);
+      await waitUntil(() => {
+        if (!ownedProcess(entry)) throw new Error(`${service} exited before becoming ready; inspect private -Logs`);
+        return endpointReady(entry);
+      }, timeout, service);
       console.log(`${service} ready (pid ${entry.pid}): ${entry.url}`);
     }
   } else if (action === 'stop') {

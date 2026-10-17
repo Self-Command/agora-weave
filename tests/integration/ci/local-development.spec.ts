@@ -60,6 +60,7 @@ test('LD05: repeated Up reuses a ready managed process and Stop preserves privat
     const actualConfig = JSON.parse(readFileSync(first.config, 'utf8'));
     assert.equal(actualConfig.env.AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW, '1');
     assert.equal(actualConfig.env.NODE_ENV, 'development');
+    assert.equal(actualConfig.env.CI, 'false');
     assert.ok(actualConfig.args.includes('127.0.0.1'));
     await main(options);
     const second = JSON.parse(readFileSync(stateFile, 'utf8')).processes.admin;
