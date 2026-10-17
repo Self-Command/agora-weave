@@ -17,8 +17,9 @@
 
 | 方法/路径 | 输入及资格 | 输出/关键结果 |
 | --- | --- | --- |
-| POST /auth/challenges | phone、purpose(login/register/change_phone)、invitation_ref/age_declaration（register），频率核 | challenge_id/expires_at/retry_after，无验证码返回 |
-| POST /auth/verify | challenge_id/otp；仅register提交terms_release_id/digest及明确consent、age声明version，新用户邀请码原子兑换 | 当前session/account准入及注册真实条款receipt；缺有效／匹配当前条款则新注册不完成，已有账号login不要求新条款consent；手机verified不自动管理员 |
+| POST /auth/challenges | phone、purpose(login/register/change_phone)、operation_id；register另含invitation_ref/age_declaration/document_set_digest，频率核 | challenge_id/expires_at/retry_after，无验证码返回；仅短信供应商明确接受后成功 |
+| POST /auth/verify | challenge_id/otp/operation_id；register另含document_set_digest、age_declaration及consents[{release_id,digest,decision}]，新用户邀请码原子兑换 | 当前session/account准入及注册真实条款receipt；缺有效／匹配当前条款则新注册不完成，已有账号login不要求新条款consent；手机verified不自动管理员 |
+| POST /auth/operations/{id} | 未完成登录的验证结果查询；body与原verify相同且operation_id匹配路径，不在URL携OTP | 当前资格下原短期回执或pending/unknown；只读查询不重发短信、不调用Auth验证或创建新会话 |
 | POST /auth/refresh | 当前refresh/session，受控Auth代理，撤销/注销/过期核 | 新session token/cookie，不能复活撤销会话；验证码和refresh token不入日志 |
 | GET /me/sessions；DELETE /me/sessions/{id} | 本人；delete command | 当前设备列表；撤销后旧JWT新请求拒绝 |
 | POST /auth/logout | 当前session，command | 撤当前会话及应用受限缓存清理指示 |
@@ -34,6 +35,10 @@
 | GET/PUT/DELETE /me/mutes | kind/account-keyword-topic/value、command | 本人偏好，与拉黑/DM mute独立 |
 | GET/PATCH /me/preferences | 本人App会话、当前注册字段/base_version；video_policy=always/wifi_only/never、preload布尔 | 本人接收/回执/通知/AI用途及播放偏好；视频初始wifi_only／静音、蜂窝点击，关闭预加载生效；当前系统省流量／减少动效由各端消费，偏好不授媒体读权，分享不消费该接口 |
 | GET/PATCH /me/search-indexing | 本人App会话；patch allow_indexing/base_version/operation_id | author_index_policy／epoch及作用范围：本人公开主页、帖子、串；不修改阅读权限或AI用途 |
+
+公有手机号协议使用E.164（含`+`）、六位数字OTP及UUID operation；输入未知字段拒绝。注册年龄声明为`{version,declared:true}`，同意项必须明确`decision:"consented"`并匹配当前发布集合；当前年龄版本/条款集合来自注册资料读取。服务端只信任私有网关覆盖写入的入口证明及实际对端IP，不采信客户端自报身份、手机号验证结果、摘要或代理IP头。手机号/IP/OTP摘要由环境独立服务端key生成，秘密不返回公开DTO。
+
+同一challenge及验证operation精确重试只能读取原结果，改变输入返回409；短信或Auth结果未知时返回`AUTH_UNCONFIRMED`并保留operation，客户端先查询，不能重复触发外部效果。验证成功的加密令牌回执最多保留5分钟且不超过access token期限，重读仍核当前账号/会话资格；撤销后拒绝。失败响应可含`operation_id`和`retry_after_seconds`，不含OTP、令牌或供应商原始消息。`change_phone`及分享登录须分别满足既有受控身份/分享audience契约，不能借普通App的login/register实现开放。
 
 `/me/preferences`方法按注册契约固定：GET只读本人当前合法投影；PATCH仅部分更新请求中明确列出的注册字段，携带`base_version`和`operation_id`，未列字段保持原值，不用完整替换语义或默认重置其他偏好。CAS错版409且保输入，非法枚举／类型／未注册字段拒绝且不部分提交；同主体／动作／operation相同payload复用当前可读结果、不同payload返回409。PUT不注册，Actions须验证其405／Allow=GET,PATCH；share-read用途仍先按白名单判定，不能因405声明或本人身份取得私人接口权限。测试／客户端／实现／路由注册表及OpenAPI不得共同漂移为GET/PUT。
 
