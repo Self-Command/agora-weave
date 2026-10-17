@@ -831,7 +831,7 @@
       "files": [
         "tests/security/auth/otp-policy.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 9,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 188,
+  "core_case_count": 193,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1213,6 +1213,13 @@
       "file": "supabase/migrations/0028_document_read_sets.sql",
       "depends_on": [
         "supabase/migrations/0027_document_release_clock.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0029_otp_replay_guards.sql",
+      "depends_on": [
+        "supabase/migrations/0028_document_read_sets.sql",
+        "supabase/migrations/0107_otp_challenges.sql"
       ]
     }
   ],
