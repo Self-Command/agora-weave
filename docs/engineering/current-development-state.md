@@ -33,8 +33,13 @@
 CmdK打开/搜索/Esc、浅深主题及Claude主题、桌面侧栏和390宽抽屉通过；产品表与表单入口实际可见可操作，390宽无横向溢出。
 截图在reports/admin-ui-review-20261017；只证明本机官方模板，真实管理身份/MFA/API及业务验收仍未完成。
 
-Uniwind已按用户建议评估为后续App优先样式方案，免费版/现有token/必要原生适配；本次未安装，
-实际兼容、bundle和热更新须接入时验证，见prototype-development-research-2026-10-17.md。
+随后用户明确要求立即安装：已接入Uniwind免费版1.12.2/Tailwind4.3.3，根锁文件冻结，
+apps/mobile/metro.config.js、global.css及app/_layout.tsx构成实际接入，生成类型与CSS声明齐备。
+浅深主题与packages/design/src/tokens.ts原生适配值一致，已有BusinessState改用className并保留原尺寸/颜色。
+实际Android Metro bundle HTTP200（6758927字节），从该bundle执行样式工厂核验两主题全部8色及组件字号/字重/间距通过；
+移动typecheck、目标lint和32项控制器/组件回归通过。首次source(none)语法不兼容失败已保留并改用官方import写法复测通过。
+后台和Metro已由同一入口恢复就绪，Supabase原组保留；未重编APK，未连接设备，不声明客户端视觉或Fast Refresh旅程通过。
+现行样式约定见execution-policy、plan与quickstart；宪法7.0.0稳定原则及账号r2待批准边界保持。
 
 原64个未提交业务文件中，本次仅授权的admin旧CSS删除、share旧首页CSS变化，其余62个原字节未变；285条任务及勾选未改。
 Phase2剩余后端、真实SMS、App新页面批准与实际客户端验收仍未完成；本次环境与模板恢复不增加产品完成结论。

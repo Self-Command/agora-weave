@@ -99,6 +99,16 @@ AI复检不能代替人的原型批准或首次产品基准确认；无法调用
 
 ## 原生运行与平台适配
 
+2026-10-17用户明确要求立即安装接入Uniwind并记录为现行开发规范。App常规布局、颜色、间距和排版优先使用
+免费MIT版Uniwind 1.12.2 + Tailwind CSS 4.3.3及语义className，依赖由根package-lock统一冻结。
+Metro入口为apps/mobile/metro.config.js，CSS由app/_layout.tsx导入global.css；沿用同一H盘运行区与热更新服务。
+颜色以packages/design/src/tokens.ts现有原生无障碍适配值为准，global.css维护同值浅深主题；token变化同步维护两处。
+使用bg-bg、text-fg、text-secondary、border-line、bg-accent、rounded-input等语义类；字号text-body/text-title/text-caption。
+只扫描App及实际共享组件源码；不得引入另一套默认设计或从后台样例推导App页面。
+Expo UI原生控件按真实modifier/props适配，动态计算及库接口需要的style可保留，不要求零手写样式；
+后台维持完整官方模板的Tailwind/shadcn方案。此接入不授予尚待批准的整页设计资格，阶段真实客户端复检规则照常。
+普通免费版样式改动用Metro/Fast Refresh；原生依赖或配置实际改变时才按既定Actions规则重建开发包。
+
 移动生产端保持Expo/React Native/Expo UI，不转移动网站或WebView。复用已安装开发包和常驻Metro；
 普通JS/TS/样式用Fast Refresh，原生代码、依赖、config plugin、产物配置变化或开发包不兼容才云端重建。
 所有APK/AAB/IPA在GitHub Actions编译，本机只下载、安装、运行和复检；发布构建按真实交付需要执行。
