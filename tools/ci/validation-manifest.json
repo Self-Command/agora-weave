@@ -820,9 +820,10 @@
       "id": "core.auth-registration",
       "command": "ci:service",
       "files": [
-        "tests/integration/auth/registration.spec.ts"
+        "tests/integration/auth/registration.spec.ts",
+        "tests/integration/auth/otp-completion.spec.ts"
       ],
-      "case_count": 5,
+      "case_count": 17,
       "requires_services": true
     },
     {
@@ -831,7 +832,7 @@
       "files": [
         "tests/security/auth/otp-policy.spec.ts"
       ],
-      "case_count": 9,
+      "case_count": 15,
       "requires_services": true
     },
     {
@@ -874,9 +875,10 @@
       "id": "core.auth-concurrency",
       "command": "ci:concurrency",
       "files": [
-        "tests/concurrency/auth/invitation-otp.spec.ts"
+        "tests/concurrency/auth/invitation-otp.spec.ts",
+        "tests/concurrency/auth/otp-completion.spec.ts"
       ],
-      "case_count": 2,
+      "case_count": 3,
       "requires_services": true
     },
     {
@@ -953,8 +955,21 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 204,
+  "core_case_count": 223,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0035_otp_auth_completion.sql",
+      "depends_on": [
+        "supabase/migrations/0034_otp_configuration.sql",
+        "supabase/migrations/0110_login_session_binding.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0034_otp_configuration.sql",
+      "depends_on": [
+        "supabase/migrations/0033_operation_recovery_lookup.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
       "depends_on": [
