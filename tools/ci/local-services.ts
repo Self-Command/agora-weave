@@ -6,7 +6,21 @@ import { executionContext } from './execution-context.ts';
 
 const hash = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 const random = (bytes = 32) => randomBytes(bytes).toString('hex');
-const inputs = ['infra/ci/images.lock.json', 'infra/ci/compose.yml', 'infra/ci/supabase-source.json'];
+const inputs = ['infra/ci/images.lock.json', 'infra/ci/compose.yml', 'infra/ci/supabase-source.json', 'tools/ci/local-services.ts'];
+
+/** Preserve the complete official template; overwrite client-supplied ingress claims on the functions route. */
+export function authIngressTemplate(source: string, secret: string): string {
+  if (!/^[a-f0-9]{64}$/.test(secret)) throw new Error('Invalid private ingress credential');
+  const template=source.replaceAll('\r\n','\n');
+  const marker='                      - name: functions-v1-all\n';
+  const start=template.indexOf(marker),end=template.indexOf('                        typed_per_filter_config:',start);
+  if (start<0 || end<start || template.indexOf(marker,start+1)>=0 || template.includes('key: X-Core-Ingress-Token'))
+    throw new Error('Official functions ingress route changed');
+  const block=template.slice(start,end),anchor='                        request_headers_to_add:\n';
+  if (block.split(anchor).length!==2) throw new Error('Official functions header extension changed');
+  const headers=`                          - header:\n                              key: X-Core-Ingress-Token\n                              value: "${secret}"\n                            append_action: OVERWRITE_IF_EXISTS_OR_ADD\n                          - header:\n                              key: X-Core-Client-IP\n                              value: "%DOWNSTREAM_DIRECT_REMOTE_ADDRESS_WITHOUT_PORT%"\n                            append_action: OVERWRITE_IF_EXISTS_OR_ADD\n`;
+  return template.slice(0,start)+block.replace(anchor,anchor+headers)+template.slice(end);
+}
 
 export function healthyServiceInventory(containers: unknown): boolean {
   const names = ['api-gw','auth','db','functions','imgproxy','meta','realtime','rest','storage','studio','supavisor'];
@@ -34,7 +48,8 @@ export function readLocalRuntime() {
   if (identity.source !== 'local' || identity.project !== runtime.project || identity.environment !== runtime.environment ||
       inputs.some(path => identity.input_digests?.[path] !== hash(readFileSync(path))) ||
       identity.compose_digest !== hash(readFileSync(runtime.compose_file)) ||
-      identity.environment_digest !== hash(readFileSync(runtime.environment_file))) throw new Error('Local service configuration changed; prepare it again before use');
+      identity.environment_digest !== hash(readFileSync(runtime.environment_file)) ||
+      identity.auth_ingress_digest !== hash(readFileSync(resolve(runtime.directory,'auth-ingress.yaml')))) throw new Error('Local service configuration changed; prepare it again before use');
   return runtime;
 }
 
@@ -61,10 +76,17 @@ export function prepareLocalServices() {
     values.ANON_KEY = jwt('anon'); values.SERVICE_ROLE_KEY = jwt('service_role');
     writeFileSync(runtime.environment_file, Object.entries(values).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
   }
-  const currentPrivate = readFileSync(runtime.environment_file,'utf8');
+  let currentPrivate = readFileSync(runtime.environment_file,'utf8');
   if (!/^CORE_WORKER_DATABASE_PASSWORD=/m.test(currentPrivate)) {
     writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_WORKER_DATABASE_PASSWORD='+random()+'\n',{mode:0o600});
   }
+  currentPrivate=readFileSync(runtime.environment_file,'utf8');
+  if (!/^CORE_INGRESS_TOKEN=/m.test(currentPrivate))
+    writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_INGRESS_TOKEN='+random()+'\n',{mode:0o600});
+  const ingressSecret=readFileSync(runtime.environment_file,'utf8').match(/^CORE_INGRESS_TOKEN=([a-f0-9]{64})$/m)?.[1];
+  if (!ingressSecret) throw new Error('Private ingress credential is unavailable');
+  const ingressPath=resolve(runtime.directory,'auth-ingress.yaml');
+  writeFileSync(ingressPath,authIngressTemplate(readFileSync('supabase/upstream/docker/volumes/api/envoy/lds.template.yaml','utf8'),ingressSecret),{mode:0o600});
   const serviceVariables = new Set(readFileSync(runtime.environment_file, 'utf8').split(/\r?\n/)
     .filter(line => /^[A-Z][A-Z0-9_]*=/.test(line)).map(line => line.slice(0, line.indexOf('='))));
   const controlled = Object.fromEntries(Object.entries(process.env).filter(([key]) =>
@@ -84,6 +106,8 @@ export function prepareLocalServices() {
     const image = lock.images.find((item: any) => item.reference === service.image && item.os === 'linux' && item.architecture === 'amd64');
     if (!image || !/^.+@sha256:[a-f0-9]{64}$/.test(image.repo_digests[0]) || service.ports?.length) throw new Error('Unlocked or exposed local service');
     service.image = image.repo_digests[0]; service.container_name = `${runtime.project}-${name}`;
+    if (name==='api-gw') for (const volume of service.volumes || [])
+      if (volume.target==='/etc/envoy/lds.template.yaml') volume.source=ingressPath;
     if (name === 'functions') service.volumes = service.volumes.flatMap((volume: any) =>
       volume.target === '/home/deno/functions' ? [
         { type: 'bind', source: resolve('supabase/upstream/docker/volumes/functions/main'), target: '/home/deno/functions/main', read_only: true },
@@ -101,6 +125,7 @@ export function prepareLocalServices() {
   writeFileSync(resolve(runtime.directory, 'identity.json'), JSON.stringify({ source: 'local', environment: runtime.environment,
     project: runtime.project, upstream_commit: source.commit, input_digests: Object.fromEntries(inputs.map(path => [path, hash(readFileSync(path))])),
     compose_digest: hash(readFileSync(runtime.compose_file)), environment_digest: hash(readFileSync(runtime.environment_file)),
+    auth_ingress_digest: hash(readFileSync(ingressPath)),
     readiness: 'not_evaluated' }, null, 2) + '\n');
   return runtime;
 }

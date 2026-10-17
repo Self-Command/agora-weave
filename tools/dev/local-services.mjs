@@ -112,7 +112,7 @@ export async function main(options) {
     // Sync guard normally catches this first. Never adopt another source's live processes.
     if (Object.values(state.processes).some(entry => ownedProcess(entry))) throw new Error('Another source/branch owns active development processes; stop from that source before switching');
   }
-  let runtime;
+  let runtime, configurationChanged = false;
   const docker = args => execFileSync('docker', args, { cwd: workspace, encoding: 'utf8', windowsHide: true,
     timeout: args.includes('up') ? (timeout + 30) * 1000 : 30000, stdio: ['ignore', 'pipe', 'pipe'] });
   const compose = args => docker(['compose', '--project-name', runtime.project, '-f', runtime.compose_file, ...args]);
@@ -130,7 +130,9 @@ export async function main(options) {
     const existing = resolve('.agoraweave/local', environment, 'runtime/identity.json');
     if (action === 'up') {
       // Fixed stack and credentials are reused; preparation never starts containers or resets storage.
+      const previousDigest=existsSync(existing) ? read(existing).compose_digest : undefined;
       runtime = prepareLocalServices();
+      configurationChanged=previousDigest!==hash(readFileSync(runtime.compose_file));
     } else if (existsSync(existing)) runtime = readLocalRuntime();
     if (runtime) validateRuntimeConfig(runtime, read(runtime.compose_file));
   }
@@ -143,7 +145,7 @@ export async function main(options) {
       for (const image of images) try { docker(['image', 'inspect', image, '--format', '{{.Id}}']); }
       catch { throw new Error('A pinned Supabase image is missing. Pull the reviewed infra/ci/images.lock.json images explicitly, then retry'); }
       Object.assign(state, identity); state.project = runtime.project; write(statePath, state);
-      if (!healthyServiceInventory(parseContainers(compose(['ps', '--all', '--format', 'json'])))) compose(['up', '-d', '--pull', 'never', '--wait', '--wait-timeout', String(timeout)]);
+      if (configurationChanged || !healthyServiceInventory(parseContainers(compose(['ps', '--all', '--format', 'json'])))) compose(['up', '-d', '--pull', 'never', '--wait', '--wait-timeout', String(timeout)]);
       await waitUntil(probeServices, timeout, 'Official Supabase services');
       if (migrate) execFileSync(process.execPath, ['--experimental-strip-types', 'tools/ci/core-entry.ts', 'migrate'], { cwd: workspace, stdio: 'inherit', windowsHide: true, timeout: 180000 });
       console.log(`supabase ready (${runtime.project}; internal network, no host ports)`);

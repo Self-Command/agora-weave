@@ -4,7 +4,7 @@ import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { healthyServiceInventory } from '../../../tools/ci/local-services.ts';
+import { authIngressTemplate, healthyServiceInventory } from '../../../tools/ci/local-services.ts';
 
 type Volume = { target: string; type: string; source: string };
 type Service = { ports?: unknown[]; container_name: string; image: string; volumes: Volume[]; environment: Record<string, string> };
@@ -66,6 +66,17 @@ test('LS01: local preparation uses the fixed official Compose with private crede
       assert.equal(functions.volumes.some(entry => entry.target === '/home/deno/functions/main'), true);
       assert.equal(functions.volumes.some(entry => entry.target === '/home/deno/functions/deno.jsonc'), true);
       assert.equal(functions.environment.SUPABASE_SERVICE_ROLE_KEY, '');
+      const ingress=readFileSync(join(directory,'auth-ingress.yaml'),'utf8');
+      const ingressToken=functions.environment.CORE_INGRESS_TOKEN;
+      assert.match(ingressToken,/^[a-f0-9]{64}$/);
+      assert.ok(ingress.includes(ingressToken));
+      assert.equal(config.services['api-gw'].volumes.find(entry=>entry.target==='/etc/envoy/lds.template.yaml')!.source,
+        join(directory,'auth-ingress.yaml'));
+      assert.equal((result.stdout+result.stderr).includes(ingressToken),false);
+      const official=readFileSync('supabase/upstream/docker/volumes/api/envoy/lds.template.yaml','utf8');
+      assert.ok(authIngressTemplate(official,ingressToken).includes('OVERWRITE_IF_EXISTS_OR_ADD'));
+      assert.throws(()=>authIngressTemplate(official,'invalid'));
+      assert.throws(()=>authIngressTemplate(official.replace('functions-v1-all','renamed'),ingressToken));
       assert.match(functions.environment.SUPABASE_DB_URL, /^postgresql:\/\/core_runtime:/);
       assert.equal(functions.volumes.find(entry => entry.target === '/home/deno/functions/core')!.source.replaceAll('\\', '/'), join(root, 'supabase/functions/core').replaceAll('\\', '/'));
       assert.equal(config.services.auth.environment.GOTRUE_EXTERNAL_PHONE_ENABLED, 'false');

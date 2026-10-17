@@ -50,15 +50,20 @@ jobs:
           printf '%s\n' "$CI_SERVICE_ENV" | tr -d '\r' > "$RUNNER_TEMP/agoraweave-ci.env"
           export COMPOSE_PROJECT_NAME="agoraweave-${CI_ENVIRONMENT}-${GITHUB_RUN_ID}"
           printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT_NAME" >> "$GITHUB_ENV"
-          node --input-type=module <<'NODE'
+          node --experimental-strip-types --input-type=module <<'NODE'
           import { execFileSync } from 'node:child_process';
           import { readFileSync, writeFileSync, appendFileSync } from 'node:fs';
           import { createHash, randomBytes } from 'node:crypto';
+          import { authIngressTemplate } from './tools/ci/local-services.ts';
           const runtimePassword = randomBytes(32).toString('hex');
           const workerPassword = randomBytes(32).toString('hex');
+          const ingressToken = randomBytes(32).toString('hex');
           console.log('::add-mask::' + runtimePassword);
           console.log('::add-mask::' + workerPassword);
-          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\nCORE_WORKER_DATABASE_PASSWORD=${workerPassword}\n`);
+          console.log('::add-mask::' + ingressToken);
+          appendFileSync(`${process.env.RUNNER_TEMP}/agoraweave-ci.env`, `\nCORE_DATABASE_PASSWORD=${runtimePassword}\nCORE_WORKER_DATABASE_PASSWORD=${workerPassword}\nCORE_INGRESS_TOKEN=${ingressToken}\n`);
+          const ingressPath = `${process.env.RUNNER_TEMP}/agoraweave-auth-ingress.yaml`;
+          writeFileSync(ingressPath,authIngressTemplate(readFileSync('supabase/upstream/docker/volumes/api/envoy/lds.template.yaml','utf8'),ingressToken),{mode:0o600});
           const base = ['--project-directory', 'supabase/upstream/docker', '--env-file', `${process.env.RUNNER_TEMP}/agoraweave-ci.env`,
             '-f', 'supabase/upstream/docker/docker-compose.yml', '-f', 'infra/ci/compose.yml'];
           const config = JSON.parse(execFileSync('docker', ['compose', ...base, 'config', '--format', 'json'], { encoding: 'utf8' }));
@@ -69,6 +74,7 @@ jobs:
             if (!image || image.os !== 'linux' || image.architecture !== 'amd64') throw new Error(`Unlocked service ${name}`);
             if (service.ports?.length) throw new Error(`Published service port ${name}`);
             services[name] = { image: image.repo_digests[0] };
+            if (name === 'api-gw') services[name].volumes = [{type:'bind',source:ingressPath,target:'/etc/envoy/lds.template.yaml',read_only:true}];
           }
           if (config.networks.default.internal !== true) throw new Error('Service network is not internal');
           writeFileSync(`${process.env.RUNNER_TEMP}/agoraweave-images.json`, JSON.stringify({ services }));
@@ -236,7 +242,7 @@ jobs:
               -f supabase/upstream/docker/docker-compose.yml -f infra/ci/compose.yml -f "$RUNNER_TEMP/agoraweave-images.json" \
               down --volumes --remove-orphans
           fi
-          rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json"
+          rm -f "$RUNNER_TEMP/agoraweave-ci.env" "$RUNNER_TEMP/agoraweave-images.json" "$RUNNER_TEMP/agoraweave-auth-ingress.yaml"
           rm -f "$RUNNER_TEMP/https-gateway.pid" "$RUNNER_TEMP/https-cloudflared.pid" "$RUNNER_TEMP/https-service.log" "$RUNNER_TEMP/cloudflared"
           node --input-type=module <<'NODE'
           import { execFileSync } from 'node:child_process';
@@ -250,7 +256,7 @@ jobs:
           const remaining_containers = inspect('containers', ['ps', '-aq', '--filter', filter]);
           const remaining_volumes = inspect('volumes', ['volume', 'ls', '-q', '--filter', filter]);
           const remaining_networks = inspect('networks', ['network', 'ls', '-q', '--filter', filter]);
-          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json', 'https-gateway.pid', 'https-cloudflared.pid', 'https-service.log', 'cloudflared'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
+          const temporary_files_removed = ['agoraweave-ci.env', 'agoraweave-images.json', 'agoraweave-auth-ingress.yaml', 'https-gateway.pid', 'https-cloudflared.pid', 'https-service.log', 'cloudflared'].every(file => !existsSync(process.env.RUNNER_TEMP + '/' + file));
           const complete = !remaining_containers.length && !remaining_volumes.length && !remaining_networks.length && temporary_files_removed;
           writeFileSync('service-output/cleanup.json', JSON.stringify({ source: 'github-actions',
             environment: process.env.CI_ENVIRONMENT, cleanup: complete ? 'success' : 'failure',
