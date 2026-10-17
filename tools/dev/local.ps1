@@ -47,7 +47,7 @@ $env:AGORAWEAVE_LOCAL_ENVIRONMENT = $Environment
 if ((& $taskNode --version) -ne $taskLock.node) { throw 'Pinned Node version differs' }
 if ((& $taskNode (Join-Path $taskNodeDirectory 'node_modules/npm/bin/npm-cli.js') --version) -ne $taskLock.npm) { throw 'Pinned npm version differs' }
 $taskWorkspace = Join-Path $taskRuntime 'workspace'
-$taskActions = @(@{Name='up'; Value=$Up}, @{Name='status'; Value=$Status}, @{Name='logs'; Value=$Logs}, @{Name='stop'; Value=$Stop}) | Where-Object Value
+$taskActions = @(@(@{Name='up'; Value=$Up}, @{Name='status'; Value=$Status}, @{Name='logs'; Value=$Logs}, @{Name='stop'; Value=$Stop}) | Where-Object Value)
 if (@($taskActions).Count -gt 1) { throw 'Choose one of -Up, -Status, -Logs, -Stop' }
 if ($Migrate -and -not $Up) { throw '-Migrate requires -Up and explicitly selected supabase services' }
 if ($taskActions.Count -and $Command.Count) { throw 'Use a service action or -Command in one invocation' }

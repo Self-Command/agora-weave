@@ -72,6 +72,19 @@ test('LD05: repeated Up reuses a ready managed process and Stop preserves privat
   }
 });
 
+test('LD06: public PowerShell action collection preserves a one-item array for every service action', { skip: process.platform !== 'win32' }, () => {
+  const source = readFileSync(resolve('tools/dev/local.ps1'), 'utf8');
+  const start = source.indexOf('$taskActions ='), end = source.indexOf('if (@($taskActions).Count', start);
+  assert.ok(start >= 0 && end > start);
+  const actualAssignment = source.slice(start, end);
+  for (const name of ['Up', 'Status', 'Logs', 'Stop']) {
+    const flags = ['Up', 'Status', 'Logs', 'Stop'].map(value => `$${value}=$${value === name ? 'true' : 'false'};`).join('');
+    const result = execFileSync('pwsh', ['-NoProfile', '-NonInteractive', '-Command', flags + actualAssignment +
+      'ConvertTo-Json -Compress @{ count=@($taskActions).Count; action=$taskActions[0].Name }'], { encoding: 'utf8', windowsHide: true });
+    assert.deepEqual(JSON.parse(result), { count: 1, action: name.toLowerCase() });
+  }
+});
+
 test('LD02: readiness requires the verified process tree to own the port; Compose parsing preserves exposure checks', () => {
   const entry = { pid: 41, creation: 'actual', config: 'fixture.json', port: 3000 };
   const inventory = [{ ProcessId: 41, CreationDate: 'actual', CommandLine: 'node local-process.mjs fixture.json', ParentProcessId: 1 },
