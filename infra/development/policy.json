@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "decision": "ED-24",
-  "constitution_version": "6.0.0",
+  "constitution_version": "7.0.0",
   "priority": "usable-business-features",
   "implementation": "codex-direct",
   "runtime_root": "H:/Projects/AgoraWeave/development",

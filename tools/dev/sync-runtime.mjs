@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import process from 'node:process';
+import { assertSourceAvailable, sourceIdentity } from './local-services.mjs';
 
 const [sourceArgument, destinationArgument] = process.argv.slice(2);
 if (!sourceArgument || !destinationArgument) throw new Error('Source and runtime workspace are required');
@@ -14,6 +15,8 @@ mkdirSync(dirname(destination), { recursive: true });
 if (!existsSync(resolve(destination, '.git'))) git(['clone', '--shared', '--no-hardlinks', '--quiet', source, destination]);
 const marker = resolve(destination, '.runtime-sync.json');
 const previous = existsSync(marker) ? JSON.parse(readFileSync(marker, 'utf8')) : undefined;
+const identity = sourceIdentity(source);
+assertSourceAvailable(destination, identity, previous);
 const commonDirectory = directory => resolve(git(['rev-parse', '--path-format=absolute', '--git-common-dir'], directory));
 if (previous && previous.source !== source && commonDirectory(previous.source) !== commonDirectory(source)) {
   throw new Error('Runtime belongs to another repository');
@@ -64,9 +67,9 @@ for (const file of files) {
   copyFileSync(original, target);
   copied++;
 }
-if (!previous || previous.source !== source || previous.source_head !== head ||
+if (!previous || previous.source !== source || previous.source_branch !== identity.branch || previous.source_head !== head ||
   JSON.stringify(previous.files) !== JSON.stringify(files) || copied || removed) {
-  writeFileSync(marker, JSON.stringify({ source, source_head: head, files, synced_at: new Date().toISOString() }, null, 2) + '\n');
+  writeFileSync(marker, JSON.stringify({ source, source_branch: identity.branch, source_head: head, files, synced_at: new Date().toISOString() }, null, 2) + '\n');
 }
 const exclude = resolve(destination, '.git/info/exclude');
 if (!readFileSync(exclude, 'utf8').includes('/.runtime-sync.json')) writeFileSync(exclude, readFileSync(exclude, 'utf8') + '\n/.runtime-sync.json\n');

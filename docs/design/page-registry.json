@@ -22,7 +22,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=login；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=login&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -30,18 +30,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-register",
@@ -66,7 +76,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=register；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=register&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -74,18 +84,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-otp",
@@ -111,7 +131,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=otp；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=otp&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -119,18 +139,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-security",
@@ -155,7 +185,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=security；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=security&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -163,18 +193,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "登录后 → 账号安全",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-recovery",
@@ -203,7 +243,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=recovery；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=recovery&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -211,18 +251,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/RecoveryScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "账号安全 → 恢复申请",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "phase2-shared-components",
@@ -340,12 +390,17 @@
       },
       "production_entry": "apps/share/src/app/page.tsx",
       "component_paths": [
-        "apps/share/src/app/page.tsx",
-        "apps/share/src/app/layout.tsx"
+        "apps/share/src/app/page.tsx"
       ],
-      "navigation": "分享Web /；真实分享对象路由尚待实现",
-      "implementation": "existing-heading-only",
-      "reviews": []
+      "navigation": "旧标题呈现移除；框架入口暂为空，真实分享对象和获批页面仍待实现",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次移除旧前端呈现；真实分享页尚未批准",
+        "removed_paths": [],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     }
   ]
 }

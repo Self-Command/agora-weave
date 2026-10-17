@@ -6,6 +6,28 @@ import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import { checkUiBindings, designDigest, type PageRegistry } from '../../../tools/ci/check-ui-bindings.ts';
 
+test('UIB05: explicit retirement permits removal only, never replacement UI or page completion', () => {
+  const root = mkdtempSync(join(tmpdir(), 'aw-ui-retired-'));
+  try {
+    mkdirSync(join(root, 'apps/mobile'), { recursive: true });
+    writeFileSync(join(root, 'apps/mobile/index.tsx'), 'export default function RetiredRoute() { return null; }');
+    const registry: PageRegistry = { schema_version: 1, entries: [{ id: 'page', kind: 'page', surface: 'mobile-app', title: 'Page', states: ['normal'], themes: ['light'], platforms: ['android'],
+      design_source: 'Human preview remains pending', design_version: 'r2', design_files: [], design_digest: 'a'.repeat(64), approval: { state: 'pending' },
+      production_entry: 'apps/mobile/index.tsx', component_paths: ['apps/mobile/index.tsx'], navigation: 'Temporarily unavailable', implementation: 'retired', reviews: [],
+      retirement: { by: 'user', date: '2026-10-17', reference: 'Explicit synthetic removal request', removed_paths: ['apps/mobile/OldScreen.tsx'] } }] };
+    const options = { mode: 'changes' as const, paths: ['apps/mobile/OldScreen.tsx', 'apps/mobile/index.tsx'] };
+    assert.deepEqual(checkUiBindings(registry, root, options), []);
+    assert.match(checkUiBindings(registry, root, { mode: 'stage', ids: ['page'], sourceRevision: 'b'.repeat(40) }).join(), /cannot complete/);
+    writeFileSync(join(root, 'apps/mobile/index.tsx'), 'export default function RetiredRoute() { return <Text>New unapproved UI</Text>; }');
+    assert.match(checkUiBindings(registry, root, options).join(), /not replacement UI/);
+    writeFileSync(join(root, 'apps/mobile/index.tsx'), 'export default function RetiredRoute() { return null; }');
+    writeFileSync(join(root, 'apps/mobile/OldScreen.tsx'), 'old source still present');
+    assert.match(checkUiBindings(registry, root, options).join(), /still exists/);
+    registry.entries[0].retirement!.by = 'AI';
+    assert.match(checkUiBindings(registry, root).join(), /human retirement/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 test('UIB01: pending pages allow structure/backend checks but refuse production UI and stage completion', () => {
   const root = mkdtempSync(join(tmpdir(), 'aw-ui-bindings-'));
   try {

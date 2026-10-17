@@ -1,6 +1,11 @@
 # 新窗口继续开发提示词
 
 在 C:/Users/by970/Desktop/my-project 的当前分支继续 AgoraWeave 开发。
+
+2026-10-17最新决定优先：开发子agent统一gpt-6.1-sol/high，UI复检gpt-5.6-luna/xhigh；宪法7.0.0要求忠实还原设计、
+允许必要原生适配，明显偏离/功能问题必修，细微渲染差异不阻塞阶段。先读current-development-state顶部本次实际状态，
+不要按下文历史账号UI/后台h1描述恢复旧呈现层。旧UI退役后以获批原型和完整官方模板重建，真实业务逻辑及有效测试继续保留。
+原型“基础组件”预览页已按用户确认删除，共享组件本身保留；精确页面用index.html?page=login&scene=正常&theme=light等直达。
 先读取 AGENTS.md 和 .specify/memory/constitution.md，运行
 `pwsh -NoProfile -File tools/dev/sync-governance.ps1 -Verify`，再读取
 `docs/engineering/execution-policy.md`、`docs/engineering/current-development-state.md`
@@ -14,7 +19,7 @@ SP 插件、桥接、强制钩子和纯流程平台已按 ED-23 清理。直接�
 当前27 targets/139 cases/37 migrations；完整139最近仍有2失败，后续窄修复/回归通过但未重跑完整139或云端dev/test。
 Unicode本地Node/Deno/Android Hermes766向量已过，云端Hermes未跑；不能勾Phase2整批完成。
 
-遵宪法6.0.0与ED-24：各阶段先后端，再集中全部获批App页面/状态/真实API，最后阶段集中视觉交互集成复检；
+遵宪法7.0.0与ED-24：各阶段先后端，再集中全部获批App页面/状态/真实API，最后阶段集中视觉交互集成复检；
 开发中目标/直接影响回归，发布完整适用矩阵，不逐页反复整批复检。当前页面批准与实际路径见docs/design/page-registry.json。
 
 检查现有账号原型草稿：docs/design/prototype/index.html 及 account-pages.css／js。
