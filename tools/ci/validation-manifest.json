@@ -999,9 +999,10 @@
       "files": [
         "tests/contract/admin/management-boundary.spec.ts",
         "tests/contract/admin/management-controls.spec.ts",
-        "tests/contract/admin/management-qr.spec.ts"
+        "tests/contract/admin/management-qr.spec.ts",
+        "tests/contract/admin/management-bff-refresh.spec.ts"
       ],
-      "case_count": 16,
+      "case_count": 19,
       "requires_services": false
     },
     {
@@ -1019,11 +1020,20 @@
       "files": [
         "tests/integration/core/admin-otp-configuration.spec.ts"
       ],
-      "case_count": 13,
+      "case_count": 14,
+      "requires_services": true
+    },
+    {
+      "id": "core.admin-routes",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/auth/admin-routes.spec.ts"
+      ],
+      "case_count": 4,
       "requires_services": true
     }
   ],
-  "core_case_count": 338,
+  "core_case_count": 346,
   "core_migrations": [
     {
       "file": "supabase/migrations/0038_admin_identity_configuration.sql",

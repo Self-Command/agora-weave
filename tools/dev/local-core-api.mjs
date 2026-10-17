@@ -108,6 +108,12 @@ export function createLocalCoreApi({environment,forward}) {
 
 // Curl config is data on stdin; never a shell command, argv secret or logging payload.
 const curlQuote=value=>'"'+String(value).replaceAll('\\','\\\\').replaceAll('"','\\"').replaceAll('\r','\\r').replaceAll('\n','\\n').replaceAll('\t','\\t')+'"';
+export function curlRequestConfig(url,method,headers,body) {
+  return [`url = ${curlQuote(url)}`,`request = ${curlQuote(method)}`,
+    'globoff','silent','show-error','max-time = 20','max-filesize = 1048576','write-out = "\\n%{http_code}"',
+    ...Object.entries(headers).map(([name,value])=>`header = ${curlQuote(name+': '+value)}`),
+    ...(body===undefined?[]:[`data = ${curlQuote(body)}`])].join('\n')+'\n';
+}
 async function main() {
   const port=Number(process.argv[2]),environment=process.env.AGORAWEAVE_LOCAL_ENVIRONMENT;
   if(!/^\d{4,5}$/.test(process.argv[2]||'')||port<1024||port>65535||process.argv.length!==3||process.env.AGORAWEAVE_EXECUTION_SOURCE!=='local')throw new Error('Local configuration required');
@@ -117,10 +123,7 @@ async function main() {
   const key=readFileSync(runtime.environment_file,'utf8').split(/\r?\n/).find(line=>line.startsWith('ANON_KEY='))?.slice(9);
   if(!key||!/^[-\w.]{16,8192}$/.test(key))throw new Error('Local configuration required');
   const server=createLocalCoreApi({environment,forward:({path,method,headers,body})=>new Promise((resolve,reject)=>{
-    const config=[`url = ${curlQuote('http://api-gw:8000/functions/v1'+path)}`,`request = ${curlQuote(method)}`,
-      'silent','show-error','max-time = 20','max-filesize = 1048576','write-out = "\\n%{http_code}"',
-      `header = ${curlQuote('apikey: '+key)}`,...Object.entries(headers).map(([name,value])=>`header = ${curlQuote(name+': '+value)}`),
-      ...(body===undefined?[]:[`data = ${curlQuote(body)}`])].join('\n')+'\n';
+    const config=curlRequestConfig('http://api-gw:8000/functions/v1'+path,method,{apikey:key,...headers},body);
     const child=execFile('docker',[...coreComposeArguments(),'exec','-T','db','curl','--config','-'],
       {encoding:'utf8',timeout:25000,maxBuffer:1048581,windowsHide:true},(error,stdout)=>{
         if(error)return reject(new Error('Unavailable'));
