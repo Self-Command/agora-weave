@@ -129,6 +129,13 @@ presented只记录展示版本，acknowledged/consented只记录真实明确动�
 
 旧版本作为合法历史展示时明确标识，不作为当前条款／告知／帮助；文案或权限撤下立即阻止后续相关读取／工具引用。撤下不自动回退旧版，需按正常发布确认另建release。条款缺失阻塞新注册，处理告知缺失阻塞该用途的新AI发送，帮助不可用如实提示；不新增旧用户每次登录重同意或平台统一强制重同意政策。真实服务地域／不训练／费用准入与用户当前数据许可仍独立核验。
 
+读取兼容约定：`GET /documents/current`无参数或原terms/app/zh-CN参数保留注册集合及age_declaration_version；
+指定stable_key、其他kind、locale或share入口时返回该选择的完整当前集合documents及document_set_digest。
+单集合最多50项，超过时503而不截断；空集合404。文档项仅含公开正文/版本信息、is_current及适用scope投影，GET不写同意记录。
+`GET /documents/{id}/releases/{release_id}`的id可为文档UUID或既有stable_key，release_id可为UUID或兼容current；kind可省略，locale默认zh-CN。
+published须为active当前指针；superseded只作is_current=false的合法历史，仍核文档公开入口、release环境/入口及实际发布时间；
+prepared/withdrawn/未来或NULL发布时间/非ready正文均不可读。匿名可选公开app/share，App会话仅app，share-read仅share，admin拒绝。
+
 ## 分享网页契约
 
 网页路由`/p/{stable_id}`、`/u/{account_id}`、`/t/{thread_id}`，SSR逐请求当前授权，只读；登录仅取得share-read会话。有效公开目标200且只带合法元信息；非公开但当前有权的登录用户读取200，正文及媒体只向该用户投影，no-store/noindex，匿名爬虫仍无正文或私密存在信息。未登录的受限目标只给不泄漏存在性的登录提示／安全占位或统一404；登录后仍无权、已删除／失效的目标统一404或安全占位。不能因visibility不是public就把有权登录读取一律判404。

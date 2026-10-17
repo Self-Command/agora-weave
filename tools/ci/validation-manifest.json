@@ -723,7 +723,7 @@
       "files": [
         "tests/contract/core/events.spec.ts"
       ],
-      "case_count": 2,
+      "case_count": 4,
       "requires_services": false
     },
     {
@@ -759,7 +759,7 @@
       "files": [
         "tests/security/core/current-policy.spec.ts"
       ],
-      "case_count": 8,
+      "case_count": 9,
       "requires_services": true
     },
     {
@@ -768,7 +768,7 @@
       "files": [
         "tests/concurrency/core/admission.spec.ts"
       ],
-      "case_count": 2,
+      "case_count": 4,
       "requires_services": true
     },
     {
@@ -831,7 +831,7 @@
       "files": [
         "tests/security/auth/otp-policy.spec.ts"
       ],
-      "case_count": 4,
+      "case_count": 9,
       "requires_services": true
     },
     {
@@ -849,7 +849,7 @@
       "files": [
         "tests/integration/auth/operations.spec.ts"
       ],
-      "case_count": 3,
+      "case_count": 4,
       "requires_services": true
     },
     {
@@ -867,7 +867,7 @@
       "files": [
         "tests/contract/auth/mobile-client.spec.ts"
       ],
-      "case_count": 30,
+      "case_count": 45,
       "requires_services": false
     },
     {
@@ -894,7 +894,7 @@
       "files": [
         "tests/recovery/core/security-journal.spec.ts"
       ],
-      "case_count": 11,
+      "case_count": 12,
       "requires_services": true
     },
     {
@@ -912,7 +912,7 @@
       "files": [
         "tests/integration/core/gateways.spec.ts"
       ],
-      "case_count": 5,
+      "case_count": 12,
       "requires_services": true
     },
     {
@@ -928,9 +928,10 @@
       "id": "core.design-components",
       "command": "ci:components",
       "files": [
-        "tests/contract/design/components.spec.ts"
+        "tests/contract/design/components.spec.ts",
+        "tests/contract/design/native-controls.spec.ts"
       ],
-      "case_count": 2,
+      "case_count": 6,
       "requires_services": false
     },
     {
@@ -952,7 +953,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 166,
+  "core_case_count": 204,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1207,6 +1208,48 @@
       "depends_on": [
         "supabase/migrations/0026_effect_lease_guards.sql",
         "supabase/migrations/0016_gateway_binding_fixes.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0028_document_read_sets.sql",
+      "depends_on": [
+        "supabase/migrations/0027_document_release_clock.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0029_otp_replay_guards.sql",
+      "depends_on": [
+        "supabase/migrations/0028_document_read_sets.sql",
+        "supabase/migrations/0107_otp_challenges.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0030_dependency_sanctions.sql",
+      "depends_on": [
+        "supabase/migrations/0029_otp_replay_guards.sql",
+        "supabase/migrations/0024_foundation_state_guards.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0031_media_derivative_kind.sql",
+      "depends_on": [
+        "supabase/migrations/0030_dependency_sanctions.sql",
+        "supabase/migrations/0010_foundation_constraints.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0032_response_config_version.sql",
+      "depends_on": [
+        "supabase/migrations/0031_media_derivative_kind.sql",
+        "supabase/migrations/0018_configuration_registry.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0033_operation_recovery_lookup.sql",
+      "depends_on": [
+        "supabase/migrations/0032_response_config_version.sql",
+        "supabase/migrations/0109_account_operation_ambiguity.sql",
+        "supabase/migrations/0112_recovery_binding_fix.sql"
       ]
     }
   ],

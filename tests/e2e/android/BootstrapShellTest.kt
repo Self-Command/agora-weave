@@ -108,6 +108,7 @@ class BootstrapShellTest {
     assertNotNull(launch)
     context.startActivity(launch!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage)), 15000))
+    verifyApprovedAccountControls(context, device, targetPackage)
     verifyHTTPS(context)
     device.pressHome()
     assertTrue(device.wait(Until.gone(By.pkg(targetPackage)), 10000))
@@ -115,8 +116,45 @@ class BootstrapShellTest {
     assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage)), 15000))
     assertEquals(targetPackage, device.currentPackageName)
     File(context.getExternalFilesDir(null)!!, "bootstrap-runtime-lifecycle.json").writeText(JSONObject()
-      .put("scope", "runtime-lifecycle-and-optional-https-only").put("account_ui", "retired")
-      .put("product_ui_verified", false).toString())
+      .put("scope", "approved-account-entry-controls-and-runtime-lifecycle").put("account_ui", "account-r2")
+      .put("full_account_journey_verified", false).toString())
+  }
+
+  private fun verifyApprovedAccountControls(context: Context, device: UiDevice, targetPackage: String) {
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).desc("手机号")), 20000))
+    val phone = device.findObject(By.pkg(targetPackage).desc("手机号"))
+    phone.click()
+    phone.text = "123"
+    assertEquals("123", phone.text)
+    device.pressBack()
+    // Android's keyboard dismissal may finish after the back action returns.
+    device.waitForIdle()
+    var getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
+    val actionDeadline = SystemClock.uptimeMillis() + 5000
+    while ((getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) &&
+      SystemClock.uptimeMillis() < actionDeadline) {
+      SystemClock.sleep(100)
+      getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
+    }
+    if ((getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) &&
+      device.hasObject(By.pkg(targetPackage).scrollable(true))) {
+      UiScrollable(UiSelector().scrollable(true)).scrollIntoView(UiSelector().description("获取验证码"))
+      getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
+    }
+    val action = requireNotNull(getCode) { "The named get-code action must exist" }
+    assertTrue("A named enabled action must remain reachable", action.isEnabled)
+    assertTrue("Android action touch height", action.visibleBounds.height() / context.resources.displayMetrics.density >= 48f)
+    action.click()
+    if (device.hasObject(By.pkg(targetPackage).scrollable(true))) {
+      UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
+    }
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
+    assertEquals("123", device.findObject(By.pkg(targetPackage).desc("手机号")).text)
+    val root = context.getExternalFilesDir(null)!!
+    File(root, "bootstrap-controls.json").writeText(JSONObject()
+      .put("source", "actual-approved-native-controls")
+      .put("phone_input", true).put("named_action", true).put("touch_minimum_dp", 48)
+      .put("error_feedback_preserves_input", true).put("full_account_journey_verified", false).toString())
   }
 
   @Test
@@ -201,7 +239,7 @@ class BootstrapShellTest {
     val getCode = device.findObject(By.pkg(targetPackage).text("获取验证码"))
     assertNotNull("Actual get-code control must be exposed", getCode)
     getCode.click()
-    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号，境外号码请加国家区号")), 5000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertTrue(device.hasObject(By.pkg(targetPackage).text("手机号登录")))
     assertTrue("Invalid empty phone must not enter the OTP step", !device.hasObject(By.pkg(targetPackage).desc("短信验证码")))
     if (pageScroll.exists()) pageScroll.scrollToBeginning(10)

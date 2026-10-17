@@ -1,12 +1,51 @@
 # 项目源码检查点与实际范围
 
-## 2026-10-17 当前后端批次与账号原型批准
+2026-10-17复检流程快速调整：按用户要求将业务测试、控件触发/原生自动化与UI视觉职责分开，
+阶段App截图按页面/状态/主题标注后拼图批量检查；复检期间保持该批运行源码稳定，集中修复后只复测受影响项。
+细则统一见execution-policy；本次仅调整既有文档，不新增工具、测试框架或产品范围，不增加下述业务/设备通过结论。
+
+2026-10-17后续验证码安全批次（T043/US1 T054/T058前置）：真实DB先复现过期challenge重放仍OK且pending，新增0029_otp_replay_guards后重放严格匹配原用途/上下文/IP/code摘要/环境；仅未过期pending可复用，过期持久标记，其他终态拒绝；返回表内真实expires_at及剩余冷却秒数。
+注册重放及消费重新核当前资料集合、年龄声明和有效未使用邀请码；NULL环境的旧记录不允许消费。未重造Auth会话或启用短信旁路，受控phone/IP摘要仍由可信入口提供。
+真实目标16/16通过：core.auth-otp-policy 9、core.auth-concurrency 2、core.auth-registration 5；目标lint及目标发现通过，独立只读代码复核无新增P1/P2。0029已显式增量迁移应用，40条原摘要验证，原容器组/数据卷保留。
+首轮8/9中OT05夹具修改created_at被现有保护触发器拒改，已改为INSERT时构造过冷却期的独立记录，保留原断言后9/9通过；原失败TAP/JSON及缺陷复现日志均保留于H:/Projects/AgoraWeave/development/reports/phase2-otp-20261017。
+现登记27目标/193用例/41迁移，不代表完整核心或云端矩阵通过。本批无UI改动/复检；公开challenge/verify、真实SMS和完整账号旅程仍未接通，原任务勾选保持。
+
+2026-10-17用户已明确恢复按新规范快速开发。T048通用当前资料集合与合法历史读取本批已完成目标验证：当前集合带服务端digest、最多50项且不截断；历史明确非current，缺当前版不回退；未发布/撤下/未来或NULL发布时间/草稿/错误环境或入口不可读，GET不产生同意记录。原注册集合协议保持兼容。
+0028_document_read_sets已通过显式本地增量迁移应用，39条原迁移摘要验证，未清seed或另建服务组；11个原Supabase容器健康复用。
+真实目标19/19通过：core.gateways 11（新增GW06–GW11六例）、core.auth-registration 5、core.internal-boundaries 3，无失败/跳过。对应4文件目标lint与目标发现通过，复用此前对同版后端差异的独立代码复核，本批没有UI改动或重复UI复检。
+结果保存于H:/Projects/AgoraWeave/development/reports/phase2-documents-20261017；首次命令在PowerShell参数绑定处失败的gateways-first.log保留，改用脚本数组参数后运行通过。目标发现首次漏选local环境被入口拒绝，显式环境后通过，未绕过环境检查。
+当前登记27目标/188用例/40迁移；本批19及下节前批152均为各自版本的局部目标结果，不能合算为完整188或云端通过。未执行干净库云端dev/test、云端Hermes及全原生矩阵；公开认证/真实SMS、无登录恢复和真实后台业务仍未完成，T048整项及Phase2保持未勾选。
+
+## 2026-10-17 当前业务批次：核心修复、获批账号页与目标验证
 
 本会话用户原生卡片明确批准账号r2五页（login/register/otp/security/recovery）及选择器全部状态，浅深主题均可按稿实现；页面登记已绑定原有r2版本和摘要。
-此批准不表示生产页面已实现、真实客户端复检或用户产品验收通过。下节账号r2 pending为本次批准之前的状态。
-继续保留旧账号四整页退役、纯controller/API与安全存储，按本阶段后端目标验证完成后接回获批页面。
-本批已复现outbox未claim时NULL lease被接受，原始失败TAP保存在H:/Projects/AgoraWeave/development/reports/phase2-20261017-current/effects-null-lease-before.tap。
-配置同层冲突顺序、worker归档追平及文档用途/发布时间修复正在验证，未提前登记通过；完整159/新增用例与云端矩阵仍未宣称通过。
+下节账号r2 pending、账号空路由及未连接设备为本批之前的历史状态，不覆盖本节。旧账号四整页保持退役；新AccountEntry/AccountLayout/AuthPages/SecurityRecoveryPages按r2接回保留的真实controller/API、安全存储与恢复辅助，未恢复旧页。
+
+本批真实后端修复：配置较高层/优先级先出现不再掩盖同层冲突；NULL/伪造/缺失租约及无界NULL批量拒绝；worker在耐久文件追平独立日志并核对同高度hash锚点后才执行effects，文件初始化失败不前移内存游标；正式资料按服务端发布时间和真实audience/surface读取；分享会话不能借App注册集合读取App专用制度。
+新增0026_effect_lease_guards、0027_document_release_clock两迁移已通过显式local.ps1 -Up -Services supabase -Migrate应用，原37条摘要验证，未改已应用旧迁移、未清seed或重建容器组。
+outbox未claim时NULL lease原缺陷已在真实DB复现；失败TAP保留于H:/Projects/AgoraWeave/development/reports/phase2-20261017-current/effects-null-lease-before.tap。
+
+实际目标结果：18个不同目标共152/152通过（后端/共享核心107、移动controller45），没有失败/跳过；mobile类型检查、目标lint及页面变更绑定检查通过，UI绑定工具回归5/5通过。
+这不是完整182或云端dev/test矩阵。当前登记27 core targets/182 cases/39 migrations；没有重跑完整核心、云端Hermes或全原生矩阵。结果与当前文件摘要见H:/Projects/AgoraWeave/development/reports/phase2-20261017-current/selected-targets-summary.json，原始目标TAP/JSON同目录。
+新增controller回归覆盖明确同意、未知操作查询不重复mutation、非法恢复响应、关闭恢复与令牌轮换保原case/command、过期token不发旧请求及迟到401不清正常刷新凭据、安全存储删除失败如实反馈且同实例不复活旧凭据。未声明跨进程擦除、无登录恢复或完整账号旅程完成。
+
+本机已查到并启动原有FlowCommunity_API_35（emulator-5554，x86_64，API35），安装已有Actions 38875978439的development-x86_64 APK，复用Metro加载当前JS，无本机构建或新增原生依赖。原型84张page/scene/theme画面已实际渲染检查；当前App常规样式沿用Uniwind，同一H运行区增量同步。
+固定gpt-5.6-luna/xhigh独立UI复检已检查可达登录正常/校验错误/服务不可用、注册条款加载失败与面板/重试、浅深主题、键盘、返回、输入保留、48dp触区及1.3大字（已恢复1.0浅色）。资料在上述目录ui-review/account-r2-ui-review-20261017.md。
+发现的失败后错误busy读屏状态已修正；独立复检仅定向读取登录错误后的可用按钮、注册条款失败后的禁用按钮两个真实节点，名称均为“获取验证码”且不含busy，该必修项关闭；未重复其余整批画面。
+App API_URL仍未配置可达产品入口，公有challenge/verify和真实SMS尚缺，所以OTP、账号安全、恢复页面及对应全部真实状态仍未验证；没有注入假session/条款来冒充可达旅程。后台仍为完整Kiranism本机合成模板，真实管理身份/MFA/权限及业务未完成。
+
+Phase2 T028–T051核实边界（保285任务ID及原勾选）：
+
+| 任务范围 | 当前具备 | 剩余或未验证 |
+| --- | --- | --- |
+| T028–T031、T035–T041 | 当前HTTP/事件、身份/RLS、共享事实/资源/义务、配置/资料模型及真实DB安全回归 | 局部成果不替全部任务约束和未来消费者；正式管理发布流程仍属US10/11 |
+| T032、T042 | Node/Deno当前同766 Unicode向量目标通过、DTO与基础组件语义保留 | 云端Hermes/跨原生同向量本轮未执行 |
+| T033、T034、T049 | 统一入口、官方Compose原实例、隔离合成夹具、39条增量迁移及目标执行可用 | 云端dev/test与新迁移干净库验证未执行，不用本地增量代替 |
+| T043–T048 | 当前身份/授权/输出、媒体与SSE/WS、可靠效果/独立日志、配置解析、注册及通用资料当前集合/合法历史读取与版本摘要 | 通用读取本批19项目标验证已通过；真实公有认证代理与SMS仍未接通，资料完整管理发布流程仍属US10/11 |
+| T050 | 获批账号r2五页源码与真实controller/API装配、共享token和必要原生适配 | 仅可达登录/注册部分状态实际复检，认证后页面、iOS/真机/完整旅程未验收 |
+| T051 | 本批适用目标与定向审查已执行 | 共享核心完整收口和全部阶段适用验证未完成，Phase2保持未完成 |
+
+本批没有夹带提交原先未提交业务；规范与当前验证登记通过AllBranches同步及Verify。旧失败、未执行和未完成范围继续保留。
 
 ## 2026-10-17 本次UI退役与环境恢复
 

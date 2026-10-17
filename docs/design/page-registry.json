@@ -41,22 +41,20 @@
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/app/(auth)/index.tsx"
+        "apps/mobile/app/(auth)/index.tsx",
+        "apps/mobile/src/features/account/AccountEntry.tsx",
+        "apps/mobile/src/features/account/AccountLayout.tsx",
+        "apps/mobile/src/features/account/AuthPages.tsx"
       ],
-      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
-      "implementation": "approved-design-awaiting-implementation",
+      "navigation": "App账号入口；未登录为手机号登录→邀请加入/验证码；登录后为账号安全→账号恢复。真实短信、公有challenge/verify等未完成，不代表账号旅程完成",
+      "implementation": "native-api-implementation-awaiting-whole-page-review",
       "reviews": [],
-      "retirement": {
-        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
-        "removed_paths": [
-          "apps/mobile/src/features/account/AuthScreen.tsx",
-          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-          "apps/mobile/src/features/account/RecoveryScreen.tsx",
-          "apps/mobile/src/features/account/AccountRoot.tsx"
-        ],
-        "date": "2026-10-17",
-        "by": "user"
-      }
+      "removed_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ]
     },
     {
       "id": "account-register",
@@ -100,22 +98,20 @@
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/app/(auth)/index.tsx"
+        "apps/mobile/app/(auth)/index.tsx",
+        "apps/mobile/src/features/account/AccountEntry.tsx",
+        "apps/mobile/src/features/account/AccountLayout.tsx",
+        "apps/mobile/src/features/account/AuthPages.tsx"
       ],
-      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
-      "implementation": "approved-design-awaiting-implementation",
+      "navigation": "App账号入口；未登录为手机号登录→邀请加入/验证码；登录后为账号安全→账号恢复。真实短信、公有challenge/verify等未完成，不代表账号旅程完成",
+      "implementation": "native-api-implementation-awaiting-whole-page-review",
       "reviews": [],
-      "retirement": {
-        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
-        "removed_paths": [
-          "apps/mobile/src/features/account/AuthScreen.tsx",
-          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-          "apps/mobile/src/features/account/RecoveryScreen.tsx",
-          "apps/mobile/src/features/account/AccountRoot.tsx"
-        ],
-        "date": "2026-10-17",
-        "by": "user"
-      }
+      "removed_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ]
     },
     {
       "id": "account-otp",
@@ -160,22 +156,20 @@
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/app/(auth)/index.tsx"
+        "apps/mobile/app/(auth)/index.tsx",
+        "apps/mobile/src/features/account/AccountEntry.tsx",
+        "apps/mobile/src/features/account/AccountLayout.tsx",
+        "apps/mobile/src/features/account/AuthPages.tsx"
       ],
-      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
-      "implementation": "approved-design-awaiting-implementation",
+      "navigation": "App账号入口；未登录为手机号登录→邀请加入/验证码；登录后为账号安全→账号恢复。真实短信、公有challenge/verify等未完成，不代表账号旅程完成",
+      "implementation": "native-api-implementation-awaiting-whole-page-review",
       "reviews": [],
-      "retirement": {
-        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
-        "removed_paths": [
-          "apps/mobile/src/features/account/AuthScreen.tsx",
-          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-          "apps/mobile/src/features/account/RecoveryScreen.tsx",
-          "apps/mobile/src/features/account/AccountRoot.tsx"
-        ],
-        "date": "2026-10-17",
-        "by": "user"
-      }
+      "removed_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ]
     },
     {
       "id": "account-security",
@@ -219,22 +213,20 @@
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/app/(auth)/index.tsx"
+        "apps/mobile/app/(auth)/index.tsx",
+        "apps/mobile/src/features/account/AccountEntry.tsx",
+        "apps/mobile/src/features/account/AccountLayout.tsx",
+        "apps/mobile/src/features/account/SecurityRecoveryPages.tsx"
       ],
-      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
-      "implementation": "approved-design-awaiting-implementation",
+      "navigation": "App账号入口；未登录为手机号登录→邀请加入/验证码；登录后为账号安全→账号恢复。真实短信、公有challenge/verify等未完成，不代表账号旅程完成",
+      "implementation": "native-api-implementation-awaiting-whole-page-review",
       "reviews": [],
-      "retirement": {
-        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
-        "removed_paths": [
-          "apps/mobile/src/features/account/AuthScreen.tsx",
-          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-          "apps/mobile/src/features/account/RecoveryScreen.tsx",
-          "apps/mobile/src/features/account/AccountRoot.tsx"
-        ],
-        "date": "2026-10-17",
-        "by": "user"
-      }
+      "removed_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ]
     },
     {
       "id": "account-recovery",
@@ -282,22 +274,20 @@
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/app/(auth)/index.tsx"
+        "apps/mobile/app/(auth)/index.tsx",
+        "apps/mobile/src/features/account/AccountEntry.tsx",
+        "apps/mobile/src/features/account/AccountLayout.tsx",
+        "apps/mobile/src/features/account/SecurityRecoveryPages.tsx"
       ],
-      "navigation": "账号r2五页及全部登记状态与浅深主题已获人明确批准；旧页已退役，待按稿接回真实controller/API",
-      "implementation": "approved-design-awaiting-implementation",
+      "navigation": "App账号入口；未登录为手机号登录→邀请加入/验证码；登录后为账号安全→账号恢复。真实短信、公有challenge/verify等未完成，不代表账号旅程完成",
+      "implementation": "native-api-implementation-awaiting-whole-page-review",
       "reviews": [],
-      "retirement": {
-        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
-        "removed_paths": [
-          "apps/mobile/src/features/account/AuthScreen.tsx",
-          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-          "apps/mobile/src/features/account/RecoveryScreen.tsx",
-          "apps/mobile/src/features/account/AccountRoot.tsx"
-        ],
-        "date": "2026-10-17",
-        "by": "user"
-      }
+      "removed_paths": [
+        "apps/mobile/src/features/account/AuthScreen.tsx",
+        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+        "apps/mobile/src/features/account/RecoveryScreen.tsx",
+        "apps/mobile/src/features/account/AccountRoot.tsx"
+      ]
     },
     {
       "id": "phase2-shared-components",
