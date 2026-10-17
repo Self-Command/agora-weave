@@ -1,6 +1,6 @@
 # 批次01：真实账号入口与必要配置
 
-状态：待实施。基于Phase2已有成果，2026-10-17按用户已批准基础运营分期进入US1；本文件描述有界实施，未增加任务或声称测试通过。
+状态：实施中。2026-10-17完成首个私有SQL切片：OTP配置消费及challenge到Auth准入的原子完成事务。公有HTTP、短信适配和完整客户端旅程尚未接通；285任务仍51勾选，不以本切片勾完整任务。
 
 ## 目标、输入与边界
 
@@ -54,4 +54,33 @@ pwsh -NoProfile -File tools/dev/local.ps1 -Command @('node','--experimental-stri
 
 安全/权限/事务规则冲突，需费用/生产/高影响数据动作或改变已批准设计时按宪法九取得具体决定，仅暂停依赖项。短信或原型资源未齐时继续独立后端/配置/测试，不制造假session、短信或页面批准。禁止改共享运行区时继续只读/独立源码工作，不能并行争用DB。
 
-本批完成需真实接口/配置消费者、相应测试与原生/本地复检证据及剩余边界清楚；缺真实SMS则明确“实现/隔离测试完成，真实短信旅程未验证”，不勾完整T058/T064。实际命令、源码版本、环境、结果和必要日志路径在此处简记；本轮文档清理未运行本批业务验证。
+本批完成需真实接口/配置消费者、相应测试与原生/本地复检证据及剩余边界清楚；缺真实SMS则明确“实现/隔离测试完成，真实短信旅程未验证”，不勾完整T058/T064。
+
+### 2026-10-17首个后端切片
+
+业务及测试提交：`7cabbe4301094bdbbb06641def67e1e1050479fb`。执行时报告HEAD为治理提交`e274895`，业务尚在工作区；已逐文件比对报告的测试/迁移SHA-256与提交对应工作区源码，未将此记录冒充Actions或发行验证。
+
+- 追加`0034_otp_configuration.sql`：完整活动bundle/registry校验后私有提取六个既有`auth.otp_*`值；复用官方镜像内`pg_jsonschema 0.3.3`，窄schema词汇边界拒绝严格消费者不支持的扩展。新challenge固化期限、重发间隔、错误预算及配置版本；当前发送配额继续统计历史，生效/回滚不清消费。旧challenge保留原期限/预算，不开放匿名配置snapshot或底表权限。超过PostgreSQL可表示时间范围的秒数拒绝而非无限期。
+- 追加`0035_otp_auth_completion.sql`：私有`complete_otp_authentication_result`核对环境、受信手机号摘要、Auth实际手机号及challenge之后建立的OTP AMR/session；复用已有注册/登录事务。错误尝试保留，合法OTP遇准入失败回滚消费；精确完成重试只重读原结果，仍核当前资格，不创建新会话/令牌。不同command/session/payload不能接管已完成challenge。
+- 此函数仍依赖未来受控HTTP/Auth/短信适配器提供签名核验后的身份及服务端keyed摘要；本轮测试直接使用隔离Auth表合成事实，不能证明真实Auth OTP发送/验证或短信到达。公有路由仍未实现。未改App/后台页面、生产配置或既有已应用迁移。
+
+实际复用唯一dev组`agoraweave-local-dev-0e2dc2a715c1`，经`local.ps1 -Status`确认11个Supabase服务及现有后台/Metro健康。事务预检创建0034/0035后ROLLBACK；schema方言探测曾证实未知关键字被SQL错误接受，修复后返回`CONFIG_UNAVAILABLE`。随后显式执行`pwsh -NoProfile -File tools/dev/local.ps1 -Up -Services supabase -Migrate`：追加2条、核原45条摘要，未reset/seed。迁移应用后未改源码。
+
+以下目标通过`local.ps1 -Command`串行执行`node --experimental-strip-types tools/ci/core-entry.ts target <id>`：
+
+| 目标 | 实际通过 |
+| --- | --- |
+| core.auth-otp-policy | 15/15 |
+| core.auth-registration | 17/17 |
+| core.auth-concurrency | 3/3，含两独立连接抢同challenge仅一效果 |
+| core.schema-config | 29/29 |
+| core.configuration-resolution | 5/5 |
+| core.effective-configuration | 4/4 |
+| core.auth-session-commands | 3/3 |
+| core.auth-refresh | 2/2 |
+
+共78项，另`npm run ci:discover`及`npm run ci:contracts`57/57通过；三个变更测试文件的strict TypeScript、ESLint零警告和`git diff --check`通过。清单新增19项至223项不表示223项全量已执行。首次OTP目标14/15，OT14夹具误以为官方`postgres`能`SET ROLE core_runtime`；保原失败，改为函数执行权核对及实际匿名参数拒绝，复测15/15，未扩大数据库角色权限。
+
+原始失败：`H:/Projects/AgoraWeave/development/reports/core-accounts-20261017/attempt1/`；最终8个目标TAP/JSON/stderr及增量迁移报告：同目录`final/`。独立代码复检已定向闭合配置部分校验及schema方言P2，修复均在正式应用前；开发/代码复检工具显式`gpt-6.1-sol/high`，实际服务端型号工具未暴露，记未知。
+
+下一步先补受信IP/手机号摘要、受控Auth与阿里云短信适配、公有challenge/verify及unknown同operation查询，再集中接账号r2及必要真实配置管理入口。真实短信签名/模板/凭据/获准对象仍需用户资源；App/原生交互/整页复检、配置后台发布/回滚、恢复/换号/注销及管理员MFA尚未完成。本切片不勾T052–T064或T141–T148整项。
