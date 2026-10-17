@@ -1002,7 +1002,7 @@
         "tests/contract/admin/management-qr.spec.ts",
         "tests/contract/admin/management-bff-refresh.spec.ts"
       ],
-      "case_count": 23,
+      "case_count": 24,
       "requires_services": false
     },
     {
@@ -1033,7 +1033,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 351,
+  "core_case_count": 352,
   "core_migrations": [
     {
       "file": "supabase/migrations/0039_admin_config_binding_fix.sql",
