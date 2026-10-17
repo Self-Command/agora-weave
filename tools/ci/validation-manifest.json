@@ -882,6 +882,27 @@
       "requires_services": true
     },
     {
+      "id": "core.auth-adapters",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/auth/aliyun-sms.spec.ts",
+        "tests/contract/auth/supabase-phone-auth.spec.ts",
+        "tests/contract/auth/public-input.spec.ts",
+        "tests/contract/auth/otp-cleanup.spec.ts"
+      ],
+      "case_count": 29,
+      "requires_services": false
+    },
+    {
+      "id": "core.auth-public-broker",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/auth/public-otp-broker.spec.ts"
+      ],
+      "case_count": 18,
+      "requires_services": true
+    },
+    {
       "id": "core.foundation",
       "command": "ci:service",
       "files": [
@@ -955,8 +976,14 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 223,
+  "core_case_count": 270,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0036_public_otp_broker.sql",
+      "depends_on": [
+        "supabase/migrations/0035_otp_auth_completion.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0035_otp_auth_completion.sql",
       "depends_on": [
