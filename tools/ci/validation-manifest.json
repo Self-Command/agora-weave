@@ -768,7 +768,7 @@
       "files": [
         "tests/concurrency/core/admission.spec.ts"
       ],
-      "case_count": 3,
+      "case_count": 4,
       "requires_services": true
     },
     {
@@ -953,7 +953,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 203,
+  "core_case_count": 204,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
