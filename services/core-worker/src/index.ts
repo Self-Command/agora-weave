@@ -1,6 +1,7 @@
 import postgres from 'npm:postgres@3.4.7';
 import {SecurityJournal} from './security-journal.ts';
 import {workerTick} from './worker.ts';
+import {withOtpCleanup} from './otp-cleanup.ts';
 import {effectResult} from './inbox.ts';
 import '../../../deno/functions/main/index.ts';
 const url=Deno.env.get('CORE_WORKER_DB_URL'),environment=Deno.env.get('CORE_ENVIRONMENT');
@@ -11,14 +12,14 @@ let running=false,lastFailure='';
 setInterval(async()=>{
   if(running)return;running=true;
   try{
-    await workerTick({
+    await withOtpCleanup(()=>workerTick({
       reconcile:async()=>{const [row]=await sql`SELECT core.worker_reconcile() AS result`;return row.result;},
       records:async after=>{const [row]=await sql`SELECT core.worker_journal_records(${after}) AS result`;return row.result;},
       closeOutput:async()=>{await sql`SELECT core.worker_close_output(${environment})`;},
       claim:async()=>{const [row]=await sql`SELECT core.claim_outbox('core-events-v1',${environment},20) AS result`;
         if(row.result.code!=='OK')throw new Error('EFFECT_UNAVAILABLE');return row.result.items;},
       complete:async lease=>{const [row]=await sql`SELECT core.complete_outbox(${lease.id}::uuid,${lease.lease}::uuid,'core-events-v1',${environment}) AS result`;effectResult(row.result);},
-    },journal);
+    },journal),()=>sql`SELECT core.expire_public_otp(${environment})`);
     lastFailure='';
   }catch(error){
     const fault=error as {code?:string;name?:string;message?:string};

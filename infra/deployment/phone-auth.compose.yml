@@ -1,0 +1,30 @@
+# Explicit opt-in after reviewed SMS resources, ingress and isolated verification.
+# Apply on top of the complete official Compose and the core service overlay.
+# No service-role key is added to the function runtime.
+services:
+  auth:
+    environment:
+      GOTRUE_DISABLE_SIGNUP: 'false'
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'false'
+      GOTRUE_EXTERNAL_PHONE_ENABLED: 'true'
+      GOTRUE_SMS_AUTOCONFIRM: 'false'
+      GOTRUE_SMS_OTP_LENGTH: '6'
+      GOTRUE_SMS_MAX_FREQUENCY: '1s'
+      GOTRUE_SMS_OTP_EXP: ${AUTH_SMS_OTP_EXP:?Set the compatible Auth OTP upper lifetime}
+      GOTRUE_HOOK_SEND_SMS_ENABLED: 'true'
+      GOTRUE_HOOK_SEND_SMS_URI: pg-functions://postgres/core/auth_send_sms_hook
+  functions:
+    environment:
+      CORE_PHONE_AUTH_ENABLED: 'true'
+      CORE_INGRESS_TOKEN: ${CORE_INGRESS_TOKEN:?Private gateway credential required}
+      CORE_AUTH_SMS_OTP_EXP_SECONDS: ${AUTH_SMS_OTP_EXP:?Set the compatible Auth OTP upper lifetime}
+      ALIYUN_SMS_ACCESS_KEY_ID: ${ALIYUN_SMS_ACCESS_KEY_ID:?Reviewed SMS resource required}
+      ALIYUN_SMS_ACCESS_KEY_SECRET: ${ALIYUN_SMS_ACCESS_KEY_SECRET:?Reviewed SMS resource required}
+      ALIYUN_SMS_SIGN_NAME: ${ALIYUN_SMS_SIGN_NAME:?Reviewed SMS resource required}
+      ALIYUN_SMS_TEMPLATE_CODE: ${ALIYUN_SMS_TEMPLATE_CODE:?Reviewed SMS resource required}
+  api-gw:
+    volumes:
+      - type: bind
+        source: ${CORE_AUTH_INGRESS_TEMPLATE:?Generated official template with private ingress headers required}
+        target: /etc/envoy/lds.template.yaml
+        read_only: true

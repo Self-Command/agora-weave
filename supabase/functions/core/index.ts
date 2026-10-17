@@ -3,6 +3,7 @@ import { database } from './database.ts';
 import { admittedResource } from './admission.ts';
 import { listSessions, revokeSession } from './routes/account-security.ts';
 import { refreshSession } from './routes/auth.ts';
+import { publicChallenge,publicVerify } from './routes/public-auth.ts';
 import { accountOperation } from './routes/operations.ts';
 import { recoveryCase } from './routes/recovery.ts';
 import { effectiveConfig } from './config/effective.ts';
@@ -44,6 +45,10 @@ Deno.serve(async (request: Request) => {
     });
     if (context.result.code!=='OK') return failure(context.result.code,context.result.code==='SESSION_INVALID'?401:503);
     if (path === '/auth/refresh') return request.method === 'POST' ? await refreshSession(request,failure) : failure('METHOD_NOT_ALLOWED',405);
+    if (path === '/auth/challenges') return await publicChallenge(request,failure);
+    if (path === '/auth/verify') return await publicVerify(request,failure);
+    const authOperation=path.match(/^\/auth\/operations\/([a-f0-9-]{36})$/i);
+    if (authOperation) return await publicVerify(request,failure,authOperation[1]);
     if (path === '/documents/current') return await readCurrentDocuments(request,failure);
     if (path === '/config/effective') return await effectiveConfig(request,failure);
     if (path === '/events') return await events(request,failure);
