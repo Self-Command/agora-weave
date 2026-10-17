@@ -72,3 +72,23 @@
 Metro空CI/IPv6绑定问题集中修复。实际HTTP的原Host校验另有回归，未开放入口保持拒绝。
 功能逻辑提取时发现两类旧异步竞态，已加真实延迟Promise回归并独立确认关闭。
 这说明源码/规范完整仍需真实运行反馈；恢复模板不能保证一次启动成功，也不能证明产品业务完成。
+
+## Uniwind 样式方案评估
+
+同日用户建议后续用 [Uniwind 官方源码](https://github.com/uni-stack/uniwind) 加快 App 样式开发。
+评估结论：适合在下一批获批 App 页面中优先接入免费 MIT 版，以 className 复用样式，减少重复 StyleSheet。
+这属于样式实现工具，具体布局、颜色和交互仍来自已批准原型及现有 token，不从框架默认样式推导设计。
+
+[官方 Quickstart](https://docs.uniwind.dev/quickstart)明确支持 Expo、React Native，要求 Tailwind 4，
+通过 Metro 配置接入并支持热更新；CSS 入口应在 React 组件层导入，避免在注册入口导入导致整包重载。
+核查的官方 package.json 为1.12.1，peer要求React>=19、RN>=0.81、Tailwind>=4；
+本仓React19.2.3、RN0.86.3、Expo57满足所列React/RN范围，但尚未执行本仓集成，不能据此声明实际兼容通过。
+
+接入时将现有设计 token 映射到主题变量；按[官方 monorepo 指引](https://docs.uniwind.dev/monorepos)
+仅扫描 App 和实际共享组件目录，不扫描整个后台或备份源码。沿用 H 盘统一依赖与 Metro，不另开运行环境。
+[第三方组件指引](https://docs.uniwind.dev/components/other-components)依赖组件可接收的 style/props；
+Expo UI 的原生控件按其真实 modifier/props 适配，不假定所有原生控件都可直接使用 className。
+[免费版说明](https://docs.uniwind.dev/pro-version)列明其没有新增原生代码，免费版已提供主题及Tailwind绑定；
+本次不采购Pro，不以供应商速度宣传作为项目实测。动态原生样式仍可使用必要 style，不把“零手写样式”设成新门禁。
+
+本次仅完成评估与后续接入建议，未安装Uniwind或改变开发包；下一次接入须锁定版本并实际验证bundle、主题和热更新。
