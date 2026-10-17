@@ -1,17 +1,13 @@
-请在当前仓库继续AgoraWeave基础运营版的真实核心业务开发。先读AGENTS.md、.specify/memory/constitution.md、docs/engineering/execution-policy.md、docs/engineering/current-development-state.md，再查当前Git状态/分支/HEAD，按规则运行或复用同会话Verify，不用交接词代当前文件和验证。
+请在当前仓库继续 AgoraWeave 基础运营版开发。先读 AGENTS.md、.specify/memory/constitution.md、docs/engineering/execution-policy.md、docs/engineering/current-development-state.md，核当前 Git 分支/HEAD/工作区并按规则运行或复用 Verify，不用交接内容代替当前源码和验证。
 
-用户已批准从现有Phase2成果进入核心业务：真实账号/运营身份→文字静态图片单帖及审核→最新流/详情/基础资料/点赞普通评论→举报拉黑申诉→必要运维。以specs/001-agoraweave-v1/spec.md、plan.md、tasks.md及contracts为唯一基线，先执行implementation/01-core-accounts.md的有界切片。285任务ID、51勾选、234未完成保真，不重做Phase2，不重新生成规格/任务；Spec Kit已退役，不恢复SP/桥接、TDD认证或收据平台。
+以现有 spec/plan/tasks/contracts 为唯一基线；285 任务仍 51 勾选、234 未完成，不重生成、不恢复 Spec Kit/SP/收据平台。当前原账号 App 接入与后台真实身份/MFA/必要 OTP 配置两批合并收尾，详细范围、唯一目标表及报告入口见 specs/001-agoraweave-v1/implementation/01-core-accounts.md。本轮运行时未提交，最终源码摘要与提交由主控核对后补记。
 
-先核现有账号/配置/API/测试，复用健康实现，集中接已批准账号r2页面/controller与公有challenge/verify、当前资格/邀请/年龄/条款绑定及会话安全协议；按完整任务实际范围维护局部进展。真实短信、服务器、域名、正式签名/分发由用户搭建，先做独立集成与隔离验证；未接真实SMS不得说短信/完整注册登录通过。恢复/换号/注销、管理员MFA等完整链路按上线义务继续，不能把排队/受理写成完成。
+先核并复用已有公有手机号认证、原子准入、会话/unknown 回执、App controller、完整 Kiranism 后台身份/TOTP/OTP 配置与 BFF。原两批 11 目标 152/152、工程 68/68、tools/mobile/admin TS 与 admin oxlint 已通过；password adapter TS/ESLint 初次失败已修正，窄复验待补。0038–0043 已显式追加，最新 55 条迁移摘要匹配、未 reset/seed，不能改写已应用迁移。真实官方 Auth/TOTP、管理发布、operation 及撤销 4 项 HTTP 通过；本机 BFF/UI 完整链与剩余 light 布局复检正在跑，先核主控最新结果，不能自造完成。报告在 H:/Projects/AgoraWeave/development/reports/account-app-admin-20261017。
 
-私有SQL切片`7cabbe4301094bdbbb06641def67e1e1050479fb`保留；公有后端切片`1654a216ffa5b599e31127bad9586dab131fd946`已接App login/register的challenge/verify、POST auth/operations同body证明查询、私有网关/IP及环境keyed摘要、官方Auth Hook与阿里云单次发送适配、短期加密回执及独立清理。0034–0037均已应用，不能改写；先核现行源码、摘要及账号批次记录。11目标124项/工程57项通过及真实Hook生成OTP→Auth验证签发会话探测仅证明隔离后端，未调用真实SMS；默认Auth/core发送关闭，部署overlay本轮只解析未应用。不要重写已通过能力；接App时明确字段/错误/retry_after/unknown查询适配，不能把合成供应商接受写成真实短信到达，也不能绕过当前条款或会话撤销。
+后台国家区号 Select 与本国号码输入、用户名密码/图形验证码/忘记密码入口 UI 已接现有模板；备用登录整体默认关闭，真实用户名密码初始化与端到端验收未完成，不声称已有可用账号。忘记密码仅受理申请。真实 SMS 资源仍缺，默认公有发送关闭，合成供应商接受不等短信到达。完整五页原生/视觉旅程、换号/恢复/注销、角色邀请分配、MFA 丢失恢复、分享登录、分类物理清理及生产仍未完成，不以局部验证勾完整任务。
 
-配置是原FR-130–141/T141–T148责任：每批行为明确key/默认/范围/修改权、后台设置位置/API、服务端及客户端真实消费、生效和回滚验证。OTP服务端已消费当前活动bundle不等管理发布/回滚、客户端及全部配置闭环；UI主要light/dark登记尚不等消费完成。必要管理入口随业务交付，高级控制台后做，不把个人偏好/安全不变量任意开关化。
+访客公开最新流 API/controller 已写，纯移动客户端 6/6 属原批之外，未接生产首页。重复 guest 原型已删除；继续前主控亲审现有首页原型、实现、任务、依赖与批准记录，只派缺失增量，禁止未审委派重复设计。账号 r2 已批设计直接复用；后台直接完整 Kiranism 现有 UI，无需另画原型。独立 UI 复检仅布局样式、单主题，不查功能或交互、不重复 dark；业务/组件/原生验证继续承担功能交互责任。
 
-按阶段后端→集中获批App页/状态与真实API→本地集中视觉交互复检。账号r2五页全部状态/浅深已批，精确版本查docs/design/page-registry.json；新信息流/发布/详情/资料页仍先统一HTML原型并获明确批准。后台完整复用Kiranism接真实业务，不能裁成空壳或假管理员。Expo/RN/Expo UI与Uniwind保持，普通JS/TS用Metro；APK/AAB/IPA只在Actions构建，本机下载安装。
+主控统筹架构、复杂授权、接口与集成交付；优先复用同职责合规实例，开发/代码复检显式 gpt-6.1-sol/high，独立 UI 固定 gpt-5.6-luna/xhigh，实际工具未暴露型号记未知，不继承默认或回退。共享 DB/H盘运行区/Metro/设备串行，禁止递归扩张。普通 JS/TS 用 Metro，原生变化才 Actions 构建，本机只下载安装。
 
-主agent统筹架构/接口/复杂风险/集成交付；按独立文件和依赖分批委派，优先复用同职责合规实例。开发和代码复检固定显式gpt-6.1-sol/high，独立UI复检gpt-5.6-luna/xhigh；禁止Astra/名单外/继承默认回退。共享DB/H盘运行区/Metro/设备串行。不要递归扩张或为每小步新建agent。
-
-日常目标测试+直接影响回归，关键权限/安全/数据完整性/缺陷须有效测试；稳定版本阶段集中复检、修复仅复测影响项，发布完整适用验证。视觉仅本地；Actions保真实构建/功能/原生交互/HTTPS/Hermes。所有失败/未运行/取消如实记录，历史报告仅证明所记版本。不新增流程平台、重复全量检查、重复报告或无变化轮询。
-
-在授权内持续实施，不停于计划或重复请求已有批准。每批简要记录实现、实际命令/版本/结果/必要日志及剩余项；规范变更由主agent集中AllBranches再Verify，显式暂存自己的文件，适用检查后提交并保持工作区干净。范围/安全/费用/高影响数据/生产改变按宪法九取得具体决定。
+先完成待补的窄复验与本地集成/布局结果，保留原失败及真实未验边界，再由主控集中 AllBranches、Verify、显式暂存和提交。真实 SMS、服务器、域名与正式分发由用户搭建；费用、高影响数据、生产及安全边界变化按宪法九取得具体决定，其余授权内持续推进。

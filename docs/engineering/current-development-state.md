@@ -4,9 +4,9 @@
 
 ## 基线与当前目标
 
-285任务ID，T001–T051共51项勾选、234项未完成；Phase1开发准备与Phase2按用户指定交付条件收口。下一步按[plan](../../specs/001-agoraweave-v1/plan.md)基础运营分期进入真实账号/运营身份，实施范围见[账号批次](../../specs/001-agoraweave-v1/implementation/01-core-accounts.md)，不重做Phase2或重生成任务。
+285任务ID，T001–T051共51项勾选、234项未完成；Phase1开发准备与Phase2按用户指定交付条件收口。当前按[plan](../../specs/001-agoraweave-v1/plan.md)合并收尾账号App接入与后台真实身份/MFA/必要OTP配置两批，范围及唯一目标结果表见[账号批次](../../specs/001-agoraweave-v1/implementation/01-core-accounts.md)，不重做Phase2或重生成任务。
 
-核心规格/模型/契约、完整后续需求、已有业务和有效测试保留。Spec Kit项目技能/生成器已按用户授权退役，直接编辑现有资料；执行规则见[执行政策](execution-policy.md)，长期决定见[决定汇总](development-decisions.md)。已开始账号批次，私有SQL切片`7cabbe4301094bdbbb06641def67e1e1050479fb`，公有手机号认证后端切片`1654a216ffa5b599e31127bad9586dab131fd946`；完整任务仍未勾选。
+核心规格/模型/契约、完整后续需求、已有业务和有效测试保留。Spec Kit已退役，直接维护现有资料；执行规则见[执行政策](execution-policy.md)，长期决定见[决定汇总](development-decisions.md)。历史私有SQL及公有认证切片源码、报告集中见账号批次；本轮运行时未提交，最终源码摘要与提交待主控核对，完整任务不提前勾选。
 
 ## 最近完整交付证据
 
@@ -29,16 +29,18 @@ APK SHA-256：arm64 `2bdb256e0b6b5d0b9ea94dabc82a50b32daf7028bd3c1b95d90c2741d16
 
 已有核心当前身份/RLS、资源/依赖/媒体输出、耐久拒绝日志、幂等/可靠效果、配置解析和版本、正式资料读取/原子准入；现有controller/API、安全存储、刷新/撤销/退出及恢复申请/状态读取优先复用。AD04真实8MiB对象证明撤权后新Range拒绝、同流截断；观测窗口70秒，不承诺立即EOF或播放器消费者完成。
 
-公开App login/register的challenge/verify及同operation证明查询已接官方Auth和阿里云适配；官方Hook实际生成验证码、Auth真实验证/签发会话、注册准入及撤销后拒绝已隔离联调。0034消费当前活动bundle六项OTP参数，0035提供原子准入，0036/0037补环境keyed摘要、网关入口、单次发送/验证租约、短期加密回执及独立过期密文清理。默认发送仍关闭，真实SMS、App完整旅程、分享登录、换号/恢复/注销完整链路、管理员MFA与真实管理业务、分类物理清理及后续故事未完成。全配置/后台管理及客户端消费仍未闭环，UI主题主要仍是light/dark登记；继续贯通必要后台/API与两端消费者，不将局部切片视为完整故事交付。
+公有challenge/verify及同operation证明查询已接官方Auth和阿里云适配；当前邀请/年龄/条款原子准入、环境keyed摘要、网关入口、单次发送/验证、短期加密回执及清理保留。App账号controller/API已对接；完整Kiranism后台已接真实身份/MFA、必要OTP配置预览/发布/回滚及BFF，旧aal1 JWT不因数据库升级获管理资格。后台手机号输入新增国家区号Select；用户名密码/图形验证码/忘记密码入口UI已接模板，备用登录整体默认关闭，端到端验收及真实用户名密码初始化未完成，不能冒称已有可用账号。
 
-首切片78项基础上，本切片11个相关目标124/124、工程契约57/57、目标strict TypeScript/ESLint及独立代码复检通过；本地唯一dev组又追加0036/0037，49条摘要匹配。额外官方Auth Hook探测：未预留403、实际生成OTP及验证200、1个真实session/OTP AMR，结束后撤销合成入口并恢复关闭配置，未调用外部短信。原失败已保留并定向修复；测试/迁移及25个受影响源码摘要已核对。实际命令、版本及报告入口集中见[账号批次执行记录](../../specs/001-agoraweave-v1/implementation/01-core-accounts.md)，不据此声称279项清单、真实短信或全产品通过。
+原合并两批11目标152/152、工程68/68、tools/mobile/admin TypeScript与admin oxlint通过；password adapter TS/ESLint初次失败已修正，窄复验待补。0038–0043已显式追加至唯一dev组，最新核验为追加0043一条并核原54条，总55条，未reset/seed；0043修复0041手机regex。真实官方Auth/TOTP、管理配置发布、operation及撤销4项HTTP通过；本机BFF/UI完整链及剩余light布局复检仍在执行，待主控补结果。证据位于 `H:/Projects/AgoraWeave/development/reports/account-app-admin-20261017/`，目标表、命令与精确边界集中见[账号批次](../../specs/001-agoraweave-v1/implementation/01-core-accounts.md)，不重复推断全产品通过。
 
-账号r2 login/register/otp/security/recovery及选择器全部状态/浅深已获用户明确批准，准确版本见[页面登记](../design/page-registry.json)。新信息流/发布/详情/资料等页仍需具体原型批准。已有可达登录/注册局部本地UI复检关闭busy读屏问题，不代表OTP/安全/恢复完整旅程或全部视觉已验收。
+访客公开最新流API/controller已写，纯移动客户端6/6单独记录，未计入原批152项且未接生产首页。重复guest原型已删除，继续先审现有首页原型与批准记录，复用已批设计，不再重画。真实SMS、完整五页原生/视觉旅程、分享登录、换号/恢复/注销、角色邀请分配、MFA丢失恢复、分类物理清理及生产仍未完成；全部配置消费与外观闭环也未完成。
 
-后台完整固定Kiranism源码/来源映射与本地字体保留；当前显式本机官方模板预览，真实管理身份/MFA/API/运营业务未完成，生产及未开放入口拒绝。旧App/分享呈现退役，保真实逻辑/测试，不恢复旧页面或将空入口算完成。
+账号r2 login/register/otp/security/recovery及选择器全部状态/浅深已获用户明确批准，准确版本见[页面登记](../design/page-registry.json)。先审现有批准再决定缺失增量，设计不变不重画；新设计仍须具体批准。当前单主题布局复检不代表完整五页原生旅程或全部视觉已验收。
+
+后台完整固定Kiranism源码/来源映射与本地字体保留，直接接现有UI与真实API，无需另画后台原型；当前业务与本机BFF/UI收尾不等生产或完整运营验收。旧App/分享呈现退役，保真实逻辑/测试，不恢复旧页面或将空入口算完成。
 
 ## 环境与后续
 
 源码留工作树；运行/依赖/缓存/报告位于 `H:/Projects/AgoraWeave/development`。复用原11服务官方Supabase唯一dev组及数据卷，不建立重复组，不自动清seed；运行状态先经统一local.ps1实查，旧“服务就绪/设备在线”不作当前事实。App已接免费Uniwind1.12.2/Tailwind4.3.3，常规JS/TS/样式用Metro，原生变化才Actions重建。
 
-服务器、域名、短信与正式分发用户自行搭建。下一步集中接已批准账号r2页面/controller与真实协议，补组件/原生交互和本地整页复检；真实SMS与生产条件在资源接入后验。必要配置管理、管理员MFA及完整账号安全链按依赖继续，不伪造短信成功或管理员。新窗口入口见[next-window-prompt](next-window-prompt.md)。清理前保护摘要与任务快照位于 `H:/Projects/AgoraWeave/development/reports/workflow-cleanup-20261017/baseline.json`，实际本轮验证/提交以最终Git与主agent复检结果为准。
+服务器、域名、短信与正式分发用户自行搭建。下一步先补当前窄复验、本机BFF/UI完整链与light布局结果，再核源码摘要并收尾原两批；剩余真实SMS、五页原生旅程及完整账号安全链按依赖继续。独立UI仅布局样式单主题，功能交互由业务/组件/原生验证，不重复dark。新窗口入口见[next-window-prompt](next-window-prompt.md)，实际提交以最终Git及主控核验为准。
