@@ -8,6 +8,13 @@ App/分享页新增或设计变更先在统一HTML原型补具体页面/状态�
 
 ## 1. 当前功能与H盘入口
 
+2026-10-17统一常驻入口：先`pwsh -NoProfile -File tools/dev/local.ps1 -Status`检查；
+`-Up -Services supabase,admin,metro`按需复用/启动同一组并等待就绪，`-Logs`查日志，`-Stop`停止但不删卷。
+后台`http://127.0.0.1:3000/dashboard/overview`仅显式本机开发模板，非真实管理业务；Metro状态在8081/status。
+缺依赖才显式-Install，普通编辑用Next/Metro热更新；迁移仅显式-Up -Services supabase -Migrate，不重置seed。
+页面开发用prototype/README精确定位；已批设计忠实还原并允许必要原生适配，细微渲染差异不单独阻塞阶段。
+旧账号/分享呈现已按用户要求退役，空路由不算UI完成；后台完整官方源码保留，按开发模块接业务，当前状态优先。
+
 源码工作树保持原路径。运行 `./tools/dev/local.ps1 -Prepare -Install` 准备H盘项目运行副本及环境；之后在输出的H盘工作区运行当前目标用例和直接受影响回归。配置见 `infra/development/policy.json`。后续通过同一入口传入 `-Command @('node','--experimental-strip-types','--test','tests/目标.spec.ts')`，入口先同步源码，再在H盘执行并保留真实退出状态。
 
 依赖、构建、当前数据库和测试通道可用后直接推进业务；无关工程完善记后续，完整共享核心验收不作全部消费者前置。可配置运行副本、依赖、缓存、临时内容、产物和报告使用H:/Projects/AgoraWeave/development；系统管理工具及全局Docker存储记录例外，保留旧副本。

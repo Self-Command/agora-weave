@@ -1,58 +1,50 @@
 # 新窗口继续开发提示词
 
-在 C:/Users/by970/Desktop/my-project 的当前分支继续 AgoraWeave 开发。
+在C:/Users/by970/Desktop/my-project当前分支codex/agoraweave-tdd-rebuild-clean继续AgoraWeave开发。
+先读取AGENTS.md、.specify/memory/constitution.md，运行
+`pwsh -NoProfile -File tools/dev/sync-governance.ps1 -Verify`，再读execution-policy、current-development-state顶部最新状态，
+及本阶段相关SK spec/plan/tasks、契约和实际源码。以当前Git、文件、服务和真实测试为准。
 
-2026-10-17最新决定优先：开发子agent统一gpt-6.1-sol/high，UI复检gpt-5.6-luna/xhigh；宪法7.0.0要求忠实还原设计、
-允许必要原生适配，明显偏离/功能问题必修，细微渲染差异不阻塞阶段。先读current-development-state顶部本次实际状态，
-不要按下文历史账号UI/后台h1描述恢复旧呈现层。旧UI退役后以获批原型和完整官方模板重建，真实业务逻辑及有效测试继续保留。
-原型“基础组件”预览页已按用户确认删除，共享组件本身保留；精确页面用index.html?page=login&scene=正常&theme=light等直达。
-先读取 AGENTS.md 和 .specify/memory/constitution.md，运行
-`pwsh -NoProfile -File tools/dev/sync-governance.ps1 -Verify`，再读取
-`docs/engineering/execution-policy.md`、`docs/engineering/current-development-state.md`
-及当前切片涉及的规格、任务和源码。以当前文件和实际结果为准。
+直接使用既有SK资料及285任务，不恢复SP/桥接/认证收据或另建框架，不因旧证明不完整重做健康代码。
+核实Phase2 T028–T051现有成果和剩余后端范围，先完成本阶段后端实现及适用目标验证，再集中获批App页面/API和后台业务，
+最后阶段集中真实视觉交互集成复检。日常目标及直接受影响回归，修复后只复测受影响项，发布保留完整适用矩阵。
 
-SP 插件、桥接、强制钩子和纯流程平台已按 ED-23 清理。直接使用现有 SK 资料与 Codex 原生能力，
-不要重装 SP／桥接、重建收据认证、重生成 285 个任务或另起执行框架。
-已有账号实现保留，AM02 已修复，不重复开发；业务完整任务仍未完成，不能按局部证据全部勾选。
+用户已要求删除未按原型实现的旧UI。旧账号4个整页TSX已移除，业务逻辑提取至account目录纯controller和native-controllers，
+API、安全存储、恢复辅助、已批准共享组件/token及有效测试保留。账号入口与分享首页暂为null，不恢复旧页面，不能声称账号旅程完成。
+新账号页面按对应获批原型接回这些真实控制器；r2五页仍pending，基础组件批准不等于整页批准。
+原型“基础组件”预览页已按用户确认删除，组件本身保留。
 
-优先核实当前分支未提交Phase2 T028–T051源码与本阶段剩余后端范围，保留64个既有业务文件和健康成果，不重做正常代码。
-当前27 targets/139 cases/37 migrations；完整139最近仍有2失败，后续窄修复/回归通过但未重跑完整139或云端dev/test。
-Unicode本地Node/Deno/Android Hermes766向量已过，云端Hermes未跑；不能勾Phase2整批完成。
+先实际查看docs/design/UI-SPEC.md、design-tokens.json、prototype/README.md及对应画面。
+同一原型入口可精确直达，例如docs/design/prototype/index.html?page=login&scene=正常&theme=light；
+五页为login/register/otp/security/recovery，状态来自选择器，theme=light/dark。不把旧UI、其他状态或历史组件图当该页设计。
+先完善并展示具体页面/状态供我批准，再实现生产UI；等待批准继续独立工作。
 
-遵宪法7.0.0与ED-24：各阶段先后端，再集中全部获批App页面/状态/真实API，最后阶段集中视觉交互集成复检；
-开发中目标/直接影响回归，发布完整适用矩阵，不逐页反复整批复检。当前页面批准与实际路径见docs/design/page-registry.json。
+宪法7.0.0采用忠实还原已批准设计、允许必要原生适配：保持布局、信息层级、颜色、组件和操作；
+错页、缺内容、明显设计偏离、遮挡及功能问题必须修复；细微字形/抗锯齿/换行等差异作建议，不单独阻塞阶段。
+不追求跨平台零像素差异，不借适配另作设计；实质设计差异交我决定。人的具体原型批准、独立复检与用户验收仍保留。
 
-检查现有账号原型草稿：docs/design/prototype/index.html 及 account-pages.css／js。
-参考 UI-SPEC、design-tokens 与原有 v6 原型，完善同一入口中的登录、注册、验证码、会话安全和
-恢复申请页面及适用状态，实际打开给我验收。账号草稿尚未获我明确通过；通过后才调整生产页面。
-仅Phase2基础组件预览获“通过，按此视觉实现”，不能代替账号r2完整页面批准。后台以完整Kiranism官方模板为基准，
-免重画同款HTML；当前h1入口尚未恢复完整模板，后续恢复布局/导航/主题/表格/表单后接真实业务，并实际后台视觉交互复检。
-移动端仍用 Expo、React Native、Expo UI，不走移动网站／WebView 路线。
+后台apps/admin已完整导入固定Kiranism源码，全部582原文件与SHA映射保全；读apps/admin/INTEGRATION.md。
+保留官方布局、导航、主题、表格、表单与样例源码，开发到对应模块再接真实业务，不再裁壳重做。
+当前只有显式本机开发模板预览，样例是合成数据；生产及尚未实现的真实管理身份/MFA/权限入口拒绝403。
+不启Clerk/keyless或Sentry外发。16族同款字体已本地化，启动不需Google下载；不反复升级或重装依赖。
+Supabase继续完整官方Compose/Auth/Postgres/Storage/Realtime，优先配置/接口/扩展点，不重造既有能力。
 
-等待原型验收期间继续不依赖它的本阶段后端；根据现有Phase2真实缺口按依赖推进，不跳过本阶段范围另起整套规格。
-真实短信接入暂缓，不用合成用例声称真实短信登录完成。现有私有注册／登录绑定、会话撤销／刷新、
-操作结果查询、恢复申请能力不等于完整公开 challenge／verify、无登录恢复、补证／审核／恢复执行。
+统一运行入口沿用tools/dev/local.ps1，H:/Projects/AgoraWeave/development/workspace和原私密配置/数据卷。
+先-Status检查，按本阶段需要-Up -Services supabase,admin,metro；健康实例复用，-Logs查看，-Stop不删卷。
+后台http://127.0.0.1:3000/dashboard/overview，Metro http://127.0.0.1:8081/status；先实际确认地址可用再给我。
+缺依赖才显式-Install；迁移仅显式-Up -Services supabase -Migrate，不自动清seed，不创建重复开发容器组。
+普通JS/TS用Metro/Next热更新；所有APK/AAB/IPA只在Actions编译，本机仅下载安装复检。
+真机arm64-v8a、模拟器x86_64，无32位。App保持Expo/RN/Expo UI，不转网站或WebView。
 
-通过 tools/dev/local.ps1 使用 H:/Projects/AgoraWeave/development/workspace；沿用现有唯一开发容器组和数据卷，
-私有配置在 .agoraweave/local/dev/runtime。按风险运行目标与直接受影响回归，保留真实失败和未验证项。
-普通 JS／TS 复用已安装开发包及 Metro；所有安装包由 GitHub Actions 编译，本机仅下载安装复检。
-Android 真机 arm64-v8a，模拟器 x86_64，不新增 32 位构建。规范修改按 AGENTS 同步所有工作树和分支。
-按用户已批准的多agent分工继续：主agent统筹范围、架构、接口、复杂授权/事务/并发问题、集成审查、验证与交付，复用开发者结果。
-所有开发子agent（含后端、App、后台与代码复检）统一显式使用gpt-6.1-sol / high；复杂子任务由主agent处理或按同一配置委派。
-UI复检保持gpt-5.6-luna / xhigh；启动/恢复核实际模型，不继承/默认/自动回退。指定配置不可用报告，不自行替换。
-先核本阶段后端缺口，按不同模块/文件并行；本阶段后端实现及适用目标验证完成后，App与后台再分文件并行。
-App另须对应具体原型获人明确批准；后台依完整官方模板推进，不因App原型待批而停止独立后台工作。
-角色不必同时启动；通常主agent加两名开发者，活动数服从工具上限，按UI复检需要释放名额。小改动直接处理，不强拆或递归扩张。
-每个任务包给仓库根与宪法路径并要求先读遵守、既有任务ID、文件范围、API契约、预期行为及目标测试，不继承完整开发会话。
-同文件单写者，公共契约、依赖/锁文件、迁移编号、公共配置、规范与工作流由主agent协调；保全现有未提交业务后才隔离工作树。
-共享DB夹具、H盘运行区、Metro和模拟器/浏览器同一时间一名操作者，串行交接；工作树只隔离源码，禁止同时覆盖运行区。
-阶段集成稳定后交独立UI角色复检真实页面及交互，修复后同角色优先复测受影响项，再交我验收。细则见执行政策。
+主agent负责范围、架构、接口、复杂授权/事务/并发、集成审查、验证与交付，复用开发者真实结果。
+所有开发子agent含代码复检固定显式gpt-6.1-sol/high；UI独立复检固定gpt-5.6-luna/xhigh，不参与开发。
+启动/恢复核实际模型，配置不可用报告不自行替换。通常主加两开发，活动数服从工具上限，不强拆小改动或递归扩张。
+每包给仓库根、宪法路径及遵守要求、既有任务ID、文件范围、API契约、预期行为和目标测试，不继承整个开发会话。
+同文件单写者；公共契约/依赖锁/迁移编号/规范由主agent协调。共享DB夹具、H运行区、Metro、浏览器和设备串行交接；
+工作树只隔离源码，切来源先停旧受管环境，不同时覆盖运行区。规范集中完成后-AllBranches/Publish再Verify。
 
-工具已支持内容变化才同步H盘运行区；保留私密runtime、node_modules、容器和数据卷。页面结构检查可含pending，生产UI变化需对应匹配批准；
-阶段使用check-ui-bindings的stage模式，显式传页面ID与实际实现源码版本，核平台×状态×主题和截图/交互记录。CI不证明美观或人同意，
-纯后端不被pending页面阻塞；规范一致不代表别的分支业务相同。沿用现有Actions手动验证入口，不声称已设置PR required status。
-
-阶段UI复检使用已获用户明确批准的独立专职子agent：gpt-5.6-luna，推理等级xhigh；只做对应设计与真实页面/交互对照，
-不参与开发，独立列差异并复测修复，不继承全部开发会话。模型/等级不可用报告，不静默替换；人的批准与验收边界保持。
-
-完成可验证业务批次，简短报告实际实现、真实测试和剩余项；不以反复整理历史报告代替开发。
+当前27核心目标/159用例/37迁移；新增纯控制器回归不代表完整159或云端dev/test通过。
+旧完整139曾2失败，随后局部修复，当前未重跑完整核心；Unicode本地Node/Deno/Android Hermes766向量的历史结果不能代云端Hermes。
+真实短信继续暂缓；公开challenge/verify、无登录恢复、补证/审核/恢复执行及完整跨端旅程仍有缺口。
+任务完整范围才勾选，保留失败/跳过/未执行事实，不把工具/模板/空路由通过当业务完成。
+完成可验证业务小批，简短报告实现、实际测试和剩余项；不以反复整理旧报告代替开发。

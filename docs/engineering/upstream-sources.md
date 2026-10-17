@@ -1,4 +1,14 @@
-# 初始化来源
+# 当前来源与初始化历史
+
+2026-10-17现行依据宪法7.0.0与[执行政策](execution-policy.md)：后台完整导入
+Kiranism/next-shadcn-dashboard-starter@7705dfc0d13889e45c26a55ad5908da6a7a9a605，
+tree7ac574a2d4c2145c938e2f4ab5739320d551f7a0；全部582原文件与SHA256映射保存于
+apps/admin/upstream-metadata/source-map.json。当前完整布局、导航、主题、表格、表单及样例源码保留，
+不再采用下文历史“仅保留必要依赖/组件”的精简方式。活动代码采用同commit官方无Clerk适配，
+完整差异、安全边界与本地字体来源见[后台集成说明](../../apps/admin/INTEGRATION.md)。
+Supabase仍使用下文固定官方完整Docker源码；各端实际完成与测试只见当前状态，不由来源完整性推断。
+
+## 以下为初始化历史
 
 > 历史资料：本文保留所记日期／提交的决定、结果或资源事实，不作为当前开发入口。现行执行见宪法5.0.0、[ED-22](business-first-development-decision.md)及[执行政策](execution-policy.md)；旧状态不能推断当前或其他分支已通过。
 
