@@ -28,7 +28,7 @@ final class BootstrapShellTests: XCTestCase {
     XCTAssertTrue(getCode.isEnabled)
     XCTAssertGreaterThanOrEqual(getCode.frame.height, 44)
     getCode.tap()
-    XCTAssertTrue(app.staticTexts["请输入有效手机号，境外号码请加国家区号"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["请输入有效手机号"].waitForExistence(timeout: 5))
     XCTAssertEqual(phone.value as? String, "123")
     let capture = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
     capture.name = "approved-account-controls"
@@ -92,7 +92,7 @@ final class BootstrapShellTests: XCTestCase {
     XCTAssertTrue(getCode.exists)
     XCTAssertTrue(getCode.isHittable)
     getCode.tap()
-    XCTAssertTrue(app.staticTexts["请输入有效手机号，境外号码请加国家区号"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["请输入有效手机号"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["手机号登录"].exists)
     XCTAssertFalse(app.textFields["短信验证码"].exists)
     let validation = XCTAttachment(screenshot: XCUIScreen.main.screenshot())

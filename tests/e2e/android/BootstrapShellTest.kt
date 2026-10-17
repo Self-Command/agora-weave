@@ -137,7 +137,7 @@ class BootstrapShellTest {
     assertTrue("Android action touch height", getCode.visibleBounds.height() / context.resources.displayMetrics.density >= 48f)
     getCode.click()
     UiScrollable(UiSelector().scrollable(true)).scrollToBeginning(5)
-    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号，境外号码请加国家区号")), 5000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertEquals("123", device.findObject(By.pkg(targetPackage).desc("手机号")).text)
     val theme = InstrumentationRegistry.getArguments().getString("theme") ?: "light"
     val root = context.getExternalFilesDir(null)!!
@@ -233,7 +233,7 @@ class BootstrapShellTest {
     val getCode = device.findObject(By.pkg(targetPackage).text("获取验证码"))
     assertNotNull("Actual get-code control must be exposed", getCode)
     getCode.click()
-    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号，境外号码请加国家区号")), 5000))
+    assertTrue(device.wait(Until.hasObject(By.pkg(targetPackage).text("请输入有效手机号")), 5000))
     assertTrue(device.hasObject(By.pkg(targetPackage).text("手机号登录")))
     assertTrue("Invalid empty phone must not enter the OTP step", !device.hasObject(By.pkg(targetPackage).desc("短信验证码")))
     if (pageScroll.exists()) pageScroll.scrollToBeginning(10)
