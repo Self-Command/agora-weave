@@ -126,9 +126,16 @@ class BootstrapShellTest {
     phone.click()
     phone.text = "123"
     assertEquals("123", phone.text)
-    device.pressBack()
-    // Android's keyboard dismissal may finish after the back action returns.
+    // Back can leave the activity while Android's input method is still opening.
+    val instrumentation = InstrumentationRegistry.getInstrumentation()
+    instrumentation.runOnMainSync {
+      val activity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).single()
+      activity.currentFocus?.let { focused ->
+        (activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(focused.windowToken, 0)
+      }
+    }
     device.waitForIdle()
+    assertEquals(targetPackage, device.currentPackageName)
     var getCode = device.findObject(By.pkg(targetPackage).desc("获取验证码"))
     val actionDeadline = SystemClock.uptimeMillis() + 5000
     while ((getCode == null || getCode.visibleBounds.height() / context.resources.displayMetrics.density < 48f) &&
