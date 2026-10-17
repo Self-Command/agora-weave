@@ -115,6 +115,7 @@ arm64-v8a用于真机测试/交付，x86_64用于电脑模拟器；不新增32�
 开发前通过同一入口检查并按需启动本阶段所需服务，健康实例复用；不要求全部未来外部供应商服务先齐备。
 `local.ps1 -Up -Services supabase,admin`复用同一dev组并等待就绪；Metro用`-Up -Services metro`，
 `-Status/-Logs/-Stop`查询/停止同一组，Stop不删数据卷。默认环境dev，test须显式选择并隔离。
+统一入口启动admin时显式启用已授权的本机官方模板预览开关并绑定127.0.0.1；不是生产管理身份，生产仍拒绝。
 缺依赖准确提示后显式-Install，不每次启动npm ci；迁移仅显式-Up -Services supabase -Migrate，不自动清seed。
 Node服务常驻、源码增量同步，Next/Metro热更新；切换来源前停止旧来源受管进程，不能覆盖活动运行区。
 

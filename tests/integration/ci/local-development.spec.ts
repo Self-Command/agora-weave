@@ -57,6 +57,10 @@ test('LD05: repeated Up reuses a ready managed process and Stop preserves privat
     await main(options);
     const stateFile = join(root, '.agoraweave/local/dev/development/state.json');
     const first = JSON.parse(readFileSync(stateFile, 'utf8')).processes.admin;
+    const actualConfig = JSON.parse(readFileSync(first.config, 'utf8'));
+    assert.equal(actualConfig.env.AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW, '1');
+    assert.equal(actualConfig.env.NODE_ENV, 'development');
+    assert.ok(actualConfig.args.includes('127.0.0.1'));
     await main(options);
     const second = JSON.parse(readFileSync(stateFile, 'utf8')).processes.admin;
     assert.equal(second.pid, first.pid); assert.equal(second.config, first.config);

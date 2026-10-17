@@ -164,7 +164,8 @@ export async function main(options) {
       const args = service === 'admin' ? [npm, 'run', 'dev', '--workspace', 'apps/admin', '--', '--hostname', '127.0.0.1', '--port', String(port)] :
         [require.resolve('expo/bin/cli'), 'start', '--dev-client', '--localhost', '--port', String(port)];
       write(config, { executable: process.execPath, args, cwd: service === 'admin' ? workspace : resolve(workspace, 'apps/mobile'),
-        env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development', EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: '' } });
+        env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development',
+          ...(service === 'admin' ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW: '1' } : {}), EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: '' } });
       const entry = { ...startProcess(config, resolve(directory, `${service}-${token}.out.log`), resolve(directory, `${service}-${token}.err.log`)),
         service, port, url: `http://127.0.0.1:${port}${service === 'metro' ? '/status' : '/'}`, ...identity };
       state.processes[service] = entry; Object.assign(state, identity); write(statePath, state);
