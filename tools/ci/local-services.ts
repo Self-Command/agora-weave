@@ -83,6 +83,9 @@ export function prepareLocalServices() {
   currentPrivate=readFileSync(runtime.environment_file,'utf8');
   if (!/^CORE_INGRESS_TOKEN=/m.test(currentPrivate))
     writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nCORE_INGRESS_TOKEN='+random()+'\n',{mode:0o600});
+  currentPrivate=readFileSync(runtime.environment_file,'utf8');
+  if (!/^AGORAWEAVE_ADMIN_SESSION_KEY=/m.test(currentPrivate))
+    writeFileSync(runtime.environment_file,currentPrivate.replace(/\s*$/,'')+'\nAGORAWEAVE_ADMIN_SESSION_KEY='+random()+'\n',{mode:0o600});
   const ingressSecret=readFileSync(runtime.environment_file,'utf8').match(/^CORE_INGRESS_TOKEN=([a-f0-9]{64})$/m)?.[1];
   if (!ingressSecret) throw new Error('Private ingress credential is unavailable');
   const ingressPath=resolve(runtime.directory,'auth-ingress.yaml');

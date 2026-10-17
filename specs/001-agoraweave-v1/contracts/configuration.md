@@ -8,6 +8,10 @@
 
 bundle=`{version,schema_version,scope_values,compat_matrix,effective_at,preview_digest,existing_object_impacts,reason}`不可变。流程draft→validated→consumers_ready→active；无类型/范围/依赖/兼容/授权/MFA/必要生产确认则rejected。主库单事务切激活指针，关联参数不半生效。需要reload的所有消费者就绪才active，否则保旧完整bundle。每操作固定兼容bundle，当前会话/删除/用途/lifecycle独立再核，不因bundle固定被冻结。
 
+账号批次必要后台位于`/dashboard/configuration/otp`，只管理既有六项`auth.otp_*`。超管须有当前环境、平台范围的`config.read`/`auth.config.write`及对应`config.release`或`config.rollback`；审计员仅显式`config.read`，其他角色不因名称获得权限。预览克隆完整当前bundle，仅覆盖当前环境六项，不丢其他namespace/层/compat/消费者就绪状态；复用实际OTP消费者的同一校验器与官方Auth期限上界。
+
+不可变预览绑定actor/session/env/base_version/registry_digest/完整候选/原因/动作摘要，5分钟过期。提交重新核当前grant、签名及当前Auth aal2、DEC-001、registry和CAS基版本，消费一次具体动作stepup后在同一事务创建并激活完整新版本、operation及审计；任何失败保原指针。发布同时保存变更前OTP值与版本，包含首次baseline；回滚选本环境历史值生成新版本，仍需预览/MFA/权限/相同校验，不能直接复活旧完整bundle。已完成精确重试只重读结果，当前撤权仍拒绝；新challenge消费新配置，旧challenge保签发时期限/预算，修改与回滚均不清历史限流。
+
 旧客户端值只能提示，服务端执行当前值；冲突错误返回current_config_version和可恢复结果，保输入/已成功附件。消费者含移动、后台、分享、API、SQL/RLS、媒体、任务、AI/MCP及插件；适用规则同源生成版本化投影，不把厂商env默认当孤立权威。回滚构建新bundle并重新校当前兼容/权限，不能回滚删除/撤权/锁票/终态请求。基础核心认证/RLS/隔离/审计/AI只读/数据政策没有普通关闭开关。
 
 ## 现有对象生效

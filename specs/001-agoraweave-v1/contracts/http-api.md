@@ -105,6 +105,7 @@ AI会话改名/删除由用户确定性业务命令实现，模型工具仍严�
 | POST /admin/appeals/{id}/decision | 独立reviewer/stepup/reason/command | 原处置人独自决定拒绝，决定与实际执行分别记录 |
 | POST /admin/roles/preview；POST /admin/roles；POST /admin/invitations | 超管stepup/reason/preview_digest/command | 当前grant/邀请，DEC-001列明限制 |
 | POST /admin/stepup | 当前MFA挑战＋action_digest | 一次短证明，不替当前会话/角色 |
+| GET /admin/session；GET/POST /admin/mfa/factors；POST /admin/mfa/challenges；POST /admin/mfa/verify | 当前手机号OTP会话及当前环境的正式管理grant；TOTP使用官方Auth enroll/challenge/verify | aal1仅引导MFA、permissions为空；业务接口同时核签名aal2、当前Auth session/factor/AMR与当前grant，不以数据库升级替代新JWT |
 | GET /config/effective | 当前用户/env/module/non-sensitive scope | 公共展示bundle/version/source，不含后台策略/秘密 |
 | GET /documents/current；GET /documents/{id}/releases/{release_id} | kind/stable_key/locale/surface；公共读取只限该入口已发布且当前允许的版本 | title/body/digest/release/state及适用说明；当前和合法历史分别标识，draft/ready/withdrawn不泄漏 |
 | GET /me/document-receipts；POST /me/document-receipts | 当前本人App会话；明确decision、release/digest、purpose、presentation_ref、operation_id | 本人实际版本／动作证明；陈旧／错用途／未发布拒绝并返回当前合法版本提示，不替后台产生用户同意 |
@@ -112,6 +113,10 @@ AI会话改名/删除由用户确定性业务命令实现，模型工具仍严�
 | POST /admin/document-revisions/{id}/ready；POST /admin/documents/{id}/release-previews | 当前特定编辑／发布权限、revision/content_digest/scope、command | 不可变ready版本及精确影响摘要；校适用入口／关联服务政策／渲染／必需配置，未发布不对用户可见 |
 | POST /admin/documents/{id}/releases；POST /admin/document-releases/{id}/withdrawals | 特定发布／撤下权限、stepup/reason/preview_digest、command；生产含匹配release_confirmation | 实际published/superseded/withdrawn、active指针与审计；缺当前权限／确认或摘要变化拒绝，未知先查不重复发布 |
 | GET /admin/config/definitions；POST /admin/config/previews；POST /admin/config/releases；POST /admin/config/rollbacks | 按参数授权、scoped_values/base_version/reason/stepup | 完整预览/bundle/status，失败不半生效；见配置契约 |
+
+当前账号批次具体实现：`GET /admin/accounts?limit=1..50&cursor=<uuid>`仅`admin.accounts.read`当前资源范围内最小脱敏账号；`GET /admin/config/definitions?group=otp`仅六项既有OTP参数和当前版本/历史。预览body为`{base_version,values|rollback_version,reason,operation_id}`，values必须恰含六项；提交body为`{preview_id,preview_digest,stepup_id,operation_id}`。`POST /admin/stepup`携`{factor_id,challenge_id,code,action_digest}`，官方TOTP新验证后绑定当前actor/session/env/具体预览，5分钟内一次消费。配置成功/未知通过当前资格下`GET /operations/{id}`恢复，不重复外部验证或配置效果；生产未具备具体release confirmation时拒绝。
+
+后台使用固定 `/api/management/*` BFF：加密HttpOnly/SameSite=Strict浏览器会话cookie只由服务器持有官方Auth令牌；生产Secure，服务端密钥与环境参与绑定。每个读取/命令重新核core当前管理资格与MFA；写请求须同源JSON及`X-Agoraweave-CSRF: 1`。刷新仅向core发送私有refresh_token，不携可能过期的旧access，再用新access复核管理资格。客户端不携管理员角色、核心身份、任意upstream或Auth服务密钥。首次手机账号TOTP适配仅为官方Auth提供内部不可投递标签；不增加邮箱身份、邮箱确认或密码入口。Auth原始user可能包含该标签，core不额外投影邮箱。首位管理授权仅运维所有者私有`bootstrap_admin_identity`，无HTTP入口，每环境一次，撤权不重开。
 | POST /admin/developers/invitations；GET/POST /developer/plugin-packages | 超管邀请或当前受邀提交包digest/manifest | 默认仅submit，不自审/安装/发布 |
 | GET /admin/plugins；GET /admin/plugins/{id}/versions | 当前管理权限 | 来源/摘要/权限/依赖/迁移/状态/健康 |
 | POST /admin/plugins/{id}/reviews；POST /admin/plugins/{id}/permission-grants | 超管具体version/digest、stepup/reason | 具体审核/敏感增量记录，同人分步骤 |

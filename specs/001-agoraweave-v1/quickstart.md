@@ -16,7 +16,9 @@ pwsh -NoProfile -File tools/dev/local.ps1 -Command @('npm','run','ci:discover')
 pwsh -NoProfile -File tools/dev/local.ps1 -Command @('node','--experimental-strip-types','tools/ci/core-entry.ts','target','core.auth-otp-policy')
 ```
 
-共享DB目标串行；target/suite从当前发现选择，ci:core是全登记集合。typecheck/lint按改动包选，ci:contracts为现有工具检查。不要伪造runner身份运行。后台仅本机模板预览，入口是否可达每次实查，不以历史URL声称当前服务就绪。
+共享DB目标串行；target/suite从当前发现选择，ci:core是全登记集合。typecheck/lint按改动包选，ci:contracts为现有工具检查。不要伪造runner身份运行。
+
+账号批次真实本机连接显式选择`-Up -Services supabase,api,admin,metro`（新增迁移先显式`-Migrate`）。可选api进程仅监听127.0.0.1:4821，经原官方网关调用固定core账号/管理路由，保11服务内部网络、无宿主映射端口；不代理任意服务或模拟业务。admin私有密钥/anon凭据由既有runtime配置提供，浏览器只持加密HttpOnly会话。Metro使用同一loopback API；Android设备经`adb reverse tcp:4821 tcp:4821`连接，结束按需解除。`-ApiPort`可改端口，当前Origin允许本机后台3000。未选择api时保显式官方模板预览；连接模式变化须先Stop对应admin/metro再Up。Stop api不停止Supabase，数据卷不变。入口与服务每次Status实查，不以历史URL声称就绪。
 
 ## 2. 批次、配置与实际结果
 

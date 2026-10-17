@@ -868,7 +868,7 @@
       "files": [
         "tests/contract/auth/mobile-client.spec.ts"
       ],
-      "case_count": 45,
+      "case_count": 51,
       "requires_services": false
     },
     {
@@ -963,7 +963,7 @@
         "tests/contract/design/components.spec.ts",
         "tests/contract/design/native-controls.spec.ts"
       ],
-      "case_count": 6,
+      "case_count": 8,
       "requires_services": false
     },
     {
@@ -983,10 +983,54 @@
       ],
       "case_count": 3,
       "requires_services": true
+    },
+    {
+      "id": "core.admin-mfa-adapter",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/auth/supabase-admin-mfa.spec.ts"
+      ],
+      "case_count": 12,
+      "requires_services": false
+    },
+    {
+      "id": "core.admin-management-boundary",
+      "command": "ci:core:contracts",
+      "files": [
+        "tests/contract/admin/management-boundary.spec.ts",
+        "tests/contract/admin/management-controls.spec.ts",
+        "tests/contract/admin/management-qr.spec.ts"
+      ],
+      "case_count": 16,
+      "requires_services": false
+    },
+    {
+      "id": "core.admin-identity",
+      "command": "ci:security",
+      "files": [
+        "tests/security/auth/admin-identity.spec.ts"
+      ],
+      "case_count": 10,
+      "requires_services": true
+    },
+    {
+      "id": "core.admin-otp-configuration",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/admin-otp-configuration.spec.ts"
+      ],
+      "case_count": 13,
+      "requires_services": true
     }
   ],
-  "core_case_count": 279,
+  "core_case_count": 338,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0038_admin_identity_configuration.sql",
+      "depends_on": [
+        "supabase/migrations/0037_public_otp_hook_binding.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0037_public_otp_hook_binding.sql",
       "depends_on": [
@@ -1386,6 +1430,13 @@
       ],
       "command": "ci:contracts",
       "id": "ci.admin-font-assets"
+    },
+    {
+      "id": "ci.local-core-api",
+      "command": "ci:contracts",
+      "files": [
+        "tests/integration/ci/local-core-api.spec.ts"
+      ]
     }
   ]
 }

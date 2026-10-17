@@ -94,10 +94,11 @@ export function validateRuntimeConfig(runtime, config) {
   }
 }
 export async function main(options) {
-  const { action, source, workspace, environment = 'dev', services = ['supabase', 'admin'], timeout = 180, lines = 40, migrate = false, adminPort = 3000, metroPort = 8081 } = options;
+  const { action, source, workspace, environment = 'dev', services = ['supabase', 'admin'], timeout = 180, lines = 40, migrate = false, adminPort = 3000, metroPort = 8081, apiPort = 4821 } = options;
   if (!['dev', 'test'].includes(environment)) throw new Error('Development services require dev or test isolation');
-  if (!['up', 'status', 'logs', 'stop'].includes(action) || !services.length || services.some(name => !['supabase', 'admin', 'metro'].includes(name))) throw new Error('Select up/status/logs/stop and supabase/admin/metro services');
-  for (const value of [adminPort, metroPort]) if (!Number.isInteger(value) || value < 1024 || value > 65535) throw new Error('Development ports must be integers from 1024 to 65535');
+  if (!['up', 'status', 'logs', 'stop'].includes(action) || !services.length || services.some(name => !['supabase', 'api', 'admin', 'metro'].includes(name))) throw new Error('Select up/status/logs/stop and supabase/api/admin/metro services');
+  for (const value of [adminPort, metroPort, apiPort]) if (!Number.isInteger(value) || value < 1024 || value > 65535) throw new Error('Development ports must be integers from 1024 to 65535');
+  if (new Set([adminPort, metroPort, apiPort]).size !== 3) throw new Error('Development service ports must be distinct');
   if (!Number.isInteger(lines) || lines < 1 || lines > 1000 || timeout < 1 || timeout > 600) throw new Error('Invalid log line count or readiness timeout');
   if (Object.keys(process.env).some(key => /^(GITHUB_|RUNNER_)/.test(key) && process.env[key])) throw new Error('Local development services cannot mix runner identity');
   process.env.AGORAWEAVE_EXECUTION_SOURCE = 'local'; process.env.AGORAWEAVE_LOCAL_ENVIRONMENT = environment;
@@ -125,10 +126,10 @@ export async function main(options) {
       return true;
     } catch { return false; }
   };
-  if (services.includes('supabase')) {
+  if (services.includes('supabase') || action === 'up' && services.includes('api')) {
     try { docker(['info', '--format', '{{.ServerVersion}}']); } catch { throw new Error('Docker Desktop Linux engine unavailable; start Docker Desktop, then retry'); }
     const existing = resolve('.agoraweave/local', environment, 'runtime/identity.json');
-    if (action === 'up') {
+    if (action === 'up' && services.includes('supabase')) {
       // Fixed stack and credentials are reused; preparation never starts containers or resets storage.
       const previousDigest=existsSync(existing) ? read(existing).compose_digest : undefined;
       runtime = prepareLocalServices();
@@ -139,7 +140,7 @@ export async function main(options) {
   if (action === 'up') {
     dependencyCheck(workspace, services);
     if (migrate && !services.includes('supabase')) throw new Error('-Migrate requires supabase in -Services');
-    if (runtime) {
+    if (runtime && services.includes('supabase')) {
       // Missing images fail here instead of silently downloading unbudgeted dependencies.
       const images = new Set(Object.values(read(runtime.compose_file).services).map(service => service.image));
       for (const image of images) try { docker(['image', 'inspect', image, '--format', '{{.Id}}']); }
@@ -150,11 +151,23 @@ export async function main(options) {
       if (migrate) execFileSync(process.execPath, ['--experimental-strip-types', 'tools/ci/core-entry.ts', 'migrate'], { cwd: workspace, stdio: 'inherit', windowsHide: true, timeout: 180000 });
       console.log(`supabase ready (${runtime.project}; internal network, no host ports)`);
     }
-    for (const service of services.filter(name => name !== 'supabase')) {
-      const port = service === 'admin' ? adminPort : metroPort;
+    const connected=services.includes('api');
+    let privateValues;
+    if (connected) {
+      if (!runtime || !probeServices()) throw new Error('The existing official Supabase stack must be prepared and healthy before starting api');
+      privateValues=Object.fromEntries(readFileSync(runtime.environment_file,'utf8').split(/\r?\n/)
+        .filter(line=>/^[A-Z][A-Z0-9_]*=/.test(line)).map(line=>[line.slice(0,line.indexOf('=')),line.slice(line.indexOf('=')+1)]));
+      if (!/^[a-f0-9]{64}$/.test(privateValues.AGORAWEAVE_ADMIN_SESSION_KEY || '') || !privateValues.ANON_KEY)
+        throw new Error('Private admin session key is unavailable; explicitly prepare the Supabase configuration first');
+    }
+    const selected=['api','admin','metro'].filter(name=>services.includes(name));
+    for (const service of selected) {
+      const port = service === 'admin' ? adminPort : service === 'metro' ? metroPort : apiPort;
       const previous = state.processes[service];
       if (ownedProcess(previous)) {
         if (previous.port !== port) throw new Error(`${service} is already running on port ${previous.port}; stop it before changing ports`);
+        if (service !== 'api' && (previous.apiPort ?? null)!==(connected ? apiPort : null))
+          throw new Error(`${service} connection mode changed; stop it before restarting with the selected api service`);
         await waitUntil(() => endpointReady(previous), timeout, service);
         console.log(`${service} ready (reused pid ${previous.pid}): ${previous.url}`); continue;
       }
@@ -164,12 +177,18 @@ export async function main(options) {
       const npm = resolve(process.execPath, '../node_modules/npm/bin/npm-cli.js');
       const require = createRequire(resolve(workspace, 'apps/mobile/package.json'));
       const args = service === 'admin' ? [npm, 'run', 'dev', '--workspace', 'apps/admin', '--', '--hostname', '127.0.0.1', '--port', String(port)] :
+        service === 'api' ? ['--experimental-strip-types',resolve(workspace,'tools/dev/local-core-api.mjs'),String(port)] :
         ['--dns-result-order=ipv4first', require.resolve('expo/bin/cli'), 'start', '--dev-client', '--localhost', '--port', String(port)];
-      write(config, { executable: process.execPath, args, cwd: service === 'admin' ? workspace : resolve(workspace, 'apps/mobile'),
+      write(config, { executable: process.execPath, args, cwd: service === 'metro' ? resolve(workspace, 'apps/mobile') : workspace,
         env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development',
-          ...(service === 'admin' ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW: '1' } : {}), EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: 'false' } });
+          ...(service === 'admin' ? connected ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW:'',
+            AGORAWEAVE_ADMIN_CORE_API_URL:`http://127.0.0.1:${apiPort}/core/api/v1`,AGORAWEAVE_ADMIN_ENVIRONMENT:environment,
+            AGORAWEAVE_ADMIN_ANON_KEY:privateValues.ANON_KEY,AGORAWEAVE_ADMIN_SESSION_KEY:privateValues.AGORAWEAVE_ADMIN_SESSION_KEY } :
+            { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW:'1',AGORAWEAVE_ADMIN_CORE_API_URL:'',AGORAWEAVE_ADMIN_ENVIRONMENT:'',AGORAWEAVE_ADMIN_ANON_KEY:'',AGORAWEAVE_ADMIN_SESSION_KEY:'' } : {}),
+          ...(service==='metro' ? {EXPO_PUBLIC_API_URL:connected ? `http://127.0.0.1:${apiPort}/core/api/v1` : ''} : {}),
+          EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: 'false' } });
       const entry = { ...startProcess(config, resolve(directory, `${service}-${token}.out.log`), resolve(directory, `${service}-${token}.err.log`)),
-        service, port, url: `http://127.0.0.1:${port}${service === 'metro' ? '/status' : '/'}`, ...identity };
+        service, port, apiPort:connected ? apiPort : null, url: `http://127.0.0.1:${port}${service === 'metro' || service==='api' ? '/status' : '/'}`, ...identity };
       state.processes[service] = entry; Object.assign(state, identity); write(statePath, state);
       await waitUntil(() => {
         if (!ownedProcess(entry)) throw new Error(`${service} exited before becoming ready; inspect private -Logs`);
