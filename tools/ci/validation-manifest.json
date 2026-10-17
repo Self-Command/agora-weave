@@ -912,7 +912,7 @@
       "files": [
         "tests/integration/core/gateways.spec.ts"
       ],
-      "case_count": 5,
+      "case_count": 11,
       "requires_services": true
     },
     {
@@ -952,7 +952,7 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 182,
+  "core_case_count": 188,
   "core_migrations": [
     {
       "file": "supabase/migrations/0112_recovery_binding_fix.sql",
@@ -1207,6 +1207,12 @@
       "depends_on": [
         "supabase/migrations/0026_effect_lease_guards.sql",
         "supabase/migrations/0016_gateway_binding_fixes.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0028_document_read_sets.sql",
+      "depends_on": [
+        "supabase/migrations/0027_document_release_clock.sql"
       ]
     }
   ],
