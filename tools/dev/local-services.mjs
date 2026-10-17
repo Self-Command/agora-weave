@@ -162,7 +162,7 @@ export async function main(options) {
       const npm = resolve(process.execPath, '../node_modules/npm/bin/npm-cli.js');
       const require = createRequire(resolve(workspace, 'apps/mobile/package.json'));
       const args = service === 'admin' ? [npm, 'run', 'dev', '--workspace', 'apps/admin', '--', '--hostname', '127.0.0.1', '--port', String(port)] :
-        [require.resolve('expo/bin/cli'), 'start', '--dev-client', '--localhost', '--port', String(port)];
+        ['--dns-result-order=ipv4first', require.resolve('expo/bin/cli'), 'start', '--dev-client', '--localhost', '--port', String(port)];
       write(config, { executable: process.execPath, args, cwd: service === 'admin' ? workspace : resolve(workspace, 'apps/mobile'),
         env: { AGORAWEAVE_EXECUTION_SOURCE: 'local', AGORAWEAVE_LOCAL_ENVIRONMENT: environment, NODE_ENV: 'development',
           ...(service === 'admin' ? { AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW: '1' } : {}), EXPO_NO_TELEMETRY: '1', NEXT_TELEMETRY_DISABLED: '1', CI: 'false' } });
