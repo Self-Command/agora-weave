@@ -91,4 +91,6 @@ Expo UI 的原生控件按其真实 modifier/props 适配，不假定所有原�
 [免费版说明](https://docs.uniwind.dev/pro-version)列明其没有新增原生代码，免费版已提供主题及Tailwind绑定；
 本次不采购Pro，不以供应商速度宣传作为项目实测。动态原生样式仍可使用必要 style，不把“零手写样式”设成新门禁。
 
-本次仅完成评估与后续接入建议，未安装Uniwind或改变开发包；下一次接入须锁定版本并实际验证bundle、主题和热更新。
+初次仅完成评估；随后同日用户明确要求立即安装接入。已锁定Uniwind1.12.2/Tailwind4.3.3，配置Metro、根布局CSS导入及
+现有原生token浅深主题，已有BusinessState保持尺寸/颜色并使用语义类。现行约定记入execution-policy与plan/quickstart；
+未改变稳定宪法原则或待批准页面范围，具体实际验证以current-development-state记录为准。

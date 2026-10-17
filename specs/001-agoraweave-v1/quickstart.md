@@ -15,6 +15,11 @@ App/分享页新增或设计变更先在统一HTML原型补具体页面/状态�
 页面开发用prototype/README精确定位；已批设计忠实还原并允许必要原生适配，细微渲染差异不单独阻塞阶段。
 旧账号/分享呈现已按用户要求退役，空路由不算UI完成；后台完整官方源码保留，按开发模块接业务，当前状态优先。
 
+App已接入Uniwind1.12.2/Tailwind4.3.3，常规样式优先className；入口apps/mobile/global.css及metro.config.js。
+使用现有原生token语义类（bg-bg/text-fg/text-secondary/bg-accent/rounded-input等），不要套用默认调色板重设计。
+Expo UI原生modifier及必要动态style保留。样式/类名改动沿用Metro热更新，改Metro配置才重启该服务；不因此重编APK。
+新增获批页面直接复用此接入，账号r2仍待人的具体批准。
+
 源码工作树保持原路径。运行 `./tools/dev/local.ps1 -Prepare -Install` 准备H盘项目运行副本及环境；之后在输出的H盘工作区运行当前目标用例和直接受影响回归。配置见 `infra/development/policy.json`。后续通过同一入口传入 `-Command @('node','--experimental-strip-types','--test','tests/目标.spec.ts')`，入口先同步源码，再在H盘执行并保留真实退出状态。
 
 依赖、构建、当前数据库和测试通道可用后直接推进业务；无关工程完善记后续，完整共享核心验收不作全部消费者前置。可配置运行副本、依赖、缓存、临时内容、产物和报告使用H:/Projects/AgoraWeave/development；系统管理工具及全局Docker存储记录例外，保留旧副本。

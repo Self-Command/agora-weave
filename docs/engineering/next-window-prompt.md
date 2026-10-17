@@ -36,9 +36,9 @@ Supabase继续完整官方Compose/Auth/Postgres/Storage/Realtime，优先配置/
 普通JS/TS用Metro/Next热更新；所有APK/AAB/IPA只在Actions编译，本机仅下载安装复检。
 真机arm64-v8a、模拟器x86_64，无32位。App保持Expo/RN/Expo UI，不转网站或WebView。
 
-用户建议采用Uniwind减少重复App样式，官方评估已完成，优先在下一批获批页面接入免费MIT版及Tailwind4。
-本次尚未安装；先核当前官方版本并锁定，映射既有设计token，按monorepo指引只扫描实际App/共享组件。
-配置Metro及正确CSS导入位置，复用同一运行环境并实际验证bundle、主题、热更新；不因纯JS样式依赖无故重建APK。
+用户已要求并完成安装Uniwind免费MIT版1.12.2及Tailwind4.3.3，后续App常规样式优先语义className。
+apps/mobile/metro.config.js和app/_layout.tsx已接入global.css，浅深颜色映射packages/design/src/tokens.ts的原生适配值；
+只扫描实际App/共享组件，沿用同一运行环境和Metro。已有BusinessState按原尺寸/颜色接入类名；不因纯JS样式依赖重建APK。
 Expo UI原生控件按其modifier/props适配，必要动态style保留；Uniwind不替代原型批准或决定页面设计。
 后台继续使用完整模板原有Tailwind/shadcn方案。依据及官方链接见prototype-development-research-2026-10-17.md的Uniwind评估。
 
