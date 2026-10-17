@@ -14,6 +14,22 @@ final class BootstrapShellTests: XCTestCase {
     let app = XCUIApplication(bundleIdentifier: "org.agoraweave.app")
     app.launch()
     XCTAssertTrue(app.wait(for: .runningForeground, timeout: 15))
+    let phone = app.textFields["手机号"]
+    XCTAssertTrue(phone.waitForExistence(timeout: 20))
+    phone.tap()
+    phone.typeText("123")
+    XCTAssertEqual(phone.value as? String, "123")
+    let getCode = app.buttons["获取验证码"]
+    for _ in 0..<5 {
+      if getCode.isHittable { break }
+      app.scrollViews.firstMatch.swipeUp()
+    }
+    XCTAssertTrue(getCode.isHittable)
+    XCTAssertTrue(getCode.isEnabled)
+    XCTAssertGreaterThanOrEqual(getCode.frame.height, 44)
+    getCode.tap()
+    XCTAssertTrue(app.staticTexts["请输入有效手机号"].waitForExistence(timeout: 5))
+    XCTAssertEqual(phone.value as? String, "123")
     if let configURL = Bundle(for: Self.self).url(forResource: "https-client", withExtension: "json") {
       try verifyHTTPS(configURL)
     }
@@ -24,7 +40,7 @@ final class BootstrapShellTests: XCTestCase {
     XCTAssertEqual(XCTWaiter.wait(for: [background], timeout: 5), .completed)
     app.activate()
     XCTAssertTrue(app.wait(for: .runningForeground, timeout: 5))
-    let scope = XCTAttachment(string: "runtime-lifecycle-and-optional-https-only; account UI retired; product UI not verified")
+    let scope = XCTAttachment(string: "approved-account-r2-input-action-error-feedback-and-runtime; full account journey not verified")
     scope.name = "runtime-only-scope"
     scope.lifetime = .keepAlways
     add(scope)
@@ -72,7 +88,7 @@ final class BootstrapShellTests: XCTestCase {
     XCTAssertTrue(getCode.exists)
     XCTAssertTrue(getCode.isHittable)
     getCode.tap()
-    XCTAssertTrue(app.staticTexts["请输入有效手机号，境外号码请加国家区号"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["请输入有效手机号"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["手机号登录"].exists)
     XCTAssertFalse(app.textFields["短信验证码"].exists)
     let validation = XCTAttachment(screenshot: XCUIScreen.main.screenshot())

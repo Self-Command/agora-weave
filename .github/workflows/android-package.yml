@@ -92,7 +92,7 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "package-output/agoraweave-$PACKAGE_VARIANT-$PACKAGE_ABI.apk" > package-output/apk-metadata.txt
           grep -F "native-code: '$PACKAGE_ABI'" package-output/apk-metadata.txt
           sha256sum "package-output/agoraweave-$PACKAGE_VARIANT-$PACKAGE_ABI.apk" > package-output/SHA256SUMS
-          printf 'source_sha=%s\nrun_id=%s\nvariant=%s\nabi=%s\nsigning=isolated-debug-test-key\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" "$PACKAGE_VARIANT" "$PACKAGE_ABI" > package-output/source.txt
+          printf 'source_sha=%s\nrun_id=%s\nvariant=%s\nabi=%s\nsigning=isolated-debug-test-key\n' "$GITHUB_SHA" "$GITHUB_RUN_ID" "$PACKAGE_VARIANT" "$PACKAGE_ABI" > "package-output/source-$PACKAGE_ABI.txt"
       - name: Upload install package and diagnostics
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

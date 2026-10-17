@@ -39,6 +39,14 @@ test('LS01: local preparation uses the fixed official Compose with private crede
         '-f', join(directory, 'compose.json'), 'config', '--format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }));
       assert.equal(config.networks.default.internal, true);
       assert.equal(Object.keys(config.services).length, 11);
+      assert.equal(config.services.auth.environment.GOTRUE_JWT_ISSUER, config.services.functions.environment.CORE_JWT_ISSUER,
+        'The real Auth issuer and core signature verifier must agree in each isolated environment');
+      const cloudConfig = JSON.parse(execFileSync('docker', ['compose', '--project-directory', join(root, 'supabase/upstream/docker'),
+        '--env-file', join(directory, 'services.env'), '-f', join(root, 'supabase/upstream/docker/docker-compose.yml'),
+        '-f', join(root, 'infra/ci/compose.yml'), 'config', '--format', 'json'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+        env: { ...base, CI_ENVIRONMENT: environment, GITHUB_WORKSPACE: root, API_EXTERNAL_URL: 'https://different-fixture.invalid/auth/v1' } }));
+      assert.equal(cloudConfig.services.auth.environment.GOTRUE_JWT_ISSUER, cloudConfig.services.functions.environment.CORE_JWT_ISSUER,
+        'A different runner external URL must not make actual Auth refresh tokens unverifiable by the core');
       const lock: { images: { repo_digests: string[] }[] } = JSON.parse(readFileSync(join(root, 'infra/ci/images.lock.json'), 'utf8'));
       for (const [name, service] of Object.entries(config.services)) {
         assert.equal(service.ports?.length || 0, 0, name);
