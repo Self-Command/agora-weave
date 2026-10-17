@@ -988,6 +988,12 @@
   "core_case_count": 279,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0037_public_otp_hook_binding.sql",
+      "depends_on": [
+        "supabase/migrations/0036_public_otp_broker.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0036_public_otp_broker.sql",
       "depends_on": [
         "supabase/migrations/0035_otp_auth_completion.sql"
