@@ -1265,6 +1265,13 @@
       ],
       "id": "ci.admin-template-preview",
       "command": "ci:contracts"
+    },
+    {
+      "files": [
+        "tests/security/admin/font-assets.spec.ts"
+      ],
+      "command": "ci:contracts",
+      "id": "ci.admin-font-assets"
     }
   ]
 }
