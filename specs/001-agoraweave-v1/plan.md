@@ -6,7 +6,7 @@
 
 **Status**: 现行依据宪法6.0.0与[ED-24执行政策](../../docs/engineering/execution-policy.md)：保留现有SK资料与285任务，按阶段后端→集中获批App页面/API→集中实际客户端复检；日常目标测试与影响回归，发布完整适用矩阵。历史工程决定不覆盖当前政策。 产品、安全和正式验收范围保持；当前业务状态见current-development-state。
 
-**执行分工（2026-10-17已批准）**：主agent统筹架构、接口、复杂风险、集成验证和交付；后端/App/后台开发角色显式用 `gpt-6-sol` / `high`，复杂子任务由主agent或显式允许的 `gpt-6.1-sol` 承担。UI复检独立用 `gpt-5.6-luna` / `xhigh`，不参与开发。按独立文件和依赖分批启用，活动数服从工具上限；共享DB、H盘运行区与设备串行，公共契约/锁文件/迁移编号/规范由主agent协调。委派及复检边界统一见[执行政策](../../docs/engineering/execution-policy.md#已批准的多-agent-分工)，不改变产品架构或生成新任务集。
+**执行分工（2026-10-17已批准，开发模型按同日最新要求）**：主agent统筹架构、接口、复杂风险、集成验证和交付；所有开发子agent（含后端/App/后台与代码复检）统一显式用 `gpt-6.1-sol` / `high`，复杂子任务由主agent或按同一配置委派。UI复检独立用 `gpt-5.6-luna` / `xhigh`，不参与开发。按独立文件和依赖分批启用，活动数服从工具上限；共享DB、H盘运行区与设备串行，公共契约/锁文件/迁移编号/规范由主agent协调。委派及复检边界统一见[执行政策](../../docs/engineering/execution-policy.md#已批准的多-agent-分工)，不改变产品架构或生成新任务集。
 
 **历史补充依据**：2026-10-16用户批准[ED-22](../../docs/engineering/business-first-development-decision.md)，取代ED-21中冲突的过程要求；ED-20、既有产品决定和历史结果保留。
 
