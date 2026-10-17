@@ -1,6 +1,6 @@
 # 规范同步基线
 
-现行规范是 ED-24 与宪法6.0.0。规范文件清单见 `tools/dev/governance-sync-manifest.json`。
+现行规范是 ED-24 与宪法7.0.0。规范文件清单见 `tools/dev/governance-sync-manifest.json`。
 
 规范变更必须在同一变更中执行：
 

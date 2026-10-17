@@ -22,7 +22,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=login；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=login&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -30,18 +30,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-register",
@@ -66,7 +76,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=register；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=register&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -74,18 +84,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-otp",
@@ -111,7 +131,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=otp；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=otp&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -119,18 +139,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AuthScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "App启动 → 登录；按页面切换加入或验证码",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-security",
@@ -155,7 +185,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=security；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=security&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -163,18 +193,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "登录后 → 账号安全",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "account-recovery",
@@ -203,7 +243,7 @@
         "android",
         "ios"
       ],
-      "design_source": "docs/design/prototype/index.html → 页面=recovery；状态选择器",
+      "design_source": "docs/design/prototype/index.html?page=recovery&scene=正常&theme=light；scene/theme可选择对应状态主题",
       "design_version": "account-r2",
       "design_files": [
         "docs/design/prototype/index.html",
@@ -211,18 +251,28 @@
         "docs/design/prototype/account-pages.js",
         "docs/design/design-tokens.json"
       ],
-      "design_digest": "2378c312ec4bb66baf853103e924b7c3a377f35120492d1c8de639f5c4a7d6ad",
+      "design_digest": "221146cc64b55c33d23c8c42d34f2c7935d6cf641f6597d56c33cf7f2b88b0c4",
       "approval": {
         "state": "pending"
       },
       "production_entry": "apps/mobile/app/(auth)/index.tsx",
       "component_paths": [
-        "apps/mobile/src/features/account/RecoveryScreen.tsx",
-        "apps/mobile/src/features/account/AccountRoot.tsx"
+        "apps/mobile/app/(auth)/index.tsx"
       ],
-      "navigation": "账号安全 → 恢复申请",
-      "implementation": "existing-partial-unreviewed",
-      "reviews": []
+      "navigation": "旧账号呈现层按用户指令移除；框架入口暂为空，后续按本页获批设计重建",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次删除旧前端UI，先保留真实业务逻辑；不表示账号r2已批准",
+        "removed_paths": [
+          "apps/mobile/src/features/account/AuthScreen.tsx",
+          "apps/mobile/src/features/account/AccountSecurityScreen.tsx",
+          "apps/mobile/src/features/account/RecoveryScreen.tsx",
+          "apps/mobile/src/features/account/AccountRoot.tsx"
+        ],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     },
     {
       "id": "phase2-shared-components",
@@ -268,7 +318,6 @@
         "apps/mobile/src/features/account/components.tsx",
         "apps/admin/src/components/business-state.tsx",
         "apps/share/src/components/ReadingState.tsx",
-        "apps/admin/src/app/globals.css",
         "apps/share/src/app/globals.css",
         "packages/design/src/tokens.ts",
         "packages/design/src/states.ts"
@@ -281,7 +330,7 @@
       "id": "admin-official-template",
       "kind": "page",
       "surface": "management-admin",
-      "title": "Kiranism官方后台基准（待恢复）",
+      "title": "Kiranism完整官方后台基准（本机开发预览）",
       "states": [
         "template-baseline"
       ],
@@ -306,12 +355,274 @@
       },
       "production_entry": "apps/admin/src/app/page.tsx",
       "component_paths": [
+        "apps/admin/src/styles/themes/zen.css",
+        "apps/admin/src/styles/themes/whatsapp.css",
+        "apps/admin/src/styles/themes/vercel.css",
+        "apps/admin/src/styles/themes/supabase.css",
+        "apps/admin/src/styles/themes/notebook.css",
+        "apps/admin/src/styles/themes/mono.css",
+        "apps/admin/src/styles/themes/light-green.css",
+        "apps/admin/src/styles/themes/discord.css",
+        "apps/admin/src/styles/themes/claude.css",
+        "apps/admin/src/styles/themes/astro-vista.css",
+        "apps/admin/src/styles/theme.css",
+        "apps/admin/src/styles/globals.css",
+        "apps/admin/src/hooks/use-stepper.tsx",
+        "apps/admin/src/hooks/use-mobile.tsx",
+        "apps/admin/src/hooks/use-debounce.tsx",
+        "apps/admin/src/hooks/use-controllable-state.tsx",
+        "apps/admin/src/hooks/use-callback-ref.tsx",
+        "apps/admin/src/hooks/use-breadcrumbs.tsx",
+        "apps/admin/src/components/business-state.tsx",
+        "apps/admin/src/components/breadcrumbs.tsx",
+        "apps/admin/src/components/file-uploader.tsx",
+        "apps/admin/src/components/form-card-skeleton.tsx",
         "apps/admin/src/app/page.tsx",
-        "apps/admin/src/app/layout.tsx"
+        "apps/admin/src/app/not-found.tsx",
+        "apps/admin/src/app/layout.tsx",
+        "apps/admin/src/app/global-error.tsx",
+        "apps/admin/src/components/user-avatar-profile.tsx",
+        "apps/admin/src/features/ai-chat/components/ai-chat-demo.tsx",
+        "apps/admin/src/components/nav-main.tsx",
+        "apps/admin/src/features/auth/components/user-auth-form.tsx",
+        "apps/admin/src/features/auth/components/sign-up-view.tsx",
+        "apps/admin/src/features/auth/components/sign-in-view.tsx",
+        "apps/admin/src/features/auth/components/interactive-grid.tsx",
+        "apps/admin/src/features/auth/components/github-auth-button.tsx",
+        "apps/admin/src/components/icons.tsx",
+        "apps/admin/src/components/modal/alert-modal.tsx",
+        "apps/admin/src/components/ui/tooltip.tsx",
+        "apps/admin/src/components/ui/toggle.tsx",
+        "apps/admin/src/components/ui/toggle-group.tsx",
+        "apps/admin/src/components/ui/toast.tsx",
+        "apps/admin/src/components/ui/textarea.tsx",
+        "apps/admin/src/components/ui/tabs.tsx",
+        "apps/admin/src/components/ui/table.tsx",
+        "apps/admin/src/components/layout/user-nav.tsx",
+        "apps/admin/src/components/layout/query-provider.tsx",
+        "apps/admin/src/components/layout/providers.tsx",
+        "apps/admin/src/components/layout/page-container.tsx",
+        "apps/admin/src/components/layout/info-sidebar.tsx",
+        "apps/admin/src/components/layout/header.tsx",
+        "apps/admin/src/components/layout/cta-github.tsx",
+        "apps/admin/src/components/layout/app-sidebar.tsx",
+        "apps/admin/src/components/forms/submit-button.tsx",
+        "apps/admin/src/app/dashboard/workspaces/team/[[...rest]]/page.tsx",
+        "apps/admin/src/app/dashboard/workspaces/page.tsx",
+        "apps/admin/src/components/ui/table/data-table.tsx",
+        "apps/admin/src/components/ui/table/data-table-view-options.tsx",
+        "apps/admin/src/components/ui/table/data-table-toolbar.tsx",
+        "apps/admin/src/components/ui/table/data-table-slider-filter.tsx",
+        "apps/admin/src/components/ui/table/data-table-skeleton.tsx",
+        "apps/admin/src/components/ui/table/data-table-pagination.tsx",
+        "apps/admin/src/components/ui/table/data-table-filter-clear.tsx",
+        "apps/admin/src/components/ui/table/data-table-faceted-filter.tsx",
+        "apps/admin/src/components/kbar/use-theme-switching.tsx",
+        "apps/admin/src/components/ui/table/data-table-date-filter.tsx",
+        "apps/admin/src/components/kbar/result-item.tsx",
+        "apps/admin/src/components/ui/table/data-table-column-header.tsx",
+        "apps/admin/src/components/kbar/render-result.tsx",
+        "apps/admin/src/components/kbar/index.tsx",
+        "apps/admin/src/components/ui/switch.tsx",
+        "apps/admin/src/components/ui/spinner.tsx",
+        "apps/admin/src/components/ui/sonner.tsx",
+        "apps/admin/src/components/ui/slider.tsx",
+        "apps/admin/src/components/ui/skeleton.tsx",
+        "apps/admin/src/components/ui/sidebar.tsx",
+        "apps/admin/src/components/ui/sheet.tsx",
+        "apps/admin/src/components/ui/separator.tsx",
+        "apps/admin/src/components/ui/select.tsx",
+        "apps/admin/src/components/ui/scroll-area.tsx",
+        "apps/admin/src/components/ui/resizable.tsx",
+        "apps/admin/src/components/ui/radio-group.tsx",
+        "apps/admin/src/components/ui/progress.tsx",
+        "apps/admin/src/components/ui/file-preview.tsx",
+        "apps/admin/src/components/ui/field.tsx",
+        "apps/admin/src/components/ui/empty.tsx",
+        "apps/admin/src/components/ui/dropdown-menu.tsx",
+        "apps/admin/src/components/ui/drawer.tsx",
+        "apps/admin/src/components/ui/direction.tsx",
+        "apps/admin/src/components/ui/dialog.tsx",
+        "apps/admin/src/components/ui/context-menu.tsx",
+        "apps/admin/src/components/ui/command.tsx",
+        "apps/admin/src/components/ui/combobox.tsx",
+        "apps/admin/src/components/ui/collapsible.tsx",
+        "apps/admin/src/components/ui/checkbox.tsx",
+        "apps/admin/src/components/ui/chart.tsx",
+        "apps/admin/src/components/ui/carousel.tsx",
+        "apps/admin/src/components/ui/card.tsx",
+        "apps/admin/src/components/ui/calendar.tsx",
+        "apps/admin/src/components/ui/button.tsx",
+        "apps/admin/src/components/ui/button-group.tsx",
+        "apps/admin/src/components/ui/bubble.tsx",
+        "apps/admin/src/components/ui/breadcrumb.tsx",
+        "apps/admin/src/components/ui/badge.tsx",
+        "apps/admin/src/components/ui/avatar.tsx",
+        "apps/admin/src/components/ui/attachment.tsx",
+        "apps/admin/src/components/ui/aspect-ratio.tsx",
+        "apps/admin/src/components/ui/alert.tsx",
+        "apps/admin/src/components/ui/alert-dialog.tsx",
+        "apps/admin/src/components/ui/popover.tsx",
+        "apps/admin/src/components/ui/accordion.tsx",
+        "apps/admin/src/components/ui/pagination.tsx",
+        "apps/admin/src/components/ui/notification-card.tsx",
+        "apps/admin/src/components/ui/navigation-menu.tsx",
+        "apps/admin/src/components/ui/native-select.tsx",
+        "apps/admin/src/components/ui/modal.tsx",
+        "apps/admin/src/components/ui/message.tsx",
+        "apps/admin/src/components/ui/message-scroller.tsx",
+        "apps/admin/src/components/ui/menubar.tsx",
+        "apps/admin/src/components/ui/marker.tsx",
+        "apps/admin/src/components/ui/loading-button.tsx",
+        "apps/admin/src/components/ui/label.tsx",
+        "apps/admin/src/components/ui/kbd.tsx",
+        "apps/admin/src/components/ui/kanban.tsx",
+        "apps/admin/src/components/ui/item.tsx",
+        "apps/admin/src/components/ui/input.tsx",
+        "apps/admin/src/components/ui/input-otp.tsx",
+        "apps/admin/src/components/ui/input-group.tsx",
+        "apps/admin/src/components/ui/infobar.tsx",
+        "apps/admin/src/components/ui/info-button.tsx",
+        "apps/admin/src/components/ui/hover-card.tsx",
+        "apps/admin/src/components/ui/heading.tsx",
+        "apps/admin/src/components/ui/frame.tsx",
+        "apps/admin/src/features/users/components/users-table/options.tsx",
+        "apps/admin/src/app/dashboard/users/page.tsx",
+        "apps/admin/src/features/users/components/users-table/index.tsx",
+        "apps/admin/src/features/users/components/users-table/columns.tsx",
+        "apps/admin/src/features/users/components/users-table/cell-action.tsx",
+        "apps/admin/src/features/users/components/user-listing.tsx",
+        "apps/admin/src/features/users/components/user-form-sheet.tsx",
+        "apps/admin/src/app/dashboard/users/loading.tsx",
+        "apps/admin/src/components/forms/fields/toggle-group-field.tsx",
+        "apps/admin/src/components/forms/fields/textarea-field.tsx",
+        "apps/admin/src/components/forms/fields/text-field.tsx",
+        "apps/admin/src/components/forms/fields/tags-field.tsx",
+        "apps/admin/src/components/forms/fields/switch-field.tsx",
+        "apps/admin/src/components/forms/fields/slider-field.tsx",
+        "apps/admin/src/components/forms/fields/select-field.tsx",
+        "apps/admin/src/components/forms/fields/radio-group-field.tsx",
+        "apps/admin/src/components/forms/fields/otp-field.tsx",
+        "apps/admin/src/components/forms/fields/file-upload-field.tsx",
+        "apps/admin/src/components/forms/fields/date-picker-field.tsx",
+        "apps/admin/src/components/forms/fields/combobox-field.tsx",
+        "apps/admin/src/components/forms/fields/color-field.tsx",
+        "apps/admin/src/components/forms/fields/checkbox-group-field.tsx",
+        "apps/admin/src/components/forms/fields/checkbox-field.tsx",
+        "apps/admin/src/components/forms/demo-form.tsx",
+        "apps/admin/src/components/search-input.tsx",
+        "apps/admin/src/components/org-switcher.tsx",
+        "apps/admin/src/components/nav-user.tsx",
+        "apps/admin/src/components/themes/theme-selector.tsx",
+        "apps/admin/src/components/nav-projects.tsx",
+        "apps/admin/src/components/themes/theme-provider.tsx",
+        "apps/admin/src/components/themes/theme-mode-toggle.tsx",
+        "apps/admin/src/app/dashboard/react-query/page.tsx",
+        "apps/admin/src/features/profile/components/profile-view-page.tsx",
+        "apps/admin/src/app/dashboard/profile/[[...profile]]/page.tsx",
+        "apps/admin/src/features/react-query-demo/components/pokemon-skeleton.tsx",
+        "apps/admin/src/features/react-query-demo/components/pokemon-info.tsx",
+        "apps/admin/src/features/kanban/components/task-card.tsx",
+        "apps/admin/src/features/kanban/components/new-task-dialog.tsx",
+        "apps/admin/src/features/kanban/components/kanban-view-page.tsx",
+        "apps/admin/src/features/kanban/components/kanban-board.tsx",
+        "apps/admin/src/features/kanban/components/board-column.tsx",
+        "apps/admin/src/app/dashboard/product/[productId]/page.tsx",
+        "apps/admin/src/app/dashboard/product/page.tsx",
+        "apps/admin/src/app/dashboard/product/loading.tsx",
+        "apps/admin/src/app/dashboard/page.tsx",
+        "apps/admin/src/app/dashboard/exclusive/page.tsx",
+        "apps/admin/src/components/themes/fonts/space-mono/google.css",
+        "apps/admin/src/app/dashboard/overview/layout.tsx",
+        "apps/admin/src/app/dashboard/overview/error.tsx",
+        "apps/admin/src/features/products/components/product-view-page.tsx",
+        "apps/admin/src/features/forms/components/sheet-product-form.tsx",
+        "apps/admin/src/features/forms/components/sheet-form-demo.tsx",
+        "apps/admin/src/features/forms/components/multi-step-product-form.tsx",
+        "apps/admin/src/features/forms/components/forms-showcase-page.tsx",
+        "apps/admin/src/features/forms/components/advanced-form-patterns.tsx",
+        "apps/admin/src/components/themes/fonts/source-code-pro/google.css",
+        "apps/admin/src/app/dashboard/elements/icons/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@sales/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@sales/loading.tsx",
+        "apps/admin/src/app/dashboard/overview/@sales/error.tsx",
+        "apps/admin/src/app/dashboard/overview/@sales/default.tsx",
+        "apps/admin/src/features/products/components/product-tables/options.tsx",
+        "apps/admin/src/features/products/components/product-tables/index.tsx",
+        "apps/admin/src/features/products/components/product-tables/columns.tsx",
+        "apps/admin/src/features/products/components/product-tables/cell-action.tsx",
+        "apps/admin/src/features/products/components/product-listing.tsx",
+        "apps/admin/src/features/products/components/product-form.tsx",
+        "apps/admin/src/components/themes/fonts/playfair-display/google.css",
+        "apps/admin/src/app/dashboard/chat/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@pie_stats/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@pie_stats/loading.tsx",
+        "apps/admin/src/app/dashboard/overview/@pie_stats/error.tsx",
+        "apps/admin/src/app/dashboard/overview/@pie_stats/default.tsx",
+        "apps/admin/src/features/elements/components/icons-view-page.tsx",
+        "apps/admin/src/components/themes/fonts/outfit/google.css",
+        "apps/admin/src/app/dashboard/billing/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@bar_stats/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@bar_stats/loading.tsx",
+        "apps/admin/src/app/dashboard/overview/@bar_stats/error.tsx",
+        "apps/admin/src/app/dashboard/overview/@bar_stats/default.tsx",
+        "apps/admin/src/components/themes/fonts/noto-sans-mono/google.css",
+        "apps/admin/src/app/dashboard/ai-chat/page.tsx",
+        "apps/admin/src/features/chat/components/messenger.tsx",
+        "apps/admin/src/features/chat/components/message-composer.tsx",
+        "apps/admin/src/features/chat/components/message-bubble.tsx",
+        "apps/admin/src/features/chat/components/conversation-select.tsx",
+        "apps/admin/src/features/chat/components/conversation-list.tsx",
+        "apps/admin/src/features/chat/components/chat-view-page.tsx",
+        "apps/admin/src/features/chat/components/chat-header.tsx",
+        "apps/admin/src/features/chat/components/chat-area.tsx",
+        "apps/admin/src/app/dashboard/overview/@area_stats/page.tsx",
+        "apps/admin/src/app/dashboard/overview/@area_stats/loading.tsx",
+        "apps/admin/src/app/dashboard/overview/@area_stats/error.tsx",
+        "apps/admin/src/app/dashboard/overview/@area_stats/default.tsx",
+        "apps/admin/src/components/themes/fonts/mulish/google.css",
+        "apps/admin/src/features/overview/components/stats-error.tsx",
+        "apps/admin/src/features/overview/components/recent-sales.tsx",
+        "apps/admin/src/features/overview/components/recent-sales-skeleton.tsx",
+        "apps/admin/src/features/overview/components/pie-graph.tsx",
+        "apps/admin/src/features/overview/components/pie-graph-skeleton.tsx",
+        "apps/admin/src/features/overview/components/overview.tsx",
+        "apps/admin/src/features/overview/components/bar-graph.tsx",
+        "apps/admin/src/features/overview/components/bar-graph-skeleton.tsx",
+        "apps/admin/src/features/overview/components/area-graph.tsx",
+        "apps/admin/src/features/overview/components/area-graph-skeleton.tsx",
+        "apps/admin/src/features/notifications/components/notifications-page.tsx",
+        "apps/admin/src/features/notifications/components/notification-center.tsx",
+        "apps/admin/src/app/dashboard/notifications/page.tsx",
+        "apps/admin/src/app/dashboard/layout.tsx",
+        "apps/admin/src/components/themes/fonts/merriweather/google.css",
+        "apps/admin/src/app/dashboard/kanban/page.tsx",
+        "apps/admin/src/components/themes/fonts/geist/google.css",
+        "apps/admin/src/components/themes/fonts/jetbrains-mono/google.css",
+        "apps/admin/src/components/themes/fonts/architects-daughter/google.css",
+        "apps/admin/src/components/themes/active-theme.tsx",
+        "apps/admin/src/app/dashboard/forms/sheet-form/page.tsx",
+        "apps/admin/src/app/dashboard/forms/page.tsx",
+        "apps/admin/src/components/themes/fonts/inter/google.css",
+        "apps/admin/src/components/themes/fonts/fira-code/google.css",
+        "apps/admin/src/components/themes/fonts/dm-sans/google.css",
+        "apps/admin/src/app/dashboard/forms/multi-step/page.tsx",
+        "apps/admin/src/components/themes/fonts/instrument-sans/google.css",
+        "apps/admin/src/components/themes/fonts/google-sans-flex/google.css",
+        "apps/admin/src/app/auth/page.tsx",
+        "apps/admin/src/app/auth/layout.tsx",
+        "apps/admin/src/components/themes/fonts/geist-mono/google.css",
+        "apps/admin/src/app/auth/sign-up/[[...sign-up]]/page.tsx",
+        "apps/admin/src/app/dashboard/forms/basic/page.tsx",
+        "apps/admin/src/app/dashboard/forms/advanced/page.tsx",
+        "apps/admin/src/app/auth/sign-in/[[...sign-in]]/page.tsx"
       ],
-      "navigation": "管理后台 /；当前仅h1入口，完整模板和业务尚待恢复/实现",
-      "implementation": "template-not-restored-business-not-complete",
-      "reviews": []
+      "navigation": "仅127.0.0.1开发服务且显式AGORAWEAVE_ADMIN_TEMPLATE_PREVIEW=1时预览官方合成模板；生产默认403，真实管理身份/MFA/权限/业务尚未接入",
+      "implementation": "full-official-source-imported-local-template-only-real-management-pending",
+      "reviews": [],
+      "removed_paths": [
+        "apps/admin/src/app/globals.css"
+      ]
     },
     {
       "id": "share-reading",
@@ -340,12 +651,17 @@
       },
       "production_entry": "apps/share/src/app/page.tsx",
       "component_paths": [
-        "apps/share/src/app/page.tsx",
-        "apps/share/src/app/layout.tsx"
+        "apps/share/src/app/page.tsx"
       ],
-      "navigation": "分享Web /；真实分享对象路由尚待实现",
-      "implementation": "existing-heading-only",
-      "reviews": []
+      "navigation": "旧标题呈现移除；框架入口暂为空，真实分享对象和获批页面仍待实现",
+      "implementation": "retired-presentation-awaiting-approved-design",
+      "reviews": [],
+      "retirement": {
+        "reference": "用户明确要求本次移除旧前端呈现；真实分享页尚未批准",
+        "removed_paths": [],
+        "date": "2026-10-17",
+        "by": "user"
+      }
     }
   ]
 }

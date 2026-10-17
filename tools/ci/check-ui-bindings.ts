@@ -11,11 +11,14 @@ export type PageBinding = {
   id: string; kind: 'page' | 'component'; surface: string; title: string; states: string[]; themes: string[]; platforms: string[];
   design_source: string; design_version: string; design_files: string[]; design_digest: string; approval: Approval;
   production_entry: string; component_paths: string[]; navigation: string; implementation: string; reviews: Review[];
+  retirement?: { by: string; date: string; reference: string; removed_paths: string[] };
+  removed_paths?: string[];
 };
 export type PageRegistry = { schema_version: number; entries: PageBinding[] };
 export const designDigest = (root: string, files: string[]) => createHash('sha256').update(
   files.map(file => file + '\0' + readFileSync(resolve(root, file)).toString('utf8').replaceAll('\r\n', '\n')).join('\0')).digest('hex');
-export const productionUiPath = (path: string) => /^apps\/[^/]+\/.*\.(tsx|jsx|css)$/.test(path) || /^packages\/design\//.test(path);
+export const productionUiPath = (path: string) => !/^apps\/admin\/(upstream-metadata|scripts)\//.test(path) &&
+  (/^apps\/[^/]+\/.*\.(tsx|jsx|css)$/.test(path) || /^packages\/design\//.test(path));
 const hasText = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const strings = (value: unknown): value is string[] => Array.isArray(value) && value.length > 0 && value.every(hasText);
 
@@ -37,6 +40,12 @@ export function checkUiBindings(registry: PageRegistry, root: string, options: {
     if (!['page', 'component'].includes(entry.kind)) fail('page/component kind required');
     for (const field of ['states', 'themes', 'platforms', 'component_paths'] as const) if (!strings(entry[field])) fail(`${field} required`);
     for (const file of [entry.production_entry, ...(entry.component_paths || []), ...(entry.design_files || [])]) if (!safe(file)) fail(`unsafe path ${file}`);
+    for (const file of entry.removed_paths || []) if (!safe(file)) fail(`unsafe removed path ${file}`);
+    if (entry.retirement) {
+      if (!['user', 'authorized-human'].includes(entry.retirement.by) || !hasText(entry.retirement.date) ||
+        !hasText(entry.retirement.reference) || !Array.isArray(entry.retirement.removed_paths) || !entry.retirement.removed_paths.every(hasText)) fail('explicit human retirement decision required');
+      for (const file of entry.retirement.removed_paths || []) if (!safe(file)) fail(`unsafe retired path ${file}`);
+    }
     for (const file of entry.design_files || []) if (safe(file) && !existsSync(resolve(root, file))) fail(`missing design path ${file}`);
     if (!/^[a-f0-9]{64}$/.test(entry.design_digest || '')) fail('design digest required');
     if (entry.design_files?.length && entry.design_files.every(file => safe(file) && existsSync(resolve(root, file))) && designDigest(root, entry.design_files) !== entry.design_digest) fail('design contents changed; refresh version and obtain matching approval');
@@ -50,13 +59,22 @@ export function checkUiBindings(registry: PageRegistry, root: string, options: {
   const paths = (options.paths || []).map(path => path.replaceAll('\\', '/')).filter(productionUiPath);
   if (mode === 'changes' && !options.paths) errors.push('Changes check requires collected paths from a valid base or explicit target list');
   const selected = mode === 'stage' ? registry.entries.filter(entry => options.ids?.includes(entry.id)) :
-    registry.entries.filter(entry => paths.some(path => entry.component_paths?.includes(path) || entry.production_entry === path));
+    registry.entries.filter(entry => paths.some(path => entry.component_paths?.includes(path) || entry.production_entry === path || entry.removed_paths?.includes(path) || entry.retirement?.removed_paths.includes(path)));
   if (mode === 'stage' && (!options.ids?.length || options.ids.some(id => !ids.has(id)))) errors.push('Stage check requires explicit existing page/component ids');
   if (mode === 'stage' && !/^[a-f0-9]{40}$/.test(options.sourceRevision || '')) errors.push('Stage check requires explicit expected implementation source revision');
   if (mode === 'changes') for (const path of paths) {
-    if (!selected.some(entry => entry.component_paths.includes(path) || entry.production_entry === path)) errors.push(`${path}: missing page/component binding`);
+    if (!selected.some(entry => entry.component_paths.includes(path) || entry.production_entry === path || entry.removed_paths?.includes(path) || entry.retirement?.removed_paths.includes(path))) errors.push(`${path}: missing page/component binding`);
   }
   if (mode !== 'structure') for (const entry of selected) {
+    for (const file of entry.removed_paths || []) if (existsSync(resolve(root, file))) errors.push(`${entry.id}: removed source still exists ${file}`);
+    if (entry.retirement) {
+      if (mode === 'stage') errors.push(`${entry.id}: retired presentation cannot complete a page stage`);
+      for (const file of entry.retirement.removed_paths) if (existsSync(resolve(root, file))) errors.push(`${entry.id}: retired presentation still exists ${file}`);
+      const source = existsSync(resolve(root, entry.production_entry)) ? readFileSync(resolve(root, entry.production_entry), 'utf8') : '';
+      if (!/^\s*export default function \w+\(\)\s*\{\s*return null;?\s*\}\s*$/.test(source)) errors.push(`${entry.id}: retirement permits only an empty framework route, not replacement UI`);
+      if (entry.component_paths.some(file => file !== entry.production_entry)) errors.push(`${entry.id}: retired presentation must not bind replacement components`);
+      continue;
+    }
     for (const file of [entry.production_entry, ...entry.component_paths]) if (!existsSync(resolve(root, file))) errors.push(`${entry.id}: missing selected production source ${file}`);
     if (entry.approval?.state === 'pending') errors.push(`${entry.id}: production UI needs matching human design approval`);
     if (mode !== 'stage') continue;
