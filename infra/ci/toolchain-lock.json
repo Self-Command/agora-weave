@@ -10,7 +10,10 @@
   "runner_image": "20261012.334.1",
   "runner_os": "Linux",
   "lockfile_version": 3,
-  "lock_sha256": "ce37a9e9c5b03b77dd9e55185bd2b56978c4d0ffbcb54433a03b7d5634ba44ed",
+  "initial_lock_sha256": "ce37a9e9c5b03b77dd9e55185bd2b56978c4d0ffbcb54433a03b7d5634ba44ed",
+  "lock_sha256": "615759c70ffd316ea38ade5dcacb5c838ec0475bdefeffced127316926313d13",
+  "lock_updated_at": "2026-10-17",
+  "lock_update_reason": "Pinned test-renderer 1.2.0 for actual shared component action tests; existing dependencies remain frozen",
   "workflow_actions": {
     "checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "setup_node": "249970729cb0ef3589644e2896645e5dc5ba9c38",

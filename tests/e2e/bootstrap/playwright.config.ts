@@ -6,12 +6,13 @@ const workspaceRoot = fileURLToPath(new URL('../../../', import.meta.url));
 export default defineConfig({
   testDir: '.',
   testMatch: 'web-shell.spec.ts',
+  grepInvert: /@local-visual/,
   forbidOnly: true,
   retries: 0,
   workers: 2,
   outputDir: '../../../web-output/results',
   reporter: [['list'], ['json', { outputFile: fileURLToPath(new URL('../../../web-output/playwright-report.json', import.meta.url)) }]],
-  use: { browserName: 'chromium', trace: 'on', screenshot: 'on', video: 'on' },
+  use: { browserName: 'chromium', trace: 'retain-on-failure', screenshot: 'off', video: 'off' },
   webServer: [
     { command: 'npm run start --workspace apps/admin -- --port 3100 --hostname 127.0.0.1',
       cwd: workspaceRoot, url: 'http://127.0.0.1:3100', reuseExistingServer: false },

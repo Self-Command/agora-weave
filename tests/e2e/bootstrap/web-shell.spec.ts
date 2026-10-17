@@ -24,7 +24,7 @@ test('production admin refuses access before real administrator identity and aut
 
 // Keep the original visual/a11y assertions for restoration against approved product pages.
 // The old heading-only surfaces were explicitly retired; these cases are not product passes.
-test.describe.skip('old presentation retired by user; visual coverage awaits approved product pages', () => {
+test.describe.skip('old presentation retired by user; visual coverage awaits approved product pages @local-visual', () => {
 for (const client of clients) {
   for (const colorScheme of ['light', 'dark'] as const) {
     for (const viewport of [{ width: 390, height: 844 }, { width: 1280, height: 800 }]) {
