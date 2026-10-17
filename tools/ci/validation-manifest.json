@@ -781,6 +781,15 @@
       "requires_services": false
     },
     {
+      "id": "core.discovery-latest",
+      "command": "ci:service",
+      "files": [
+        "tests/contract/discovery/feed-search.spec.ts"
+      ],
+      "case_count": 7,
+      "requires_services": true
+    },
+    {
       "id": "core.auth-sessions",
       "command": "ci:service",
       "files": [
@@ -1000,9 +1009,10 @@
         "tests/contract/admin/management-boundary.spec.ts",
         "tests/contract/admin/management-controls.spec.ts",
         "tests/contract/admin/management-qr.spec.ts",
-        "tests/contract/admin/management-bff-refresh.spec.ts"
+        "tests/contract/admin/management-bff-refresh.spec.ts",
+        "tests/contract/admin/password-fallback.spec.ts"
       ],
-      "case_count": 24,
+      "case_count": 32,
       "requires_services": false
     },
     {
@@ -1033,8 +1043,27 @@
       "requires_services": true
     }
   ],
-  "core_case_count": 352,
+  "core_case_count": 367,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0042_public_latest_feed.sql",
+      "depends_on": [
+        "supabase/migrations/0032_response_config_version.sql",
+        "supabase/migrations/0030_dependency_sanctions.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0040_admin_password_fallback.sql",
+      "depends_on": [
+        "supabase/migrations/0039_admin_config_binding_fix.sql"
+      ]
+    },
+    {
+      "file": "supabase/migrations/0041_admin_password_identity_guard.sql",
+      "depends_on": [
+        "supabase/migrations/0040_admin_password_fallback.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0039_admin_config_binding_fix.sql",
       "depends_on": [
