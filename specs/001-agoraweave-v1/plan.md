@@ -30,6 +30,11 @@
 
 ## Technical Context
 
+**App样式（2026-10-17用户批准并要求接入）**：Uniwind免费MIT版1.12.2 + Tailwind CSS4.3.3，
+通过apps/mobile/metro.config.js及app/_layout.tsx导入global.css。常规样式优先语义className；
+global.css映射packages/design/src/tokens.ts的原生适配token，Expo UI保留必要modifier/props及动态style。
+沿用Expo/RN/Expo UI、统一H盘运行及Metro热更新；不改变原型批准、整页真实复检或后台官方模板基准。
+
 **Language/Version**: TypeScript/SQL/JSON Schema；Node22.23.3 LTS；移动React19.2.3＋RN0.86.3，后台React19.2.4＋TS5.7.2。移动TS按固定Expo官方模板依赖云端锁定，不强行跨端统一React。独立插件Deno2.9.6；核心Edge Runtime1.76.2随Supabase。
 
 **Primary Dependencies**: Expo57.0.28及其关联Expo UI~57.0.23、Router~57.0.26、image~57.0.5、image-picker~57.0.20、video~57.0.5、updates~57.0.26；Kiranism commit `7705dfc0d13889e45c26a55ad5908da6a7a9a605`（Next16.2.12/Tailwind4.2.2范围/shadcn源码）；Supabase self-hosted/v0.8.2 commit `564eab8ad7840b13324f68b1bfac074ef8d51c21`。核验依据见[research.md](research.md)。npm workspaces组织包，各端独立依赖；首个Actions冻结步骤解析精确lockfile与镜像digest，此后immutable install；现有固定锁文件按实际运行维护。
