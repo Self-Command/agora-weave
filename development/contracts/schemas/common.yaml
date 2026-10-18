@@ -389,6 +389,7 @@ components:
           - block.remove
           - profile.update
           - report.create
+          - appeal.create
           - moderation.revisions.decide
           - upload.create
           - upload.part
@@ -408,6 +409,7 @@ components:
           - $ref: '#/components/schemas/ActionReceipt'
           - $ref: '#/components/schemas/Profile'
           - $ref: '#/components/schemas/Report'
+          - $ref: '#/components/schemas/Appeal'
           - $ref: '#/components/schemas/UploadSession'
           - $ref: '#/components/schemas/UploadedPart'
       required:

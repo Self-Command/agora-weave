@@ -17251,10 +17251,10 @@ paths:
     get:
       operationId: listOwnSanctions
       summary: listOwnSanctions
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: read-only
+      description: Lists sanctions on the authenticated account or its own content,
+        without exposing another account's records.
+      x-implementation: implemented
+      x-verification: local-dev-only
       security:
       - bearerAuth: []
       parameters:
@@ -17386,15 +17386,15 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /appeals:
     get:
       operationId: listOwnAppeals
       summary: listOwnAppeals
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: read-only
+      description: Lists only the authenticated appellant's own cases and public
+        decision status.
+      x-implementation: implemented
+      x-verification: local-dev-only
       security:
       - bearerAuth: []
       parameters:
@@ -17526,14 +17526,14 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
     post:
       operationId: createAppeal
       summary: createAppeal
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: isolated-test-only
+      description: Accepts one appeal for an owned sanction with durable operation
+        lookup. Intake leaves the case awaiting independent review.
+      x-implementation: implemented
+      x-verification: local-dev-only
       security:
       - bearerAuth: []
       parameters: []
@@ -17669,7 +17669,7 @@ paths:
               $ref: '#/components/schemas/AppealRequest'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/document-receipts:
     get:
       operationId: listDocumentReceipts
