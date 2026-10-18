@@ -20,8 +20,8 @@ SHA-256清单为同目录 `source-before.json`。共1,080份非忽略文件，�
 
 开发入口、功能规则、架构、数据字典、分工、验收、运行与固定契约已转入development；AGENTS、PRD和设计索引已切换入口。
 `.specify/`、`specs/`、`docs/engineering/`中的旧体系文件已清除；业务测试的`*.spec.ts`继续保留。
-源工作树的`.specify/`、`specs/`仅残留空目录；自动审批两次拒绝清理（含只删空目录的缩小方案），只返回`blocked by policy`。
-这些目录已无文件，不参与开发入口或同步内容；`docs/engineering/`目录已不存在。
+2026-10-18用户追加要求清理无用残留后，已用仅删除空目录的方式移除源工作树`.specify/`、`specs/`以及`.agents/`内旧Spec Kit技能空目录。
+三处均已不存在；`docs/engineering/`目录同样已不存在。现行功能规则与契约位于development，无需恢复旧目录。
 旧体系26份文件移除均在授权范围内。其余快照文件无意外丢失；SQL、服务端、有效测试、Kiranism来源原件、
 原型资源与批准登记逐字节核对无变化。App/后台仅增加生成类型消费和必要适配，没有重画原型或重做已有业务。
 
