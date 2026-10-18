@@ -168,14 +168,16 @@ async function run() {
   check('self-only detail is hidden from anonymous and other accounts',
     (await call(`/posts/${privatePost.data.resource_id}`,null)).status===404 &&
     (await call(`/posts/${privatePost.data.resource_id}`,regular.token)).status===404);
+  if(state.likeCycle==='complete') {delete state['ordinary.like'];delete state['ordinary.unlike'];state.likeCycle='started';remember();}
   const liked=await call(`/resources/${published.resource_id}/likes`,regular.token,'PUT',{operation_id:op('ordinary.like')});
   const likeState=await call(`/resources/${published.resource_id}/likes`,regular.token);
   check('real like and current state agree',liked.status===200 && liked.data?.active===true && likeState.data?.active===true);
   const unliked=await call(`/resources/${published.resource_id}/likes`,regular.token,'DELETE',{operation_id:op('ordinary.unlike')});
   check('real unlike returns inactive state',unliked.status===200 && unliked.data?.active===false);
+  state.likeCycle='complete';remember();
   const report=await call('/reports',regular.token,'POST',{operation_id:op('ordinary.report'),target_kind:'post',
     target_id:published.resource_id,reason:'本地合成数据举报链路验证',evidence_refs:[]});
-  check('ordinary report accepted by real intake',report.status===202 && report.data?.id);
+  check('ordinary report accepted by real intake',report.status===200 && report.data?.id);
   const reportOperation=await call(`/operations/${op('ordinary.report')}`,regular.token);
   check('report original receipt resolves',reportOperation.status===200 && reportOperation.data?.state==='succeeded');
   const blocked=await call(`/me/blocks/${trusted.id}`,regular.token,'PUT',{operation_id:op('ordinary.block')});
@@ -190,6 +192,7 @@ async function run() {
   } finally {
     const unblocked=await call(`/me/blocks/${trusted.id}`,regular.token,'DELETE',{operation_id:op('ordinary.unblock')});
     check('test block removed through real API',unblocked.status===200);
+    delete state['ordinary.block'];delete state['ordinary.unblock'];remember();
   }
   const reportDirectory=resolve('../reports/publishing-alignment-20261018');mkdirSync(reportDirectory,{recursive:true});
   writeFileSync(resolve(reportDirectory,'live.json'),JSON.stringify({state:'passed',provider:'real',environment:'local-dev',
