@@ -1044,6 +1044,15 @@
       "requires_services": true
     },
     {
+      "id": "core.profile-core",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/profile-core.spec.ts"
+      ],
+      "case_count": 1,
+      "requires_services": true
+    },
+    {
       "id": "core.report-intake",
       "command": "ci:service",
       "files": [
@@ -1062,7 +1071,7 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 382,
+  "core_case_count": 383,
   "core_migrations": [
     {
       "file": "supabase/migrations/0053_report_intake.sql",
