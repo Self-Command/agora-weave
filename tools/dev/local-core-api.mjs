@@ -45,7 +45,7 @@ function bodyOf(request) {
     const finish=(error,value)=>{if(done)return;done=true;clearTimeout(timer);request.removeListener('data',data);
       request.removeListener('end',end);request.removeListener('error',bad);request.removeListener('aborted',bad);
       if(error){request.resume();reject(error);}else resolve(value);};
-    const bad=()=>finish(400),data=chunk=>{size+=chunk.length;if(size>65536)finish(413);else parts.push(chunk);};
+    const bad=()=>finish(400),data=chunk=>{size+=chunk.length;if(size>16384)finish(413);else parts.push(chunk);};
     const end=()=>{try {
       const bytes=Buffer.concat(parts),text=new TextDecoder('utf-8',{fatal:true}).decode(bytes),value=JSON.parse(text);
       if(!value||typeof value!=='object'||Array.isArray(value))return finish(400);
@@ -95,7 +95,7 @@ export function createLocalCoreApi({environment,forward}) {
       }
     }
     const declared=request.headers['content-length'];
-    if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>65536))return fail(response,413,'REQUEST_TOO_LARGE',origin);
+    if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>16384))return fail(response,413,'REQUEST_TOO_LARGE',origin);
     const writing=request.method==='POST'||request.method==='PUT'||request.method==='PATCH'||request.method==='DELETE';
     if(writing&&!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(request.headers['content-type']||'')||
       !writing&&(request.headers['transfer-encoding']||declared!==undefined&&Number(declared)>0))return fail(response,400,'INVALID_INPUT',origin);
