@@ -19,7 +19,7 @@ const routes=[
   [new RegExp(`^/uploads/${uuid}/parts/0$`,'i'),['PUT']],
   [new RegExp(`^/uploads/${uuid}/complete$`,'i'),['POST']],
   [new RegExp(`^/media/${uuid}$`,'i'),['GET']],
-  [new RegExp(`^/resources/${uuid}/likes$`,'i'),['PUT','DELETE']],
+  [new RegExp(`^/resources/${uuid}/likes$`,'i'),['GET','PUT','DELETE']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
   [/^\/auth\/dev-test-login$/,['POST']],
   [/^\/auth\/password(?:\/(captcha|forgot))?$/,['POST']],
