@@ -17255,6 +17255,7 @@ paths:
         without exposing another account's records.
       x-implementation: implemented
       x-verification: local-dev-only
+      x-source: supabase/functions/core/routes/appeals.ts
       security:
       - bearerAuth: []
       parameters:
@@ -17395,6 +17396,7 @@ paths:
         decision status.
       x-implementation: implemented
       x-verification: local-dev-only
+      x-source: supabase/functions/core/routes/appeals.ts
       security:
       - bearerAuth: []
       parameters:
@@ -17534,6 +17536,7 @@ paths:
         lookup. Intake leaves the case awaiting independent review.
       x-implementation: implemented
       x-verification: local-dev-only
+      x-source: supabase/functions/core/routes/appeals.ts
       security:
       - bearerAuth: []
       parameters: []
