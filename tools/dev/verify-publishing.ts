@@ -155,6 +155,42 @@ async function run() {
   check('public comments contain trusted but exclude pending ordinary comment',comments.status===200 &&
     comments.data.items.some((item:any)=>item.id===state['trusted.commentId']) &&
     !comments.data.items.some((item:any)=>item.id===state['ordinary.commentId']));
+  for(const [actor,name] of [[trusted,'trusted'],[regular,'ordinary']] as const) {
+    check(`${name} current sessions read`,(await call('/me/sessions',actor.token)).status===200);
+    check(`${name} own sanctions read`,(await call('/me/sanctions',actor.token)).status===200);
+    check(`${name} own appeals read`,(await call('/appeals',actor.token)).status===200);
+    check(`${name} current profile read`,(await call(`/profiles/${actor.id}`,actor.token)).status===200);
+  }
+  const privatePost=await call('/posts',trusted.token,'POST',{operation_id:op('trusted.self-post'),type:'text',
+    body:'本地仅自己可见帖子验证',visibility:'self',reply_scope:'all_readers'});
+  check('trusted self-only post accepted',privatePost.status===202 && privatePost.data?.publication_state==='published');
+  check('self-only detail is readable by the author',(await call(`/posts/${privatePost.data.resource_id}`,trusted.token)).status===200);
+  check('self-only detail is hidden from anonymous and other accounts',
+    (await call(`/posts/${privatePost.data.resource_id}`,null)).status===404 &&
+    (await call(`/posts/${privatePost.data.resource_id}`,regular.token)).status===404);
+  const liked=await call(`/resources/${published.resource_id}/likes`,regular.token,'PUT',{operation_id:op('ordinary.like')});
+  const likeState=await call(`/resources/${published.resource_id}/likes`,regular.token);
+  check('real like and current state agree',liked.status===200 && liked.data?.active===true && likeState.data?.active===true);
+  const unliked=await call(`/resources/${published.resource_id}/likes`,regular.token,'DELETE',{operation_id:op('ordinary.unlike')});
+  check('real unlike returns inactive state',unliked.status===200 && unliked.data?.active===false);
+  const report=await call('/reports',regular.token,'POST',{operation_id:op('ordinary.report'),target_kind:'post',
+    target_id:published.resource_id,reason:'本地合成数据举报链路验证',evidence_refs:[]});
+  check('ordinary report accepted by real intake',report.status===202 && report.data?.id);
+  const reportOperation=await call(`/operations/${op('ordinary.report')}`,regular.token);
+  check('report original receipt resolves',reportOperation.status===200 && reportOperation.data?.state==='succeeded');
+  const blocked=await call(`/me/blocks/${trusted.id}`,regular.token,'PUT',{operation_id:op('ordinary.block')});
+  check('real block command accepted',blocked.status===200);
+  try {
+    check('blocked post is hidden from the blocker',(await call(`/posts/${published.resource_id}`,regular.token)).status===404);
+    const blockedFeed=await call('/feeds/latest?limit=50',regular.token);
+    check('authenticated feed filters blocked author',blockedFeed.status===200 &&
+      !blockedFeed.data.items.some((item:any)=>item.author_id===trusted.id));
+    const blockedProfile=await call(`/profiles/${trusted.id}/contents?limit=50`,regular.token);
+    check('blocked profile content does not disclose posts',blockedProfile.status===404 || blockedProfile.status===200 && !blockedProfile.data.items.length);
+  } finally {
+    const unblocked=await call(`/me/blocks/${trusted.id}`,regular.token,'DELETE',{operation_id:op('ordinary.unblock')});
+    check('test block removed through real API',unblocked.status===200);
+  }
   const reportDirectory=resolve('../reports/publishing-alignment-20261018');mkdirSync(reportDirectory,{recursive:true});
   writeFileSync(resolve(reportDirectory,'live.json'),JSON.stringify({state:'passed',provider:'real',environment:'local-dev',
     at:new Date().toISOString(),evidence,user_ui_acceptance:'pending'},null,2));
