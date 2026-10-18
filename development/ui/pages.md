@@ -1,6 +1,6 @@
 # 具体页面、状态与批准来源
 
-2026-10-18用户改为App/后台先开发、热更新后亲自验收，取消独立UI复检；以下是历史批准来源快照，不再阻塞App/后台缺失页开发。新页实际验收统一登记根`人工验收.md`，不补造本登记中的历史批准。
+2026-10-18用户改为App/后台先开发、热更新后亲自验收，禁止日常UI复检，仅用户报告样式/布局问题后启动定向检查；以下是历史批准来源快照，不再阻塞App/后台缺失页开发。新页实际验收统一登记根`人工验收.md`，不补造本登记中的历史批准。
 
 2026-10-18静态读取[page-registry.json](../../docs/design/page-registry.json)及[原型定位](../../docs/design/prototype/README.md)。下面准确转录页面ID、状态、版本、批准和源码入口，不修改原登记或原型；实际批准权威仍为原人类决定与登记绑定。历史navigation/implementation可能落后源码，必须与当前实现核对，不能以历史文案否认现有代码或以代码存在补授批准。
 
@@ -30,14 +30,14 @@ scene取上述精确中文状态，theme为light/dark；font=large仅大字专�
 
 | 原型入口 | 已有源 | 批准处理 |
 | --- | --- | --- |
-| [v6-home 首页](../../docs/design/prototype/index.html?page=home&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，须核已有真实人类批准再决定缺失增量，不重画或自动批准 |
-| [v6-discover 发现](../../docs/design/prototype/index.html?page=discover&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，须核已有真实人类批准再决定缺失增量，不重画或自动批准 |
-| [v6-ai AI](../../docs/design/prototype/index.html?page=ai&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，须核已有真实人类批准再决定缺失增量，不重画或自动批准 |
-| [v6-messages 私信](../../docs/design/prototype/index.html?page=messages&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，须核已有真实人类批准再决定缺失增量，不重画或自动批准 |
-| [v6-me 我的](../../docs/design/prototype/index.html?page=me&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，须核已有真实人类批准再决定缺失增量，不重画或自动批准 |
+| [v6-home 首页](../../docs/design/prototype/index.html?page=home&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，历史无独立整页批准绑定；当前范围内按原稿/文档直接开发，实际效果由用户验收，不补造历史批准 |
+| [v6-discover 发现](../../docs/design/prototype/index.html?page=discover&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，历史无独立整页批准绑定；当前范围内按原稿/文档直接开发，实际效果由用户验收，不补造历史批准 |
+| [v6-ai AI](../../docs/design/prototype/index.html?page=ai&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，历史无独立整页批准绑定；当前范围内按原稿/文档直接开发，实际效果由用户验收，不补造历史批准 |
+| [v6-messages 私信](../../docs/design/prototype/index.html?page=messages&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，历史无独立整页批准绑定；当前范围内按原稿/文档直接开发，实际效果由用户验收，不补造历史批准 |
+| [v6-me 我的](../../docs/design/prototype/index.html?page=me&theme=light) | `native-ui-v6.js`与共用CSS | 保留已接受风格与原稿；当前page-registry无该ID的精确整页/状态/版本批准绑定，历史无独立整页批准绑定；当前范围内按原稿/文档直接开发，实际效果由用户验收，不补造历史批准 |
 
 v6详情/面板沿已有导航进入，未提供状态不猜造。已有原型入口不表示所有后续页面均未设计，先查看再补缺；风格认可也不自动覆盖新增生产页。原型虚构数据、计数、AI回答、客户端内存权限与假系统栏不能覆盖当前PRD和安全规则。
 
 ## 交付给开发与复检
 
-每次交接给具体ID/scene/theme、design_version及人类批准引用、对应源文件/组件、生产入口、运行源码版本和已确认设备路径。开发前须实际查看原型；UI检查使用同页同状态单主题整页图，保原图和差异，固定独立角色只查布局样式。功能交互由相应API/组件/原生验证给实际结果。当前静态整理未访问浏览器、设备或外部服务，不补填reviews或完成状态。
+每次交接给页面/状态、现有原型源、生产入口与可测依赖；App/后台缺失页按当前快速开发决定直接实现并待用户验收。主控只向人工验收.md追加可测入口与修复说明；用户原文及复查结论不得覆盖。UI角色仅用户反馈样式/布局问题后检查对应页面/状态，平时禁止工作。

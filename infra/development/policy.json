@@ -4,13 +4,13 @@
   "priority": "usable-business-features",
   "implementation": "contract-first-independent-surfaces",
   "runtime_root": "H:/Projects/AgoraWeave/development",
-  "test_scope": "target-and-directly-affected",
+  "test_scope": "minimal-engineering-and-critical-backend-during-development",
   "tdd": "discretionary",
   "critical_tests_required": [
-    "permissions",
-    "security",
-    "data-integrity",
-    "bug-fixes"
+    "backend-permissions",
+    "backend-security",
+    "backend-data-integrity",
+    "backend-transactions-and-concurrency"
   ],
   "cloud": "on-demand-business-batch",
   "preserve": {
@@ -40,5 +40,19 @@
     "openapi-typescript",
     "Prism",
     "Specmatic"
-  ]
+  ],
+  "delivery_mode": "continuous-development-user-acceptance",
+  "development_agent": {
+    "model": "gpt-6-sol",
+    "reasoning": "high"
+  },
+  "ui_review": {
+    "model": "gpt-5.6-luna",
+    "reasoning": "xhigh",
+    "trigger": "user-reported-style-or-layout-issue",
+    "idle": "prohibited",
+    "scope": "reported-page-and-state-only"
+  },
+  "feedback_file": "C:/Users/by970/Desktop/my-project/人工验收.md",
+  "full_flow_timing": "after-current-first-release-scope-is-implemented"
 }

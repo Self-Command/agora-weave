@@ -1,6 +1,6 @@
 # 技术架构
 
-2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，取消独立UI复检，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
+2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，禁止日常UI复检，仅用户反馈样式/布局后定向检查，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
 
 产品范围以 [PRD](../docs/product/PRD.md) 与 [功能文档](features/) 为准；HTTP 结构由[固定OpenAPI契约](contracts/README.md)中的app、management和core-admin三份YAML固定，跨请求业务约束由领域契约补充。本文说明可复用的技术边界，不作为任务清单或完成证明。
 
@@ -68,7 +68,7 @@
 
 DB 与 Storage 实体分别备份，安全日志独立于可回退备份；隔离恢复追至最新 security watermark、重放删除/注销/撤权/处罚/隐私/用途并重建派生物，缺日志保持关闭。ED-05 的 RPO≤1小时、RTO≤4小时及90天轮转是待真实测量的恢复目标，不能容许丢失一小时撤权。分类期限与共享保留需求见领域模型。
 
-Actions 编译所有 APK/AAB/IPA；本机仅下载、安装、运行，JS/TS/样式走 Metro，native/config plugin/兼容变化才重建。真实 Android arm64-v8a、模拟器 x86_64，无32位。正式最低/当前 OS 功能与原生行为在 Actions 验证，本地独立 UI 对获批设计或完整模板做单主题整页布局检查；mock、编译、截图不能代业务、原生交互或人的批准。
+Actions 编译所有 APK/AAB/IPA；本机仅下载、安装、运行。App JS/TS/样式走Metro，后台Next开发热更新，原生/config plugin/兼容变化才重建；真机arm64-v8a、模拟器x86_64，无32位。日常App/后台由用户验收，UI角色仅用户报告样式/布局后定向检查；完整原生/设备和业务流程最终集中执行，mock/编译不冒充通过。
 
 发行绑定源码、产物/迁移/权限/config/runtime/环境/明确名单摘要，兼容 OTA 只送匹配 native runtime；破坏变化云端重建。每个生产影响动作需当前超管/MFA/动作绑定确认，扩名单重新确认，Actions 通过不自动部署。旧安全核心继续，局部不兼容只禁扩展。详见 [发行契约](contracts/release-evidence.md)。
 

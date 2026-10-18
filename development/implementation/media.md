@@ -30,4 +30,4 @@ video_policy为always/wifi_only/never，初始wifi_only：always可Wi-Fi/蜂窝�
 | GIF省流量/减少动效/重入 | 实际系统设置、帧变化与请求，静态预览和可访问播放入口 |
 | 撤权/退出/断网 | gate真实拒绝及停止后续输出，已交付bytes单列，界面给真实不可用 |
 
-主触区iOS44pt/Android48dp、动态字体/读屏语义、焦点、键盘和安全区均需真实端证据。原生功能在Actions最低/当前OS验证；布局样式本地固定独立UI角色单主题整页复检，不用图像推断网络/音量/播放或当前权限。完整范围见[模拟器契约](../contracts/simulator-validation.md)和[HTTP语义](../contracts/http-api.md)。
+主触区iOS44pt/Android48dp、动态字体/读屏语义、焦点、键盘和安全区目标保留。App/后台由用户人工验收；UI角色仅用户报告样式/布局问题后定向检查，平时禁止工作；完整原生/媒体流程最终集中验证，不用图像推断网络/音量/权限。完整范围见[模拟器契约](../contracts/simulator-validation.md)和[HTTP语义](../contracts/http-api.md)。

@@ -1,8 +1,8 @@
 # 开发、mock与真实验证
 
-2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，取消独立UI复检，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
+2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，禁止日常UI复检，仅用户反馈样式/布局后定向检查，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
 
-从[架构](architecture.md)、[固定接口](contracts/README.md)、对应[功能文档](features/)和[实现指南](implementation/README.md)读取本次范围；页面先核[具体批准](ui/pages.md)。源码留当前工作树，依赖/运行副本/缓存/报告固定`H:/Projects/AgoraWeave/development`。共享DB、运行区、浏览器/设备串行；各端独立mock和类型检查可并行。
+从[架构](architecture.md)、[固定接口](contracts/README.md)、对应[功能文档](features/)和[实现指南](implementation/README.md)读取本次范围；页面先复用[现有设计来源](ui/pages.md)，App/后台按当前交付方式直接实现后由用户验收。源码留当前工作树，依赖/运行副本/缓存/报告固定`H:/Projects/AgoraWeave/development`。共享DB、运行区、浏览器/设备串行；各端独立mock和类型检查可并行。
 
 ## 固定契约的独立开发
 
@@ -62,10 +62,10 @@ pwsh -NoProfile -File tools/dev/local.ps1 -Command @('npm','run','lint:strict','
 
 从当前`ci:discover`/`tools/ci/validation-manifest.json`选择真实目标；上例otp目标仅示例，不能冒充本次全部适用集合。DB/夹具目标串行。`ci:contracts`保既有有效工程/安全测试，`ci:core`执行全部登记集合，按实际阶段/发布需要使用，不因文档编辑重跑无关业务。App/后台可独立typecheck与构建，Next构建使用既有npm workspace脚本；native安装包只Actions编译。
 
-普通JS/TS/Uniwind样式直接Metro更新；native依赖/代码/config plugin/runtime兼容变化才触发已有`android-package.yml`/`native-bootstrap.yml`等Actions。Android真机arm64-v8a、模拟器x86_64，无32位；iOS/Android最低及当前支持OS保真实功能验证。本地独立UI单主题整页对照，Actions不跑视觉主题字号截图矩阵。
+普通JS/TS/Uniwind样式直接Metro更新，后台Next开发服务自动刷新；原生依赖/代码/config plugin/runtime兼容变化才触发已有Actions。Android真机arm64-v8a、模拟器x86_64，无32位。日常由用户验收App/后台，UI角色只在用户报告样式/布局问题后定向检查，平时禁止工作；完整设备流程在功能齐备后集中执行。
 
 ## 结果与交付
 
-日常只跑目标及直接影响回归，权限/安全/数据完整性/缺陷修复须有效测试。记录真实源码、环境、命令、版本与必要原日志；失败/跳过/取消/未执行/超时/环境故障不计通过。健康同源结果可复用，源码/依赖/config/输入变更影响不明再扩大；不伪造runner身份，不恢复历史红链、收据或重复报告认证。
+日常只做可运行增量所需类型/编译/契约检查及必要后端权限、安全、事务/并发/数据完整性验证；不反复跑前端逻辑/UI巡检或完整联调。用户反馈、修复待复查、失败/未执行与实际通过分别记录；完整流程最后集中跑。
 
 完整产品场景见[验收场景](implementation/validation-scenarios.md)，媒体实际下载/策略消费见[媒体指南](implementation/media.md)，当前账号0044/AR05及未完成边界见[账号](implementation/accounts.md)。生产服务独立部署，服务器/域名/短信/正式分发由用户配置；Actions通过不授权生产、费用或高影响数据操作，仍需具体版本/对象/范围确认。
