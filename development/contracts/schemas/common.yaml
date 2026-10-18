@@ -2466,7 +2466,7 @@ components:
           - rejected
         publication_state:
           type: string
-          enum: [awaiting_review, published, rejected]
+          enum: [awaiting_review, published, rejected, restricted]
         submitted_at: *id006
       required:
       - id

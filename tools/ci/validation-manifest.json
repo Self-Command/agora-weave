@@ -709,6 +709,7 @@
     }
   ],
   "core_targets": [
+    {"id":"core.content-lifecycle","command":"ci:service","files":["tests/integration/core/content-lifecycle.spec.ts"],"case_count":4,"requires_services":true},
     {
       "id": "core.http",
       "command": "ci:core:contracts",
@@ -1103,7 +1104,7 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 389,
+  "core_case_count": 393,
   "core_migrations": [
     {
       "file": "supabase/migrations/0069_content_lifecycle.sql",
