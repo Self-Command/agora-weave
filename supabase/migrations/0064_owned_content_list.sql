@@ -14,7 +14,7 @@ BEGIN
     OR (cursor_position IS NULL)<>(cursor_created IS NULL)
     OR (cursor_created IS NOT NULL AND NOT isfinite(cursor_created))
     THEN RETURN jsonb_build_object('code','INVALID_INPUT'); END IF;
-  FOR entry IN SELECT r.id AS resource_id,r.created_at,v.id,v.revision_no,v.body,v.tags,v.mentions,
+  FOR entry IN SELECT r.id AS resource_id,r.created_at,r.publication_state,v.id,v.revision_no,v.body,v.tags,v.mentions,
       v.alt_text,v.review_state,v.submitted_at
     FROM core.resource r JOIN core.content_revision v ON v.id=r.current_revision_id AND v.resource_id=r.id
     WHERE r.author_id=actor AND r.kind='post' AND r.deleted_at IS NULL AND v.submitted_at IS NOT NULL
@@ -30,6 +30,7 @@ BEGIN
       'media_refs',coalesce((SELECT jsonb_agg(b.media_id ORDER BY b.position)
         FROM core.post_image_binding b WHERE b.resource_id=entry.resource_id AND b.revision_id=entry.id),'[]'::jsonb),
       'review_state',entry.review_state,
+      'publication_state',CASE WHEN entry.publication_state='pending' THEN 'awaiting_review' ELSE entry.publication_state END,
       'submitted_at',to_char(entry.submitted_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"')));
     item_count:=item_count+1; last_id:=entry.resource_id; last_created:=entry.created_at;
   END LOOP;

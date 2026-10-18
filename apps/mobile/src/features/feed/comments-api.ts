@@ -23,7 +23,7 @@ function validComment(value:unknown,postId:string):value is CommentItem {
     Array.isArray(value.media);
 }
 
-export function guestCommentsApi(base:string|undefined,release:string,development=false) {
+export function guestCommentsApi(base:string|undefined,release:string,development=false,readToken?:()=>Promise<string|undefined>) {
   return async (postId:string,cursor?:string,sort:'latest'|'hot'='latest'):Promise<CommentsPage>=>{
     let url:URL;
     try {
@@ -36,8 +36,9 @@ export function guestCommentsApi(base:string|undefined,release:string,developmen
     const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),15000);
     try {
       const path=`/posts/${postId}/comments?sort=${sort}&limit=20${cursor?`&cursor=${encodeURIComponent(cursor)}`:''}`;
+      const token=await readToken?.();
       const response=await fetch(url.toString().replace(/\/$/,'')+path,{method:'GET',credentials:'omit',cache:'no-store',signal:abort.signal,
-        headers:{Accept:'application/json','X-Client-Release':release}});
+        headers:{Accept:'application/json','X-Client-Release':release,...(token?{Authorization:`Bearer ${token}`}:{})}});
       const raw=await response.text();
       if(raw.length>1024*1024)throw new Error();
       const envelope:unknown=JSON.parse(raw);

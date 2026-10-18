@@ -77,7 +77,7 @@ export function ProfilePage({ accountId,embedded=false,onSocial }: { accountId?:
   const blockThis=async()=>{
     if(!profile||blockBusy)return;
     setBlockBusy(true);setActionNotice('');
-    try{setActionNotice(await block(profile.account_id));}
+    try{setActionNotice(await block(profile.account_id));await load();}
     catch(error){setActionNotice(error instanceof Error?error.message:'拉黑操作暂时不可用');}
     finally{setBlockBusy(false);}
   };

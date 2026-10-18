@@ -13,6 +13,7 @@ test('report intake checks current target access, idempotency and own projection
       actor uuid:='${account(1)}'; sess uuid:='${session(1)}'; env text:='${environment}';
       target uuid:='${account(2)}'; command uuid:='${operation}'; second uuid:='${secondOperation}';
       payload jsonb; first_result jsonb; result jsonb; report_id uuid;
+      resource_ref uuid; revision_ref uuid; post_ref uuid; resource_kind text;
     BEGIN
       INSERT INTO core.account(id) VALUES (actor),(target) ON CONFLICT DO NOTHING;
       INSERT INTO core.session_registry(session_id,account_id) VALUES (sess,actor) ON CONFLICT DO NOTHING;
@@ -44,6 +45,25 @@ test('report intake checks current target access, idempotency and own projection
       THEN RAISE EXCEPTION 'Original report not recoverable'; END IF;
       IF (SELECT count(*) FROM core.report r WHERE r.reporter=actor AND r.target_ref=target)<>1
       THEN RAISE EXCEPTION 'Duplicate report rows'; END IF;
+      FOREACH resource_kind IN ARRAY ARRAY['post','comment'] LOOP
+        resource_ref:=gen_random_uuid();revision_ref:=gen_random_uuid();
+        INSERT INTO core.resource(id,author_id,kind,visibility,publication_state,root_post)
+          VALUES(resource_ref,target,resource_kind,'public','published',CASE WHEN resource_kind='comment' THEN post_ref END);
+        INSERT INTO core.content_revision(id,resource_id,revision_no,body,author,review_state,submitted_at)
+          VALUES(revision_ref,resource_ref,1,'Synthetic reportable content',target,'approved',clock_timestamp());
+        UPDATE core.resource SET current_revision_id=revision_ref WHERE id=resource_ref;
+        IF resource_kind='post' THEN post_ref:=resource_ref;
+        ELSE INSERT INTO core.resource_dependency(dependent,source,kind,purposes)
+          VALUES(resource_ref,post_ref,'comment_post',ARRAY['read']); END IF;
+        result:=core.create_report_result(actor,sess,env,
+          jsonb_build_object('operation_id',gen_random_uuid(),'target_kind',resource_kind,'target_id',resource_ref,
+            'reason','Synthetic content concern','evidence_refs','[]'::jsonb),repeat('f',64),25);
+        IF result->>'code' IS DISTINCT FROM 'OK' THEN RAISE EXCEPTION 'Content report failed: %',result; END IF;
+        result:=core.create_report_result(actor,sess,env,
+          jsonb_build_object('operation_id',gen_random_uuid(),'target_kind',CASE WHEN resource_kind='post' THEN 'comment' ELSE 'post' END,
+            'target_id',resource_ref,'reason','Wrong target kind','evidence_refs','[]'::jsonb),repeat('0',64),17);
+        IF result->>'code' IS DISTINCT FROM 'NOT_FOUND' THEN RAISE EXCEPTION 'Mismatched resource kind accepted'; END IF;
+      END LOOP;
     END $check$;
     SELECT 'verified'; ROLLBACK;`);
   assert.match(output, /verified/);

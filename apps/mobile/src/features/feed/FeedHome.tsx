@@ -33,7 +33,7 @@ function FeedTabs({active,onChange}:{active:'推荐'|'关注'|'最新';onChange:
     </Pressable>)}</View>;
 }
 
-function Detail({controller,onUnavailable,onNotice}:{controller:FeedController;onUnavailable:(name:string)=>void;onNotice:(message:string)=>void}) {
+function Detail({controller,onUnavailable,onNotice,mediaToken}:{controller:FeedController;onUnavailable:(name:string)=>void;onNotice:(message:string)=>void;mediaToken:string|null}) {
   const state=useSyncExternalStore(controller.subscribe,controller.getSnapshot);
   const colors=themeFor(useColorScheme()),router=useRouter();
   const scroll=useRef<ScrollView>(null),commentsTop=useRef(0);
@@ -45,7 +45,7 @@ function Detail({controller,onUnavailable,onNotice}:{controller:FeedController;o
       state.detailError?<EmptyRegion icon="posts" title={state.detailErrorCode==='NOT_FOUND'?'帖子不可用':'帖子加载失败'} description={state.detailError}
         action={state.detailErrorCode==='NOT_FOUND'?undefined:{label:'重试',onPress:()=>void controller.openPost(state.detailId!)}}/>:
       item?<ScrollView ref={scroll} style={{flex:1}} keyboardShouldPersistTaps="handled">
-        <PostCard key={item.id} post={{...item,...(published?{created_at:published}:{})}} selectable
+        <PostCard key={item.id} post={{...item,...(published?{created_at:published}:{})}} selectable mediaToken={mediaToken}
           onAuthor={()=>router.push({pathname:'/profile/[accountId]',params:{accountId:item.author_id}})}
           onComment={()=>{setReplyTarget(null);scroll.current?.scrollTo({y:commentsTop.current,animated:true});}}
           onUnavailable={onUnavailable} onNotice={onNotice}/>
@@ -66,11 +66,16 @@ function ConnectedFeed({controller,standalone=false}:{controller:FeedController;
   const [secondary,setSecondary]=useState<SecondaryKind[]>([]);
   const [aiEpoch,setAiEpoch]=useState(0),[dmFilter,setDmFilter]=useState<'全部'|'未读'>('全部');
   const [self,setSelf]=useState<Profile|null>(null);
-  useFocusEffect(useCallback(()=>{let active=true;void currentProfileSession().then(async current=>{
+  const [mediaToken,setMediaToken]=useState<string|null>(null);
+  useFocusEffect(useCallback(()=>{let active=true;
+    const currentPost=controller.getSnapshot().detailId;
+    if(currentPost)void controller.openPost(currentPost);else void controller.refresh();
+    void currentProfileSession().then(async current=>{
+    if(active)setMediaToken(current?.session.access_token||null);
     if(!current){if(active)setSelf(null);return;}
     try {const profile=await profiles.get(current.accountId,current.session.access_token);if(active)setSelf(profile);}
     catch {if(active)setSelf(null);}
-  }).catch(()=>{if(active)setSelf(null);});return()=>{active=false;};},[]));
+  }).catch(()=>{if(active){setSelf(null);setMediaToken(null);}});return()=>{active=false;};},[controller]));
   const unavailable=(name:string)=>setNotice(`${name}暂时不可用，请稍后再试。`);
   const pushSecondary=(kind:SecondaryKind)=>{setDrawer(false);setNotice('');setSecondary(stack=>[...stack,kind]);};
   const closeSecondary=()=>setSecondary(stack=>stack.slice(0,-1));
@@ -97,11 +102,11 @@ function ConnectedFeed({controller,standalone=false}:{controller:FeedController;
         tab==='discover'?<><IconTap name="search" label="搜索社区" onPress={()=>pushSecondary('search')}/>
           <IconTap name="bell" label="通知" onPress={()=>setNotifications(true)}/></>:
         <IconTap name="bell" label="通知" onPress={()=>setNotifications(true)}/>}/>
-    {detailOpen?<Detail controller={controller} onUnavailable={name=>name==='帖子操作'?pushSecondary('post-menu'):unavailable(name)} onNotice={setNotice}/>:
+    {detailOpen?<Detail controller={controller} mediaToken={mediaToken} onUnavailable={name=>name==='帖子操作'?pushSecondary('post-menu'):unavailable(name)} onNotice={setNotice}/>:
       notifications?<NotificationsSection/>:
       tab==='home'?<View style={{flex:1}}><FeedTabs active={feedTab} onChange={setFeedTab}/>
         {feedTab==='最新'?<FlatList data={state.items} keyExtractor={item=>item.id}
-          renderItem={({item})=><PostCard post={item} onOpen={()=>void controller.openPost(item.id)}
+          renderItem={({item})=><PostCard post={item} mediaToken={mediaToken} onOpen={()=>void controller.openPost(item.id)}
             onAuthor={()=>router.push({pathname:'/profile/[accountId]',params:{accountId:item.author_id}})}
             onNotice={setNotice}
             onUnavailable={name=>{if(name==='帖子操作'){void controller.openPost(item.id);pushSecondary('post-menu');}else unavailable(name);}}/>}
@@ -131,6 +136,8 @@ function ConnectedFeed({controller,standalone=false}:{controller:FeedController;
         backgroundColor:colors.fg,alignItems:'center',justifyContent:'center',elevation:4}}>
       <PrototypeIcon name="plus" size={22} color={colors.bg}/></Pressable>:null}
     {drawer?<AccountDrawer profile={self} onClose={closeDrawer} onProfile={()=>{closeDrawer();changeTab('me');}}
+      onContents={()=>{closeDrawer();router.push('/me/contents');}}
+      onRecent={()=>{closeDrawer();router.push('/me/contents?recent=1');}}
       onReports={()=>{closeDrawer();router.push('/me/reports');}}
       onSanctions={()=>{closeDrawer();router.push('/me/sanctions');}}
       onLogin={()=>{closeDrawer();router.push('/(auth)');}} onSecondary={pushSecondary}/>:null}
@@ -141,7 +148,8 @@ function ConnectedFeed({controller,standalone=false}:{controller:FeedController;
         if(id){setSecondary([]);router.push({pathname:'/report',params:{kind:'post',id}});}else unavailable('举报');}}
       onBlock={()=>{const id=state.detail?.author_id || state.items.find(item=>item.id===state.detailId)?.author_id;
         if(!id){unavailable('拉黑');return;}
-        setSecondary([]);void block(id).then(message=>{setNotice(message);void controller.refresh();})
+        setSecondary([]);void block(id).then(message=>{setNotice(message);void controller.refresh();
+          const currentPost=controller.getSnapshot().detailId;if(currentPost)void controller.openPost(currentPost);})
           .catch(error=>setNotice(error instanceof Error?error.message:'拉黑操作暂时不可用'));}}
       onProfileEdit={()=>{setSecondary([]);router.push('/me/edit');}}/>:null}
   </SafeAreaView>;
@@ -151,7 +159,8 @@ export function FeedHome({initialPostId}:{initialPostId?:string}={}) {
   const [controller,setController]=useState<FeedController|null>(null);
   useEffect(()=>{const lifecycle={isActive:()=>AppState.currentState==='active',subscribe(listener:()=>void){
     const sub=AppState.addEventListener('change',listener);return()=>sub.remove();}};
-    const next=createGuestFeedController(guestFeedApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__),lifecycle);
+    const next=createGuestFeedController(guestFeedApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__,
+      async()=>(await currentProfileSession())?.session.access_token),lifecycle);
     setController(next);if(initialPostId)void next.openPost(initialPostId);
     else if(lifecycle.isActive())void next.refresh();return()=>next.dispose();},[initialPostId]);
   const colors=themeFor(useColorScheme());

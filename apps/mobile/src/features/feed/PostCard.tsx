@@ -26,7 +26,8 @@ function Author({id,onPress,profile}:{id:string;onPress:()=>void;profile?:Profil
   const colors=themeFor(useColorScheme());
   const [loaded,setLoaded]=useState<Profile|null>(null);
   useEffect(()=>{if(profile){setLoaded(profile);return;}
-    let active=true;setLoaded(null);void profiles.get(id).then(value=>{if(active)setLoaded(value);}).catch(()=>{});
+    let active=true;setLoaded(null);void currentProfileSession().then(current=>profiles.get(id,current?.session.access_token))
+      .then(value=>{if(active)setLoaded(value);}).catch(()=>{});
     return()=>{active=false;};},[id,profile]);
   const author=profile || loaded;
   return <Pressable accessibilityRole="button" accessibilityLabel="查看作者资料" onPress={onPress}
@@ -41,6 +42,7 @@ function Author({id,onPress,profile}:{id:string;onPress:()=>void;profile?:Profil
 function PostImages({post,mediaToken}:{post:CardPost;mediaToken?:string|null}) {
   const colors=themeFor(useColorScheme());
   const [failed,setFailed]=useState<Record<string,boolean>>({});
+  useEffect(()=>setFailed({}),[post.id,mediaToken]);
   if(post.type!=='images')return null;
   return <View style={{gap:10,marginTop:12}}>{post.media_refs.map((id,index)=>{
     const uri=guestMediaUrl(id,process.env.EXPO_PUBLIC_API_URL,__DEV__);

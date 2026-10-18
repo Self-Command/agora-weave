@@ -10,7 +10,7 @@ export type TextPostCommand = {
   mentions: string[];
   media_refs: string[];
   visibility: 'public' | 'followers' | 'self';
-  reply_scope: 'all_readers';
+  reply_scope: 'all_readers' | 'closed';
   indexing_mode: 'inherit';
 };
 export type ImagePostCommand = Omit<TextPostCommand,'type'> & { type: 'images' };
@@ -21,7 +21,7 @@ export function imagePostCommand(input: Record<string, unknown>): ImagePostComma
       typeof input.operation_id !== 'string' || !uuid.test(input.operation_id) ||
       input.type !== 'images' || typeof input.body !== 'string' || input.body.includes('\u0000') ||
       typeof input.visibility !== 'string' || !['public','followers','self'].includes(input.visibility) ||
-      input.reply_scope !== 'all_readers' ||
+      !['all_readers','closed'].includes(String(input.reply_scope)) ||
       input.indexing_mode !== undefined && input.indexing_mode !== 'inherit' ||
       input.source_id !== undefined || input.poll !== undefined ||
       input.tags !== undefined && (!Array.isArray(input.tags) || input.tags.length>0) ||
@@ -32,7 +32,7 @@ export function imagePostCommand(input: Record<string, unknown>): ImagePostComma
       new Set(refs.map(ref=>(ref as string).toLowerCase())).size!==refs.length) return null;
   return { operation_id:input.operation_id.toLowerCase(),type:'images',body:input.body.replace(/\r\n?/g,'\n'),
     tags:[],mentions:[],media_refs:refs.map(ref=>(ref as string).toLowerCase()),
-    visibility:input.visibility as ImagePostCommand['visibility'],reply_scope:'all_readers',indexing_mode:'inherit' };
+    visibility:input.visibility as ImagePostCommand['visibility'],reply_scope:input.reply_scope as ImagePostCommand['reply_scope'],indexing_mode:'inherit' };
 }
 
 /** Narrow first slice; future policy backed fields must not silently publish. */
@@ -42,7 +42,7 @@ export function textPostCommand(input: Record<string, unknown>): TextPostCommand
       input.type !== 'text' || typeof input.body !== 'string' ||
       input.body.length === 0 || input.body.includes('\u0000') ||
       typeof input.visibility !== 'string' || !['public', 'followers', 'self'].includes(input.visibility) ||
-      input.reply_scope !== 'all_readers' ||
+      !['all_readers','closed'].includes(String(input.reply_scope)) ||
       input.indexing_mode !== undefined && input.indexing_mode !== 'inherit' ||
       input.source_id !== undefined || input.poll !== undefined) return null;
 
@@ -55,5 +55,5 @@ export function textPostCommand(input: Record<string, unknown>): TextPostCommand
   const body = input.body.replace(/\r\n?/g, '\n');
   return { operation_id: input.operation_id.toLowerCase(), type: 'text', body,
     tags: [], mentions: [], media_refs: [], visibility: input.visibility as TextPostCommand['visibility'],
-    reply_scope: 'all_readers', indexing_mode: 'inherit' };
+    reply_scope: input.reply_scope as TextPostCommand['reply_scope'], indexing_mode: 'inherit' };
 }

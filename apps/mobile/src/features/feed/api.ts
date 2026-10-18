@@ -1,7 +1,7 @@
 import type { components } from '../../../../../packages/contracts/src/generated/app';
 
 type Schemas = components['schemas'];
-export type PublicPost = Schemas['ReadPost'] & { visibility:'public' };
+export type PublicPost = Schemas['ReadPost'];
 export type LatestPost = Schemas['LatestPost'];
 export type LatestPage = Schemas['LatestPage'] & { config_version:string };
 export class FeedError extends Error {
@@ -12,9 +12,11 @@ const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-
 const record = (value:unknown):value is Record<string,unknown>=>Boolean(value) && typeof value==='object' && !Array.isArray(value);
 function post(value:unknown,latest:true):value is LatestPost;
 function post(value:unknown,latest?:false):value is PublicPost;
-function post(value:unknown,latest=false):value is PublicPost {
+function post(value:unknown,latest:false,allowPrivate:boolean):value is PublicPost;
+function post(value:unknown,latest=false,allowPrivate=false):value is PublicPost {
   return record(value) && ['id','author_id','revision_id'].every(name=>typeof value[name]==='string' && uuid.test(value[name] as string)) &&
-    value.visibility==='public' && typeof value.body==='string' && Number.isSafeInteger(value.row_version) && Number(value.row_version)>0 &&
+    (value.visibility==='public' || !latest && allowPrivate && ['followers','self'].includes(String(value.visibility))) &&
+    typeof value.body==='string' && Number.isSafeInteger(value.row_version) && Number(value.row_version)>0 &&
     (value.type==='text' || value.type==='images') && Array.isArray(value.media_refs) && value.media_refs.length<10 &&
     value.media_refs.every(id=>typeof id==='string' && uuid.test(id)) &&
     (value.type==='text' ? value.body.length>0 && value.media_refs.length===0 : value.media_refs.length>0) &&
@@ -32,8 +34,8 @@ export function guestMediaUrl(id:string,base:string|undefined,development=false)
   } catch {return null;}
 }
 /** Anonymous reads intentionally have no token, refresh, cookie, or authentication dependency. */
-export function guestFeedApi(base:string|undefined,release:string,development=false) {
-  async function call(path:string):Promise<{ data:unknown; config_version:string }> {
+export function guestFeedApi(base:string|undefined,release:string,development=false,readToken?:()=>Promise<string|undefined>) {
+  async function call(path:string):Promise<{ data:unknown; config_version:string;authenticated:boolean }> {
     let url:URL;
     try {
       url=new URL(base || '');
@@ -42,8 +44,9 @@ export function guestFeedApi(base:string|undefined,release:string,development=fa
     } catch { throw new FeedError('SERVICE_UNAVAILABLE','内容服务暂时不可用，请稍后重试'); }
     const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),15000);
     try {
+      const token=await readToken?.();
       const response=await fetch(url.toString().replace(/\/$/,'')+path,{ method:'GET',credentials:'omit',cache:'no-store',
-        signal:abort.signal,headers:{ Accept:'application/json','X-Client-Release':release } });
+        signal:abort.signal,headers:{ Accept:'application/json','X-Client-Release':release,...(token?{Authorization:`Bearer ${token}`}:{}) } });
       const body=await response.text();
       if (body.length>1024*1024) throw new Error();
       const envelope:unknown=JSON.parse(body);
@@ -52,7 +55,7 @@ export function guestFeedApi(base:string|undefined,release:string,development=fa
         throw new FeedError(code,code==='NOT_FOUND' ? '内容不可用' : code==='INVALID_INPUT' ? '内容列表已变化，请刷新重试' : '暂时无法加载，请稍后重试');
       }
       if (!record(envelope) || !('data' in envelope) || typeof envelope.config_version!=='string' || !envelope.config_version.length) throw new Error();
-      return { data:envelope.data,config_version:envelope.config_version };
+      return { data:envelope.data,config_version:envelope.config_version,authenticated:!!token };
     } catch (error) {
       if (error instanceof FeedError) throw error;
       throw new FeedError('NETWORK_UNCONFIRMED','暂时无法加载，请检查网络后重试');
@@ -73,7 +76,7 @@ export function guestFeedApi(base:string|undefined,release:string,development=fa
     async post(id:string):Promise<PublicPost> {
       if (!uuid.test(id)) throw new FeedError('INVALID_INPUT','内容地址有误');
       const result=await call('/posts/'+encodeURIComponent(id));
-      if (!post(result.data) || result.data.id!==id) throw new FeedError('SERVICE_UNAVAILABLE','内容服务返回异常，请重试');
+      if (!post(result.data,false,result.authenticated) || result.data.id!==id) throw new FeedError('SERVICE_UNAVAILABLE','内容服务返回异常，请重试');
       return result.data;
     },
   };

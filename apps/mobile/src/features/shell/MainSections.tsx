@@ -124,13 +124,14 @@ export function NotificationsSection() {
   </View>;
 }
 
-export function AccountDrawer({profile,onClose,onProfile,onReports,onSanctions,onLogin,onSecondary}:{profile:Profile|null;onClose:()=>void;
-  onProfile:()=>void;onReports:()=>void;onSanctions:()=>void;onLogin:()=>void;onSecondary:(kind:SecondaryKind)=>void}) {
+export function AccountDrawer({profile,onClose,onProfile,onContents,onRecent,onReports,onSanctions,onLogin,onSecondary}:{profile:Profile|null;onClose:()=>void;
+  onProfile:()=>void;onContents:()=>void;onRecent:()=>void;onReports:()=>void;onSanctions:()=>void;onLogin:()=>void;onSecondary:(kind:SecondaryKind)=>void}) {
   const colors=themeFor(useColorScheme());
   const rows:{icon:PrototypeIconName;label:string;onPress:()=>void}[]=[
     {icon:'user',label:'个人主页',onPress:onProfile},{icon:'folder',label:'云端草稿',onPress:()=>onSecondary('drafts')},
+    {icon:'file',label:'我的内容',onPress:onContents},
     {icon:'bookmark',label:'我的收藏',onPress:()=>onSecondary('bookmarks')},
-    {icon:'trash',label:'最近删除',onPress:()=>onSecondary('trash')},
+    {icon:'trash',label:'最近删除',onPress:onRecent},
     {icon:'users',label:'关注请求',onPress:()=>onSecondary('social')},
     {icon:'flag',label:'我的举报',onPress:onReports},
     {icon:'file',label:'处罚与申诉',onPress:onSanctions},

@@ -30,7 +30,7 @@ export function createGuestFeedController(api:GuestFeedApi,lifecycle:AccountLife
     try {
       for (let index=0;index<previous.items.length;index+=4) {
         const batch=await Promise.all(previous.items.slice(index,index+4).map(async item=>{
-          try { return { ...await api.post(item.id),created_at:item.created_at }; }
+          try { const value=await api.post(item.id);return value.visibility==='public'?{ ...value,visibility:'public' as const,created_at:item.created_at }:null; }
           catch (error) { if (error instanceof FeedError && error.code==='NOT_FOUND') return null; throw error; }
         }));
         if (!current(ticket)) return;

@@ -6,6 +6,7 @@ import { randomUUID } from 'expo-crypto';
 import { countVisibleCharacters,normalizeText } from '../../../../../packages/contracts/src/graphemes';
 import { themeFor } from '../../../../../packages/design/src/tokens';
 import { AppButton,AppFrame,Avatar,PageStatus } from '../../components/AppChrome';
+import { reviewLabels,publicationLabels } from '../../components/ContentRevisionCard';
 import { PrototypeIcon } from '../shell/PrototypeIcon';
 import { accountApi,AccountError,type SessionTokens } from '../account/api';
 import { readSession,saveSession } from '../account/session-store';
@@ -19,12 +20,6 @@ const posts=postApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__);
 const initialDraft=():ComposeDraft=>({ body:'',visibility:'public',replyScope:'all_readers',operationId:randomUUID(),phase:'editing',receipt:null,images:[] });
 const visibilityLabels={public:'公开',followers:'关注者可见',self:'仅自己可见'} as const;
 const replyLabels={all_readers:'所有有权阅读者',author_follows:'我关注的人',mentioned:'提及的人',closed:'关闭回复'} as const;
-const reviewLabels={pending:'待审核',approved:'审核通过',rejected:'审核未通过'} as const;
-const publicationLabels={preparing:'准备中',awaiting_review:'等待审核',published:'已公开',rejected:'未通过',failed:'失败',cancelled:'已取消'} as const;
-function receiptMessage(state:keyof typeof publicationLabels) {
-  return state==='published'?'帖子已公开':state==='awaiting_review' || state==='preparing'?'提交已受理，仍待审核或发布':
-    state==='rejected'?'帖子未通过审核，正文已保留':state==='failed'?'发布处理失败，正文已保留':'发布已取消，正文已保留';
-}
 
 async function currentSession():Promise<SessionTokens|null> {
   let session=await readSession();
@@ -49,12 +44,26 @@ export function ComposePage() {
   const router=useRouter(),colors=themeFor(useColorScheme());
   const [auth,setAuth]=useState<'loading'|'guest'|'ready'|'error'>('loading');
   const [owner,setOwner]=useState<string|null>(null);
-  const ownerRef=useRef<string|null>(null);
+  const publishing=useRef(false);
   const [draft,setDraft]=useState<ComposeDraft>(initialDraft);
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(''),[saveError,setSaveError]=useState('');
   const [openChoice,setOpenChoice]=useState<'visibility'|'reply'|null>(null);
   const [authRequired,setAuthRequired]=useState(false);
   const apply=(next:ComposeDraft)=>setDraft(next);
+  const finishAccepted=async(subject:string,accepted:ComposeDraft)=>{
+    // A durable receipt is saved before releasing the editor. A reset failure
+    // leaves an accepted draft recoverable, never a second post submission.
+    await saveComposeDraft(subject,accepted);apply(accepted);
+    if(accepted.receipt && ['rejected','failed','cancelled'].includes(accepted.receipt.publication_state)) {
+      setMessage('原操作已确认未发布，正文和图片已保留，可修改后重新提交');return;
+    }
+    const fresh=initialDraft();
+    try {
+      await saveComposeDraft(subject,fresh);apply(fresh);setSaveError('');
+    } catch {setMessage('提交已受理，本机编辑器暂未能清空；可在“我的内容”查看，或点“新帖子”重试清空');return;}
+    try {const {discardLocalImage}=await import('./image-upload');accepted.images.forEach(discardLocalImage);} catch { /* Submitted content is already durable on the server. */ }
+    router.replace('/me/contents');
+  };
   const restore=useCallback(async()=>{
     setAuth('loading');
     try {
@@ -62,10 +71,28 @@ export function ComposePage() {
       if(!current){setAuth('guest');return;}
       const subject=localDraftOwner(current.access_token);
       if(!subject){setAuth('error');setMessage('登录信息无法识别，请重新登录');return;}
-      if(ownerRef.current!==subject){
+      // Fast Refresh retains refs and state. Reconcile the durable draft on every
+      // entry, including a draft that an older bundle left accepted/unknown.
+      {
         const saved=await readComposeDraft(subject);
-        const restored=saved?{ ...saved,images:saved.images.map(image=>image.phase==='uploading'?{ ...image,phase:'unknown' as const }:image) }:initialDraft();
-        apply(restored);ownerRef.current=subject;setOwner(subject);
+        let restored=saved?{ ...saved,images:saved.images.map(image=>image.phase==='uploading'?{ ...image,phase:'unknown' as const }:image) }:initialDraft();
+        if(restored.phase==='accepted' && !isRevisionReceipt(restored.receipt,restored.operationId))
+          restored={...restored,phase:'unknown',receipt:null};
+        if(restored.phase==='unknown') {
+          try {
+            const original=await accounts.operation(current.access_token,restored.operationId);
+            if(original.operation_id===restored.operationId && original.action==='post.create' &&
+              original.state==='succeeded' && isRevisionReceipt(original.result,restored.operationId))
+              restored={...restored,phase:'accepted',receipt:original.result};
+            else if(original.operation_id===restored.operationId && original.action==='post.create' && original.state==='failed')
+              restored={...restored,phase:'failed',receipt:null};
+          } catch { /* Unconfirmed operations keep their original ID and input. */ }
+        }
+        apply(restored);setOwner(subject);
+        if(restored.phase==='accepted' && restored.receipt && ['preparing','awaiting_review','published'].includes(restored.receipt.publication_state)) {
+          await finishAccepted(subject,restored);
+          setAuthRequired(false);setAuth('ready');return;
+        }
         setMessage(restored.phase==='unknown'?'上次提交结果仍待确认，请勿重复发布':
           restored.images.some(image=>image.phase==='unknown')?'上次图片上传结果待确认，请查询图片原操作':'');
       }
@@ -120,11 +147,11 @@ export function ComposePage() {
     } catch {setSaveError('本机草稿保存失败，请勿关闭页面');}
   };
   const publish=async()=>{
-    if(busy || auth!=='ready' || !owner || draft.phase==='unknown' || draft.phase==='accepted')return;
+    if(publishing.current || busy || auth!=='ready' || !owner || draft.phase==='unknown' || draft.phase==='accepted')return;
     const body=normalizeText(draft.body),length=countVisibleCharacters(body);
     if((!body.trim() && !draft.images.length) || length>2000){setMessage(!body.trim()?'文字帖需要正文，图片帖可以不写说明':'正文超过当前普通帖 2000 字上限');return;}
     if(draft.replyScope!=='all_readers'){setMessage('当前只支持所有有权阅读者回复，请切换回复范围后发布');return;}
-    setBusy(true);setMessage('');
+    publishing.current=true;setBusy(true);setMessage('正在保存并提交帖子…');
     let submission={ ...draft,body,operationId:draft.phase==='failed'?randomUUID():draft.operationId };
     try {
       await saveComposeDraft(owner,submission);
@@ -186,8 +213,7 @@ export function ComposePage() {
         ...(submission.images.length?{media_refs:submission.images.map(image=>image.mediaId!).filter(Boolean)}:{}) };
       const receipt=await posts.create(current.access_token,input);
       const accepted:ComposeDraft={ ...submission,phase:'accepted',receipt };
-      apply(accepted);await saveComposeDraft(owner,accepted);
-      setMessage(receiptMessage(receipt.publication_state));
+      await finishAccepted(owner,accepted);
     } catch(error) {
       if(error instanceof PostError) {
         if(error.code==='SESSION_INVALID')setAuthRequired(true);
@@ -200,7 +226,7 @@ export function ComposePage() {
         else {setMessage(error instanceof Error?error.message:'暂时无法保存登录信息，输入已保留');
           setSaveError('本机草稿或登录信息未能安全保存，请勿关闭页面');}
       }
-    } finally {setBusy(false);}
+    } finally {publishing.current=false;setBusy(false);}
   };
   const queryOriginal=async()=>{
     if(busy || auth!=='ready' || !owner || draft.phase!=='unknown')return;
@@ -218,8 +244,7 @@ export function ComposePage() {
           setMessage('原操作已记录，但发布回执不完整，仍需稍后查询');return;
         }
         const accepted:ComposeDraft={ ...draft,phase:'accepted',receipt:operation.result };
-        apply(accepted);await saveComposeDraft(owner,accepted);
-        setMessage(`原操作确认：${receiptMessage(operation.result.publication_state)}`);
+        await finishAccepted(owner,accepted);
       } else if(operation.state==='failed') {
         const failed:ComposeDraft={ ...draft,phase:'failed',receipt:null };
         apply(failed);await saveComposeDraft(owner,failed);
@@ -284,11 +309,14 @@ export function ComposePage() {
     const back=BackHandler.addEventListener('hardwareBackPress',()=>{void close();return true;});
     return ()=>back.remove();
   });
-  const newPost=()=>{
-    const previous=draft.images,next=initialDraft();apply(next);setMessage('');
-    if(owner)void saveComposeDraft(owner,next).then(async()=>{
+  const newPost=async()=>{
+    if(busy || !owner)return;
+    const previous=draft.images,next=initialDraft();setBusy(true);
+    try {
+      await saveComposeDraft(owner,next);apply(next);setMessage('');setSaveError('');
       const { discardLocalImage }=await import('./image-upload');previous.forEach(discardLocalImage);
-    }).catch(()=>setSaveError('本机草稿保存失败，请勿关闭页面'));
+    } catch {setSaveError('本机草稿保存失败，请勿关闭页面');}
+    finally {setBusy(false);}
   };
   const revisePost=()=>{
     const next:ComposeDraft={ ...draft,phase:'editing',operationId:randomUUID(),receipt:null };
@@ -297,11 +325,12 @@ export function ComposePage() {
   };
   const count=countVisibleCharacters(draft.body);
   const canPublish=auth==='ready' && !busy && draft.phase!=='unknown' && !draft.images.some(image=>image.phase==='unknown') &&
-    (draft.body.trim().length>0 || draft.images.length>0) && count<=2000 && draft.replyScope==='all_readers';
+    (draft.body.trim().length>0 || draft.images.length>0) && count<=2000 &&
+    (draft.replyScope==='all_readers' || draft.replyScope==='closed');
   return <AppFrame title="发布帖子" onBack={()=>void close()} backIcon="close" backDisabled={busy} headerBorder={false}
     right={auth==='ready'?<Pressable accessibilityRole="button" accessibilityLabel={draft.phase==='accepted'?'写新帖子':'发布帖子'}
         accessibilityState={{disabled:draft.phase!=='accepted' && !canPublish,busy}} disabled={draft.phase!=='accepted' && !canPublish}
-        onPress={draft.phase==='accepted'?(draft.receipt && ['rejected','failed','cancelled'].includes(draft.receipt.publication_state)?revisePost:newPost):()=>void publish()}
+        onPress={draft.phase==='accepted'?(draft.receipt && ['rejected','failed','cancelled'].includes(draft.receipt.publication_state)?revisePost:()=>void newPost()):()=>void publish()}
         className="min-h-[36px] min-w-[62px] items-center justify-center rounded-[18px] bg-fg px-3"
         style={{opacity:draft.phase==='accepted' || canPublish?1:0.3}}><Text className="text-[12px] font-semibold text-bg">{busy?'处理中':draft.phase==='accepted'?'新帖子':'发布'}</Text></Pressable>:undefined}>
     {auth==='loading' ? <PageStatus kind="loading" message="正在读取登录和本机草稿…"/> : auth!=='ready' ?
@@ -347,15 +376,15 @@ export function ComposePage() {
         {draft.phase==='accepted' && draft.receipt ? <View className="mx-5 mt-5 gap-2"><Text className="text-[13px] font-semibold text-fg">已收到发布回执</Text>
           <Text className="text-[12px] text-secondary">审核：{reviewLabels[draft.receipt.review_state]} · 发布：{publicationLabels[draft.receipt.publication_state]}</Text>
           <Text selectable className="text-[11px] text-secondary">操作号：{draft.operationId}</Text></View> : null}
+        {draft.phase==='accepted'?<View className="mx-5 mt-3"><AppButton label="查看我的内容" onPress={()=>router.push('/me/contents')}/></View>:null}
       </ScrollView>
       <View className="border-t border-line px-4 pb-2 pt-2">
         {openChoice==='visibility'?<View className="flex-row flex-wrap gap-2 pb-2">{(['public','followers','self'] as const).map(value=>
           <Choice key={value} value={value} label={visibilityLabels[value]} selected={draft.visibility===value}
             onPress={visibility=>{edit({visibility});setOpenChoice(null);}} />)}</View>:null}
-        {openChoice==='reply'?<View className="flex-row flex-wrap gap-2 pb-2">{(['all_readers','author_follows','closed'] as const).map(value=>
+        {openChoice==='reply'?<View className="flex-row flex-wrap gap-2 pb-2">{(['all_readers','closed'] as const).map(value=>
           <Choice key={value} value={value} label={replyLabels[value]} selected={draft.replyScope===value}
-            onPress={replyScope=>{if(replyScope==='all_readers')edit({replyScope});
-              else setMessage('当前只支持所有有权阅读者回复；此范围暂未开放');setOpenChoice(null);}} />)}</View>:null}
+            onPress={replyScope=>{edit({replyScope});setOpenChoice(null);}} />)}</View>:null}
         <View className="flex-row items-center gap-2">
           <Pressable accessibilityRole="button" accessibilityLabel="选择可见范围" onPress={()=>setOpenChoice(openChoice==='visibility'?null:'visibility')}
             className="min-h-10 flex-row items-center gap-1 rounded-[20px] px-2"><PrototypeIcon name="globe" size={17} color={colors.secondary}/>

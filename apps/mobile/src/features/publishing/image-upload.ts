@@ -41,7 +41,7 @@ export async function keepSelectedImage(uri:string):Promise<UploadImage> {
   directory.create({ idempotent:true,intermediates:true });
   const id=randomUUID(),destination=new File(directory,`${id}.${mime==='image/jpeg'?'jpg':'png'}`);
   try {
-    source.copy(destination);
+    await source.copy(destination);
     if(destination.size!==bytes.length)throw new UploadError('FILE_CHANGED','图片保存不完整，请重新选择');
     return { id,uri:destination.uri,mime,sizeBytes:bytes.length,sha256,phase:'selected',step:null,
       createOperationId:randomUUID(),partOperationId:randomUUID(),completeOperationId:randomUUID(),

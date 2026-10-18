@@ -7,7 +7,7 @@ const savedFetch=globalThis.fetch;
 afterEach(()=>{globalThis.fetch=savedFetch;});
 const id=(n:number)=>`90000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const item=(n:number):LatestPost=>({id:id(n),author_id:id(50),revision_id:id(100+n),body:'Controlled public body '+n,
-  row_version:1,visibility:'public',created_at:'2026-10-17T00:00:00.123456Z'});
+  type:'text',media_refs:[],row_version:1,visibility:'public',created_at:'2026-10-17T00:00:00.123456Z'});
 const detail=(n:number)=>{const {created_at,...body}=item(n);void created_at;return body;};
 const page=(items:LatestPost[]=[],next:string|null=null):LatestPage=>({items,next_cursor:next,has_more:next!==null,config_version:'fixture-current'});
 const deferred=<T>()=>{let resolve!:(value:T)=>void;const promise=new Promise<T>(done=>{resolve=done;});return {promise,resolve};};

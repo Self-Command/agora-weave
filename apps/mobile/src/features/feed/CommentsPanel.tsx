@@ -17,7 +17,7 @@ import {commentWriteApi,CommentError,guestCommentsApi,type CommentItem} from './
 import {guestMediaUrl} from './api';
 
 const release=Constants.expoConfig?.version || '0.0.0';
-const read=guestCommentsApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__);
+const read=guestCommentsApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__,async()=>(await currentProfileSession())?.session.access_token);
 const write=commentWriteApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__);
 const accounts=accountApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__);
 const profiles=profileApi(process.env.EXPO_PUBLIC_API_URL,release,__DEV__);
@@ -27,7 +27,7 @@ export type ReplyTarget={id:string;label:string};
 
 function CommentAuthor({id,onLoaded}:{id:string;onLoaded:(id:string,profile:Profile)=>void}){
   const colors=themeFor(useColorScheme()),[profile,setProfile]=useState<Profile|null>(null);
-  useEffect(()=>{let active=true;setProfile(null);void profiles.get(id).then(value=>{if(active){setProfile(value);onLoaded(id,value);}}).catch(()=>{});
+  useEffect(()=>{let active=true;setProfile(null);void currentProfileSession().then(current=>profiles.get(id,current?.session.access_token)).then(value=>{if(active){setProfile(value);onLoaded(id,value);}}).catch(()=>{});
     return()=>{active=false;};},[id,onLoaded]);
   return <View style={{flexDirection:'row',alignItems:'center',gap:6,flex:1,minWidth:0}}>
     <Text numberOfLines={1} style={{color:colors.fg,fontSize:12,fontWeight:'600'}}>{profile?.nickname || '社区成员'}</Text>

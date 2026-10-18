@@ -16,6 +16,9 @@ import { media } from './media/gateway.ts';
 import { readCurrentDocuments, readDocument } from './documents/read.ts';
 import { latestFeed } from './routes/discovery.ts';
 import { createPost } from './routes/publishing.ts';
+import { listOwnedContents } from './routes/owned-contents.ts';
+import { patchPost, listPostRevisions, patchPostVisibility, previewPostVisibility, patchReplyPolicy,
+  patchComment, deleteComment, deleteResource, restoreResource, listRecentlyDeleted } from './routes/content-lifecycle.ts';
 import { createComment, listComments } from './routes/discussions.ts';
 import { resourceLike } from './routes/reactions.ts';
 import { accountBlock } from './routes/blocks.ts';
@@ -99,6 +102,23 @@ Deno.serve(async (request: Request) => {
     }
     if (path === '/me/preferences' && request.method === 'PUT') return failure('METHOD_NOT_ALLOWED', 405);
     if (path === '/me/profile') return await updateProfile(request,failure);
+    if (path === '/me/contents') return await listOwnedContents(request,failure);
+    if (path === '/me/recently-deleted') return await listRecentlyDeleted(request,failure);
+    const revisionTarget=path.match(/^\/posts\/([a-f0-9-]{36})\/revisions$/i);
+    if (revisionTarget) return await listPostRevisions(request,revisionTarget[1],failure);
+    const visibilityPreview=path.match(/^\/posts\/([a-f0-9-]{36})\/visibility-previews$/i);
+    if (visibilityPreview) return await previewPostVisibility(request,visibilityPreview[1],failure);
+    const visibilityTarget=path.match(/^\/posts\/([a-f0-9-]{36})\/visibility$/i);
+    if (visibilityTarget) return await patchPostVisibility(request,visibilityTarget[1],failure);
+    const replyTarget=path.match(/^\/posts\/([a-f0-9-]{36})\/reply-policy$/i);
+    if (replyTarget) return await patchReplyPolicy(request,replyTarget[1],failure);
+    const commentTarget=path.match(/^\/comments\/([a-f0-9-]{36})$/i);
+    if (commentTarget) return request.method==='PATCH'?await patchComment(request,commentTarget[1],failure):
+      await deleteComment(request,commentTarget[1],failure);
+    const deletionTarget=path.match(/^\/resources\/([a-f0-9-]{36})\/deletion$/i);
+    if (deletionTarget) return await deleteResource(request,deletionTarget[1],failure);
+    const restorationTarget=path.match(/^\/deletions\/([a-f0-9-]{36})\/restore$/i);
+    if (restorationTarget) return await restoreResource(request,restorationTarget[1],failure);
     if (path === '/reports') return await createReport(request,failure);
     if (path === '/me/reports') return await listOwnReports(request,failure);
     if (path === '/me/sanctions') return await listOwnSanctions(request,failure);
@@ -118,6 +138,7 @@ Deno.serve(async (request: Request) => {
     const blockTarget = path.match(/^\/me\/blocks\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
     if (blockTarget) return await accountBlock(request,blockTarget[1],failure);
     if (!target) return failure('NOT_FOUND', 404);
+    if (request.method === 'PATCH') return await patchPost(request,target[1],failure);
     if (request.method !== 'GET') return failure('METHOD_NOT_ALLOWED', 405);
     return await admittedResource(request, target[1], failure);
   } catch { return failure('SERVICE_UNAVAILABLE', 503); }
