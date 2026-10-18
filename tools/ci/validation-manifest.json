@@ -1092,6 +1092,13 @@
   "core_case_count": 386,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0060_current_like_state.sql",
+      "depends_on": [
+        "supabase/migrations/0048_reaction_conflict_binding_fix.sql",
+        "supabase/migrations/0017_output_restore_admission.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0059_profile_contents.sql",
       "depends_on": [
         "supabase/migrations/0058_profile_image_upload.sql",
