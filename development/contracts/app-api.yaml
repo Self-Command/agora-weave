@@ -1505,8 +1505,8 @@ paths:
     get:
       operationId: getAppOperation
       summary: getAppOperation
-      description: Current actor scoped durable status. Config result only for current
-        management actor with signed aal2; ordinary account operations return operation_id/action/state.
+      description: Current actor scoped durable status and permitted immutable receipt.
+        Config result requires the current management actor with signed aal2.
       x-implementation: implemented
       x-verification: read-only
       security:

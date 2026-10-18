@@ -385,6 +385,10 @@ components:
           - comment.create
           - like.put
           - like.remove
+          - block.put
+          - block.remove
+          - profile.update
+          - report.create
         state:
           type: string
           enum:
@@ -397,6 +401,9 @@ components:
           - $ref: '#/components/schemas/ConfigRelease'
           - $ref: '#/components/schemas/RevisionReceipt'
           - $ref: '#/components/schemas/ReactionReceipt'
+          - $ref: '#/components/schemas/ActionReceipt'
+          - $ref: '#/components/schemas/Profile'
+          - $ref: '#/components/schemas/Report'
       required:
       - operation_id
       - action
