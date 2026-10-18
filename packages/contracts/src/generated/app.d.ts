@@ -275,6 +275,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/dev-test-login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Development test account login
+         * @description Enabled only for the single provisioned ordinary test account in the local dev environment. Uses official Auth password verification and binds a real admitted session. This route is unavailable in test and production.
+         */
+        post: operations["devTestLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/logout": {
         parameters: {
             query?: never;
@@ -7097,6 +7117,85 @@ export interface operations {
             503: {
                 headers: {
                     "Cache-Control": components["headers"]["CacheControl"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    devTestLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                /**
+                 * @example {
+                 *       "username": "synthetic-dev-user",
+                 *       "password": "FICTITIOUS_PASSWORD_FOR_SCHEMA_ONLY"
+                 *     }
+                 */
+                "application/json": {
+                    /** Format: password */
+                    password: string;
+                    username: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Real admitted development session */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthReceiptEnvelope"];
+                };
+            };
+            /** @description Invalid credentials or ineligible account */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unsupported method */
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid input */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Official Auth rate limit */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Development login disabled or outcome unconfirmed */
+            503: {
+                headers: {
                     [name: string]: unknown;
                 };
                 content: {
