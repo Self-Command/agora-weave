@@ -179,7 +179,7 @@ payload=$(mktemp)
 trap 'rm -f "$cfg" "$payload"' EXIT
 IFS= read -r size
 case "$size" in ''|*[!0-9]*) exit 1;; esac
-head -c "$size" > "$cfg"
+dd bs=1 count="$size" of="$cfg" 2>/dev/null
 cat > "$payload"
 printf 'data-binary = "@%s"\\n' "$payload" >> "$cfg"
 curl --config "$cfg"`;
