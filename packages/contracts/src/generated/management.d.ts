@@ -160,7 +160,7 @@ export interface paths {
         };
         /**
          * getCasesManagement
-         * @description Planned management domain API, not deployed. Per action/resource/environment grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin CSRF; core consumes server-held Bearer token. No role self-assertion, private full-history access or production authorization from mock results.
+         * @description List currently authorized report case summaries without reason or evidence. Case decisions remain unavailable. Browser uses cookie; core consumes server-held Bearer token.
          */
         get: operations["getCasesManagement"];
         put?: never;
@@ -380,7 +380,7 @@ export interface paths {
         };
         /**
          * getContentsManagement
-         * @description Planned management domain API, not deployed. Per action/resource/environment grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin CSRF; core consumes server-held Bearer token. No role self-assertion, private full-history access or production authorization from mock results.
+         * @description List currently selected revisions only, with per-resource current grant and MFA checks. No private full-history access. Browser uses cookie; core consumes server-held Bearer token.
          */
         get: operations["getContentsManagement"];
         put?: never;

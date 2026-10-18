@@ -1334,7 +1334,7 @@ export interface paths {
         head?: never;
         /**
          * updateProfile
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Create or update the authenticated account profile using the current row-version CAS and operation idempotency.
          */
         patch: operations["updateProfile"];
         trace?: never;
@@ -1408,7 +1408,7 @@ export interface paths {
         };
         /**
          * listOwnReports
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Read the current reporter's own report summaries and states without another reporter's evidence or internal case details.
          */
         get: operations["listOwnReports"];
         put?: never;
@@ -1892,7 +1892,7 @@ export interface paths {
         };
         /**
          * getProfile
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Read a current profile only when the viewer is authorized. An account without a saved profile returns unavailable rather than sample data.
          */
         get: operations["getProfile"];
         put?: never;
@@ -1994,7 +1994,7 @@ export interface paths {
         put?: never;
         /**
          * createReport
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Submit a report for an authorized current target. A durable receipt confirms intake, not a violation finding or sanction.
          */
         post: operations["createReport"];
         delete?: never;

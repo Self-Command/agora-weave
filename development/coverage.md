@@ -515,7 +515,7 @@
 | [profile](features/profile/README.md) | `actOnFollowRequest` | [POST /follow-requests/{requestId}/actions](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `deleteMute` | [DELETE /me/mutes](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `getPreferences` | [GET /me/preferences](contracts/app-api.yaml) | planned |
-| [profile](features/profile/README.md) | `getProfile` | [GET /profiles/{accountId}](contracts/app-api.yaml) | planned |
+| [profile](features/profile/README.md) | `getProfile` | [GET /profiles/{accountId}](contracts/app-api.yaml) | implemented for current App/anonymous read; human UI review pending |
 | [profile](features/profile/README.md) | `listFollowRequests` | [GET /me/follow-requests](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `listProfileContents` | [GET /profiles/{accountId}/contents](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `listProfileRelationships` | [GET /profiles/{accountId}/relationships](contracts/app-api.yaml) | planned |
@@ -526,7 +526,7 @@
 | [profile](features/profile/README.md) | `removeBlock` | [DELETE /me/blocks/{accountId}](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `removeFollow` | [DELETE /me/follows/{accountId}](contracts/app-api.yaml) | planned |
 | [profile](features/profile/README.md) | `removeFollower` | [DELETE /me/followers/{accountId}](contracts/app-api.yaml) | planned |
-| [profile](features/profile/README.md) | `updateProfile` | [PATCH /me/profile](contracts/app-api.yaml) | planned |
+| [profile](features/profile/README.md) | `updateProfile` | [PATCH /me/profile](contracts/app-api.yaml) | implemented; isolated DB verification, human UI review pending |
 | [publishing](features/publishing/README.md) | `appendThreadBatch` | [POST /threads/{threadId}/batches](contracts/app-api.yaml) | planned |
 | [publishing](features/publishing/README.md) | `completeUpload` | [POST /uploads/{uploadId}/complete](contracts/app-api.yaml) | planned |
 | [publishing](features/publishing/README.md) | `createDraft` | [POST /me/drafts](contracts/app-api.yaml) | planned |
@@ -642,7 +642,7 @@
 | [moderation](features/moderation/README.md) | `createManagementPasswordCaptcha` | [POST /auth/password/captcha](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `createMfaRecoveryCaseManagement` | [POST /admin/mfa-recovery-cases](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `createPlacementManagement` | [POST /admin/placements](contracts/management-api.yaml) | planned |
-| [moderation](features/moderation/README.md) | `createReport` | [POST /reports](contracts/app-api.yaml) | planned |
+| [moderation](features/moderation/README.md) | `createReport` | [POST /reports](contracts/app-api.yaml) | implemented; isolated DB verification, human UI review pending |
 | [moderation](features/moderation/README.md) | `createSanctionManagement` | [POST /admin/sanctions](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `createStepupManagement` | [POST /admin/stepup](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `createTopicManagement` | [POST /admin/topics](contracts/management-api.yaml) | planned |
@@ -671,7 +671,7 @@
 | [moderation](features/moderation/README.md) | `listAnnouncementsManagement` | [GET /admin/announcements](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `listMfaFactorsManagement` | [GET /admin/mfa/factors](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `listOwnAppeals` | [GET /appeals](contracts/app-api.yaml) | planned |
-| [moderation](features/moderation/README.md) | `listOwnReports` | [GET /me/reports](contracts/app-api.yaml) | planned |
+| [moderation](features/moderation/README.md) | `listOwnReports` | [GET /me/reports](contracts/app-api.yaml) | implemented; isolated DB verification, human UI review pending |
 | [moderation](features/moderation/README.md) | `loginManagementPassword` | [POST /auth/password](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `logoutManagementSession` | [POST /auth/logout](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `patchAnnouncementManagement` | [PATCH /admin/announcements/{itemId}](contracts/management-api.yaml) | planned |
