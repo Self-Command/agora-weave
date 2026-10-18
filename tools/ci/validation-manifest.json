@@ -1056,6 +1056,12 @@
   "core_case_count": 381,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0051_block_commands.sql",
+      "depends_on": [
+        "supabase/migrations/0050_dev_test_login.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0050_dev_test_login.sql",
       "depends_on": [
         "supabase/migrations/0049_configured_content_limit.sql",

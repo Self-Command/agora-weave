@@ -18,6 +18,7 @@ const routes=[
   [/^\/auth\/password(?:\/(captcha|forgot))?$/,['POST']],
   [new RegExp(`^/auth/operations/${uuid}$`,'i'),['POST']],
   [/^\/documents\/current$/,['GET']], [/^\/me\/sessions$/,['GET']],
+  [new RegExp(`^/me/blocks/${uuid}$`,'i'),['PUT','DELETE']],
   [new RegExp(`^/me/sessions/${uuid}$`,'i'),['DELETE']],
   [/^\/recovery-cases$/,['POST']], [new RegExp(`^/(recovery-cases|operations)/${uuid}$`,'i'),['GET']],
   [/^\/admin\/(session|accounts)$/,['GET']], [/^\/admin\/mfa\/factors$/,['GET','POST']],
