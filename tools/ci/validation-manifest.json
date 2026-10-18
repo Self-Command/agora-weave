@@ -1101,8 +1101,8 @@
     {
       "file": "supabase/migrations/0063_dev_trusted_publisher.sql",
       "depends_on": [
-        "supabase/migrations/0045_text_post_submission.sql",
-        "supabase/migrations/0056_static_image_upload.sql"
+        "supabase/migrations/0049_configured_content_limit.sql",
+        "supabase/migrations/0057_static_image_upload_actor_binding.sql"
       ]
     },
     {
