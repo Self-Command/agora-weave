@@ -1631,9 +1631,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
@@ -2185,6 +2185,7 @@ export interface components {
         Comment: {
             allowed_actions: string[];
             author_id: components["schemas"]["Uuid"];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             body: string;
             created_at: components["schemas"]["Timestamp"];
             display_depth: number;
@@ -2198,6 +2199,7 @@ export interface components {
             row_version: number;
         };
         CommentCreate: {
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             body: string;
             media_refs?: components["schemas"]["Uuid"][];
             operation_id: components["schemas"]["Uuid"];
@@ -2314,12 +2316,14 @@ export interface components {
         ContentPatch: {
             alt_text?: string[];
             base_version: number;
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body?: string;
             operation_id: components["schemas"]["Uuid"];
             tags?: string[];
         };
         ContentRevision: {
             alt_text: string[];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             id: components["schemas"]["Uuid"];
             mentions: components["schemas"]["Uuid"][];
@@ -2410,6 +2414,7 @@ export interface components {
             recipient_id: components["schemas"]["Uuid"];
         };
         CreatePostRequest: {
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             /** @enum {string} */
             indexing_mode?: "inherit" | "allow" | "deny";
@@ -2673,6 +2678,7 @@ export interface components {
             surfaces: ("app" | "share" | "admin")[];
         };
         Draft: {
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             id: components["schemas"]["Uuid"];
             last_saved: components["schemas"]["Timestamp"];
@@ -2710,6 +2716,7 @@ export interface components {
         };
         DraftWrite: {
             base_version: number;
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             import_confirmed?: boolean;
             media_refs?: components["schemas"]["Uuid"][];
@@ -3788,10 +3795,12 @@ export interface components {
             id: components["schemas"]["Uuid"];
             options: components["schemas"]["PollOption"][];
             original_closes_at: components["schemas"]["Timestamp"];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             question: string;
             row_version: number;
         };
         PollCorrectionRequest: {
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             body: string;
             operation_id: components["schemas"]["Uuid"];
             reason: string;
@@ -3804,6 +3813,7 @@ export interface components {
         PollInput: {
             closes_at: components["schemas"]["Timestamp"];
             options: string[];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             question: string;
         };
         PollOption: {
@@ -3816,6 +3826,7 @@ export interface components {
             closes_at?: components["schemas"]["Timestamp"];
             operation_id: components["schemas"]["Uuid"];
             options?: string[];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative. */
             question?: string;
         };
         PollResults: {
@@ -3841,6 +3852,7 @@ export interface components {
         Post: {
             allowed_actions: string[];
             author_id: components["schemas"]["Uuid"];
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             created_at: components["schemas"]["Timestamp"];
             id: components["schemas"]["Uuid"];
@@ -3860,6 +3872,7 @@ export interface components {
         };
         /** @description Type combinations must match PRD: image <=9; one video <=200MB/300s; one GIF <=15MB; poll 2..4 options without media; quote appends text only. MB=1,000,000 bytes; registered limits apply. */
         PostInput: {
+            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             /** @enum {string} */
             indexing_mode?: "inherit" | "allow" | "deny";

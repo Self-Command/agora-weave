@@ -6,11 +6,11 @@
     "development/contracts/examples/implemented.json": "227f6e09c0516cac901b00eafc5dc97b1d1f23d7f487b79fc54afef46488db4c",
     "development/contracts/management-api.yaml": "24cdac32b92a917eafe241328b909dbaf02108abef7379c35d2b22b2a64e6413",
     "development/contracts/plugin-manifest.schema.json": "5360b836d16f98e7b3a1acb45d08366fc8a010a0f6dccdcf5adff66aca32a8ad",
-    "development/contracts/schemas/common.yaml": "a5c291ba8dac78b932ec08599d00edc75f56b5287574a4a2ef47e88b14b91226"
+    "development/contracts/schemas/common.yaml": "634919f92b2d33a1811f20bc5a8e977d1d0a79c8b6118c747f054b09b5251600"
   },
   "generated": {
-    "packages/contracts/src/generated/app.d.ts": "aa6dadcc5c91615b666d9a8cc7eb6c01de3b8c599b36abe7de0c5daee08d4a3c",
-    "packages/contracts/src/generated/management.d.ts": "ca621c16ce0d52845e06f9cd0bbd9f37c724c15df6e538273d2efc04b78fa81d",
-    "packages/contracts/src/generated/core-admin.d.ts": "0d6540548753a363c2b686293b6ce0715cc43aaefda27f57574ba956bf459a64"
+    "packages/contracts/src/generated/app.d.ts": "6b0f2adeab58ad1508f334aa4d7f0e6188fc059557af63b8a75309c2d72b49c8",
+    "packages/contracts/src/generated/management.d.ts": "bbfb2163b01edce087b3c419498ece6967fad6a04543e0a539e5505c2e45fe4a",
+    "packages/contracts/src/generated/core-admin.d.ts": "e7f051d5ceb049becad00185b4f03c6033b34e2a3f5c98331f395e7d27be1e02"
   }
 }
