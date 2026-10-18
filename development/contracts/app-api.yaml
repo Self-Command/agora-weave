@@ -10238,7 +10238,9 @@ paths:
             examples:
               synthetic:
                 summary: Fictitious input, never real credentials or consent
-                value: *id009
+                value:
+                  operation_id: 10000000-0000-4000-8000-000000000001
+                  base_version: 1
       x-audiences:
       - app
       x-contract-status: implemented
@@ -10391,7 +10393,9 @@ paths:
             examples:
               synthetic:
                 summary: Fictitious input, never real credentials or consent
-                value: *id009
+                value:
+                  operation_id: 10000000-0000-4000-8000-000000000001
+                  base_version: 1
       x-audiences:
       - app
       x-contract-status: implemented
