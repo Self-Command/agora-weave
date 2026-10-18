@@ -4646,14 +4646,87 @@ paths:
       x-audiences:
       - management-server
       x-contract-status: designed-not-implemented
+  /admin/revisions/{revisionId}/decision-previews:
+    post:
+      operationId: previewRevisionDecisionCoreAdmin
+      summary: previewRevisionDecisionCoreAdmin
+      description: Create an exact five-minute decision preview bound to the current
+        actor, session, environment, revision version, decision, and reason. Its
+        action_digest is used for one-use management stepup.
+      x-implementation: planned
+      x-verification: isolated-test-only
+      security:
+      - bearerAuth: []
+      parameters:
+      - in: path
+        name: revisionId
+        required: true
+        schema: *id005
+      responses:
+        '200':
+          description: Exact preview; no decision has been applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevisionDecisionPreviewEnvelope'
+        '401':
+          description: Invalid or revoked session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Current grant or MFA denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Unavailable or unauthorized revision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Revision or operation conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Invalid decision or reason
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Dependency unavailable or outcome unconfirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionDecisionPreviewRequest'
+      x-audiences:
+      - management-server
+      x-max-request-bytes: 16384
+      x-contract-status: designed-not-implemented
   /admin/revisions/{revisionId}/decision:
     post:
       operationId: decideRevisionCoreAdmin
       summary: decideRevisionCoreAdmin
-      description: Planned management domain API, not deployed. Per action/resource/environment
-        grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin
-        CSRF; core consumes server-held Bearer token. No role self-assertion, private
-        full-history access or production authorization from mock results.
+      description: Commit an exact decision preview with one-use MFA stepup, current
+        action/resource/environment grant, revision-version CAS, and operation idempotency.
       x-implementation: planned
       x-verification: isolated-test-only
       security:
@@ -4793,7 +4866,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdminDecision'
+              $ref: '#/components/schemas/RevisionDecisionRequest'
       x-audiences:
       - management-server
       x-contract-status: designed-not-implemented
@@ -13873,6 +13946,14 @@ components:
       $ref: ./schemas/common.yaml#/components/schemas/AdminSensitiveCommand
     AdminDecision:
       $ref: ./schemas/common.yaml#/components/schemas/AdminDecision
+    RevisionDecisionPreviewRequest:
+      $ref: ./schemas/common.yaml#/components/schemas/RevisionDecisionPreviewRequest
+    RevisionDecisionPreview:
+      $ref: ./schemas/common.yaml#/components/schemas/RevisionDecisionPreview
+    RevisionDecisionPreviewEnvelope:
+      $ref: ./schemas/common.yaml#/components/schemas/RevisionDecisionPreviewEnvelope
+    RevisionDecisionRequest:
+      $ref: ./schemas/common.yaml#/components/schemas/RevisionDecisionRequest
     AdminCase:
       $ref: ./schemas/common.yaml#/components/schemas/AdminCase
     AdminCasePage:

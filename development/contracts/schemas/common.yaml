@@ -3412,6 +3412,18 @@ components:
       - request_id
       - config_version
       - data
+    RevisionDecisionPreviewEnvelope:
+      type: object
+      additionalProperties: false
+      properties:
+        request_id: *id001
+        config_version: *id007
+        data:
+          $ref: '#/components/schemas/RevisionDecisionPreview'
+      required:
+      - request_id
+      - config_version
+      - data
     RevisionPageEnvelope:
       type: object
       additionalProperties: false
@@ -4833,6 +4845,67 @@ components:
       - stepup_id
       - reason
       - decision
+    RevisionDecisionPreviewRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        operation_id: *id001
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        decision:
+          type: string
+          enum:
+          - approve
+          - reject
+      required:
+      - operation_id
+      - reason
+      - decision
+    RevisionDecisionPreview:
+      type: object
+      additionalProperties: false
+      properties:
+        preview_id: *id001
+        preview_digest: *id004
+        action_digest: *id004
+        revision_id: *id001
+        base_version: *id002
+        expires_at: *id006
+      required:
+      - preview_id
+      - preview_digest
+      - action_digest
+      - revision_id
+      - base_version
+      - expires_at
+    RevisionDecisionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        operation_id: *id001
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        decision:
+          type: string
+          enum:
+          - approve
+          - reject
+        base_version: *id002
+        preview_id: *id001
+        preview_digest: *id004
+        stepup_id: *id001
+      required:
+      - operation_id
+      - reason
+      - decision
+      - base_version
+      - preview_id
+      - preview_digest
+      - stepup_id
     AdminCase:
       type: object
       additionalProperties: false
