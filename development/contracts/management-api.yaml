@@ -3001,6 +3001,7 @@ paths:
         grant and MFA checks. No private full-history access. Browser uses cookie;
         core consumes server-held Bearer token.
       x-implementation: implemented
+      x-source: apps/admin/src/app/api/management/[...path]/route.ts
       x-verification: read-only
       security:
       - managementCookie: []
@@ -3284,6 +3285,7 @@ paths:
         or evidence. Case decisions remain unavailable. Browser uses cookie;
         core consumes server-held Bearer token.
       x-implementation: implemented
+      x-source: apps/admin/src/app/api/management/[...path]/route.ts
       x-verification: read-only
       security:
       - managementCookie: []
@@ -4438,6 +4440,7 @@ paths:
         the existing one-use management stepup; commit rechecks current grant,
         revision version, preview, and stepup in one transaction.
       x-implementation: implemented
+      x-source: apps/admin/src/app/api/management/[...path]/route.ts
       x-verification: isolated-test-only
       security:
       - managementCookie: []
@@ -4518,6 +4521,7 @@ paths:
         action/resource/environment grant, revision-version CAS, and operation idempotency.
         Browser uses cookie and same-origin CSRF; core consumes server-held Bearer token.
       x-implementation: implemented
+      x-source: apps/admin/src/app/api/management/[...path]/route.ts
       x-verification: isolated-test-only
       security:
       - managementCookie: []

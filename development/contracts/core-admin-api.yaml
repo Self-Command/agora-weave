@@ -3219,6 +3219,7 @@ paths:
       description: List currently selected revisions only, with per-resource current
         grant and MFA checks. No private full-history access.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/moderation-review.ts
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -3501,6 +3502,7 @@ paths:
       description: List currently authorized report case summaries without reason
         or evidence. Case decisions remain unavailable.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/moderation-review.ts
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -4650,6 +4652,7 @@ paths:
         actor, session, environment, revision version, decision, and reason. Its
         action_digest is used for one-use management stepup.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/moderation-review.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -4724,6 +4727,7 @@ paths:
       description: Commit an exact decision preview with one-use MFA stepup, current
         action/resource/environment grant, revision-version CAS, and operation idempotency.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/moderation-review.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []

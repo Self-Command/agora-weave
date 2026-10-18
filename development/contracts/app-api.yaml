@@ -3642,6 +3642,7 @@ paths:
       description: Read a current profile only when the viewer is authorized. An
         account without a saved profile returns unavailable rather than sample data.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/profiles.ts
       x-verification: read-only
       security:
       - {}
@@ -3788,6 +3789,7 @@ paths:
       description: Create or update the authenticated account profile using the
         current row-version CAS and operation idempotency.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/profiles.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -16915,6 +16917,7 @@ paths:
       description: Submit a report for an authorized current target. A durable
         receipt confirms intake, not a violation finding or sanction.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/reports.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -17059,6 +17062,7 @@ paths:
       description: Read the current reporter's own report summaries and states
         without another reporter's evidence or internal case details.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/reports.ts
       x-verification: read-only
       security:
       - bearerAuth: []
