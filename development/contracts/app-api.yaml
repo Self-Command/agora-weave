@@ -2051,6 +2051,8 @@ paths:
                       author_id: 10000000-0000-4000-8000-000000000002
                       visibility: public
                       revision_id: 10000000-0000-4000-8000-000000000003
+                      type: text
+                      media_refs: []
                       body: Synthetic public post
                       row_version: 1
         '401':
@@ -5519,10 +5521,11 @@ paths:
     post:
       operationId: createUpload
       summary: createUpload
-      description: Planned product API; no deployed handler. DTO design for independent
+      description: Implemented bounded static image upload. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: isolated-test-only
+      x-implementation: implemented
+      x-verification: local-integration-test-only
+      x-source: supabase/functions/core/routes/upload.ts
       security:
       - bearerAuth: []
       parameters: []
@@ -5658,15 +5661,16 @@ paths:
               $ref: '#/components/schemas/UploadRequest'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /uploads/{uploadId}/complete:
     post:
       operationId: completeUpload
       summary: completeUpload
-      description: Planned product API; no deployed handler. DTO design for independent
+      description: Implemented bounded static image upload. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: isolated-test-only
+      x-implementation: implemented
+      x-verification: local-integration-test-only
+      x-source: supabase/functions/core/routes/upload.ts
       security:
       - bearerAuth: []
       parameters:
@@ -5807,7 +5811,7 @@ paths:
               $ref: '#/components/schemas/UploadComplete'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/drafts:
     get:
       operationId: listDrafts
@@ -12643,10 +12647,11 @@ paths:
     put:
       operationId: putUploadPart
       summary: putUploadPart
-      description: Planned product API; no deployed handler. DTO design for independent
+      description: Implemented bounded static image upload. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
-      x-verification: isolated-test-only
+      x-implementation: implemented
+      x-verification: local-integration-test-only
+      x-source: supabase/functions/core/routes/upload.ts
       security:
       - bearerAuth: []
       parameters:
@@ -12800,7 +12805,7 @@ paths:
               format: binary
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /dm/eligibility/{recipientId}:
     get:
       operationId: getDmEligibility
