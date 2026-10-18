@@ -13,6 +13,7 @@ const routes=[
   [/^\/feeds\/latest$/,['GET']], [new RegExp(`^/posts/${uuid}$`,'i'),['GET']],
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
   [new RegExp(`^/profiles/${uuid}$`,'i'),['GET']], [/^\/me\/profile$/,['PATCH']],
+  [new RegExp(`^/profiles/${uuid}/contents$`,'i'),['GET']],
   [/^\/reports$/,['POST']], [/^\/me\/reports$/,['GET']],
   [/^\/uploads$/,['POST']],
   [new RegExp(`^/uploads/${uuid}/parts/0$`,'i'),['PUT']],
