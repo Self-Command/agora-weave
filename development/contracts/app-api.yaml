@@ -11722,10 +11722,12 @@ paths:
     put:
       operationId: putBlock
       summary: putBlock
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: A current authenticated account blocks another active account; the
+        same transaction removes both effective follow directions. An exact operation
+        retry returns the original receipt. Unblock does not restore relationships.
+      x-implementation: implemented
       x-verification: isolated-test-only
+      x-source: supabase/functions/core/routes/blocks.ts
       security:
       - bearerAuth: []
       parameters:
@@ -11870,14 +11872,16 @@ paths:
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented-pending-full-flow
     delete:
       operationId: removeBlock
       summary: removeBlock
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: A current authenticated account removes its own active block. The
+        existing block fact is retained for audit and effective follows stay removed.
+        An exact operation retry returns the original receipt.
+      x-implementation: implemented
       x-verification: isolated-test-only
+      x-source: supabase/functions/core/routes/blocks.ts
       security:
       - bearerAuth: []
       parameters:
@@ -12022,7 +12026,7 @@ paths:
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented-pending-full-flow
   /resources/{resourceId}/likes:
     put:
       operationId: putResourceLike
