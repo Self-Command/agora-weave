@@ -1083,6 +1083,12 @@
   "core_case_count": 385,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0055_moderation_review_binding_fix.sql",
+      "depends_on": [
+        "supabase/migrations/0054_moderation_review.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0054_moderation_review.sql",
       "depends_on": [
         "supabase/migrations/0053_report_intake.sql",
