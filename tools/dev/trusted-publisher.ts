@@ -1,4 +1,4 @@
-import { coreEnvironmentFile,sql } from '../ci/core-database.ts';
+import { compose,coreEnvironmentFile } from '../ci/core-database.ts';
 import { readFileSync } from 'node:fs';
 
 // Local runtime validation checks the existing dev Compose identity and private
@@ -11,7 +11,7 @@ const configuration=readFileSync(coreEnvironmentFile(),'utf8');
 const actor=configuration.match(/^CORE_DEV_TEST_ACCOUNT_ID=([a-f0-9-]{36})$/m)?.[1];
 if (!actor || !/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(actor) ||
     !/^CORE_DEV_TEST_LOGIN_ENABLED=true$/m.test(configuration)) throw new Error('Existing ordinary dev test account is not configured');
-sql(`BEGIN;
+compose(['exec','-T','db','psql','-X','-qAt','-U','supabase_admin','-d','postgres','-v','ON_ERROR_STOP=1'],`BEGIN;
   SELECT pg_advisory_xact_lock(17013,1);
   DO $grant$ BEGIN
     IF NOT EXISTS(SELECT 1 FROM core.account a JOIN core.admission d ON d.account_id=a.id
