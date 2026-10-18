@@ -1106,6 +1106,10 @@
   "core_case_count": 389,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0069_content_lifecycle.sql",
+      "depends_on": ["supabase/migrations/0068_admin_business_authority.sql"]
+    },
+    {
       "file": "supabase/migrations/0068_admin_business_authority.sql",
       "depends_on": ["supabase/migrations/0067_report_kind_variable.sql", "supabase/migrations/0062_own_sanctions_appeals.sql"]
     },

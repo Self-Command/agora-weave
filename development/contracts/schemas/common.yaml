@@ -2437,6 +2437,11 @@ components:
         id: *id001
         resource_id: *id001
         revision_no: *id002
+        row_version: *id002
+        visibility: *id016
+        reply_scope:
+          type: string
+          enum: [all_readers, author_follows, mentioned, closed]
         body: *id015
         tags:
           type: array
@@ -2467,6 +2472,9 @@ components:
       - id
       - resource_id
       - revision_no
+      - row_version
+      - visibility
+      - reply_scope
       - body
       - tags
       - mentions
@@ -3082,6 +3090,7 @@ components:
       properties:
         id: *id001
         target_id: *id001
+        row_version: *id002
         state:
           type: string
           enum:
@@ -3106,6 +3115,7 @@ components:
       required:
       - id
       - target_id
+      - row_version
       - state
       - deleted_at
       - undo_until

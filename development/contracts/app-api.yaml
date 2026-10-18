@@ -2144,12 +2144,11 @@ paths:
     patch:
       operationId: patchPost
       summary: patchPost
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
-      - {}
       - bearerAuth: []
       parameters:
       - in: path
@@ -2291,7 +2290,7 @@ paths:
       - anonymous
       - app
       - share-read
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /feeds/latest:
     get:
       operationId: listLatestPosts
@@ -4087,7 +4086,7 @@ paths:
       - anonymous
       - app
       - share-read
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /profiles/{accountId}/relationships:
     get:
       operationId: listProfileRelationships
@@ -6682,7 +6681,7 @@ paths:
               $ref: '#/components/schemas/CreatePostRequest'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/contents:
     get:
       operationId: listOwnedContents
@@ -6830,9 +6829,9 @@ paths:
     get:
       operationId: listPostRevisions
       summary: listPostRevisions
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -6970,14 +6969,14 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /posts/{postId}/visibility:
     patch:
       operationId: patchPostVisibility
       summary: patchPostVisibility
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -7119,14 +7118,14 @@ paths:
               $ref: '#/components/schemas/VisibilityPatch'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /posts/{postId}/reply-policy:
     patch:
       operationId: patchReplyPolicy
       summary: patchReplyPolicy
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -7268,7 +7267,7 @@ paths:
               $ref: '#/components/schemas/ReplyPolicyPatch'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /resources/{resourceId}/search-indexing:
     get:
       operationId: getTargetIndexPolicy
@@ -8154,7 +8153,7 @@ paths:
       - anonymous
       - app
       - share-read
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
     post:
       operationId: createComment
       summary: createComment
@@ -8302,14 +8301,14 @@ paths:
               $ref: '#/components/schemas/CommentCreate'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /comments/{commentId}:
     patch:
       operationId: patchComment
       summary: patchComment
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -8451,13 +8450,13 @@ paths:
               $ref: '#/components/schemas/ContentPatch'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
     delete:
       operationId: deleteComment
       summary: deleteComment
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -8603,7 +8602,7 @@ paths:
                 value: *id008
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /polls/{pollId}/votes:
     post:
       operationId: castPollVote
@@ -10090,9 +10089,9 @@ paths:
     post:
       operationId: deleteResource
       summary: deleteResource
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -10231,21 +10230,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OperationCommand'
+              $ref: '#/components/schemas/VersionedCommand'
             examples:
               synthetic:
                 summary: Fictitious input, never real credentials or consent
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /deletions/{deletionId}/restore:
     post:
       operationId: restoreResource
       summary: restoreResource
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -10384,21 +10383,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OperationCommand'
+              $ref: '#/components/schemas/VersionedCommand'
             examples:
               synthetic:
                 summary: Fictitious input, never real credentials or consent
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/recently-deleted:
     get:
       operationId: listRecentlyDeleted
       summary: listRecentlyDeleted
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -10531,7 +10530,7 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /feeds/{kind}:
     get:
       operationId: listPersonalFeed
@@ -20421,6 +20420,73 @@ paths:
       x-audiences:
       - app
       x-contract-status: designed-not-implemented
+  /posts/{postId}/visibility-previews:
+    post:
+      operationId: previewPostVisibility
+      summary: Preview a current author's visibility change
+      description: Binds the operation, resource version and proposed visibility. Widening requires echoing this preview digest.
+      x-implementation: implemented
+      x-source: supabase/functions/core/routes/content-lifecycle.ts
+      x-verification: isolated-test-only
+      x-audiences: [app]
+      x-contract-status: implemented
+      security:
+      - bearerAuth: []
+      parameters:
+      - in: path
+        name: postId
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisibilityPatch'
+      responses:
+        '200':
+          description: Current impact preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImpactPreviewEnvelope'
+        '401':
+          description: Invalid current session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Current owner action denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Target unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Version or operation conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Uuid:
