@@ -177,7 +177,7 @@ async function run() {
   state.likeCycle='complete';remember();
   const report=await call('/reports',regular.token,'POST',{operation_id:op('ordinary.report'),target_kind:'post',
     target_id:published.resource_id,reason:'本地合成数据举报链路验证',evidence_refs:[]});
-  check('ordinary report accepted by real intake',report.status===200 && report.data?.id);
+  check(`ordinary report accepted by real intake (${report.status}/${report.code || 'OK'})`,report.status===200 && report.data?.id);
   const reportOperation=await call(`/operations/${op('ordinary.report')}`,regular.token);
   check('report original receipt resolves',reportOperation.status===200 && reportOperation.data?.state==='succeeded');
   const blocked=await call(`/me/blocks/${trusted.id}`,regular.token,'PUT',{operation_id:op('ordinary.block')});

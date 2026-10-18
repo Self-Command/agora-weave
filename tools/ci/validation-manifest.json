@@ -1099,6 +1099,10 @@
   "core_case_count": 388,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0066_report_resource_binding.sql",
+      "depends_on": ["supabase/migrations/0053_report_intake.sql"]
+    },
+    {
       "file": "supabase/migrations/0065_review_content_projection.sql",
       "depends_on": [
         "supabase/migrations/0054_moderation_review.sql",
