@@ -188,7 +188,8 @@ paths:
         Enabled only for the single provisioned ordinary test account in the local
         dev environment. Uses official Auth password verification and binds a real
         admitted session. This route is unavailable in test and production.
-      x-implementation: planned
+      x-implementation: implemented
+      x-verification: local-dev-only
       x-source: supabase/functions/core/routes/dev-test-login.ts
       x-audiences:
       - app
