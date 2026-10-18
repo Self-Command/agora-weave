@@ -109,8 +109,10 @@ export async function main(options) {
   mkdirSync(directory, { recursive: true });
   const statePath = resolve(directory, 'state.json');
   const state = existsSync(statePath) ? read(statePath) : { ...identity, environment, processes: {} };
-  if (state.source !== identity.source || state.branch !== identity.branch) {
+  if (state.source !== identity.source || state.branch !== identity.branch && action === 'up') {
     // Sync guard normally catches this first. Never adopt another source's live processes.
+    // After a branch switch the same checkout must still be able to inspect and
+    // stop its recorded processes before the guarded runtime sync can proceed.
     if (Object.values(state.processes).some(entry => ownedProcess(entry))) throw new Error('Another source/branch owns active development processes; stop from that source before switching');
   }
   let runtime, configurationChanged = false;
