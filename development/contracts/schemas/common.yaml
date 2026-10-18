@@ -1673,6 +1673,7 @@ components:
       properties:
         preview_id: *id001
         preview_digest: *id004
+        action_digest: *id004
         expires_at: *id006
         affected_refs:
           type: array
@@ -3097,6 +3098,7 @@ components:
           - running
           - failed
           - physical_removed
+          - cancelled
         allowed_actions:
           type: array
           items:

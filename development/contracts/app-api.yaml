@@ -3936,7 +3936,7 @@ paths:
       description: Deployed handler for approved posts and image posts (type=posts or
         type=media). Replies and reposts remain planned. Visibility, block and current
         authorization rules apply.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: read-only
       security:
       - {}
@@ -6545,7 +6545,7 @@ paths:
       summary: createPost
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -8005,7 +8005,7 @@ paths:
       summary: listComments
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: read-only
       security:
       - {}
@@ -8160,7 +8160,7 @@ paths:
       summary: createComment
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
