@@ -11,7 +11,7 @@
   "runner_os": "Linux",
   "lockfile_version": 3,
   "initial_lock_sha256": "ce37a9e9c5b03b77dd9e55185bd2b56978c4d0ffbcb54433a03b7d5634ba44ed",
-  "lock_sha256": "9ffcc07ce95c19f866d39fca347a79b1fda86cc74270f0f27559ca978eaa33de",
+  "lock_sha256": "d026b14759a02846447716f5b63bbf79bbe0d9481abfffff826791ded3dac9d8",
   "lock_updated_at": "2026-10-18",
   "lock_update_reason": "Preserve every existing resolved dependency; pin workspace declarations and add fixed official OpenAPI/Prism tools",
   "workflow_actions": {
@@ -19,5 +19,6 @@
     "setup_node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
     "upload_artifact": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
   },
-  "created_at": "2026-10-15T16:18:46.185Z"
+  "created_at": "2026-10-15T16:18:46.185Z",
+  "lock_digest_correction": "2026-10-18: match the actual committed LF lockfile; dependency versions and lock content unchanged"
 }
