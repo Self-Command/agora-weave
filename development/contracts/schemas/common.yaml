@@ -382,6 +382,13 @@ components:
           - config.release
           - config.rollback
           - post.create
+          - post.edit
+          - comment.edit
+          - post.visibility
+          - post.reply_policy
+          - resource.delete
+          - comment.delete
+          - resource.restore
           - comment.create
           - like.put
           - like.remove
@@ -412,6 +419,7 @@ components:
           - $ref: '#/components/schemas/Appeal'
           - $ref: '#/components/schemas/UploadSession'
           - $ref: '#/components/schemas/UploadedPart'
+          - $ref: '#/components/schemas/Deletion'
       required:
       - operation_id
       - action

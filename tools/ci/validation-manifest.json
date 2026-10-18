@@ -1107,6 +1107,10 @@
   "core_case_count": 393,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0075_publishing_parameter_binding.sql",
+      "depends_on": ["supabase/migrations/0069_content_lifecycle.sql"]
+    },
+    {
       "file": "supabase/migrations/0069_content_lifecycle.sql",
       "depends_on": ["supabase/migrations/0068_admin_business_authority.sql"]
     },
