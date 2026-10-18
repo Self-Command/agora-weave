@@ -12041,6 +12041,7 @@ paths:
       description: Deployed handler sets a visible resource like for the authenticated
         account. Retry by querying the original operation ID after an uncertain result.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/reactions.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -12193,6 +12194,7 @@ paths:
       description: Deployed handler removes a visible resource like for the authenticated
         account. Retry by querying the original operation ID after an uncertain result.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/reactions.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
