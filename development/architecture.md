@@ -1,5 +1,7 @@
 # 技术架构
 
+2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，取消独立UI复检，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
+
 产品范围以 [PRD](../docs/product/PRD.md) 与 [功能文档](features/) 为准；HTTP 结构由[固定OpenAPI契约](contracts/README.md)中的app、management和core-admin三份YAML固定，跨请求业务约束由领域契约补充。本文说明可复用的技术边界，不作为任务清单或完成证明。
 
 固定技术、官方来源和版本维护入口为[technology](technology.md)，下面只说明各层职责与当前源码定位；固定输入变更统一维护技术文档与实际锁文件。

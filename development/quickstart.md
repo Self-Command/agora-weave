@@ -1,5 +1,7 @@
 # 开发、mock与真实验证
 
+2026-10-18当前执行以[快速开发与人工验收](delivery-mode.md)为准：App/后台用户验收，取消独立UI复检，三端持续开发及热更新，日常最小工程/后端检查，完整流程最后集中执行。
+
 从[架构](architecture.md)、[固定接口](contracts/README.md)、对应[功能文档](features/)和[实现指南](implementation/README.md)读取本次范围；页面先核[具体批准](ui/pages.md)。源码留当前工作树，依赖/运行副本/缓存/报告固定`H:/Projects/AgoraWeave/development`。共享DB、运行区、浏览器/设备串行；各端独立mock和类型检查可并行。
 
 ## 固定契约的独立开发
