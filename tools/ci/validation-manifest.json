@@ -1067,7 +1067,7 @@
       "files": [
         "tests/integration/core/moderation-review.spec.ts"
       ],
-      "case_count": 1,
+      "case_count": 2,
       "requires_services": true
     },
     {
@@ -1080,7 +1080,7 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 384,
+  "core_case_count": 385,
   "core_migrations": [
     {
       "file": "supabase/migrations/0054_moderation_review.sql",
