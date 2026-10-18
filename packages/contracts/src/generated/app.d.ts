@@ -1912,7 +1912,7 @@ export interface paths {
         };
         /**
          * listProfileContents
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Deployed handler for approved posts and image posts (type=posts or type=media). Replies and reposts remain planned. Visibility, block and current authorization rules apply.
          */
         get: operations["listProfileContents"];
         put?: never;
@@ -2077,13 +2077,13 @@ export interface paths {
         get?: never;
         /**
          * putResourceLike
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Deployed handler sets a visible resource like for the authenticated account. Retry by querying the original operation ID after an uncertain result.
          */
         put: operations["putResourceLike"];
         post?: never;
         /**
          * removeResourceLike
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Deployed handler removes a visible resource like for the authenticated account. Retry by querying the original operation ID after an uncertain result.
          */
         delete: operations["removeResourceLike"];
         options?: never;
