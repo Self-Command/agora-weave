@@ -1651,9 +1651,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "post.edit" | "comment.edit" | "post.visibility" | "post.reply_policy" | "resource.delete" | "comment.delete" | "resource.restore" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"] | components["schemas"]["Deletion"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
@@ -2349,13 +2349,18 @@ export interface components {
             media_refs: components["schemas"]["Uuid"][];
             mentions: components["schemas"]["Uuid"][];
             /** @enum {string} */
-            publication_state: "awaiting_review" | "published" | "rejected";
+            publication_state: "awaiting_review" | "published" | "rejected" | "restricted";
+            /** @enum {string} */
+            reply_scope: "all_readers" | "author_follows" | "mentioned" | "closed";
             resource_id: components["schemas"]["Uuid"];
             /** @enum {string} */
             review_state: "pending" | "approved" | "rejected";
             revision_no: number;
+            row_version: number;
             submitted_at: components["schemas"]["Timestamp"];
             tags: string[];
+            /** @enum {string} */
+            visibility: "public" | "followers" | "self";
         };
         Conversation: {
             allowed_actions: string[];
@@ -2478,8 +2483,9 @@ export interface components {
             deleted_at: components["schemas"]["Timestamp"];
             id: components["schemas"]["Uuid"];
             /** @enum {string} */
-            purge_state: "pending" | "running" | "failed" | "physical_removed";
+            purge_state: "pending" | "running" | "failed" | "physical_removed" | "cancelled";
             restore_until: components["schemas"]["Timestamp"];
+            row_version: number;
             /** @enum {string} */
             state: "deleted" | "restored" | "physical_removed";
             target_id: components["schemas"]["Uuid"];
@@ -2948,6 +2954,7 @@ export interface components {
             request_id: components["schemas"]["Uuid"];
         };
         ImpactPreview: {
+            action_digest?: components["schemas"]["Digest"];
             affected_refs: components["schemas"]["Uuid"][];
             base_version: number;
             expires_at: components["schemas"]["Timestamp"];

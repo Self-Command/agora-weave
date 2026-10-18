@@ -407,14 +407,14 @@ export interface paths {
         post?: never;
         /**
          * deleteComment
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         delete: operations["deleteComment"];
         options?: never;
         head?: never;
         /**
          * patchComment
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         patch: operations["patchComment"];
         trace?: never;
@@ -450,7 +450,7 @@ export interface paths {
         put?: never;
         /**
          * restoreResource
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         post: operations["restoreResource"];
         delete?: never;
@@ -1388,7 +1388,7 @@ export interface paths {
         };
         /**
          * listRecentlyDeleted
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         get: operations["listRecentlyDeleted"];
         put?: never;
@@ -1770,7 +1770,7 @@ export interface paths {
         head?: never;
         /**
          * patchPost
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         patch: operations["patchPost"];
         trace?: never;
@@ -1814,7 +1814,7 @@ export interface paths {
         head?: never;
         /**
          * patchReplyPolicy
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         patch: operations["patchReplyPolicy"];
         trace?: never;
@@ -1852,7 +1852,7 @@ export interface paths {
         };
         /**
          * listPostRevisions
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         get: operations["listPostRevisions"];
         put?: never;
@@ -1878,9 +1878,29 @@ export interface paths {
         head?: never;
         /**
          * patchPostVisibility
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         patch: operations["patchPostVisibility"];
+        trace?: never;
+    };
+    "/posts/{postId}/visibility-previews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview a current author's visibility change
+         * @description Binds the operation, resource version and proposed visibility. Widening requires echoing this preview digest.
+         */
+        post: operations["previewPostVisibility"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/profiles/{accountId}": {
@@ -2038,7 +2058,7 @@ export interface paths {
         put?: never;
         /**
          * deleteResource
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Current author action with current authorization, immutable revisions, CAS and original-operation receipts.
          */
         post: operations["deleteResource"];
         delete?: never;
@@ -2311,9 +2331,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "post.edit" | "comment.edit" | "post.visibility" | "post.reply_policy" | "resource.delete" | "comment.delete" | "resource.restore" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"] | components["schemas"]["Deletion"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
@@ -3009,13 +3029,18 @@ export interface components {
             media_refs: components["schemas"]["Uuid"][];
             mentions: components["schemas"]["Uuid"][];
             /** @enum {string} */
-            publication_state: "awaiting_review" | "published" | "rejected";
+            publication_state: "awaiting_review" | "published" | "rejected" | "restricted";
+            /** @enum {string} */
+            reply_scope: "all_readers" | "author_follows" | "mentioned" | "closed";
             resource_id: components["schemas"]["Uuid"];
             /** @enum {string} */
             review_state: "pending" | "approved" | "rejected";
             revision_no: number;
+            row_version: number;
             submitted_at: components["schemas"]["Timestamp"];
             tags: string[];
+            /** @enum {string} */
+            visibility: "public" | "followers" | "self";
         };
         Conversation: {
             allowed_actions: string[];
@@ -3138,8 +3163,9 @@ export interface components {
             deleted_at: components["schemas"]["Timestamp"];
             id: components["schemas"]["Uuid"];
             /** @enum {string} */
-            purge_state: "pending" | "running" | "failed" | "physical_removed";
+            purge_state: "pending" | "running" | "failed" | "physical_removed" | "cancelled";
             restore_until: components["schemas"]["Timestamp"];
+            row_version: number;
             /** @enum {string} */
             state: "deleted" | "restored" | "physical_removed";
             target_id: components["schemas"]["Uuid"];
@@ -3608,6 +3634,7 @@ export interface components {
             request_id: components["schemas"]["Uuid"];
         };
         ImpactPreview: {
+            action_digest?: components["schemas"]["Digest"];
             affected_refs: components["schemas"]["Uuid"][];
             base_version: number;
             expires_at: components["schemas"]["Timestamp"];
@@ -7975,7 +8002,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OperationCommand"];
+                "application/json": components["schemas"]["VersionedCommand"];
             };
         };
         responses: {
@@ -16445,6 +16472,86 @@ export interface operations {
             };
         };
     };
+    previewPostVisibility: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                postId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VisibilityPatch"];
+            };
+        };
+        responses: {
+            /** @description Current impact preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImpactPreviewEnvelope"];
+                };
+            };
+            /** @description Invalid current session */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Current owner action denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Target unavailable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Version or operation conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid input */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Service unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     getProfile: {
         parameters: {
             query?: never;
@@ -17221,7 +17328,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OperationCommand"];
+                "application/json": components["schemas"]["VersionedCommand"];
             };
         };
         responses: {
