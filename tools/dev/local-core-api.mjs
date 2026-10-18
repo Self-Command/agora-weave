@@ -14,6 +14,9 @@ const routes=[
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
   [new RegExp(`^/profiles/${uuid}$`,'i'),['GET']], [/^\/me\/profile$/,['PATCH']],
   [/^\/reports$/,['POST']], [/^\/me\/reports$/,['GET']],
+  [/^\/uploads$/,['POST']],
+  [new RegExp(`^/uploads/${uuid}/parts/0$`,'i'),['PUT']],
+  [new RegExp(`^/uploads/${uuid}/complete$`,'i'),['POST']],
   [new RegExp(`^/media/${uuid}$`,'i'),['GET']],
   [new RegExp(`^/resources/${uuid}/likes$`,'i'),['PUT','DELETE']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
@@ -41,17 +44,20 @@ function target(raw) {
   const pathname=raw.split('?')[0];
   if(pathname.includes('%')||pathname.includes('//')||pathname.split('/').some(part=>part==='.'||part==='..')) return null;
   const path=pathname.slice(prefix.length),route=routes.find(([pattern])=>pattern.test(path));
-  return route?{path:raw,methods:route[1],password:/^\/auth\/password(?:\/(captcha|forgot))?$/.test(path),media:/^\/media\//.test(path)}:null;
+  return route?{path:raw,methods:route[1],password:/^\/auth\/password(?:\/(captcha|forgot))?$/.test(path),
+    media:/^\/media\//.test(path),binary:/^\/uploads\/.+\/parts\/0$/.test(path)}:null;
 }
-function bodyOf(request) {
+function bodyOf(request,binary=false) {
   return new Promise((resolve,reject)=>{
     let size=0,parts=[],done=false;
     const finish=(error,value)=>{if(done)return;done=true;clearTimeout(timer);request.removeListener('data',data);
       request.removeListener('end',end);request.removeListener('error',bad);request.removeListener('aborted',bad);
       if(error){request.resume();reject(error);}else resolve(value);};
-    const bad=()=>finish(400),data=chunk=>{size+=chunk.length;if(size>16384)finish(413);else parts.push(chunk);};
+    const bad=()=>finish(400),data=chunk=>{size+=chunk.length;if(size>(binary?10000000:16384))finish(413);else parts.push(chunk);};
     const end=()=>{try {
-      const bytes=Buffer.concat(parts),text=new TextDecoder('utf-8',{fatal:true}).decode(bytes),value=JSON.parse(text);
+      const bytes=Buffer.concat(parts);
+      if(binary) return finish(bytes.length?null:400,bytes);
+      const text=new TextDecoder('utf-8',{fatal:true}).decode(bytes),value=JSON.parse(text);
       if(!value||typeof value!=='object'||Array.isArray(value))return finish(400);
       finish(null,text);
     }catch{finish(400);}finally{parts=[];}};
@@ -77,9 +83,9 @@ export function createLocalCoreApi({environment,forward}) {
     if(request.method==='OPTIONS') {
       const desired=request.headers['access-control-request-method'],requested=request.headers['access-control-request-headers'];
       if(!origin||!route.methods.includes(desired)||typeof requested==='string'&&requested.split(',').some(name=>
-        !['authorization','content-type','x-client-release'].includes(name.trim().toLowerCase())))return fail(response,403,'FORBIDDEN',origin);
+        !['authorization','content-type','x-client-release','x-operation-id'].includes(name.trim().toLowerCase())))return fail(response,403,'FORBIDDEN',origin);
       response.writeHead(204,{...headersFor(origin),'access-control-allow-methods':desired,
-        'access-control-allow-headers':'Authorization, Content-Type, X-Client-Release'}).end();return;
+        'access-control-allow-headers':'Authorization, Content-Type, X-Client-Release, X-Operation-Id'}).end();return;
     }
     if(!route.methods.includes(request.method))return fail(response,405,'METHOD_NOT_ALLOWED',origin);
     if(active>=4)return fail(response,503,'SERVICE_UNAVAILABLE',origin);
@@ -87,6 +93,9 @@ export function createLocalCoreApi({environment,forward}) {
     if(duplicate(request,'authorization')||authorization!==undefined&&(typeof authorization!=='string'||authorization.length>8192||
       !/^Bearer [A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(authorization))||duplicate(request,'x-client-release')||
       release!==undefined&&(typeof release!=='string'||!/^[-\w.]{1,128}$/.test(release)))return fail(response,400,'INVALID_INPUT',origin);
+    const operation=request.headers['x-operation-id'];
+    if(route.binary && (duplicate(request,'x-operation-id') || typeof operation!=='string' ||
+      !new RegExp(`^${uuid}$`,'i').test(operation)))return fail(response,400,'INVALID_INPUT',origin);
     const passwordHeaders={};
     if(route.password) {
       const proof=[['x-admin-password-time',/^\d{10}$/],['x-admin-password-nonce',new RegExp(`^${uuid}$`,'i')],['x-admin-password-signature',/^[a-f0-9]{64}$/]];
@@ -99,18 +108,22 @@ export function createLocalCoreApi({environment,forward}) {
       }
     }
     const declared=request.headers['content-length'];
-    if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>16384))return fail(response,413,'REQUEST_TOO_LARGE',origin);
+    if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>(route.binary?10000000:16384)))return fail(response,413,'REQUEST_TOO_LARGE',origin);
     const writing=request.method==='POST'||request.method==='PUT'||request.method==='PATCH'||request.method==='DELETE';
-    if(writing&&!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(request.headers['content-type']||'')||
+    if(writing&&!(route.binary?request.headers['content-type']==='application/octet-stream':
+      /^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(request.headers['content-type']||''))||
       !writing&&(request.headers['transfer-encoding']||declared!==undefined&&Number(declared)>0))return fail(response,400,'INVALID_INPUT',origin);
     active++;
     try {
       let body;
-      if(writing)try{body=await bodyOf(request);}catch(status){return fail(response,Number(status),'INVALID_INPUT',origin);}
-      const headers={accept:route.media?'image/*':'application/json','content-type':'application/json',...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{}),...passwordHeaders};
+      if(writing)try{body=await bodyOf(request,route.binary);}catch(status){return fail(response,Number(status),'INVALID_INPUT',origin);}
+      const headers={accept:route.media?'image/*':'application/json',
+        'content-type':route.binary?'application/octet-stream':'application/json',
+        ...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{}),
+        ...(route.binary?{'x-operation-id':operation,'content-length':String(body.length)}:{}),...passwordHeaders};
       let timer;
       try {
-        const result=await Promise.race([Promise.resolve().then(()=>forward({path:route.path,method:request.method,headers,body,media:route.media})),
+        const result=await Promise.race([Promise.resolve().then(()=>forward({path:route.path,method:request.method,headers,body,media:route.media,binary:route.binary})),
           new Promise((_resolve,reject)=>{timer=setTimeout(()=>reject(new Error('Unavailable')),25000);})]);
         if(route.media) {
           if(!result || ![200,206].includes(result.status) || !Buffer.isBuffer(result.body) ||
@@ -158,9 +171,20 @@ async function main() {
   if(runtime.environment!==environment)throw new Error('Local configuration required');
   const key=readFileSync(runtime.environment_file,'utf8').split(/\r?\n/).find(line=>line.startsWith('ANON_KEY='))?.slice(9);
   if(!key||!/^[-\w.]{16,8192}$/.test(key))throw new Error('Local configuration required');
-  const server=createLocalCoreApi({environment,forward:({path,method,headers,body,media})=>new Promise((resolve,reject)=>{
-    const config=curlRequestConfig('http://api-gw:8000/functions/v1'+path,method,{apikey:key,...headers},body,media);
-    const child=execFile('docker',[...coreComposeArguments(),'exec','-T','db','curl','--config','-'],
+  const server=createLocalCoreApi({environment,forward:({path,method,headers,body,media,binary})=>new Promise((resolve,reject)=>{
+    const config=curlRequestConfig('http://api-gw:8000/functions/v1'+path,method,{apikey:key,...headers},binary?undefined:body,media);
+    const binaryScript=`set -eu
+cfg=$(mktemp)
+payload=$(mktemp)
+trap 'rm -f "$cfg" "$payload"' EXIT
+IFS= read -r size
+case "$size" in ''|*[!0-9]*) exit 1;; esac
+head -c "$size" > "$cfg"
+cat > "$payload"
+printf 'data-binary = "@%s"\\n' "$payload" >> "$cfg"
+curl --config "$cfg"`;
+    const command=binary?['sh','-c',binaryScript]:['curl','--config','-'];
+    const child=execFile('docker',[...coreComposeArguments(),'exec','-T','db',...command],
       {encoding:media?undefined:'utf8',timeout:25000,maxBuffer:media?10500000:1048581,windowsHide:true},(error,stdout)=>{
         if(error)return reject(new Error('Unavailable'));
         if(media) {
@@ -178,7 +202,13 @@ async function main() {
         if(end<0||!/^\d{3}$/.test(status))return reject(new Error('Unavailable'));
         resolve({status:Number(status),body:stdout.slice(0,end)});
       });
-    child.stdin.on('error',()=>{});child.stdin.end(config);
+    child.stdin.on('error',()=>{});
+    if(binary) {
+      const configBytes=Buffer.from(config,'utf8');
+      child.stdin.write(Buffer.from(String(configBytes.length)+'\n'));
+      child.stdin.write(configBytes);
+      child.stdin.end(body);
+    } else child.stdin.end(config);
   })});
   server.on('error',()=>{process.stderr.write('Local core API unavailable\n');process.exitCode=1;});
   server.listen(port);

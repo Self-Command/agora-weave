@@ -553,6 +553,15 @@ components:
           - followers
           - self
         revision_id: *id001
+        type:
+          type: string
+          enum:
+          - text
+          - images
+        media_refs:
+          type: array
+          items: *id001
+          maxItems: 9
         body:
           type: string
         row_version: *id002
@@ -563,6 +572,8 @@ components:
       - author_id
       - visibility
       - revision_id
+      - type
+      - media_refs
       - body
       - row_version
     LatestPost:
@@ -576,6 +587,15 @@ components:
           enum:
           - public
         revision_id: *id001
+        type:
+          type: string
+          enum:
+          - text
+          - images
+        media_refs:
+          type: array
+          items: *id001
+          maxItems: 9
         body:
           type: string
         row_version: *id002
@@ -588,6 +608,8 @@ components:
       - author_id
       - visibility
       - revision_id
+      - type
+      - media_refs
       - body
       - row_version
       - created_at
@@ -2231,8 +2253,8 @@ components:
         revision_id: *id001
         body: &id015
           type: string
-          minLength: 1
-          description: Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration.
+          minLength: 0
+          description: Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration.
         tags:
           type: array
           items:

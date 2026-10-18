@@ -1071,6 +1071,15 @@
       "requires_services": true
     },
     {
+      "id": "core.image-upload",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/image-upload.spec.ts"
+      ],
+      "case_count": 1,
+      "requires_services": true
+    },
+    {
       "id": "core.discovery-mobile-client",
       "command": "ci:core:contracts",
       "files": [
@@ -1080,8 +1089,15 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 385,
+  "core_case_count": 386,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0056_static_image_upload.sql",
+      "depends_on": [
+        "supabase/migrations/0055_moderation_review_binding_fix.sql",
+        "supabase/migrations/0045_text_post_submission.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0055_moderation_review_binding_fix.sql",
       "depends_on": [
