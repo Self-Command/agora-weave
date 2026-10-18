@@ -1600,7 +1600,7 @@ export interface paths {
         };
         /**
          * getAppOperation
-         * @description Current actor scoped durable status. Config result only for current management actor with signed aal2; ordinary account operations return operation_id/action/state.
+         * @description Current actor scoped durable status and permitted immutable receipt. Config result requires the current management actor with signed aal2.
          */
         get: operations["getAppOperation"];
         put?: never;
@@ -2307,9 +2307,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
