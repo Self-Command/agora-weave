@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash,randomBytes,randomUUID } from 'node:crypto';
 import { existsSync,mkdirSync,readFileSync,writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { deflateSync } from 'node:zlib';
 import { compose,coreEnvironmentFile,sql } from '../ci/core-database.ts';
 import { curlRequestConfig } from './local-core-api.mjs';
 
@@ -97,18 +98,25 @@ async function run() {
   };
   const published=await createText(trusted,'trusted','published');
   const pending=await createText(regular,'ordinary','awaiting_review');
+  const chunk=(name:string,bytes:Buffer)=>{
+    const type=Buffer.from(name),size=Buffer.alloc(4),checksum=Buffer.alloc(4),data=Buffer.concat([type,bytes]);
+    let crc=0xffffffff;for(const byte of data){crc^=byte;for(let bit=0;bit<8;bit++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}
+    size.writeUInt32BE(bytes.length);checksum.writeUInt32BE((crc^0xffffffff)>>>0);
+    return Buffer.concat([size,data,checksum]);
+  };
   for(const [actor,name,expected] of [[trusted,'trusted','published'],[regular,'ordinary','awaiting_review']] as const) {
-    const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+c48sAAAAASUVORK5CYII=','base64');
+    const png=Buffer.concat([Buffer.from('89504e470d0a1a0a','hex'),chunk('IHDR',Buffer.from('00000001000000010806000000','hex')),
+      chunk('IDAT',deflateSync(Buffer.from([0,255,140,0,255]))),chunk('IEND',Buffer.alloc(0))]);
     const sha256=createHash('sha256').update(png).digest('hex');
     let image=state[`${name}.imageReceipt`];
     if(!image) {
-      const upload=await call('/uploads',actor.token,'POST',{operation_id:op(`${name}.upload`),intent:'post',kind:'image',size_bytes:png.length,sha256});
+      const upload=await call('/uploads',actor.token,'POST',{operation_id:op(`${name}.valid-png.upload`),intent:'post',kind:'image',size_bytes:png.length,sha256});
       check(`${name} real image upload allocation`,upload.status===200 && upload.data?.id);
       const id=upload.data.id;
-      const part=await call(`/uploads/${id}/parts/0`,actor.token,'PUT',png,{'Content-Type':'application/octet-stream','X-Operation-Id':op(`${name}.part`)});
+      const part=await call(`/uploads/${id}/parts/0`,actor.token,'PUT',png,{'Content-Type':'application/octet-stream','X-Operation-Id':op(`${name}.valid-png.part`)});
       check(`${name} real Storage image bytes upload`,part.status===200);
-      const complete=await call(`/uploads/${id}/complete`,actor.token,'POST',{operation_id:op(`${name}.complete`),sha256});
-      check(`${name} real Storage readback validates image`,complete.status===200 && complete.data?.state==='validated');
+      const complete=await call(`/uploads/${id}/complete`,actor.token,'POST',{operation_id:op(`${name}.valid-png.complete`),sha256});
+      check(`${name} real Storage readback validates image (${complete.status}, ${String(complete.code || complete.data?.state)})`,complete.status===200 && complete.data?.state==='validated');
       const result=await call('/posts',actor.token,'POST',{operation_id:op(`${name}.image`),type:'images',body:`本地图片验证 · ${name}`,
         visibility:'public',reply_scope:'all_readers',media_refs:[complete.data.media_id]});
       check(`${name} image post receipt matches review policy`,result.status===202 && result.data?.publication_state===expected);
