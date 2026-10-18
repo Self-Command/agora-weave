@@ -15,8 +15,9 @@ export function accountOperation(request: Request,command: string,failure: (code
       if (!await outputIsOpen(tx)) { deliver(failure('SERVICE_UNAVAILABLE',503)); return; }
       const actor = await principal(request);
       if (!actor || actor.audience !== 'authenticated') { deliver(failure('SESSION_INVALID',401)); return; }
-      const [row] = await tx`SELECT core.account_operation_result(${actor.account}::uuid,${actor.session}::uuid,${command}::uuid,${environment}) AS result`;
-      if (row.result.code !== 'OK') { deliver(failure(row.result.code,row.result.code === 'SESSION_INVALID' ? 401 : row.result.code === 'NOT_FOUND' ? 404 : row.result.code === 'CONFLICT' ? 409 : 422)); return; }
+      const [row] = await tx`SELECT core.account_operation_result(${actor.account}::uuid,${actor.session}::uuid,${command}::uuid,${environment},${actor.aal}) AS result`;
+      if (row.result.code !== 'OK') { deliver(failure(row.result.code,row.result.code === 'SESSION_INVALID' ? 401 : row.result.code === 'NOT_FOUND' ? 404 : row.result.code === 'CONFLICT' ? 409 :
+        ['FORBIDDEN','MFA_REQUIRED','SENSITIVE_COOLDOWN'].includes(row.result.code)?403:422)); return; }
       const output = await jsonOutput(tx,row.result.data),bytes=output.bytes!;
       let done!: () => void;
       const handedOff = new Promise<void>(finish => { done = finish; });

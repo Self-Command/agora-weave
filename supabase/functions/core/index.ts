@@ -4,12 +4,26 @@ import { admittedResource } from './admission.ts';
 import { listSessions, revokeSession } from './routes/account-security.ts';
 import { refreshSession } from './routes/auth.ts';
 import { publicChallenge,publicVerify } from './routes/public-auth.ts';
+import { adminPassword } from './routes/admin-password.ts';
+import { devTestLogin } from './routes/dev-test-login.ts';
+import { adminIdentity } from './routes/admin-identity.ts';
+import { configuration } from './routes/configuration.ts';
 import { accountOperation } from './routes/operations.ts';
 import { recoveryCase } from './routes/recovery.ts';
 import { effectiveConfig } from './config/effective.ts';
 import { events } from './realtime/gateway.ts';
 import { media } from './media/gateway.ts';
 import { readCurrentDocuments, readDocument } from './documents/read.ts';
+import { latestFeed } from './routes/discovery.ts';
+import { createPost } from './routes/publishing.ts';
+import { createComment, listComments } from './routes/discussions.ts';
+import { resourceLike } from './routes/reactions.ts';
+import { accountBlock } from './routes/blocks.ts';
+import { getProfile, getProfileContents, updateProfile } from './routes/profiles.ts';
+import { createReport, listOwnReports } from './routes/reports.ts';
+import { createAppeal, listOwnAppeals, listOwnSanctions } from './routes/appeals.ts';
+import { moderationReview } from './routes/moderation-review.ts';
+import { createUpload, putUploadPart, completeUpload } from './routes/upload.ts';
 
 const messages: Record<string, string> = { SESSION_INVALID: '登录已失效，请重新登录',
   NOT_FOUND: '内容不可用', FORBIDDEN: '当前入口不支持此操作', METHOD_NOT_ALLOWED: '不支持此操作',
@@ -44,6 +58,13 @@ Deno.serve(async (request: Request) => {
       return row;
     });
     if (context.result.code!=='OK') return failure(context.result.code,context.result.code==='SESSION_INVALID'?401:503);
+    if (path.startsWith('/admin/config/')) return await configuration(request,path,actor,failure);
+    if (path === '/admin/contents' || path === '/admin/cases' ||
+      /^\/admin\/revisions\/[0-9a-f-]{36}\/decision(?:-previews)?$/i.test(path))
+      return await moderationReview(request,path,actor,failure);
+    if (path.startsWith('/admin/')) return await adminIdentity(request,path,actor,failure);
+    if (path === '/auth/password/captcha' || path === '/auth/password' || path === '/auth/password/forgot') return await adminPassword(request,path,failure);
+    if (path === '/auth/dev-test-login') return await devTestLogin(request,failure);
     if (path === '/auth/refresh') return request.method === 'POST' ? await refreshSession(request,failure) : failure('METHOD_NOT_ALLOWED',405);
     if (path === '/auth/challenges') return await publicChallenge(request,failure);
     if (path === '/auth/verify') return await publicVerify(request,failure);
@@ -51,6 +72,13 @@ Deno.serve(async (request: Request) => {
     if (authOperation) return await publicVerify(request,failure,authOperation[1]);
     if (path === '/documents/current') return await readCurrentDocuments(request,failure);
     if (path === '/config/effective') return await effectiveConfig(request,failure);
+    if (path === '/feeds/latest') return await latestFeed(request,failure);
+    if (path === '/posts') return await createPost(request,failure);
+    if (path === '/uploads') return await createUpload(request,failure);
+    const uploadPart = path.match(/^\/uploads\/([a-f0-9-]{36})\/parts\/([0-9]+)$/i);
+    if (uploadPart) return await putUploadPart(request,uploadPart[1],uploadPart[2],failure);
+    const uploadComplete = path.match(/^\/uploads\/([a-f0-9-]{36})\/complete$/i);
+    if (uploadComplete) return await completeUpload(request,uploadComplete[1],failure);
     if (path === '/events') return await events(request,failure);
     const mediaTarget = path.match(/^\/media\/([a-f0-9-]{36})$/i);
     if (mediaTarget) return await media(request,mediaTarget[1],failure);
@@ -70,8 +98,25 @@ Deno.serve(async (request: Request) => {
       if (!current.active) return failure('SESSION_INVALID', 401);
     }
     if (path === '/me/preferences' && request.method === 'PUT') return failure('METHOD_NOT_ALLOWED', 405);
+    if (path === '/me/profile') return await updateProfile(request,failure);
+    if (path === '/reports') return await createReport(request,failure);
+    if (path === '/me/reports') return await listOwnReports(request,failure);
+    if (path === '/me/sanctions') return await listOwnSanctions(request,failure);
+    if (path === '/appeals') return request.method === 'GET' ?
+      await listOwnAppeals(request,failure) : await createAppeal(request,failure);
+    const profileTarget = path.match(/^\/profiles\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
+    if (profileTarget) return await getProfile(request,profileTarget[1],failure);
+    const contentsTarget = path.match(/^\/profiles\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\/contents$/i);
+    if (contentsTarget) return await getProfileContents(request,contentsTarget[1],failure);
     if (path === '/me/sessions') return request.method === 'GET' ? await listSessions(request, failure) : failure('METHOD_NOT_ALLOWED',405);
     const target = path.match(/^\/posts\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
+    const comments = path.match(/^\/posts\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\/comments$/i);
+    if (comments) return request.method === 'GET' ? await listComments(request,comments[1],failure) :
+      request.method === 'POST' ? await createComment(request,comments[1],failure) : failure('METHOD_NOT_ALLOWED',405);
+    const likeTarget = path.match(/^\/resources\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\/likes$/i);
+    if (likeTarget) return await resourceLike(request,likeTarget[1],failure);
+    const blockTarget = path.match(/^\/me\/blocks\/([0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i);
+    if (blockTarget) return await accountBlock(request,blockTarget[1],failure);
     if (!target) return failure('NOT_FOUND', 404);
     if (request.method !== 'GET') return failure('METHOD_NOT_ALLOWED', 405);
     return await admittedResource(request, target[1], failure);

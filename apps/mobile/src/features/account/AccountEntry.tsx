@@ -1,10 +1,12 @@
 import { useCallback,useEffect,useRef,useState,useSyncExternalStore } from 'react';
-import { Alert,AppState,BackHandler,Platform,View } from 'react-native';
+import { Alert,AppState,BackHandler,Platform,Text,View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { createNativeAccountControllers } from './native-controllers';
 import type { SessionTokens } from './api';
 import { AuthPages } from './AuthPages';
 import { RecoveryPage,SecurityPage } from './SecurityRecoveryPages';
+import { AccountButton,AccountField,AccountFrame,AccountIntro,AccountNotice } from './AccountLayout';
+import { AccountError } from './api';
 
 type NativeControllers=ReturnType<typeof createNativeAccountControllers>;
 type AuthController=ReturnType<NativeControllers['auth']>;
@@ -13,11 +15,43 @@ type RecoveryController=ReturnType<NativeControllers['recovery']>;
 
 function GuestAccount({ bundle,onClose,error,onRestore }: {bundle:NativeControllers;onClose:()=>void;error:string;onRestore:()=>void}) {
   const [controller,setController]=useState<AuthController|null>(null);
+  const [devLogin,setDevLogin]=useState(false);
   useEffect(()=>{
     const next=bundle.auth();setController(next);next.start();
     return ()=>next.dispose();
   },[bundle]);
-  return controller ? <AuthPages controller={controller} onClose={onClose} sessionError={error} onRestore={onRestore} /> : null;
+  return devLogin && __DEV__ ? <DevTestLogin bundle={bundle} onBack={()=>setDevLogin(false)} onClose={onClose} /> :
+    controller ? <AuthPages controller={controller} onClose={onClose} sessionError={error} onRestore={onRestore}
+      onDevLogin={__DEV__?()=>setDevLogin(true):undefined} /> : null;
+}
+function DevTestLogin({ bundle,onBack,onClose }: {bundle:NativeControllers;onBack:()=>void;onClose:()=>void}) {
+  const [username,setUsername]=useState(''),[password,setPassword]=useState('');
+  const [busy,setBusy]=useState(false),[error,setError]=useState('');
+  const submit=async()=>{
+    const name=username.trim();
+    if(busy)return;
+    if(!name || !password){setError('请输入测试账号用户名和密码');return;}
+    setBusy(true);setError('');
+    try {
+      const result=await bundle.devTestLogin(name,password);
+      await bundle.session.authenticated(result.session);
+      setPassword('');
+    } catch(failure) {
+      setError(failure instanceof AccountError ? failure.message : '测试登录暂时不可用，请稍后重试');
+    } finally {setBusy(false);}
+  };
+  return <AccountFrame title="测试账号登录" onBack={onBack} onClose={onClose}>
+    <AccountIntro title="开发测试登录" copy="仅开发构建可用。请使用项目负责人提供的私密测试账号；登录会向真实开发后端验证。" />
+    <View className="gap-4">
+      <AccountField label="测试用户名" value={username} onChangeText={setUsername} editable={!busy} autoCapitalize="none" autoCorrect={false}
+        textContentType="username" autoComplete="username" />
+      <AccountField label="测试密码" value={password} onChangeText={setPassword} editable={!busy} secureTextEntry
+        textContentType="password" autoComplete="off" autoCapitalize="none" autoCorrect={false} />
+      {error ? <AccountNotice text={error} error /> : null}
+      <AccountButton title="登录测试账号" onPress={()=>void submit()} busy={busy} disabled={!username.trim() || !password} />
+      <Text className="text-center text-[12px] leading-5 text-secondary">测试登录不发送短信，不能用于正式环境。</Text>
+    </View>
+  </AccountFrame>;
 }
 function SignedInAccount({ bundle,tokens,onClose,recovery,enabled }: {
   bundle:NativeControllers;tokens:SessionTokens;onClose:()=>void;recovery:{trusted:boolean}|null;enabled:boolean;

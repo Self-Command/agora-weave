@@ -1,11 +1,15 @@
-export type SessionTokens = { access_token: string; refresh_token: string; expires_at: number };
-export type DeviceSession = { id: string; device_label: string; current: boolean; row_version: number; created_at: string; trusted_at: string | null };
-export type RegistrationDocuments = { document_set_digest: string; age_declaration_version: string;
-  documents: { release_id: string; title: string; body: string; digest: string; kind: string }[] };
-export type Challenge = { challenge_id: string; expires_at: string; retry_after: number };
-export type AccountOperation = { operation_id: string; action: string; state: 'pending'|'succeeded'|'failed'|'unknown' };
-export type RecoveryCase = { id: string; mode: 'trusted'|'manual'|'mfa_emergency';
-  state: 'received'|'reviewing'|'approved'|'rejected'|'need_evidence'; created_at: string; updated_at: string; row_version: number };
+import type { components } from '../../../../../packages/contracts/src/generated/app';
+
+type Schemas = components['schemas'];
+export type SessionTokens = Schemas['SessionTokens'];
+export type DeviceSession = Schemas['DeviceSession'];
+export type RegistrationDocuments = Schemas['RegistrationDocuments'];
+export type Challenge = Schemas['OtpChallenge'];
+export type AuthVerification = Schemas['VerifyRequest'];
+export type AuthReceipt = Schemas['AuthReceipt'];
+export type AuthOperation = Schemas['AuthOperation'];
+export type AccountOperation = Schemas['AccountOperation'];
+export type RecoveryCase = Schemas['RecoveryCase'];
 
 export class AccountError extends Error {
   code: string;
@@ -44,14 +48,29 @@ export function accountApi(base: string | undefined,release: string,development 
     } finally { clearTimeout(timeout); }
   }
   return {
+    async devTestLogin(username: string,password: string): Promise<AuthReceipt> {
+      if (!development) throw new AccountError('SERVICE_UNAVAILABLE','测试登录仅在开发环境可用');
+      const result = await call<unknown>('/auth/dev-test-login','POST',{ username,password });
+      if (!result || typeof result !== 'object' || !('account' in result) || !('session' in result))
+        throw new AccountError('SERVICE_UNAVAILABLE','测试登录响应无效');
+      const account = result.account,session = result.session;
+      if (!account || typeof account !== 'object' || !('admitted' in account) || account.admitted !== true ||
+          !('id' in account) || typeof account.id !== 'string' ||
+          !session || typeof session !== 'object' || !('access_token' in session) || typeof session.access_token !== 'string' ||
+          !('refresh_token' in session) || typeof session.refresh_token !== 'string' ||
+          !('expires_at' in session) || !Number.isSafeInteger(session.expires_at) || Number(session.expires_at)*1000<=Date.now())
+        throw new AccountError('SERVICE_UNAVAILABLE','测试登录响应无效');
+      return result as AuthReceipt;
+    },
     documents: () => call<RegistrationDocuments>('/documents/current?kind=terms&surface=app&locale=zh-CN'),
-    challenge: (body: unknown) => call<Challenge>('/auth/challenges','POST',body),
-    verify: (body: unknown) => call<{ session: SessionTokens; account: { id: string; admitted: boolean } }>('/auth/verify','POST',body),
+    challenge: (body: Schemas['OtpChallengeRequest']) => call<Challenge>('/auth/challenges','POST',body),
+    verify: (body: AuthVerification) => call<AuthReceipt>('/auth/verify','POST',body),
+    authOperation: (body: AuthVerification) => call<AuthOperation>('/auth/operations/' + encodeURIComponent(body.operation_id),'POST',body),
     refresh: (refresh_token: string) => call<{ session: SessionTokens }>('/auth/refresh','POST',{ refresh_token }),
     operation: (token: string,id: string) => call<AccountOperation>('/operations/' + encodeURIComponent(id),'GET',undefined,token),
     requestRecovery: (token: string,mode: 'trusted'|'manual',operation_id: string) => call<RecoveryCase>('/recovery-cases','POST',{ mode,operation_id },token),
     recoveryCase: (token: string,id: string) => call<RecoveryCase>('/recovery-cases/' + encodeURIComponent(id),'GET',undefined,token),
-    sessions: (token: string,cursor?: string) => call<{ items: DeviceSession[]; next_cursor: string | null; has_more: boolean }>(
+    sessions: (token: string,cursor?: string) => call<Schemas['SessionPage']>(
       '/me/sessions' + (cursor ? '?cursor=' + encodeURIComponent(cursor) : ''),'GET',undefined,token),
     revoke: (token: string,id: string,base_version: number,operation_id: string) => call('/me/sessions/' + encodeURIComponent(id),'DELETE',{ base_version,operation_id },token),
     logout: (token: string,operation_id: string) => call('/auth/logout','POST',{ operation_id },token),

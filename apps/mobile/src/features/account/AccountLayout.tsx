@@ -1,63 +1,27 @@
 import { useState,type ReactNode } from 'react';
-import { ActivityIndicator,Image,KeyboardAvoidingView,Modal,Platform,Pressable,ScrollView,Text,TextInput,View,useColorScheme,type TextInputProps } from 'react-native';
+import { KeyboardAvoidingView,Modal,Platform,Pressable,ScrollView,Text,TextInput,View,useColorScheme,type TextInputProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { themeFor } from '../../../../../packages/design/src/tokens';
-import backIcon from './icons/back.png';
-import closeIcon from './icons/close.png';
-import refreshIcon from './icons/refresh.png';
-import phoneIcon from './icons/phone.png';
-import desktopIcon from './icons/desktop.png';
-import shieldIcon from './icons/shield.png';
-import keyIcon from './icons/key.png';
-import rightIcon from './icons/right.png';
-import alertIcon from './icons/alert.png';
-import clockIcon from './icons/clock.png';
-import fileIcon from './icons/file.png';
-import checkIcon from './icons/check.png';
+import {AppIcon,type AppIconName} from '../../components/AppIcon';
+import {AppButton,AppFrame} from '../../components/AppChrome';
 
-const icons = {
-  back: { ios:'chevron.left',android:backIcon },
-  close: { ios:'xmark',android:closeIcon },
-  refresh: { ios:'arrow.clockwise',android:refreshIcon },
-  phone: { ios:'iphone',android:phoneIcon },
-  desktop: { ios:'desktopcomputer',android:desktopIcon },
-  shield: { ios:'checkmark.shield',android:shieldIcon },
-  key: { ios:'key',android:keyIcon },
-  right: { ios:'chevron.right',android:rightIcon },
-  alert: { ios:'exclamationmark.circle',android:alertIcon },
-  clock: { ios:'clock',android:clockIcon },
-  file: { ios:'doc.text',android:fileIcon },
-  check: { ios:'checkmark',android:checkIcon },
-} as const;
-export type AccountIconName = keyof typeof icons;
-export function AccountIcon({ name,size=23,color }: { name:AccountIconName;size?:number;color?:string }) {
-  const colors=themeFor(useColorScheme());
-  return <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ width:size,height:size }}>
-    <Image source={icons[name].android} tintColor={color || colors.fg} resizeMode="contain" style={{ width:size,height:size }} />
-  </View>;
+export type AccountIconName=Extract<AppIconName,'back'|'close'|'refresh'|'phone'|'desktop'|'shield'|'key'|'right'|'alert'|'clock'|'file'|'check'>;
+export function AccountIcon({name,size=23,color}:{name:AccountIconName;size?:number;color?:string}){
+  return <AppIcon name={name} size={size} color={color}/>;
 }
-function HeaderAction({ name,label,onPress }: { name:AccountIconName;label:string;onPress:()=>void }) {
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} className="min-h-12 min-w-12 items-center justify-center rounded-xl">
-    <AccountIcon name={name} />
-  </Pressable>;
-}
+
 export function AccountFrame({ title,onBack,onClose,onRefresh,bodyClassName='',children }: {
   title:string;onBack:()=>void;onClose?:()=>void;onRefresh?:()=>void;bodyClassName?:string;children:ReactNode;
 }) {
-  const colors=themeFor(useColorScheme());
-  return <SafeAreaView edges={['top','left','right','bottom']} style={{ flex:1,backgroundColor:colors.bg }}>
+  return <AppFrame title={title} onBack={onBack} onRefresh={onRefresh}
+    right={!onRefresh && onClose?<Pressable accessibilityRole="button" accessibilityLabel="关闭" onPress={onClose}
+      className="min-h-12 min-w-12 items-center justify-center rounded-xl"><AppIcon name="close"/></Pressable>:undefined}>
     <KeyboardAvoidingView className="flex-1" behavior={Platform.OS==='ios'?'padding':'height'}>
-      <View className="min-h-14 flex-row items-center border-b border-line px-3">
-        <View className="w-16 items-start"><HeaderAction name="back" label="返回" onPress={onBack} /></View>
-        <Text accessibilityRole="header" className="flex-1 text-center text-[18px] font-bold text-fg">{title}</Text>
-        <View className="w-16 items-end">{onRefresh ? <HeaderAction name="refresh" label="刷新设备列表" onPress={onRefresh} /> :
-          onClose ? <HeaderAction name="close" label="关闭" onPress={onClose} /> : null}</View>
-      </View>
       <ScrollView className="flex-1" contentContainerStyle={{ flexGrow:1 }} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         <View className={`flex-1 gap-6 px-[22px] pt-[34px] pb-7 ${bodyClassName}`}>{children}</View>
       </ScrollView>
     </KeyboardAvoidingView>
-  </SafeAreaView>;
+  </AppFrame>;
 }
 export function AccountIntro({ title,copy,compact=false }: { title:string;copy:string;compact?:boolean }) {
   return <View>
@@ -68,13 +32,8 @@ export function AccountIntro({ title,copy,compact=false }: { title:string;copy:s
 export function AccountButton({ title,onPress,disabled=false,busy=false,secondary=false,testID }: {
   title:string;onPress:()=>void;disabled?:boolean;busy?:boolean;secondary?:boolean;testID?:string;
 }) {
-  const colors=themeFor(useColorScheme());
-  return <Pressable testID={testID} accessibilityRole="button" accessibilityLabel={title} accessibilityState={{ disabled:disabled||busy,...(busy?{busy:true}:{}) }}
-    onPress={onPress} disabled={disabled||busy} className={`min-h-12 w-full flex-row items-center justify-center gap-2 rounded-[24px] px-[18px] py-3 ${secondary?'border border-line bg-bg':'bg-fg'}`}
-    style={({pressed})=>({ opacity:disabled||busy?0.45:pressed?0.75:1 })}>
-    {busy ? <ActivityIndicator size="small" color={secondary?colors.fg:colors.bg} /> : null}
-    <Text className={`text-center text-[14px] font-medium leading-[23px] ${secondary?'text-fg':'text-bg'}`}>{title}</Text>
-  </Pressable>;
+  return <AppButton label={title} tone={secondary?'outline':'primary'} onPress={onPress}
+    disabled={disabled} busy={busy} fullWidth testID={testID}/>;
 }
 export function AccountTextAction({ title,onPress,disabled=false,secondary=false }: {title:string;onPress:()=>void;disabled?:boolean;secondary?:boolean}) {
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} className="min-h-12 items-center justify-center px-[5px] py-[10px]">

@@ -1,6 +1,6 @@
 import { jwtVerify } from 'jsr:@panva/jose@6';
 
-export type Principal = { account: string; session: string; audience: 'authenticated' | 'share-read'; expires_at: number };
+export type Principal = { account: string; session: string; audience: 'authenticated' | 'share-read'; expires_at: number; aal: 'aal1' | 'aal2' };
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /** Only signature-verified claims create the principal passed to the private database adapter. */
@@ -16,8 +16,10 @@ export async function principal(request: Request): Promise<Principal | null> {
   });
   if (typeof payload.sub !== 'string' || !uuid.test(payload.sub) ||
       typeof payload.session_id !== 'string' || !uuid.test(payload.session_id) ||
-      !['authenticated', 'share-read'].includes(payload.aud as string) || typeof payload.exp !== 'number') {
+      !['authenticated', 'share-read'].includes(payload.aud as string) || typeof payload.exp !== 'number' ||
+      payload.aal !== undefined && !['aal1','aal2'].includes(String(payload.aal))) {
     throw new Error('SESSION_INVALID');
   }
-  return { account: payload.sub, session: payload.session_id, audience: payload.aud as Principal['audience'], expires_at: payload.exp };
+  return { account: payload.sub, session: payload.session_id, audience: payload.aud as Principal['audience'], expires_at: payload.exp,
+    aal: payload.aal === 'aal2' ? 'aal2' : 'aal1' };
 }

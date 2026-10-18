@@ -1,3 +1,3 @@
-import { Redirect } from 'expo-router';
+import { FeedHome } from '../src/features/feed/FeedHome';
 
-export default function Index() { return <Redirect href="/(auth)" />; }
+export default function Index() { return <FeedHome />; }

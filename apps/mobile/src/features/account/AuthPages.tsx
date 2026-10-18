@@ -10,6 +10,7 @@ type Props = {
   onClose: () => void;
   sessionError?: string;
   onRestore?: () => void;
+  onDevLogin?: () => void;
 };
 
 function maskedPhone(value: string) {
@@ -19,7 +20,7 @@ function maskedPhone(value: string) {
   return `${normalized.slice(0,3)} **** ${normalized.slice(-4)}`;
 }
 
-export function AuthPages({ controller,onClose,sessionError='',onRestore }: Props) {
+export function AuthPages({ controller,onClose,sessionError='',onRestore,onDevLogin }: Props) {
   const state = useSyncExternalStore(controller.subscribe,controller.getSnapshot,controller.getSnapshot);
   const colors = themeFor(useColorScheme());
   const [termsOpen,setTermsOpen] = useState(false);
@@ -72,23 +73,23 @@ export function AuthPages({ controller,onClose,sessionError='',onRestore }: Prop
         <View className="gap-[21px]">
           <View>
             <AccountField testID="account-otp" label="6 位短信验证码" code value={state.otp} placeholder="······"
-              onChangeText={controller.setOtp} editable={!state.busy && !expired && !locked && !termsChanged}
+              onChangeText={controller.setOtp} editable={!state.busy && !state.verificationUncertain && !expired && !locked && !termsChanged}
               error={otpInvalid ? otpError : undefined} keyboardType="number-pad" textContentType="oneTimeCode"
               autoComplete={Platform.OS === 'android' ? 'sms-otp' : 'one-time-code'} autoCorrect={false} maxLength={6}
-              returnKeyType="done" onSubmitEditing={() => { if (!state.busy && !expired && !locked && !termsChanged && !rateLimited) void controller.verify(); }} />
+              returnKeyType="done" onSubmitEditing={() => { if (!state.busy && (state.verificationUncertain || !expired && !locked && !termsChanged && !rateLimited)) void controller.verify(); }} />
             {!otpInvalid && otpError ? <Text accessibilityRole="alert" accessibilityLiveRegion="polite" className="mt-2 text-[12px] leading-5 text-error">{otpError}</Text> : null}
             <View className="mt-[10px] min-h-12 flex-row flex-wrap items-center justify-between gap-x-[10px]">
               <Text className="text-[12px] leading-[22px] text-secondary">{termsChanged ? '验证码已失效' : expired ? '验证码已过期' : locked || !state.challenge ? '请重新获取验证码' :
                 `验证码 ${Math.max(1,Math.ceil((expiresAt-state.now)/60000))} 分钟内有效`}</Text>
               <AccountTextAction title={state.pending === 'send' ? '正在获取验证码' : remaining ? `${remaining} 秒后重发` : '重新获取'}
-                onPress={() => void controller.sendCode()} disabled={state.busy || remaining > 0 || termsChanged} />
+                onPress={() => void controller.sendCode()} disabled={state.busy || state.verificationUncertain || remaining > 0 || termsChanged} />
             </View>
           </View>
           {termsChanged ? <>
             <AccountNotice text="社区条款已更新，本次注册尚未完成。请返回阅读并重新同意。" />
             <AccountButton title="阅读当前条款" onPress={controller.changeDetails} />
           </> : <AccountButton testID="account-verify" title={state.pending === 'verify' ? '正在验证' : registering ? '验证并加入' : '登录'}
-            busy={state.pending === 'verify'} disabled={state.busy || expired || locked || rateLimited || !/^\d{6}$/.test(state.otp)}
+            busy={state.pending === 'verify'} disabled={state.busy || !state.verificationUncertain && (expired || locked || rateLimited || !/^\d{6}$/.test(state.otp))}
             onPress={() => void controller.verify()} />}
           <AccountTextAction title="更换手机号" onPress={controller.changeDetails} disabled={state.busy} />
         </View>
@@ -155,6 +156,7 @@ export function AuthPages({ controller,onClose,sessionError='',onRestore }: Prop
           <AccountTextAction title={registering ? '去登录' : '使用邀请码加入'} onPress={controller.changeMode} disabled={state.busy} />
         </View>
         {!registering ? <AccountFootnote>验证码登录，无需设置密码。</AccountFootnote> : null}
+        {__DEV__ && !registering && onDevLogin ? <AccountTextAction title="使用开发测试账号登录" onPress={onDevLogin} disabled={state.busy} /> : null}
       </>}
     </AccountFrame>
     <AccountSheet visible={termsOpen} title={mainDocument?.title || '社区条款'} onClose={() => setTermsOpen(false)}

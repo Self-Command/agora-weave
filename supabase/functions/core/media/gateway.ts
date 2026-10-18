@@ -42,7 +42,14 @@ export async function media(request: Request,target: string,failure: Failure): P
   const read = async (tx: ReturnType<typeof database>) => {
     const current = await principal(request);
     const [row] = await tx`SELECT core.media_read_result(${current?.account ?? null}::uuid,${current?.session ?? null}::uuid,${target}::uuid,${variant}) AS result`;
-    return row.result as MediaResult;
+    if (row.result?.code === 'OK') return row.result as MediaResult;
+    const [profile] = await tx`SELECT core.profile_media_read_result(${current?.account ?? null}::uuid,
+      ${current?.session ?? null}::uuid,${Deno.env.get('CORE_ENVIRONMENT') || ''},${target}::uuid,${variant}) AS result`;
+    if (profile.result?.code === 'OK' || !current || current.audience !== 'authenticated' || variant !== 'original')
+      return profile.result as MediaResult;
+    const [review] = await tx`SELECT core.media_review_read_result(${current.account}::uuid,${current.session}::uuid,
+      ${Deno.env.get('CORE_ENVIRONMENT') || ''},${current.aal},${target}::uuid) AS result`;
+    return (review.result?.code === 'OK' ? review.result : row.result) as MediaResult;
   };
   // Fetch internal bytes before final admission, so a slow origin never holds a policy lock.
   const initial = await read(database());

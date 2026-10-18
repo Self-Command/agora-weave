@@ -18,6 +18,7 @@ export function createNativeAccountControllers() {
   const session = createSessionController(api,{ clearSession,readSession,saveSession });
   return {
     session,
+    devTestLogin: (username: string,password: string) => api.devTestLogin(username,password),
     auth: () => createAuthController(api,session.authenticated,randomUUID),
     security: (tokens: SessionTokens) => createSecurityController(api,tokens,session.signedOut,lifecycle,randomUUID),
     recovery: (tokens: SessionTokens) => createRecoveryController(api,tokens,session.signedOut,lifecycle,randomUUID),

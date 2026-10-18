@@ -15,7 +15,8 @@ export function nativeComponent(file:string):Record<string,unknown> {
   const previous=cache.get(full);if(previous)return previous;
   const module={exports:{} as Record<string,unknown>};cache.set(full,module.exports);
   const imported=(name:string):unknown=>{
-    if(name==='react-native')return {...hosts,useColorScheme:()=>scheme,Platform:{OS:'android'},StyleSheet:{create:(value:unknown)=>value,hairlineWidth:1}};
+    if(name==='react-native')return {...hosts,useColorScheme:()=>scheme,Platform:{OS:'android'},
+      BackHandler:{addEventListener:()=>({remove:()=>{}})},StyleSheet:{create:(value:unknown)=>value,hairlineWidth:1}};
     if(name==='react-native-safe-area-context')return {SafeAreaView:'SafeAreaView'};
     if(name==='@expo/ui/jetpack-compose')return {Host:'Host',Button:'ComposeButton',Text:'ComposeText'};
     if(name==='react' || name==='react/jsx-runtime')return require(name);

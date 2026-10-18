@@ -261,26 +261,131 @@ test('MC14: registration terms changes invalidate consent, OTP and commands befo
   assert.equal((challengeBodies[2] as { operation_id: string }).operation_id,'command-4');
 });
 
-test('MC15: OTP retries preserve their command, edits reset it, expiry and an unadmitted account cannot publish a session', async () => {
-  let now = 1000,ids = 0,authenticated = 0,admitted = false;
+test('MC15: rejected OTP input may be corrected with a new command while expired challenges cannot verify', async () => {
+  let now = 1000,ids = 0,authenticated = 0;
   const bodies: { operation_id: string; otp: string }[] = [];
   const controller = createAuthController(controllerApi({
     challenge: async () => ({ challenge_id: 'challenge',expires_at: new Date(10_000).toISOString(),retry_after: 60 }),
     verify: async body => {
       bodies.push(body as typeof bodies[number]);
-      if (bodies.length < 3) throw new AccountError('NETWORK_UNCONFIRMED','retry');
-      return { session: tokens,account: { id: 'account',admitted } };
+      if (bodies.length === 1) throw new AccountError('OTP_INVALID','验证码不正确');
+      return { session: tokens,account: { id: 'account',admitted: true } };
     },
   }),async session => { assert.equal(session,tokens); authenticated++; },() => `command-${++ids}`,() => now);
   controller.setPhone('13800138000'); await controller.sendCode();
   controller.setOtp('a12 34567'); assert.equal(controller.getSnapshot().otp,'123456');
-  await controller.verify(); await controller.verify(); assert.deepEqual(bodies[0],bodies[1]);
+  await controller.verify(); assert.equal(controller.getSnapshot().otp,'123456');
   controller.setOtp('654321'); await controller.verify();
-  assert.notEqual(bodies[2].operation_id,bodies[1].operation_id); assert.equal(authenticated,0);
-  assert.match(controller.getSnapshot().error,/尚未完成加入/);
-  admitted = true; await controller.verify(); assert.equal(authenticated,1);
-  now = 10_000; await controller.verify(); assert.equal(bodies.length,4); assert.match(controller.getSnapshot().error,/已过期/);
+  assert.notEqual(bodies[1].operation_id,bodies[0].operation_id); assert.equal(authenticated,1);
+  controller.changeDetails(); await controller.sendCode(); controller.setOtp('123456');
+  now = 10_000; await controller.verify(); assert.equal(bodies.length,2); assert.match(controller.getSnapshot().error,/已过期/);
   controller.changeDetails(); assert.equal(controller.getSnapshot().challenge,null); assert.equal(controller.getSnapshot().otp,'');
+});
+
+test('MC46: public verification lookup sends the exact proof in POST body without OTP in the URL or a bearer token', async () => {
+  const proof = { challenge_id: 'challenge',otp: '123456',operation_id: 'operation' };
+  const server = createServer(async (request,response) => {
+    assert.equal(request.method,'POST'); assert.equal(request.url,'/api/v1/auth/operations/operation');
+    assert.equal(request.headers.authorization,undefined); assert.equal(request.headers['x-client-release'],'lookup-test');
+    let body = ''; for await (const chunk of request) body += chunk;
+    assert.deepEqual(JSON.parse(body),proof);
+    response.setHeader('Content-Type','application/json');response.end(JSON.stringify({ data: { operation_id: 'operation',state: 'pending' } }));
+  });
+  server.listen(0,'127.0.0.1'); await once(server,'listening');
+  try {
+    const address = server.address() as { port: number };
+    const result = await accountApi(`http://127.0.0.1:${address.port}/api/v1`,'lookup-test',true).authOperation(proof);
+    assert.deepEqual(result,{ operation_id: 'operation',state: 'pending' });
+  } finally { server.close(); await once(server,'close'); }
+});
+
+test('MC47: unconfirmed verification only queries the original proof across pending, unknown, edits and local OTP expiry', async () => {
+  let now = 1000,ids = 0,authenticated = 0,query = 0;
+  const verifyBodies: unknown[] = [],queryBodies: unknown[] = [];
+  const controller = createAuthController(controllerApi({
+    challenge: async () => ({ challenge_id: 'challenge',expires_at: new Date(10_000).toISOString(),retry_after: 0 }),
+    verify: async body => { verifyBodies.push(body); throw new AccountError('NETWORK_UNCONFIRMED','response lost'); },
+    authOperation: async body => { queryBodies.push(body); query++;
+      return query < 4 ? { operation_id: body.operation_id,state: query === 1 ? 'pending' : 'unknown' } : { session: tokens,account: { id: 'account',admitted: true } }; },
+  }),async () => { authenticated++; },() => `command-${++ids}`,() => now);
+  controller.setPhone('13800138000'); await controller.sendCode(); controller.setOtp('123456'); await controller.verify();
+  assert.equal(controller.getSnapshot().verificationUncertain,true); assert.equal(authenticated,0);
+  controller.setOtp('654321'); assert.equal(controller.getSnapshot().otp,'123456');
+  await controller.verify(); await controller.sendCode();
+  now = 20_000; await controller.verify();
+  assert.equal(authenticated,1); assert.equal(verifyBodies.length,1); assert.equal(queryBodies.length,4);
+  assert.ok(queryBodies.every(body => JSON.stringify(body) === JSON.stringify(verifyBodies[0])));
+  assert.equal(ids,2); controller.dispose();
+});
+
+test('MC48: registration verification freezes the exact age, terms and consent proof for read-only recovery', async () => {
+  let ids = 0,verifications = 0; const proofs: unknown[] = [];
+  const controller = createAuthController(controllerApi({ documents: async () => structuredClone(documents),
+    challenge: async () => ({ challenge_id: 'register-challenge',expires_at: new Date(60_000).toISOString(),retry_after: 0 }),
+    verify: async body => { verifications++; proofs.push(structuredClone(body)); throw new AccountError('AUTH_UNCONFIRMED','unknown'); },
+    authOperation: async body => { proofs.push(structuredClone(body)); return { operation_id: body.operation_id,state: 'unknown' }; },
+  }),async () => assert.fail('Unknown registration cannot authenticate'),() => `command-${++ids}`,() => 1000);
+  controller.changeMode(); await idleTurn();controller.setPhone('13800138000');controller.setInvitation('invite');
+  controller.setAdult(true);controller.setConsent(true);await controller.sendCode();controller.setOtp('123456');await controller.verify();
+  await controller.verify();assert.equal(verifications,1);assert.equal(proofs.length,3);
+  assert.deepEqual(proofs[0],{ challenge_id: 'register-challenge',otp: '123456',operation_id: 'command-2',
+    age_declaration: { version: 'adult-1',declared: true },document_set_digest: 'set-1',
+    consents: [{ release_id: 'terms-1',digest: 'digest-1',decision: 'consented' }] });
+  assert.deepEqual(proofs[0],proofs[1]);assert.deepEqual(proofs[1],proofs[2]);
+  // Withdrawing a personal decision cancels this round and removes its OTP.
+  controller.setConsent(false);assert.equal(controller.getSnapshot().consent,false);
+  assert.equal(controller.getSnapshot().verificationUncertain,false);assert.equal(controller.getSnapshot().challenge,null);
+  assert.equal(controller.getSnapshot().otp,'');assert.equal(controller.getSnapshot().step,'details');
+  await controller.verify();assert.equal(verifications,1);controller.dispose();
+});
+
+test('MC49: explicit cancellation discards an uncertain round and a new verification requires a new challenge', async () => {
+  let ids = 0,sends = 0,verifications = 0;
+  const controller = createAuthController(controllerApi({
+    challenge: async () => ({ challenge_id: `challenge-${++sends}`,expires_at: new Date(60_000).toISOString(),retry_after: 0 }),
+    verify: async () => { verifications++; throw new AccountError('NETWORK_UNCONFIRMED','lost'); },
+    authOperation: async body => ({ operation_id: body.operation_id,state: 'unknown' }),
+  }),async () => assert.fail('Unknown result'),() => `command-${++ids}`,() => 1000);
+  controller.setPhone('13800138000');await controller.sendCode();controller.setOtp('123456');await controller.verify();
+  controller.changeDetails();assert.equal(controller.getSnapshot().verificationUncertain,false);assert.equal(controller.getSnapshot().challenge,null);
+  controller.setOtp('123456');await controller.verify();assert.equal(verifications,1);
+  await controller.sendCode();assert.equal(controller.getSnapshot().otp,'');assert.equal(controller.getSnapshot().challenge?.challenge_id,'challenge-2');
+  controller.dispose();
+});
+
+test('MC50: terminal lookup denials discard unusable challenges without accepting cached credentials', async () => {
+  for (const code of ['SESSION_INVALID','NOT_FOUND','OTP_EXPIRED','AUTH_FAILED','CONFLICT']) {
+    let verifications = 0;
+    const controller = createAuthController(controllerApi({
+      challenge: async () => ({ challenge_id: 'challenge',expires_at: new Date(60_000).toISOString(),retry_after: 0 }),
+      verify: async () => { verifications++;throw new AccountError('AUTH_UNCONFIRMED','lost'); },
+      authOperation: async () => { throw new AccountError(code,'current result unavailable'); },
+    }),async () => assert.fail('A denied receipt must never authenticate'),() => 'command',() => 1000);
+    controller.setPhone('13800138000');await controller.sendCode();controller.setOtp('123456');await controller.verify();
+    assert.equal(controller.getSnapshot().errorCode,code);assert.equal(controller.getSnapshot().verificationUncertain,false);
+    assert.equal(controller.getSnapshot().challenge,null);assert.equal(controller.getSnapshot().otp,'');
+    await controller.verify();assert.equal(verifications,1);controller.dispose();
+  }
+});
+
+test('MC51: malformed, mismatched, unadmitted and expired receipts remain unconfirmed without publishing any session', async () => {
+  const receipt = { session: tokens,account: { id: 'account',admitted: true } };
+  for (const result of [null,{}, { operation_id: 'other',state: 'pending' },{ operation_id: 'command',state: 'succeeded' },
+    { ...receipt,account: { id: 'account',admitted: false } },{ ...receipt,account: { id: 'account',admitted: 'true' } },
+    { ...receipt,account: { id: '',admitted: true } },
+    { ...receipt,session: { ...tokens,access_token: '' } },{ ...receipt,session: { ...tokens,refresh_token: '' } },
+    { ...receipt,session: { ...tokens,access_token: ' ' } },{ ...receipt,session: { ...tokens,refresh_token: ' ' } },
+    { ...receipt,session: { ...tokens,expires_at: '100' } },{ ...receipt,session: { ...tokens,expires_at: 1 } }]) {
+    let queries = 0,verifications = 0;
+    const controller = createAuthController(controllerApi({
+      challenge: async () => ({ challenge_id: 'challenge',expires_at: new Date(60_000).toISOString(),retry_after: 0 }),
+      verify: async () => { verifications++; return result as Awaited<ReturnType<AccountApi['verify']>>; },
+      authOperation: async () => { queries++;return result as Awaited<ReturnType<AccountApi['authOperation']>>; },
+    }),async () => assert.fail('Invalid tokens or receipt cannot authenticate'),() => 'command',() => 1000);
+    controller.setPhone('13800138000');await controller.sendCode();controller.setOtp('123456');await controller.verify();await controller.verify();
+    assert.equal(controller.getSnapshot().verificationUncertain,true);assert.equal(verifications,1);assert.equal(queries,2);
+    controller.dispose();
+  }
 });
 
 test('MC16: device pagination deduplicates entries and a late read cannot restore data cleared by a background transition', async () => {

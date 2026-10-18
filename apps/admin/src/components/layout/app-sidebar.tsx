@@ -31,8 +31,11 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '@/components/icons';
+import { useManagement } from '@/features/management/session-context';
+import { LogoutButton } from '@/features/management/components/logout-button';
 
 export default function AppSidebar() {
+  const administrator = useManagement();
   const pathname = usePathname();
   const { isOpen } = useMediaQuery();
   const router = useRouter();
@@ -115,7 +118,7 @@ export default function AppSidebar() {
                   />
                 }
               >
-                <span className='truncate'>Account</span>
+                <span className='truncate'>{administrator?.account.phone_masked ?? 'Account'}</span>
                 <Icons.chevronsDown className='ml-auto size-4' />
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -127,16 +130,17 @@ export default function AppSidebar() {
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className='p-0 font-normal'>
                     <div className='text-muted-foreground px-1 py-1.5 text-sm'>
-                      Sign in to manage your account
+                      {administrator ? administrator.roles.join(' · ') : 'Sign in to manage your account'}
                     </div>
                   </DropdownMenuLabel>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={() => router.push('/dashboard/notifications')}>
+                  {administrator ? <DropdownMenuItem render={<Link href='/admin/mfa' aria-label='认证器验证' />}>认证器验证</DropdownMenuItem> : <DropdownMenuItem onClick={() => router.push('/dashboard/notifications')}>
                     <Icons.notification className='mr-2 h-4 w-4' />
                     Notifications
-                  </DropdownMenuItem>
+                  </DropdownMenuItem>}
+                  {administrator ? <div className='px-2 py-1'><LogoutButton /></div> : null}
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
