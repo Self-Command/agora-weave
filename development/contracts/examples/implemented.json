@@ -1,0 +1,863 @@
+{
+  "description": "Fictitious synthetic fixed responses. Never real credentials, production terms, users or secrets.",
+  "responses": {
+    "createOtpChallengeSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "challenge_id": "10000000-0000-4000-8000-000000000001",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "retry_after": 60
+      }
+    },
+    "verifyOtpChallengeSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        },
+        "account": {
+          "id": "10000000-0000-4000-8000-000000000001",
+          "admitted": true
+        }
+      }
+    },
+    "readOtpVerificationOperationSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "operation_id": "10000000-0000-4000-8000-000000000001",
+        "state": "unknown"
+      }
+    },
+    "refreshAppSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        }
+      }
+    },
+    "logoutAppSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "revoked": true,
+        "clear_restricted_cache": true
+      }
+    },
+    "listDeviceSessionsSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "device_label": "Synthetic device",
+            "current": true,
+            "row_version": 1,
+            "created_at": "2026-10-18T00:00:00.000Z",
+            "trusted_at": null
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false
+      }
+    },
+    "revokeDeviceSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "revoked": true,
+        "clear_restricted_cache": true
+      }
+    },
+    "createRecoveryCaseSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "mode": "manual",
+        "state": "received",
+        "created_at": "2026-10-18T00:00:00.000Z",
+        "updated_at": "2026-10-18T00:00:00.000Z",
+        "row_version": 1
+      }
+    },
+    "getRecoveryCaseSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "mode": "manual",
+        "state": "received",
+        "created_at": "2026-10-18T00:00:00.000Z",
+        "updated_at": "2026-10-18T00:00:00.000Z",
+        "row_version": 1
+      }
+    },
+    "getAppOperationSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "operation_id": "10000000-0000-4000-8000-000000000001",
+        "action": "auth.logout",
+        "state": "succeeded"
+      }
+    },
+    "getCurrentDocumentsSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "documents": [
+          {
+            "document_id": "10000000-0000-4000-8000-000000000001",
+            "release_id": "10000000-0000-4000-8000-000000000002",
+            "kind": "terms",
+            "title": "Fictitious test terms",
+            "body": "SYNTHETIC EXAMPLE ONLY. Not production policy.",
+            "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "document_set_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "age_declaration_version": "adult-18-v1"
+      }
+    },
+    "getPublishedDocumentSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "document_id": "10000000-0000-4000-8000-000000000001",
+        "release_id": "10000000-0000-4000-8000-000000000002",
+        "stable_key": "example-terms",
+        "kind": "terms",
+        "locale": "zh-CN",
+        "title": "Fictitious test terms",
+        "body": "SYNTHETIC EXAMPLE ONLY. Not production policy.",
+        "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "state": "published",
+        "published_at": "2026-10-18T00:00:00.000Z",
+        "is_current": true,
+        "scope": {
+          "environment": "test",
+          "surfaces": [
+            "app"
+          ],
+          "purposes": [
+            "register"
+          ]
+        }
+      }
+    },
+    "getPostSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "author_id": "10000000-0000-4000-8000-000000000002",
+        "visibility": "public",
+        "revision_id": "10000000-0000-4000-8000-000000000003",
+        "body": "Synthetic public post",
+        "row_version": 1
+      }
+    },
+    "listLatestPostsSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [],
+        "next_cursor": null,
+        "has_more": false
+      }
+    },
+    "getEffectiveConfigurationSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v1",
+        "values": {
+          "media.preload": false
+        }
+      }
+    },
+    "getProjectedEventsSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "event_id": "10000000-0000-4000-8000-000000000001",
+            "type": "resource.changed",
+            "target_ref": "10000000-0000-4000-8000-000000000002",
+            "aggregate_version": 1,
+            "sequence": 1
+          }
+        ],
+        "cursor": 1
+      }
+    },
+    "createManagementOtpChallengeSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "challenge_id": "10000000-0000-4000-8000-000000000001",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "retry_after": 60
+      }
+    },
+    "verifyManagementOtpSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        }
+      }
+    },
+    "readManagementOtpOperationSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        }
+      }
+    },
+    "refreshManagementSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        }
+      }
+    },
+    "logoutManagementSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "revoked": true,
+        "clear_restricted_cache": true
+      }
+    },
+    "createManagementPasswordCaptchaSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "data": {
+        "captcha_id": "10000000-0000-4000-8000-000000000001",
+        "image_data_url": "data:image/png;base64,iVBORw0KGgo=",
+        "expires_at": "2026-10-18T00:00:00.000Z"
+      }
+    },
+    "loginManagementPasswordSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        }
+      }
+    },
+    "requestManagementPasswordRecoverySuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "data": {
+        "accepted": true
+      }
+    },
+    "getSessionManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "account": {
+          "id": "10000000-0000-4000-8000-000000000001",
+          "phone_masked": "+1555****0199"
+        },
+        "environment": "test",
+        "roles": [
+          "super_admin"
+        ],
+        "permissions": [
+          "admin.accounts.read",
+          "config.read"
+        ],
+        "mfa": {
+          "aal": "aal2",
+          "enrolled": true,
+          "verified": true
+        },
+        "sensitive_until": null
+      }
+    },
+    "listAccountsManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "status": "active",
+            "phone_masked": "+1555****0199",
+            "registered_at": "2026-10-18T00:00:00.000Z",
+            "roles": []
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false
+      }
+    },
+    "listMfaFactorsManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "factor_type": "totp",
+            "friendly_name": "Synthetic authenticator",
+            "status": "verified",
+            "created_at": "2026-10-18T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "enrollMfaFactorManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "type": "totp",
+        "totp": {
+          "qr_code": "<svg xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"1\" height=\"1\"/></svg>",
+          "secret": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "uri": "otpauth://totp/AgoraWeave:synthetic?secret=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&issuer=AgoraWeave"
+        }
+      }
+    },
+    "challengeMfaFactorManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "type": "totp",
+        "expires_at": 1792281600
+      }
+    },
+    "verifyMfaFactorManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        }
+      }
+    },
+    "createStepupManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "stepup_id": "10000000-0000-4000-8000-000000000001",
+        "expires_at": "2026-10-18T00:00:00.000Z"
+      }
+    },
+    "getOtpConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "base_version": "synthetic-config-v1",
+        "environment": "test",
+        "definitions": [
+          {
+            "key": "auth.otp_lifetime_seconds",
+            "description": "Synthetic OTP lifetime",
+            "default_value": 60,
+            "value": 60,
+            "range": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300
+            },
+            "read_permission": "config.read",
+            "write_permission": "auth.config.write",
+            "effect_mode": "immediate",
+            "existing_policy": "New challenges only"
+          }
+        ],
+        "deployment_max_lifetime_seconds": 300,
+        "history": []
+      }
+    },
+    "previewOtpConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "preview_id": "10000000-0000-4000-8000-000000000001",
+        "preview_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base_version": "synthetic-config-v1",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "values": {
+          "auth.otp_lifetime_seconds": 60,
+          "auth.otp_resend_seconds": 60,
+          "auth.otp_max_failures": 5,
+          "auth.otp_phone_hourly": 5,
+          "auth.otp_phone_daily": 10,
+          "auth.otp_ip_hourly": 20
+        },
+        "changes": [],
+        "existing_object_impacts": []
+      }
+    },
+    "publishOtpConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    },
+    "rollbackOtpConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "rollback"
+      }
+    },
+    "getOperationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "operation_id": "10000000-0000-4000-8000-000000000001",
+        "action": "auth.logout",
+        "state": "succeeded"
+      }
+    },
+    "getSessionCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "account": {
+          "id": "10000000-0000-4000-8000-000000000001",
+          "phone_masked": "+1555****0199"
+        },
+        "environment": "test",
+        "roles": [
+          "super_admin"
+        ],
+        "permissions": [
+          "admin.accounts.read",
+          "config.read"
+        ],
+        "mfa": {
+          "aal": "aal2",
+          "enrolled": true,
+          "verified": true
+        },
+        "sensitive_until": null
+      }
+    },
+    "listAccountsCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "status": "active",
+            "phone_masked": "+1555****0199",
+            "registered_at": "2026-10-18T00:00:00.000Z",
+            "roles": []
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false
+      }
+    },
+    "listMfaFactorsCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "items": [
+          {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "factor_type": "totp",
+            "friendly_name": "Synthetic authenticator",
+            "status": "verified",
+            "created_at": "2026-10-18T00:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "enrollMfaFactorCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "type": "totp",
+        "totp": {
+          "qr_code": "<svg xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"1\" height=\"1\"/></svg>",
+          "secret": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "uri": "otpauth://totp/AgoraWeave:synthetic?secret=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&issuer=AgoraWeave"
+        }
+      }
+    },
+    "challengeMfaFactorCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "type": "totp",
+        "expires_at": 1792281600
+      }
+    },
+    "verifyMfaFactorCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        },
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        }
+      }
+    },
+    "createStepupCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "stepup_id": "10000000-0000-4000-8000-000000000001",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        }
+      }
+    },
+    "getOtpConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "base_version": "synthetic-config-v1",
+        "environment": "test",
+        "definitions": [
+          {
+            "key": "auth.otp_lifetime_seconds",
+            "description": "Synthetic OTP lifetime",
+            "default_value": 60,
+            "value": 60,
+            "range": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300
+            },
+            "read_permission": "config.read",
+            "write_permission": "auth.config.write",
+            "effect_mode": "immediate",
+            "existing_policy": "New challenges only"
+          }
+        ],
+        "deployment_max_lifetime_seconds": 300,
+        "history": []
+      }
+    },
+    "previewOtpConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "preview_id": "10000000-0000-4000-8000-000000000001",
+        "preview_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "action_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "base_version": "synthetic-config-v1",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "values": {
+          "auth.otp_lifetime_seconds": 60,
+          "auth.otp_resend_seconds": 60,
+          "auth.otp_max_failures": 5,
+          "auth.otp_phone_hourly": 5,
+          "auth.otp_phone_daily": 10,
+          "auth.otp_ip_hourly": 20
+        },
+        "changes": [],
+        "existing_object_impacts": []
+      }
+    },
+    "publishOtpConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    },
+    "rollbackOtpConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "rollback"
+      }
+    },
+    "getOperationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "operation_id": "10000000-0000-4000-8000-000000000001",
+        "action": "auth.logout",
+        "state": "succeeded"
+      }
+    },
+    "createCoreManagementOtpChallengeSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "challenge_id": "10000000-0000-4000-8000-000000000001",
+        "expires_at": "2026-10-18T00:00:00.000Z",
+        "retry_after": 60
+      }
+    },
+    "verifyCoreManagementOtpSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        },
+        "account": {
+          "id": "10000000-0000-4000-8000-000000000001",
+          "admitted": true
+        }
+      }
+    },
+    "readCoreManagementOtpOperationSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "operation_id": "10000000-0000-4000-8000-000000000001",
+        "state": "unknown"
+      }
+    },
+    "refreshCoreManagementSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        }
+      }
+    },
+    "logoutCoreManagementSessionSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "revoked": true,
+        "clear_restricted_cache": true
+      }
+    },
+    "registerCorePasswordCaptchaSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "data": {
+        "registered": true
+      }
+    },
+    "loginCorePasswordSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "administrator": {
+          "account": {
+            "id": "10000000-0000-4000-8000-000000000001",
+            "phone_masked": "+1555****0199"
+          },
+          "environment": "test",
+          "roles": [
+            "super_admin"
+          ],
+          "permissions": [
+            "admin.accounts.read",
+            "config.read"
+          ],
+          "mfa": {
+            "aal": "aal2",
+            "enrolled": true,
+            "verified": true
+          },
+          "sensitive_until": null
+        },
+        "session": {
+          "access_token": "FICTITIOUS.access.token",
+          "refresh_token": "FICTITIOUS_REFRESH_TOKEN",
+          "expires_at": 1792281600
+        }
+      }
+    },
+    "requestCorePasswordRecoverySuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "data": {
+        "accepted": true
+      }
+    },
+    "publishConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    },
+    "publishConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    },
+    "rollbackConfigurationManagementSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    },
+    "rollbackConfigurationCoreAdminSuccess": {
+      "request_id": "10000000-0000-4000-8000-000000000001",
+      "config_version": "synthetic-config-v1",
+      "data": {
+        "version": "synthetic-config-v2",
+        "previous_version": "synthetic-config-v1",
+        "state": "active",
+        "kind": "release"
+      }
+    }
+  }
+}

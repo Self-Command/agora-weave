@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "contracts": {
+    "development/contracts/app-api.yaml": "431ccfc2342748d1cf7900e2d0d588744cc65c93c59ac5e39346d9bbfe3870fd",
+    "development/contracts/core-admin-api.yaml": "124fd58ed316100c6d652ec381fd53ade579cdf2434fcda50523af8a44b6bc97",
+    "development/contracts/examples/implemented.json": "227f6e09c0516cac901b00eafc5dc97b1d1f23d7f487b79fc54afef46488db4c",
+    "development/contracts/management-api.yaml": "24cdac32b92a917eafe241328b909dbaf02108abef7379c35d2b22b2a64e6413",
+    "development/contracts/plugin-manifest.schema.json": "5360b836d16f98e7b3a1acb45d08366fc8a010a0f6dccdcf5adff66aca32a8ad",
+    "development/contracts/schemas/common.yaml": "a5c291ba8dac78b932ec08599d00edc75f56b5287574a4a2ef47e88b14b91226"
+  },
+  "generated": {
+    "packages/contracts/src/generated/app.d.ts": "aa6dadcc5c91615b666d9a8cc7eb6c01de3b8c599b36abe7de0c5daee08d4a3c",
+    "packages/contracts/src/generated/management.d.ts": "ca621c16ce0d52845e06f9cd0bbd9f37c724c15df6e538273d2efc04b78fa81d",
+    "packages/contracts/src/generated/core-admin.d.ts": "0d6540548753a363c2b686293b6ce0715cc43aaefda27f57574ba956bf459a64"
+  }
+}

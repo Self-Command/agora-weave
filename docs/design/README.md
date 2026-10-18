@@ -3,7 +3,7 @@
 本目录记录 PRD 阶段已接受的 v6 UI 草稿，以及 2026-10-14 用户要求补齐的视觉风格、UI 规格和需求 / 验收追溯。文件属于设计输入，不是 Expo、后台或 Supabase 的产品实现。
 
 2026-10-16 用户决定：所有页面先补入同一 HTML 原型入口供本人验收，通过后再开发生产页面。
-新增账号草稿通过入口的“页面”和“状态”选择器查看，当前标为待验收；不表示生产页面已修正。
+账号草稿通过入口的“页面”和“状态”选择器查看；r2五页及选择器状态的人类批准保留，准确版本/摘要以[页面登记](page-registry.json)为准，批准不代表生产旅程已全部验收。
 移动生产端继续使用 Expo／React Native／Expo UI，HTML 原型不作为移动网站产品路线。
 
 | 文件 | 用途 |
@@ -13,7 +13,7 @@
 | [prototype/index.html](prototype/index.html) | 保留原有页面与可点击概念交互的归档入口 |
 | [prototype/native-ui-v6.css](prototype/native-ui-v6.css) | 草稿样式原文件，包含后续覆盖规则 |
 | [prototype/native-ui-v6.js](prototype/native-ui-v6.js) | 草稿交互原文件，使用虚构数据与内存状态 |
-| [prototype/account-pages.css](prototype/account-pages.css) / [account-pages.js](prototype/account-pages.js) | 沿用 v6 风格的账号页面及状态草稿，待用户验收；独立扩展以保留 v6 CSS / JS 原字节 |
+| [prototype/account-pages.css](prototype/account-pages.css) / [account-pages.js](prototype/account-pages.js) | 沿用v6风格的账号页面及状态；r2批准见页面登记，保留v6 CSS/JS原字节 |
 | [../product/PRD.md](../product/PRD.md) | 有效业务、权限、范围、视觉需求与正式验收来源 |
 
 ## 来源与归档处理
@@ -32,7 +32,7 @@
 
 ## 草稿的使用方式
 
-打开入口可查看手机画板；顶部页面选择器在窄屏同样可用，左侧保留原页面按钮，顶部切换浅／深主题。账号草稿可查看登录、邀请加入、验证码、账号安全与恢复申请，状态选择器覆盖适用错误、加载、空与失效状态；交互只使用合成数据，不发送短信或提交真实申请。产品实际验证遵守现行 execution-policy；安装包由 Actions 编译，本地可运行目标测试与已安装开发包。
+打开入口可查看手机画板；顶部页面选择器在窄屏同样可用，左侧保留原页面按钮，顶部切换浅／深主题。账号草稿可查看登录、邀请加入、验证码、账号安全与恢复申请，状态选择器覆盖适用错误、加载、空与失效状态；交互只使用合成数据，不发送短信或提交真实申请。产品实际验证遵守[当前验收](../../development/acceptance.md)；安装包由 Actions 编译，本地可运行目标测试与已安装开发包。
 
 草稿依赖同目录的 CSS 与 JS，无字体、图片、CDN 或业务接口依赖；图标为内联 SVG，头像 / 媒体为虚构视觉示例。这里不要求启动本地产品、安装依赖或接入服务。
 

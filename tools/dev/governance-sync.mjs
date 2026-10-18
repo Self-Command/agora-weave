@@ -25,19 +25,24 @@ function configuration(root) {
     }
   };
   for (const directory of manifest.directories || []) visit(directory);
-  for (const file of [...files, ...(manifest.deleted_files || [])]) {
+  for (const file of [...files, ...(manifest.deleted_files || []), ...(manifest.retired_directories || [])]) {
     const child = relative(root, resolve(root, file));
     if (!child || child.startsWith('..') || isAbsolute(child)) throw new Error('Unsafe governance path: ' + file);
   }
   const sorted = [...files].filter(file => !(manifest.deleted_files || []).includes(file)).sort();
   for (const file of sorted) if (!existsSync(resolve(root, file))) throw new Error('Missing canonical file: ' + file);
-  if (!readFileSync(resolve(root, '.specify/memory/constitution.md'), 'utf8').includes('**版本**: ' + manifest.minimum_constitution_version)) throw new Error('Constitution and synchronization version differ');
+  const baseline = manifest.baseline;
+  if (!baseline?.file || !baseline.marker || !files.has(baseline.file) ||
+      !readFileSync(resolve(root, baseline.file), 'utf8').includes(baseline.marker)) {
+    throw new Error('Development baseline and synchronization manifest differ');
+  }
   const trees = git(root, ['worktree', 'list', '--porcelain']).split(/\r?\n\r?\n/).filter(Boolean).map(block => ({
     path: block.match(/^worktree (.+)$/m)?.[1].trim(), branch: block.match(/^branch refs\/heads\/(.+)$/m)?.[1].trim(),
   })).filter(tree => tree.path);
   for (const path of manifest.additional_workspaces || []) if (existsSync(path) && !trees.some(tree => resolve(tree.path) === resolve(path))) trees.push({ path, replica: true });
   const manages = file => !(manifest.excluded_directories || []).some(directory => file === directory || file.startsWith(directory + '/')) &&
     (manifest.files.includes(file) || (manifest.deleted_files || []).includes(file) ||
+      (manifest.retired_directories || []).some(directory => file === directory || file.startsWith(directory + '/')) ||
       (manifest.directories || []).some(directory => file.startsWith(directory + '/')));
   return { manifest, files: sorted, trees, manages };
 }

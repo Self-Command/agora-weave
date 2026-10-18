@@ -2,12 +2,13 @@
   "schema_version": 1,
   "feature": "001-agoraweave-v1",
   "source_of_truth": [
-    ".specify/memory/constitution.md",
-    "specs/001-agoraweave-v1/spec.md",
-    "specs/001-agoraweave-v1/plan.md",
-    "specs/001-agoraweave-v1/tasks.md",
+    "development/README.md",
     "docs/product/PRD.md",
-    "specs/001-agoraweave-v1/traceability.md"
+    "development/coverage.md",
+    "development/contracts/app-api.yaml",
+    "development/contracts/management-api.yaml",
+    "development/contracts/core-admin-api.yaml",
+    "development/acceptance.md"
   ],
   "product_cases": [
     {
@@ -17,7 +18,7 @@
       "prd_refs": "AUTH-01–04",
       "requirements": "FR-001–003",
       "stories": "US1",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -29,7 +30,7 @@
       "prd_refs": "AUTH-01–04、AUTH-10",
       "requirements": "FR-001–003、FR-008",
       "stories": "US1",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -41,7 +42,7 @@
       "prd_refs": "AUTH-05–10、DATA-01–04",
       "requirements": "FR-004–008、FR-114–118",
       "stories": "US1、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -53,7 +54,7 @@
       "prd_refs": "PRF-01–03、EDIT-03、GOV-01、WEB-01",
       "requirements": "FR-009–011、FR-015、FR-043、FR-090、FR-095",
       "stories": "US2",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -65,7 +66,7 @@
       "prd_refs": "SOC-01–04、SOC-06、SOC-08",
       "requirements": "FR-012–016",
       "stories": "US2",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -77,7 +78,7 @@
       "prd_refs": "SOC-05–07、VIS-01–03、MEDIA-01–04、AI-05",
       "requirements": "FR-014–015、FR-044–047、FR-052、FR-076、FR-108–111",
       "stories": "US2、US5",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -89,7 +90,7 @@
       "prd_refs": "SOC-09–10、SOC-01–08、INT-02、DM-03",
       "requirements": "FR-012–017、FR-054、FR-063、FR-120",
       "stories": "US2、US6",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -101,7 +102,7 @@
       "prd_refs": "POST-01–06、MEDIA-05–06、VIS-01–03、CFG-03、CFG-09",
       "requirements": "FR-018–022、FR-044–047、FR-052、FR-112–113、FR-132、FR-138",
       "stories": "US3、US6",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -113,7 +114,7 @@
       "prd_refs": "POST-03–06、DRF-01–03",
       "requirements": "FR-020–025",
       "stories": "US3",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -125,7 +126,7 @@
       "prd_refs": "THR-01–04、VIS-03、DEL-01–04、POST-03、GOV-01",
       "requirements": "FR-020、FR-026–027、FR-046–052、FR-095",
       "stories": "US3、US5",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -137,7 +138,7 @@
       "prd_refs": "POL-01–03、POL-06、CFG-09、CFG-11",
       "requirements": "FR-028–030、FR-032–033、FR-138、FR-140",
       "stories": "US4",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -149,7 +150,7 @@
       "prd_refs": "POL-04–07、NTF-01–04",
       "requirements": "FR-028–029、FR-031–033、FR-044、FR-119–122",
       "stories": "US4",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -161,7 +162,7 @@
       "prd_refs": "CMT-01–08",
       "requirements": "FR-034–040、FR-047",
       "stories": "US4",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -173,7 +174,7 @@
       "prd_refs": "EDIT-01–03、VIS-01–03",
       "requirements": "FR-039、FR-041–047、FR-052",
       "stories": "US5",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -185,7 +186,7 @@
       "prd_refs": "VIS-01–03、DEL-01–04、THR-04、WEB-03",
       "requirements": "FR-027、FR-036、FR-040、FR-044–052、FR-092",
       "stories": "US5",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -197,7 +198,7 @@
       "prd_refs": "INT-01–03",
       "requirements": "FR-021、FR-046、FR-053–055",
       "stories": "US5、US6",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -209,7 +210,7 @@
       "prd_refs": "DRF-01–03、AI-08–09、AUTH-09",
       "requirements": "FR-007、FR-023–025、FR-078–079、FR-110",
       "stories": "US3",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -221,7 +222,7 @@
       "prd_refs": "FEED-01–03、SEARCH-01–04",
       "requirements": "FR-056–060",
       "stories": "US6",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -233,7 +234,7 @@
       "prd_refs": "DM-01–06、SOC-01–02、SOC-08、CFG-03–06",
       "requirements": "FR-012、FR-016、FR-061–066、FR-132–135",
       "stories": "US7",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -245,7 +246,7 @@
       "prd_refs": "DM-03、DM-07–08、DM-12、NTF-04–05",
       "requirements": "FR-021、FR-061、FR-063、FR-067–069、FR-122–123",
       "stories": "US7、US15",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -257,7 +258,7 @@
       "prd_refs": "DM-09–11、DATA-02–04、ADM-07",
       "requirements": "FR-007、FR-061、FR-070–072、FR-107、FR-115–118",
       "stories": "US7、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -269,7 +270,7 @@
       "prd_refs": "AI-01–07",
       "requirements": "FR-073–077",
       "stories": "US8",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -281,7 +282,7 @@
       "prd_refs": "AI-08–12、DRF-03",
       "requirements": "FR-025、FR-047、FR-073、FR-076、FR-078–082",
       "stories": "US8",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -293,7 +294,7 @@
       "prd_refs": "AI-10–12",
       "requirements": "FR-076、FR-080–082",
       "stories": "US8",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -305,7 +306,7 @@
       "prd_refs": "AI-13–16、VIS-02",
       "requirements": "FR-045、FR-047、FR-052、FR-076、FR-082–085、FR-110",
       "stories": "US5、US8、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -317,7 +318,7 @@
       "prd_refs": "AI-16–20、DATA-01、CFG-03–06、CFG-09",
       "requirements": "FR-085–089、FR-114、FR-118、FR-132–135、FR-138",
       "stories": "US8",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -329,7 +330,7 @@
       "prd_refs": "WEB-01–06、VIS-02、PRF-03",
       "requirements": "FR-011、FR-045、FR-047、FR-052、FR-090–094",
       "stories": "US9",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -341,7 +342,7 @@
       "prd_refs": "GOV-01–06、ADM-01",
       "requirements": "FR-095–099、FR-101",
       "stories": "US10",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -353,7 +354,7 @@
       "prd_refs": "GOV-05–07",
       "requirements": "FR-050、FR-098–100",
       "stories": "US10",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -365,7 +366,7 @@
       "prd_refs": "ADM-01–07",
       "requirements": "FR-072、FR-089、FR-101–107、FR-115",
       "stories": "US1、US10",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -377,7 +378,7 @@
       "prd_refs": "MEDIA-01–06、DEL-04",
       "requirements": "FR-045、FR-051–052、FR-072、FR-092、FR-108–113",
       "stories": "US5、US9",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -389,7 +390,7 @@
       "prd_refs": "DATA-01–04、AUTH-08–09、DEL-01–04、CFG-07–11",
       "requirements": "FR-007、FR-025、FR-048–052、FR-072、FR-111、FR-114–118、FR-136–140",
       "stories": "US1、US5、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -401,7 +402,7 @@
       "prd_refs": "NTF-01–05",
       "requirements": "FR-119–123",
       "stories": "US15",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -413,7 +414,7 @@
       "prd_refs": "AUTH-10、AI-20、FAIL-01、POST-03–06",
       "requirements": "FR-008、FR-020–022、FR-089、FR-097、FR-124",
       "stories": "US15",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -425,7 +426,7 @@
       "prd_refs": "UX-01–08、MEDIA-06、AI-02–03、TECH-05、CI-01–05",
       "requirements": "FR-073–074、FR-112–113、FR-125–129、QR-002–006",
       "stories": "US16",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -437,7 +438,7 @@
       "prd_refs": "TECH-01–04",
       "requirements": "QR-001",
       "stories": "QR 全局证据及交付门槛",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -449,7 +450,7 @@
       "prd_refs": "EDIT-01–03、CMT-07、GOV-01、VIS-02、AI-13–15",
       "requirements": "FR-010、FR-034、FR-039、FR-041–043、FR-045、FR-047、FR-052、FR-083–084、FR-095",
       "stories": "US5、US10",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -461,7 +462,7 @@
       "prd_refs": "CFG-01–04、CFG-08–09、ADM-02、PLT-05–06",
       "requirements": "FR-102、FR-130–133、FR-137–138、FR-146–147",
       "stories": "US11",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -473,7 +474,7 @@
       "prd_refs": "CFG-05–06、CFG-08–10、POST-04–05、AI-18–19",
       "requirements": "FR-021–022、FR-087–088、FR-132、FR-134–135、FR-137–139、FR-141",
       "stories": "US11",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -485,7 +486,7 @@
       "prd_refs": "CFG-02、CFG-07–09、ADM-02–03、ADM-06",
       "requirements": "FR-102–103、FR-106、FR-131–132、FR-136–138",
       "stories": "US11",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -497,7 +498,7 @@
       "prd_refs": "CFG-10–13、DATA-01–04、POL-02–03、DM-06、DM-09–11、UX-01–06",
       "requirements": "FR-029–030、FR-066、FR-070–072、FR-114–118、FR-125–128、FR-132、FR-139–141",
       "stories": "US11",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -509,7 +510,7 @@
       "prd_refs": "AI-03、AI-08–12、AI-19–20、CFG-01、CFG-07、CFG-10",
       "requirements": "FR-074、FR-078–082、FR-088–089、FR-130、FR-136、FR-139",
       "stories": "US8",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -521,7 +522,7 @@
       "prd_refs": "PLT-01–05、PLG-03–05、CFG-01–13、VIS-01–03、ADM-02",
       "requirements": "FR-044–047、FR-052、FR-101–102、FR-130–146、FR-155–158",
       "stories": "US13",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -533,7 +534,7 @@
       "prd_refs": "EXT-01–04、POST-04、NTF-03–04、ADM-02",
       "requirements": "FR-021、FR-101–102、FR-121–122、FR-145、FR-148–151",
       "stories": "US12",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -545,7 +546,7 @@
       "prd_refs": "PLG-01–03、PLT-03–05、EXT-01–04、ADM-02–03、ADM-06",
       "requirements": "FR-101–103、FR-106、FR-144–146、FR-148–156",
       "stories": "US13",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -557,7 +558,7 @@
       "prd_refs": "PLG-03–06、PLT-02、DATA-01–04、ADM-02–03、FAIL-01",
       "requirements": "FR-101–103、FR-114–118、FR-124、FR-143、FR-155–159、FR-173",
       "stories": "US13、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -569,7 +570,7 @@
       "prd_refs": "UPD-01–05、PLG-01–04、CFG-05–12、UX-04",
       "requirements": "FR-101、FR-103、FR-127、FR-134–141、FR-148、FR-152–157、FR-160–164、FR-173",
       "stories": "US14",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -581,7 +582,7 @@
       "prd_refs": "DEV-01–04、EXT-01–04",
       "requirements": "FR-142、FR-148–151、FR-165–169、FR-173、QR-008",
       "stories": "US12",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -593,7 +594,7 @@
       "prd_refs": "TST-01–04、DEV-04、PLG-03–06、UPD-01–05",
       "requirements": "FR-155–164、FR-168–173、QR-008–009",
       "stories": "US12",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -605,7 +606,7 @@
       "prd_refs": "PLT-04–06、CFG-04、EXT-01–04、TST-01–04、DATA-04",
       "requirements": "FR-108、FR-117–118、FR-133、FR-145–151、FR-159、FR-170–173",
       "stories": "US12、US13、US17",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -617,7 +618,7 @@
       "prd_refs": "TECH-05、CI-01–03、CI-06–08、TST-01–04",
       "requirements": "FR-160、FR-170–173、QR-002–004、QR-007–009",
       "stories": "US14",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -629,7 +630,7 @@
       "prd_refs": "CI-03–06、UX-01–08、EXT-01–02",
       "requirements": "FR-125–129、FR-148–149、FR-160、FR-173、QR-002、QR-004–007",
       "stories": "US14、US16",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -641,7 +642,7 @@
       "prd_refs": "TECH-05、CI-01、CI-05–08、UPD-01–05",
       "requirements": "FR-160–164、FR-173、QR-002、QR-006–009",
       "stories": "US14",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -653,7 +654,7 @@
       "prd_refs": "DM-02–12、SOC-01–02、SOC-08、NTF-01–04、POST-04",
       "requirements": "FR-012、FR-016、FR-021、FR-062–072、FR-119–122",
       "stories": "US7",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -665,7 +666,7 @@
       "prd_refs": "UX-01–08、CFG-13、EXT-01–02、CI-03–06",
       "requirements": "FR-125–129、FR-141、FR-148–149、QR-004–007",
       "stories": "US16",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -674,7 +675,7 @@
       "id": "AS-01",
       "kind": "supplementary_acceptance",
       "full_text": "1. **AS-01（FR-018、FR-034、FR-061、FR-065、FR-028；ED-01–02）**：**Given** 文字分别含中英文、组合 Emoji、空白和不同换行表示，且当前配置正文限额为 N，**When** 输入恰好 N 或 N+1 个用户可见字符并提交，**Then** 各端计数一致，N 按其他资格接受、N+1 拒绝并保留原输入；评论 2,000、正常私信 4,000、请求 500、单选项 100 初始边界分别覆盖，后台改有效值后同样执行。",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -683,7 +684,7 @@
       "id": "AS-02",
       "kind": "supplementary_acceptance",
       "full_text": "2. **AS-02（FR-067；ED-03）**：**Given** 初始请求的双方实际阅读状态已知且其后已有合法正常消息，**When** 显式接受有效请求及多端重连，**Then** 初始消息按原保存时间稳定插入，仅一条；已读不变未读、未读从请求域转到会话仅一次，无新重复提醒；结束或过期未接受者不插入。",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -692,7 +693,7 @@
       "id": "AS-03",
       "kind": "supplementary_acceptance",
       "full_text": "3. **AS-03（FR-005–006、FR-103；DEC-001）**：**Given** 本账号换号完成时间 T，**When** 在 T、T+24 小时之前及恰好 T+24 小时从正常／旧会话／插件入口执行列明操作，**Then** 限制期内拒绝并显示解除时点，到期仅解除冷却而仍检查正常权限；退出、撤会话、举报、申诉不受冷却，必要恢复走受控人工。",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"
@@ -701,7 +702,7 @@
       "id": "AS-04",
       "kind": "supplementary_acceptance",
       "full_text": "4. **AS-04（FR-140；ED-04）**：**Given** 已锁定投票、结束请求、已撤销私信访问和待清理对象，**When** 预览／应用／回滚期限及状态参数，**Then** 预览分别列出现有及新增对象生效方式，应用后不改锁定票、不复活请求或访问；真实不可逆风险未明确时不能假称安全执行。",
-      "activation": "corresponding_business_task_present",
+      "activation": "corresponding_feature_available",
       "bootstrap_applicability": "not_yet_applicable",
       "full_release_applicability": "required",
       "actual_state": "not_executed"

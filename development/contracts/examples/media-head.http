@@ -1,0 +1,15 @@
+### Fictitious success; HEAD has no response body
+HEAD http://127.0.0.1:4010/media/10000000-0000-4000-8000-000000000001
+
+HTTP/1.1 200 OK
+Content-Type: image/png
+Content-Length: 22
+Accept-Ranges: bytes
+Cache-Control: no-store
+
+### Fictitious current-access failure (GET JSON shape; HEAD transport omits bytes)
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+Cache-Control: no-store
+
+{"request_id": "10000000-0000-4000-8000-000000000001", "code": "NOT_FOUND", "message": "请求内容有误，请检查后重试", "retryable": false}

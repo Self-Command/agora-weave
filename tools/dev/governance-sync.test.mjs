@@ -14,11 +14,12 @@ test('synchronizes checked-out and dormant branches, preserves unrelated staged 
   const save = (path, value) => { mkdirSync(resolve(root, path, '..'), { recursive: true }); writeFileSync(resolve(root, path), value); };
   try {
     git(['init', '--quiet']); git(['config','user.name','Fixture']); git(['config','user.email','fixture@local.invalid']);
-    save('.specify/memory/constitution.md', '**版本**: 5.0.0\n'); save('rules.md', 'old\n'); save('business.txt','original\n');
+    save('development/README.md', 'contract-first-v1\n'); save('rules.md', 'old\n'); save('business.txt','original\n');
     save('policies/old.md','old name\n'); save('policies/binary.bin',Buffer.from([0,255,128,13,10]));
     save('infra/development/policy.json', JSON.stringify({runtime_root: join(directory,'runtime')}));
-    save('tools/dev/governance-sync-manifest.json', JSON.stringify({ schema_version: 1, current_policy: 'ED-22', minimum_constitution_version: '5.0.0',
-      files: ['.specify/memory/constitution.md','rules.md','infra/development/policy.json','tools/dev/governance-sync-manifest.json'], directories: ['policies'], deleted_files: [], additional_workspaces: [] }));
+    save('tools/dev/governance-sync-manifest.json', JSON.stringify({ schema_version: 2, current_policy: 'contract-first-v1', baseline: {file:'development/README.md',marker:'contract-first-v1'},
+      files: ['development/README.md','rules.md','infra/development/policy.json','tools/dev/governance-sync-manifest.json'], directories: ['policies'], retired_directories: ['retired-workflow'], deleted_files: [], additional_workspaces: [] }));
+    save('retired-workflow/obsolete.md','retired content\n');
     git(['add','.']); git(['commit','--quiet','-m','Original']);
     git(['branch','dormant']); git(['worktree','add','--quiet','-b','other',other]);
     const remote = join(directory,'remote.git'); git(['init','--bare','--quiet',remote]); git(['remote','add','origin',remote]); git(['push','--quiet','--all','origin']);
@@ -33,6 +34,8 @@ test('synchronizes checked-out and dormant branches, preserves unrelated staged 
     assert.equal(git(['show','dormant:business.txt']),'original');
     assert.equal(git(['rev-parse','dormant^']),before);
     assert.equal(git(['diff','--cached','--name-only']),'business.txt');
+    assert.equal(existsSync(resolve(other,'retired-workflow/obsolete.md')),false);
+    assert.throws(() => git(['show','dormant:retired-workflow/obsolete.md']));
     assert.equal(readFileSync(resolve(root,'business.txt'),'utf8'),'unfinished business\n');
     const after = git(['rev-parse','dormant']); synchronize(root); assert.equal(git(['rev-parse','dormant']),after);
     writeFileSync(resolve(other,'rules.md'),'stale\n'); assert.throws(() => verify(root), /Governance drift/);
