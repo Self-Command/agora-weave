@@ -381,6 +381,10 @@ components:
           - recovery.request
           - config.release
           - config.rollback
+          - post.create
+          - comment.create
+          - like.put
+          - like.remove
         state:
           type: string
           enum:
@@ -389,7 +393,10 @@ components:
           - failed
           - unknown
         result:
-          $ref: '#/components/schemas/ConfigRelease'
+          oneOf:
+          - $ref: '#/components/schemas/ConfigRelease'
+          - $ref: '#/components/schemas/RevisionReceipt'
+          - $ref: '#/components/schemas/ReactionReceipt'
       required:
       - operation_id
       - action
@@ -2123,7 +2130,8 @@ components:
         id: *id001
         question: &id014
           type: string
-          maxLength: 2000
+          minLength: 1
+          description: Current visible-character limit uses Unicode 17 UAX29 grapheme clusters; JSON Schema code-point maxLength is not authoritative.
         options:
           type: array
           items:
@@ -2210,7 +2218,8 @@ components:
         revision_id: *id001
         body: &id015
           type: string
-          maxLength: 10000
+          minLength: 1
+          description: Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration.
         tags:
           type: array
           items:
