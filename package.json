@@ -18,8 +18,9 @@
     "api:mock:admin": "node tools/api/contracts.mjs mock --surface admin",
     "api:mock:core-admin": "node tools/api/contracts.mjs mock --surface core-admin",
     "api:verify": "node tools/api/contracts.mjs verify",
+    "api:smoke": "node tools/api/smoke.mjs",
     "ci:contracts": "node --experimental-strip-types --test --test-concurrency=1 tests/integration/ci/*.spec.ts tests/security/ci/*.spec.ts tests/security/admin/*.spec.ts",
-    "ci:typecheck": "tsc -p tools/ci/tsconfig.json && npm run typecheck --workspaces",
+    "ci:typecheck": "tsc -p tools/ci/tsconfig.json && tsc -p tools/api/tsconfig.json && npm run typecheck --workspaces",
     "ci:build:web": "npm run build --workspace apps/admin && npm run build --workspace apps/share",
     "ci:e2e:web": "playwright test --config tests/e2e/bootstrap/playwright.config.ts",
     "ci:install": "npm ci --no-audit --no-fund",
@@ -34,7 +35,7 @@
     "ci:concurrency": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:concurrency",
     "ci:recovery": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:recovery",
     "ci:components": "node --experimental-strip-types tools/ci/core-entry.ts suite ci:components",
-    "ci:lint": "eslint apps/mobile apps/share tools/ci tests --max-warnings 0 --format json --output-file lint-output/report.json && npm run lint:strict --workspace apps/admin",
+    "ci:lint": "eslint apps/mobile apps/share tools/ci tools/api tests --max-warnings 0 --format json --output-file lint-output/report.json && npm run lint:strict --workspace apps/admin",
     "ci:e2e": "playwright test --config tests/e2e/bootstrap/playwright.config.ts"
   },
   "dependencies": {

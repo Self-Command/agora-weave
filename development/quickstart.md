@@ -15,12 +15,12 @@ npm run api:mock:admin
 npm run api:mock:core-admin
 ```
 
-openapi-typescript生成`packages/contracts/src/generated/{app,management,core-admin}.d.ts`；Prism输出模拟响应。App读app契约，后台UI读management，BFF读core-admin。Prism端口/base URL以命令实际输出与配置为准，mock不获取生产秘密或共享DB身份。mock仅用于端内状态和结构反馈，不算真实API集成。
+openapi-typescript生成`packages/contracts/src/generated/{app,management,core-admin}.d.ts`；Prism输出模拟响应。App读app契约，后台UI读management，BFF读core-admin。Prism完整base为App `http://127.0.0.1:4010/core/api/v1`、浏览器管理 `http://127.0.0.1:4011/api/management`、BFF core `http://127.0.0.1:4012/core/api/v1`，以命令实际输出与配置为准，mock不获取生产秘密或共享DB身份。mock仅用于端内状态和结构反馈，不算真实API集成。
 
 真实本地测试服务就绪后，以Specmatic检验对应surface中`x-implementation=implemented`的操作：
 
 ```powershell
-npm run api:verify -- --surface app --base-url <local-test-url>
+npm run api:verify -- --surface app --base-url <local-test-url> --operations listLatestPosts --filter "STATUS='200'" --anonymous --client-release fixture-v1
 npm run api:verify -- --surface admin --base-url <local-test-url>
 npm run api:verify -- --surface core-admin --base-url <local-test-url>
 ```

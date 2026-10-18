@@ -15,8 +15,8 @@
     "edition": "open-source"
   },
   "surfaces": {
-    "app": { "input": "app-api.yaml", "output": "app.d.ts", "port": 4010 },
-    "admin": { "input": "management-api.yaml", "output": "management.d.ts", "port": 4011 },
-    "core-admin": { "input": "core-admin-api.yaml", "output": "core-admin.d.ts", "port": 4012 }
+    "app": { "input": "app-api.yaml", "output": "app.d.ts", "port": 4010, "mock_base_path": "/core/api/v1" },
+    "admin": { "input": "management-api.yaml", "output": "management.d.ts", "port": 4011, "mock_base_path": "/api/management" },
+    "core-admin": { "input": "core-admin-api.yaml", "output": "core-admin.d.ts", "port": 4012, "mock_base_path": "/core/api/v1" }
   }
 }

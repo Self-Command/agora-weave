@@ -1,5 +1,7 @@
+import process from 'node:process';
+import console from 'node:console';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, openSync, closeSync } from 'node:fs';
 import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -11,6 +13,9 @@ import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const runtimeRoot = process.platform === 'win32'
+  ? resolve(JSON.parse(readFileSync(resolve(root, 'infra/development/policy.json'), 'utf8')).runtime_root)
+  : root;
 const contracts = resolve(root, 'development/contracts');
 const outputs = resolve(root, 'packages/contracts/src/generated');
 const lockPath = resolve(contracts, 'contracts.lock.json');
@@ -115,26 +120,58 @@ async function generate(checkOnly = false) {
 
 function run(command, args, options = {}) {
   return new Promise((accept, reject) => {
-    const child = spawn(command, args, { cwd: root, stdio: 'inherit', windowsHide: true, ...options });
-    child.once('error', reject);
-    child.once('exit', (code, signal) => code === 0 ? accept() : reject(new Error(`${command} exited ${code ?? signal}`)));
+    const { logFile, ...spawnOptions } = options;
+    const descriptor = logFile ? openSync(logFile, 'w', 0o600) : null;
+    const child = spawn(command, args, { cwd: root, stdio: descriptor === null ? 'inherit' : ['ignore', descriptor, descriptor], windowsHide: true, ...spawnOptions });
+    const close = () => { if (descriptor !== null) closeSync(descriptor); };
+    child.once('error', error => { close(); reject(error); });
+    child.once('exit', (code, signal) => {
+      close();
+      if (code === 0) accept();
+      else reject(new Error(`${command} exited ${code ?? signal}; inspect private raw log`));
+    });
     for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => child.kill(signal));
   });
+}
+
+function referencedComponents(document) {
+  const used = new Map();
+  const scan = node => {
+    if (!node || typeof node !== 'object') return;
+    if (node.$ref?.startsWith('#/components/')) {
+      const key = node.$ref.split('/').slice(0, 4).join('/');
+      if (!used.has(key)) { const value = pointer(document, key); used.set(key, value); scan(value); }
+    }
+    for (const [key, value] of Object.entries(node)) if (!['example', 'examples'].includes(key)) scan(value);
+  };
+  scan(document.paths);
+  for (const item of Object.values(document.paths)) for (const method of methods) for (const security of item[method]?.security || []) {
+    for (const name of Object.keys(security)) {
+      const key = '#/components/securitySchemes/' + name;
+      used.set(key, pointer(document, key));
+    }
+  }
+  const components = {};
+  for (const [key, value] of used) {
+    const [, , kind, name] = key.split('/');
+    (components[kind] ??= {})[name] = value;
+  }
+  return components;
 }
 
 async function verify(values) {
   if (!values.surface || !values['base-url']) throw new Error('verify requires --surface and --base-url');
   if (!['dev', 'test'].includes(values.environment)) throw new Error('Only dev/test providers are supported');
-  const base = new URL(values['base-url']);
+  const base = new globalThis.URL(values['base-url']);
   const localHost = /^(localhost|127\.0\.0\.1|\[::1\]|host\.docker\.internal|api-gw|functions)$/.test(base.hostname);
   if (!localHost || !['http:', 'https:'].includes(base.protocol) || base.username || base.password || base.search || base.hash) throw new Error('Use an isolated local provider URL without credentials/query/fragment');
   const item = (await generate(true)).find(item => item.surface === values.surface);
   const selected = values.operations ? new Set(values.operations.split(',').filter(Boolean)) : null;
-  const document = structuredClone(item.document);
+  const document = globalThis.structuredClone(item.document);
   document.paths = {};
   const operations = [];
   for (const [path, original] of Object.entries(item.document.paths)) for (const method of methods) {
-    const operation = original[method];
+    const operation = original[method] ? globalThis.structuredClone(original[method]) : null;
     if (!operation || operation['x-implementation'] !== 'implemented' || selected && !selected.has(operation.operationId)) continue;
     const readOnly = ['get', 'head'].includes(method) && operation['x-verification'] === 'read-only';
     const jsonSuccess = Object.entries(operation.responses).some(([status, response]) => /^2\d\d$/.test(status) && dereference(item.document, response)?.content?.['application/json']);
@@ -143,13 +180,27 @@ async function verify(values) {
       continue;
     }
     if (values['allow-mutations'] && (values.environment !== 'test' || !selected)) throw new Error('Mutation checks require --environment test and explicit --operations with isolated fixtures');
+    if (values.anonymous) {
+      const security = operation.security ?? item.document.security ?? [];
+      if (security.length && !security.some(alternative => Object.keys(alternative).length === 0)) throw new Error('Contract requires credentials; cannot select anonymous audience: ' + operation.operationId);
+      operation.security = [];
+    }
+    if (values['client-release']) {
+      const bind = parameter => {
+        const value = dereference(item.document, parameter);
+        if (value.in !== 'header' || value.name.toLowerCase() !== 'x-client-release') return parameter;
+        return { ...value, schema: { ...value.schema, enum: [values['client-release']] }, example: values['client-release'] };
+      };
+      operation.parameters = (operation.parameters || []).map(bind);
+    }
     document.paths[path] ??= Object.fromEntries(Object.entries(original).filter(([key]) => !methods.includes(key)));
     document.paths[path][method] = operation;
     operations.push(operation.operationId);
   }
   if (!operations.length || selected && [...selected].some(id => !operations.includes(id))) throw new Error('No matching implemented operations; planned endpoints are never live-tested');
+  document.components = referencedComponents(document);
   const reportRoot = process.platform === 'win32'
-    ? resolve(JSON.parse(readFileSync(resolve(root, 'infra/development/policy.json'), 'utf8')).runtime_root, 'reports/api-contracts')
+    ? resolve(runtimeRoot, 'reports/api-contracts')
     : resolve(root, 'check-output/api');
   const directory = resolve(values.output || reportRoot, values.surface + '-' + Date.now());
   mkdirSync(directory, { recursive: true });
@@ -163,9 +214,21 @@ async function verify(values) {
     ...(values.filter ? ['--filter=' + values.filter] : [])];
   const report = { provider: values.provider, environment: values.environment, surface: values.surface,
     contract_version: item.document.info.version, contract_digest: digest(json(item.document)), operations,
-    filter: values.filter || null, tool: toolchain.specmatic, state: 'running' };
+    filter: values.filter || null, anonymous: values.anonymous, client_release: values['client-release'] || null,
+    tool: toolchain.specmatic, state: 'running' };
   writeFileSync(resolve(directory, 'result.json'), json(report));
-  try { await run('docker', args); report.state = 'passed'; }
+  try {
+    await run('docker', args, { logFile: resolve(directory, 'raw-private.log') });
+    const junit = resolve(directory, 'junit');
+    const xml = existsSync(junit) ? readdirSync(junit).filter(file => file.endsWith('.xml')).map(file => readFileSync(resolve(junit, file), 'utf8')).join('\n') : '';
+    const cases = (xml.match(/<testcase\b/g) || []).length;
+    const skipped = (xml.match(/<skipped\b/g) || []).length;
+    if (cases - skipped < 1 || /<(failure|error)\b/.test(xml)) throw new Error('Specmatic did not execute a nonempty successful test set');
+    report.executed = cases - skipped;
+    report.skipped = skipped;
+    report.state = 'passed';
+    console.log(json({ provider: report.provider, state: report.state, operations, executed: report.executed }));
+  }
   catch (error) { report.state = 'failed'; throw error; }
   finally { writeFileSync(resolve(directory, 'result.json'), json(report)); console.log('Contract result: ' + directory); }
 }
@@ -175,11 +238,13 @@ async function main() {
     surface: { type: 'string' }, 'base-url': { type: 'string' }, operations: { type: 'string' },
     environment: { type: 'string', default: 'dev' }, provider: { type: 'string', default: 'real' },
     network: { type: 'string' }, filter: { type: 'string' }, output: { type: 'string' },
+    anonymous: { type: 'boolean', default: false }, 'client-release': { type: 'string' },
     'allow-mutations': { type: 'boolean', default: false }, port: { type: 'string' }
   } });
   const command = positionals[0];
   if (values.surface && !toolchain.surfaces[values.surface]) throw new Error('Unknown API surface');
   if (!['real', 'mock'].includes(values.provider)) throw new Error('provider must be real or mock');
+  if (values['client-release'] && !/^[A-Za-z0-9_.-]{1,128}$/.test(values['client-release'])) throw new Error('Invalid client release');
   if (command === 'generate' || command === 'check') return generate(command === 'check');
   if (command === 'verify') return verify(values);
   if (command === 'mock') {
@@ -189,8 +254,25 @@ async function main() {
     if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid mock port');
     const require = createRequire(import.meta.url);
     const binary = require.resolve('@stoplight/prism-cli/dist/index.js');
-    console.log(`Prism ${values.surface}: local mock on 127.0.0.1:${port}; no database or business integration claim`);
-    return run(process.execPath, [binary, 'mock', resolve(contracts, config.input), '--host', '127.0.0.1', '--port', String(port)]);
+    const document = await SwaggerParser.bundle(resolve(contracts, config.input));
+    if (values.surface === 'core-admin') {
+      // The BFF uses both public Auth and private management endpoints of the same core provider.
+      // Reuse their canonical definitions instead of maintaining a second mock contract.
+      const app = await SwaggerParser.bundle(resolve(contracts, toolchain.surfaces.app.input));
+      document.paths = { ...app.paths, ...document.paths };
+      for (const [kind, definitions] of Object.entries(app.components || {})) {
+        document.components[kind] = { ...definitions, ...document.components[kind] };
+      }
+    }
+    // Prism serves literal paths and ignores the servers URL prefix. Generate only this transport adaptation.
+    document.paths = Object.fromEntries(Object.entries(document.paths).map(([path, item]) => [config.mock_base_path + path, item]));
+    document.servers = [{ url: `http://127.0.0.1:${port}` }];
+    const directory = resolve(runtimeRoot, '.agoraweave/api-mocks');
+    mkdirSync(directory, { recursive: true });
+    const file = resolve(directory, values.surface + '.json');
+    writeFileSync(file, json(document));
+    console.log(`Prism ${values.surface}: http://127.0.0.1:${port}${config.mock_base_path}; local mock, no business integration claim`);
+    return run(process.execPath, [binary, 'mock', file, '--host', '127.0.0.1', '--port', String(port), '--verboseLevel', 'warn']);
   }
   throw new Error('Use generate, check, mock or verify');
 }

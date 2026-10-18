@@ -86,7 +86,7 @@ publication_state和review_state独立：保存成功不等于published；publis
 | backup_manifest | id、DB/object_digest、captured_at、schema/config、security_watermark、expires_at、encryption_ref | DB和Storage实体分别；轮转90天目标未实测；秘密不输出 |
 | restore_run | backup、latest_security_watermark、replayed_seq、state、checks/evidence | isolated→replay→rebuild→verify→ready→opened；缺日志/验证失败保持closed |
 
-已确认分类：注销30天、主动删除恢复30天、私信最后会话活动24个月、删AI30天/不活跃12个月、AI元数据30天/必要受控原文最长7天、证据结案180天、审计1年、OTP日志30天；spec全文继续约束触发/例外。独立证据延长有理由/责任/授权，普通配置不可无限保留。离线仅本人未发布本地草稿可恢复，不能显示未重核他人受限媒体或依赖答案。
+已确认分类：注销30天、主动删除恢复30天、私信最后会话活动24个月、删AI30天/不活跃12个月、AI元数据30天/必要受控原文最长7天、证据结案180天、审计1年、OTP日志30天；对应功能说明继续约束触发/例外。独立证据延长有理由/责任/授权，普通配置不可无限保留。离线仅本人未发布本地草稿可恢复，不能显示未重核他人受限媒体或依赖答案。
 
 ## 私信、通知与可靠效果（FR-061–072、119–124）
 

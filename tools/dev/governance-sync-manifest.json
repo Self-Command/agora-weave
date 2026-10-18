@@ -37,7 +37,8 @@
     "infra/ci/toolchain-lock.json",
     "packages/contracts/src/generated/app.d.ts",
     "packages/contracts/src/generated/management.d.ts",
-    "packages/contracts/src/generated/core-admin.d.ts"
+    "packages/contracts/src/generated/core-admin.d.ts",
+    ".gitattributes"
   ],
   "directories": [
     "development",

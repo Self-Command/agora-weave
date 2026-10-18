@@ -22,3 +22,17 @@ OpenAPI通过openapi-typescript生成 `packages/contracts/src/generated/{app,man
 完整业务见[PRD](../../docs/product/PRD.md)及[功能文档](../features/)，架构见[architecture](../architecture.md)，真实schema与未来设计分开见[database](../database/schema.md)。后台与App的批准依据见[UI](../ui/README.md)。当前实现与后续能力分开记录，不从契约存在推断功能可用。
 
 分享白名单、有权受限200、作者/目标收录交集、正式资料不可变版本及适用记录、无向pair单pending、本人preferences GET/PATCH部分更新/CAS/幂等、分享默认/本页操作不读写账号偏好均为保留的业务与安全决定。历史过程收据/逐行为TDD认证不是开发前置，真实验证和生产具体授权仍必要。
+
+## 实际模拟入口
+
+| 端 | 地址 | 使用方式 |
+| --- | --- | --- |
+| App | `http://127.0.0.1:4010/core/api/v1` | 传给现有account/feed API的base配置 |
+| 浏览器管理协议 | `http://127.0.0.1:4011/api/management` | 独立HTTP/组件消费者；模拟不持久化真正Cookie或MFA状态 |
+| BFF依赖的core | `http://127.0.0.1:4012/core/api/v1` | 将隔离后台的AGORAWEAVE_ADMIN_CORE_API_URL指向此地址；保留真实Next/BFF与Cookie适配 |
+
+后台整站独立开发推荐“完整Next/BFF源码 + core Prism”，其SSR鉴权布局继续使用现有BFF。core模拟入口合并读取app认证与core管理的同版契约，不复制维护。Prism忽略servers前缀，脚本仅生成路径前缀适配；Windows临时文件在H盘运行区.agoraweave/api-mocks，报告在reports/api-contracts，CI使用工作区临时目录。这些生成文件不是另一份契约。
+
+`api:verify`默认只读JSON；推荐先显式选 `--operations listLatestPosts --filter "STATUS='200'" --anonymous --client-release fixture-v1`。可追加`--environment test`、Docker内部网络`--network <name>`；报告区分`--provider real`与`--provider mock`，后者只证明工具互通。写操作需`--allow-mutations --environment test --operations ...`及隔离夹具，禁止对生产执行。
+
+`npm run api:smoke -- --specmatic`只验证三Prism入口和Specmatic工具互通；报告明确标记mock，不作为真实后端通过。真实核心的可复现检查用 `node --experimental-strip-types tools/api/verify-core.ts --base-url http://functions:9000/core/api/v1 --network <isolated-network>`，运行环境必须显式dev/test。该命令复用既有合成配置夹具，结束恢复原active_ptr，不reset/seed/migrate。真实provider结果仅覆盖所选公开最新流读取；其余接口由对应业务夹具及原测试验证。原始日志保持私密，不作为公共CI附件，附件只含无凭据的result摘要。
