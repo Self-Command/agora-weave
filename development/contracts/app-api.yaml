@@ -6686,10 +6686,11 @@ paths:
   /me/contents:
     get:
       operationId: listOwnedContents
-      summary: listOwnedContents
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      summary: List the current account's submitted posts
+      description: Author-only current revisions including pending, published and rejected
+        posts. Never used by public profile or feed reads. Cursor is bound to the current
+        account, session, environment, limit and client release.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -6822,7 +6823,7 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /posts/{postId}/revisions:
     get:
       operationId: listPostRevisions

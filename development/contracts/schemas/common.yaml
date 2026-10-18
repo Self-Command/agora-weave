@@ -2458,6 +2458,9 @@ components:
           - pending
           - approved
           - rejected
+        publication_state:
+          type: string
+          enum: [awaiting_review, published, rejected]
         submitted_at: *id006
       required:
       - id
@@ -2469,6 +2472,7 @@ components:
       - alt_text
       - media_refs
       - review_state
+      - publication_state
       - submitted_at
     RevisionPage:
       type: object
