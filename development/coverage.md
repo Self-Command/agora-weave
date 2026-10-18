@@ -648,15 +648,16 @@
 | [moderation](features/moderation/README.md) | `createTopicManagement` | [POST /admin/topics](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `decideAppealManagement` | [POST /admin/appeals/{appealId}/decision](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `decideMfaRecoveryManagement` | [POST /admin/mfa-recovery-cases/{caseId}/decisions](contracts/management-api.yaml) | planned |
-| [moderation](features/moderation/README.md) | `decideRevisionManagement` | [POST /admin/revisions/{revisionId}/decision](contracts/management-api.yaml) | planned |
+| [moderation](features/moderation/README.md) | `decideRevisionManagement` | [POST /admin/revisions/{revisionId}/decision](contracts/management-api.yaml) | implemented; isolated DB verification, human UI review pending |
 | [moderation](features/moderation/README.md) | `deleteAnnouncementManagement` | [DELETE /admin/announcements/{itemId}](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `deletePlacementManagement` | [DELETE /admin/placements/{itemId}](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `deleteTopicManagement` | [DELETE /admin/topics/{itemId}](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `enrollMfaFactorManagement` | [POST /admin/mfa/factors](contracts/management-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `getAppealsManagement` | [GET /admin/appeals](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `getAuditManagement` | [GET /admin/audit](contracts/management-api.yaml) | planned |
-| [moderation](features/moderation/README.md) | `getCasesManagement` | [GET /admin/cases](contracts/management-api.yaml) | planned |
-| [moderation](features/moderation/README.md) | `getContentsManagement` | [GET /admin/contents](contracts/management-api.yaml) | planned |
+| [moderation](features/moderation/README.md) | `getCasesManagement` | [GET /admin/cases](contracts/management-api.yaml) | implemented read-only; human UI review pending |
+| [moderation](features/moderation/README.md) | `getContentsManagement` | [GET /admin/contents](contracts/management-api.yaml) | implemented; human UI review pending |
+| [moderation](features/moderation/README.md) | `previewRevisionDecisionManagement` | [POST /admin/revisions/{revisionId}/decision-previews](contracts/management-api.yaml) | implemented; isolated DB verification, human UI review pending |
 | [moderation](features/moderation/README.md) | `getCurrentDocuments` | [GET /documents/current](contracts/app-api.yaml) | implemented |
 | [moderation](features/moderation/README.md) | `getMediaManagement` | [GET /admin/media](contracts/management-api.yaml) | planned |
 | [moderation](features/moderation/README.md) | `getMfaRecoveryCaseManagement` | [GET /admin/mfa-recovery-cases/{caseId}](contracts/management-api.yaml) | planned |

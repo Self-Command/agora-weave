@@ -3639,9 +3639,9 @@ paths:
     get:
       operationId: getProfile
       summary: getProfile
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Read a current profile only when the viewer is authorized. An
+        account without a saved profile returns unavailable rather than sample data.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - {}
@@ -3780,14 +3780,14 @@ paths:
       - anonymous
       - app
       - share-read
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/profile:
     patch:
       operationId: updateProfile
       summary: updateProfile
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Create or update the authenticated account profile using the
+        current row-version CAS and operation idempotency.
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -3924,7 +3924,7 @@ paths:
               $ref: '#/components/schemas/ProfilePatch'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /profiles/{accountId}/contents:
     get:
       operationId: listProfileContents
@@ -16912,9 +16912,9 @@ paths:
     post:
       operationId: createReport
       summary: createReport
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Submit a report for an authorized current target. A durable
+        receipt confirms intake, not a violation finding or sanction.
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -17051,14 +17051,14 @@ paths:
               $ref: '#/components/schemas/ReportRequest'
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/reports:
     get:
       operationId: listOwnReports
       summary: listOwnReports
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Read the current reporter's own report summaries and states
+        without another reporter's evidence or internal case details.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -17191,7 +17191,7 @@ paths:
                     retryable: true
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /me/sanctions:
     get:
       operationId: listOwnSanctions

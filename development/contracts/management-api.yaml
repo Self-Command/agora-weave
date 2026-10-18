@@ -2997,11 +2997,10 @@ paths:
     get:
       operationId: getContentsManagement
       summary: getContentsManagement
-      description: Planned management domain API, not deployed. Per action/resource/environment
-        grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin
-        CSRF; core consumes server-held Bearer token. No role self-assertion, private
-        full-history access or production authorization from mock results.
-      x-implementation: planned
+      description: List currently selected revisions only, with per-resource current
+        grant and MFA checks. No private full-history access. Browser uses cookie;
+        core consumes server-held Bearer token.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - managementCookie: []
@@ -3134,7 +3133,7 @@ paths:
                     retryable: true
       x-audiences:
       - management-browser
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/media:
     get:
       operationId: getMediaManagement
@@ -3281,11 +3280,10 @@ paths:
     get:
       operationId: getCasesManagement
       summary: getCasesManagement
-      description: Planned management domain API, not deployed. Per action/resource/environment
-        grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin
-        CSRF; core consumes server-held Bearer token. No role self-assertion, private
-        full-history access or production authorization from mock results.
-      x-implementation: planned
+      description: List currently authorized report case summaries without reason
+        or evidence. Case decisions remain unavailable. Browser uses cookie;
+        core consumes server-held Bearer token.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - managementCookie: []
@@ -3418,7 +3416,7 @@ paths:
                     retryable: true
       x-audiences:
       - management-browser
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/appeals:
     get:
       operationId: getAppealsManagement
@@ -4439,7 +4437,7 @@ paths:
         exact current revision decision and reason. Its action_digest is used for
         the existing one-use management stepup; commit rechecks current grant,
         revision version, preview, and stepup in one transaction.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - managementCookie: []
@@ -4511,7 +4509,7 @@ paths:
       x-audiences:
       - management-browser
       x-max-request-bytes: 16384
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/revisions/{revisionId}/decision:
     post:
       operationId: decideRevisionManagement
@@ -4519,7 +4517,7 @@ paths:
       description: Commit an exact decision preview with one-use MFA stepup, current
         action/resource/environment grant, revision-version CAS, and operation idempotency.
         Browser uses cookie and same-origin CSRF; core consumes server-held Bearer token.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - managementCookie: []
@@ -4663,7 +4661,7 @@ paths:
               $ref: '#/components/schemas/RevisionDecisionRequest'
       x-audiences:
       - management-browser
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/cases/{caseId}/decision:
     post:
       operationId: decideCaseManagement

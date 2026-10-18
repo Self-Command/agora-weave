@@ -3216,11 +3216,9 @@ paths:
     get:
       operationId: getContentsCoreAdmin
       summary: getContentsCoreAdmin
-      description: Planned management domain API, not deployed. Per action/resource/environment
-        grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin
-        CSRF; core consumes server-held Bearer token. No role self-assertion, private
-        full-history access or production authorization from mock results.
-      x-implementation: planned
+      description: List currently selected revisions only, with per-resource current
+        grant and MFA checks. No private full-history access.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -3353,7 +3351,7 @@ paths:
                     retryable: true
       x-audiences:
       - management-server
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/media:
     get:
       operationId: getMediaCoreAdmin
@@ -3500,11 +3498,9 @@ paths:
     get:
       operationId: getCasesCoreAdmin
       summary: getCasesCoreAdmin
-      description: Planned management domain API, not deployed. Per action/resource/environment
-        grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin
-        CSRF; core consumes server-held Bearer token. No role self-assertion, private
-        full-history access or production authorization from mock results.
-      x-implementation: planned
+      description: List currently authorized report case summaries without reason
+        or evidence. Case decisions remain unavailable.
+      x-implementation: implemented
       x-verification: read-only
       security:
       - bearerAuth: []
@@ -3637,7 +3633,7 @@ paths:
                     retryable: true
       x-audiences:
       - management-server
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/appeals:
     get:
       operationId: getAppealsCoreAdmin
@@ -4653,7 +4649,7 @@ paths:
       description: Create an exact five-minute decision preview bound to the current
         actor, session, environment, revision version, decision, and reason. Its
         action_digest is used for one-use management stepup.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -4720,14 +4716,14 @@ paths:
       x-audiences:
       - management-server
       x-max-request-bytes: 16384
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/revisions/{revisionId}/decision:
     post:
       operationId: decideRevisionCoreAdmin
       summary: decideRevisionCoreAdmin
       description: Commit an exact decision preview with one-use MFA stepup, current
         action/resource/environment grant, revision-version CAS, and operation idempotency.
-      x-implementation: planned
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -4869,7 +4865,7 @@ paths:
               $ref: '#/components/schemas/RevisionDecisionRequest'
       x-audiences:
       - management-server
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /admin/cases/{caseId}/decision:
     post:
       operationId: decideCaseCoreAdmin
