@@ -25,7 +25,7 @@ video_policy=always/wifi_only/never、preload布尔，初始视频wifi_only静�
 
 ## 现有代码与真实未完成范围
 
-已有关系偏好屏蔽资格事实/授权；正式profile/用户名占用/关注请求API与App页面、真实GET/PATCH偏好及播放设置未实现。index.ts当前只拒preferences PUT，不代表GET/PATCH或Allow已完成；Kiranism profile/users样例不等社区业务。
+正式公开资料读取与本人PATCH、用户名唯一/保留与改名时钟、头像/背景真实图片、按当前权限读取已审核帖子/媒体列表，以及拉黑命令已实现并接App。普通账号与指定开发账号的真实读取/拉黑验证见status；资料编辑用户验收仍待复查。关注请求、高级关系及真实GET/PATCH偏好仍未实现；index.ts仅拒preferences PUT不代表GET/PATCH或Allow完成。Kiranism样例不等社区业务。
 
 本轮实查存在的复用位置（仅源码定位，不表示完整业务通过）：
 

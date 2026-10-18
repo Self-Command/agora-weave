@@ -11272,7 +11272,10 @@ export interface operations {
                 cursor?: components["parameters"]["Cursor"];
                 limit?: components["parameters"]["Limit"];
             };
-            header?: never;
+            header: {
+                /** @example fixture-v1 */
+                "X-Client-Release": components["parameters"]["ClientRelease"];
+            };
             path?: never;
             cookie?: never;
         };

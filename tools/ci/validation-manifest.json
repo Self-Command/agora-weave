@@ -1087,6 +1087,13 @@
       "requires_services": true
     },
     {
+      "id": "core.ordinary-content",
+      "command": "ci:service",
+      "files": ["tests/integration/core/ordinary-content.spec.ts"],
+      "case_count": 1,
+      "requires_services": true
+    },
+    {
       "id": "core.discovery-mobile-client",
       "command": "ci:core:contracts",
       "files": [
@@ -1096,7 +1103,7 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 388,
+  "core_case_count": 389,
   "core_migrations": [
     {
       "file": "supabase/migrations/0067_report_kind_variable.sql",
