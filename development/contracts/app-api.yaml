@@ -180,6 +180,77 @@ paths:
       - app
       x-max-request-bytes: 16384
       x-provider-test-default: false
+  /auth/dev-test-login:
+    post:
+      operationId: devTestLogin
+      summary: Development test account login
+      description: >-
+        Enabled only for the single provisioned ordinary test account in the local
+        dev environment. Uses official Auth password verification and binds a real
+        admitted session. This route is unavailable in test and production.
+      x-implementation: planned
+      x-source: supabase/functions/core/routes/dev-test-login.ts
+      x-audiences:
+      - app
+      x-max-request-bytes: 2048
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  pattern: '^[a-z0-9][a-z0-9_.-]{2,63}$'
+                password:
+                  type: string
+                  format: password
+                  minLength: 14
+                  maxLength: 72
+            example:
+              username: synthetic-dev-user
+              password: FICTITIOUS_PASSWORD_FOR_SCHEMA_ONLY
+      responses:
+        '200':
+          description: Real admitted development session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthReceiptEnvelope'
+        '401':
+          description: Invalid credentials or ineligible account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Official Auth rate limit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Development login disabled or outcome unconfirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Unsupported method
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /auth/verify:
     post:
       operationId: verifyOtpChallenge
