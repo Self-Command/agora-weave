@@ -941,13 +941,13 @@ export interface paths {
         get?: never;
         /**
          * putBlock
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description A current authenticated account blocks another active account; the same transaction removes both effective follow directions. An exact operation retry returns the original receipt. Unblock does not restore relationships.
          */
         put: operations["putBlock"];
         post?: never;
         /**
          * removeBlock
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description A current authenticated account removes its own active block. The existing block fact is retained for audit and effective follows stay removed. An exact operation retry returns the original receipt.
          */
         delete: operations["removeBlock"];
         options?: never;
