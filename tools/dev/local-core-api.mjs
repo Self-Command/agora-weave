@@ -12,6 +12,8 @@ const uuid='[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{
 const routes=[
   [/^\/feeds\/latest$/,['GET']], [new RegExp(`^/posts/${uuid}$`,'i'),['GET']],
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
+  [new RegExp(`^/profiles/${uuid}$`,'i'),['GET']], [/^\/me\/profile$/,['PATCH']],
+  [/^\/reports$/,['POST']], [/^\/me\/reports$/,['GET']],
   [new RegExp(`^/resources/${uuid}/likes$`,'i'),['PUT','DELETE']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
   [/^\/auth\/dev-test-login$/,['POST']],
@@ -94,7 +96,7 @@ export function createLocalCoreApi({environment,forward}) {
     }
     const declared=request.headers['content-length'];
     if(duplicate(request,'content-length')||declared!==undefined&&(!/^\d+$/.test(declared)||Number(declared)>65536))return fail(response,413,'REQUEST_TOO_LARGE',origin);
-    const writing=request.method==='POST'||request.method==='PUT'||request.method==='DELETE';
+    const writing=request.method==='POST'||request.method==='PUT'||request.method==='PATCH'||request.method==='DELETE';
     if(writing&&!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(request.headers['content-type']||'')||
       !writing&&(request.headers['transfer-encoding']||declared!==undefined&&Number(declared)>0))return fail(response,400,'INVALID_INPUT',origin);
     active++;

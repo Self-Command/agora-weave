@@ -204,7 +204,7 @@ export async function main(options) {
       console.log(`${service}: ${stopProcess(entry) ? 'stopped owned process tree' : 'no matching managed process'}`);
       delete state.processes[service];
     }
-    if (runtime) { compose(['stop', '--timeout', '30']); console.log(`supabase stopped (${runtime.project}; data volumes preserved)`); }
+    if (runtime && services.includes('supabase')) { compose(['stop', '--timeout', '30']); console.log(`supabase stopped (${runtime.project}; data volumes preserved)`); }
     write(statePath, state);
   } else if (action === 'logs') {
     if (runtime) process.stdout.write(compose(['logs', '--no-color', '--tail', String(lines)]));
