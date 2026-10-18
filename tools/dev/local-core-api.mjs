@@ -14,6 +14,7 @@ const routes=[
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
   [new RegExp(`^/profiles/${uuid}$`,'i'),['GET']], [/^\/me\/profile$/,['PATCH']],
   [new RegExp(`^/profiles/${uuid}/contents$`,'i'),['GET']],
+  [/^\/me\/contents$/,['GET']],
   [/^\/reports$/,['POST']], [/^\/me\/reports$/,['GET']],
   [/^\/me\/sanctions$/,['GET']], [/^\/appeals$/,['GET','POST']],
   [/^\/uploads$/,['POST']],
