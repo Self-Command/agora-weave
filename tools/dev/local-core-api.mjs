@@ -26,6 +26,9 @@ const routes=[
   [/^\/admin\/(session|accounts)$/,['GET']], [/^\/admin\/mfa\/factors$/,['GET','POST']],
   [/^\/admin\/(mfa\/(challenges|verify)|stepup)$/,['POST']],
   [/^\/admin\/config\/definitions$/,['GET']], [/^\/admin\/config\/(previews|releases|rollbacks)$/,['POST']],
+  [/^\/admin\/(contents|cases)$/,['GET']],
+  [new RegExp(`^/admin/revisions/${uuid}/decision-previews$`,'i'),['POST']],
+  [new RegExp(`^/admin/revisions/${uuid}/decision$`,'i'),['POST']],
 ];
 const headersFor=origin=>({'content-type':'application/json; charset=utf-8','cache-control':'no-store',
   'x-content-type-options':'nosniff',...(origin?{'access-control-allow-origin':origin,vary:'Origin'}:{})});

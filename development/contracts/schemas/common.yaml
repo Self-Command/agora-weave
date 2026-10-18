@@ -389,6 +389,7 @@ components:
           - block.remove
           - profile.update
           - report.create
+          - moderation.revisions.decide
         state:
           type: string
           enum:

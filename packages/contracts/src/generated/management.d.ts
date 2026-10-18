@@ -1242,9 +1242,29 @@ export interface paths {
         put?: never;
         /**
          * decideRevisionManagement
-         * @description Planned management domain API, not deployed. Per action/resource/environment grants, current MFA and sensitive cooldown apply. Browser uses cookie + same-origin CSRF; core consumes server-held Bearer token. No role self-assertion, private full-history access or production authorization from mock results.
+         * @description Commit an exact decision preview with one-use MFA stepup, current action/resource/environment grant, revision-version CAS, and operation idempotency. Browser uses cookie and same-origin CSRF; core consumes server-held Bearer token.
          */
         post: operations["decideRevisionManagement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/revisions/{revisionId}/decision-previews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * previewRevisionDecisionManagement
+         * @description Create a five-minute, actor/session/environment-bound preview of the exact current revision decision and reason. Its action_digest is used for the existing one-use management stepup; commit rechecks current grant, revision version, preview, and stepup in one transaction.
+         */
+        post: operations["previewRevisionDecisionManagement"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4402,6 +4422,35 @@ export interface components {
             config_version: components["schemas"]["ConfigVersion"];
             data: components["schemas"]["RetentionObligationPage"];
             request_id: components["schemas"]["Uuid"];
+        };
+        RevisionDecisionPreview: {
+            action_digest: components["schemas"]["Digest"];
+            base_version: number;
+            expires_at: components["schemas"]["Timestamp"];
+            preview_digest: components["schemas"]["Digest"];
+            preview_id: components["schemas"]["Uuid"];
+            revision_id: components["schemas"]["Uuid"];
+        };
+        RevisionDecisionPreviewEnvelope: {
+            config_version: components["schemas"]["ConfigVersion"];
+            data: components["schemas"]["RevisionDecisionPreview"];
+            request_id: components["schemas"]["Uuid"];
+        };
+        RevisionDecisionPreviewRequest: {
+            /** @enum {string} */
+            decision: "approve" | "reject";
+            operation_id: components["schemas"]["Uuid"];
+            reason: string;
+        };
+        RevisionDecisionRequest: {
+            base_version: number;
+            /** @enum {string} */
+            decision: "approve" | "reject";
+            operation_id: components["schemas"]["Uuid"];
+            preview_digest: components["schemas"]["Digest"];
+            preview_id: components["schemas"]["Uuid"];
+            reason: string;
+            stepup_id: components["schemas"]["Uuid"];
         };
         RevisionPage: {
             has_more: boolean;
@@ -11557,7 +11606,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AdminDecision"];
+                "application/json": components["schemas"]["RevisionDecisionRequest"];
             };
         };
         responses: {
@@ -11635,6 +11684,104 @@ export interface operations {
             503: {
                 headers: {
                     "Cache-Control": components["headers"]["CacheControl"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    previewRevisionDecisionManagement: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Must equal actual BFF origin; forged forwarded headers do not establish origin.
+                 * @example http://127.0.0.1:4011
+                 */
+                Origin: components["parameters"]["Origin"];
+                /** @example 1 */
+                "X-AgoraWeave-CSRF": components["parameters"]["Csrf"];
+            };
+            path: {
+                revisionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevisionDecisionPreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Exact decision preview; no decision has been applied */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["CacheControl"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RevisionDecisionPreviewEnvelope"];
+                };
+            };
+            /** @description Invalid or revoked current session */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Current grant or MFA denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Unavailable or unauthorized revision */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Revision or operation conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Invalid decision or reason */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Dependency unavailable or outcome unconfirmed */
+            503: {
+                headers: {
                     [name: string]: unknown;
                 };
                 content: {

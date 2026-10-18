@@ -1062,6 +1062,15 @@
       "requires_services": true
     },
     {
+      "id": "core.moderation-review",
+      "command": "ci:service",
+      "files": [
+        "tests/integration/core/moderation-review.spec.ts"
+      ],
+      "case_count": 1,
+      "requires_services": true
+    },
+    {
       "id": "core.discovery-mobile-client",
       "command": "ci:core:contracts",
       "files": [
@@ -1071,8 +1080,15 @@
       "requires_services": false
     }
   ],
-  "core_case_count": 383,
+  "core_case_count": 384,
   "core_migrations": [
+    {
+      "file": "supabase/migrations/0054_moderation_review.sql",
+      "depends_on": [
+        "supabase/migrations/0053_report_intake.sql",
+        "supabase/migrations/0038_admin_identity_configuration.sql"
+      ]
+    },
     {
       "file": "supabase/migrations/0053_report_intake.sql",
       "depends_on": [
