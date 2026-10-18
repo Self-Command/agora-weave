@@ -2246,7 +2246,7 @@ export interface paths {
         put?: never;
         /**
          * createUpload
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Implemented bounded static image upload. DTO design for independent client/backend development. Current authorization and registered limits apply.
          */
         post: operations["createUpload"];
         delete?: never;
@@ -2266,7 +2266,7 @@ export interface paths {
         put?: never;
         /**
          * completeUpload
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Implemented bounded static image upload. DTO design for independent client/backend development. Current authorization and registered limits apply.
          */
         post: operations["completeUpload"];
         delete?: never;
@@ -2285,7 +2285,7 @@ export interface paths {
         get?: never;
         /**
          * putUploadPart
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Implemented bounded static image upload. DTO design for independent client/backend development. Current authorization and registered limits apply.
          */
         put: operations["putUploadPart"];
         post?: never;
@@ -2307,9 +2307,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "moderation.revisions.decide";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
@@ -2992,16 +2992,17 @@ export interface components {
         ContentPatch: {
             alt_text?: string[];
             base_version: number;
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body?: string;
             operation_id: components["schemas"]["Uuid"];
             tags?: string[];
         };
         ContentRevision: {
             alt_text: string[];
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             id: components["schemas"]["Uuid"];
+            media_refs: components["schemas"]["Uuid"][];
             mentions: components["schemas"]["Uuid"][];
             resource_id: components["schemas"]["Uuid"];
             /** @enum {string} */
@@ -3090,7 +3091,7 @@ export interface components {
             recipient_id: components["schemas"]["Uuid"];
         };
         CreatePostRequest: {
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             /** @enum {string} */
             indexing_mode?: "inherit" | "allow" | "deny";
@@ -3354,7 +3355,7 @@ export interface components {
             surfaces: ("app" | "share" | "admin")[];
         };
         Draft: {
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             id: components["schemas"]["Uuid"];
             last_saved: components["schemas"]["Timestamp"];
@@ -3392,7 +3393,7 @@ export interface components {
         };
         DraftWrite: {
             base_version: number;
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             import_confirmed?: boolean;
             media_refs?: components["schemas"]["Uuid"][];
@@ -3795,8 +3796,11 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             id: components["schemas"]["Uuid"];
+            media_refs: components["schemas"]["Uuid"][];
             revision_id: components["schemas"]["Uuid"];
             row_version: number;
+            /** @enum {string} */
+            type: "text" | "images";
             /** @enum {string} */
             visibility: "public";
         };
@@ -4528,7 +4532,7 @@ export interface components {
         Post: {
             allowed_actions: string[];
             author_id: components["schemas"]["Uuid"];
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             created_at: components["schemas"]["Timestamp"];
             id: components["schemas"]["Uuid"];
@@ -4548,7 +4552,7 @@ export interface components {
         };
         /** @description Type combinations must match PRD: image <=9; one video <=200MB/300s; one GIF <=15MB; poll 2..4 options without media; quote appends text only. MB=1,000,000 bytes; registered limits apply. */
         PostInput: {
-            /** @description Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
+            /** @description Image posts may have an empty caption; other types require nonempty body. Current visible-character limit uses Unicode 17 UAX29 grapheme clusters and active configuration. */
             body: string;
             /** @enum {string} */
             indexing_mode?: "inherit" | "allow" | "deny";
@@ -4746,8 +4750,11 @@ export interface components {
             author_id: components["schemas"]["Uuid"];
             body: string;
             id: components["schemas"]["Uuid"];
+            media_refs: components["schemas"]["Uuid"][];
             revision_id: components["schemas"]["Uuid"];
             row_version: number;
+            /** @enum {string} */
+            type: "text" | "images";
             /** @enum {string} */
             visibility: "public" | "followers" | "self";
         };
