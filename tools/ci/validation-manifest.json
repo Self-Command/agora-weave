@@ -1092,6 +1092,14 @@
   "core_case_count": 386,
   "core_migrations": [
     {
+      "file": "supabase/migrations/0062_own_sanctions_appeals.sql",
+      "depends_on": [
+        "supabase/migrations/0056_static_image_upload.sql",
+        "supabase/migrations/0053_report_intake.sql",
+        "supabase/migrations/0061_current_like_state_binding_fix.sql"
+      ]
+    },
+    {
       "file": "supabase/migrations/0061_current_like_state_binding_fix.sql",
       "depends_on": [
         "supabase/migrations/0060_current_like_state.sql"
