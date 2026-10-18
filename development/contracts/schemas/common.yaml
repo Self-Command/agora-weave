@@ -390,6 +390,9 @@ components:
           - profile.update
           - report.create
           - moderation.revisions.decide
+          - upload.create
+          - upload.part
+          - upload.complete
         state:
           type: string
           enum:
@@ -405,6 +408,8 @@ components:
           - $ref: '#/components/schemas/ActionReceipt'
           - $ref: '#/components/schemas/Profile'
           - $ref: '#/components/schemas/Report'
+          - $ref: '#/components/schemas/UploadSession'
+          - $ref: '#/components/schemas/UploadedPart'
       required:
       - operation_id
       - action
@@ -2419,6 +2424,10 @@ components:
           type: array
           items:
             type: string
+        media_refs:
+          type: array
+          items: *id001
+          maxItems: 9
         review_state:
           type: string
           enum:
@@ -2434,6 +2443,7 @@ components:
       - tags
       - mentions
       - alt_text
+      - media_refs
       - review_state
       - submitted_at
     RevisionPage:

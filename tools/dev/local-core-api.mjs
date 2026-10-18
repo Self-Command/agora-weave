@@ -14,6 +14,7 @@ const routes=[
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
   [new RegExp(`^/profiles/${uuid}$`,'i'),['GET']], [/^\/me\/profile$/,['PATCH']],
   [/^\/reports$/,['POST']], [/^\/me\/reports$/,['GET']],
+  [new RegExp(`^/media/${uuid}$`,'i'),['GET']],
   [new RegExp(`^/resources/${uuid}/likes$`,'i'),['PUT','DELETE']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
   [/^\/auth\/dev-test-login$/,['POST']],
@@ -40,7 +41,7 @@ function target(raw) {
   const pathname=raw.split('?')[0];
   if(pathname.includes('%')||pathname.includes('//')||pathname.split('/').some(part=>part==='.'||part==='..')) return null;
   const path=pathname.slice(prefix.length),route=routes.find(([pattern])=>pattern.test(path));
-  return route?{path:raw,methods:route[1],password:/^\/auth\/password(?:\/(captcha|forgot))?$/.test(path)}:null;
+  return route?{path:raw,methods:route[1],password:/^\/auth\/password(?:\/(captcha|forgot))?$/.test(path),media:/^\/media\//.test(path)}:null;
 }
 function bodyOf(request) {
   return new Promise((resolve,reject)=>{
@@ -106,11 +107,23 @@ export function createLocalCoreApi({environment,forward}) {
     try {
       let body;
       if(writing)try{body=await bodyOf(request);}catch(status){return fail(response,Number(status),'INVALID_INPUT',origin);}
-      const headers={accept:'application/json','content-type':'application/json',...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{}),...passwordHeaders};
+      const headers={accept:route.media?'image/*':'application/json','content-type':'application/json',...(authorization?{authorization}:{}),...(release?{'x-client-release':release}:{}),...passwordHeaders};
       let timer;
       try {
-        const result=await Promise.race([Promise.resolve().then(()=>forward({path:route.path,method:request.method,headers,body})),
+        const result=await Promise.race([Promise.resolve().then(()=>forward({path:route.path,method:request.method,headers,body,media:route.media})),
           new Promise((_resolve,reject)=>{timer=setTimeout(()=>reject(new Error('Unavailable')),25000);})]);
+        if(route.media) {
+          if(!result || ![200,206].includes(result.status) || !Buffer.isBuffer(result.body) ||
+            result.body.length<1 || result.body.length>10000000 || !result.headers ||
+            !/^image\/(?:jpeg|png|webp|avif)$/.test(result.headers['content-type']||'')) {
+            const code=result?.status===401?'SESSION_INVALID':result?.status===404?'NOT_FOUND':'SERVICE_UNAVAILABLE';
+            return fail(response,code==='SESSION_INVALID'?401:code==='NOT_FOUND'?404:503,code,origin);
+          }
+          response.writeHead(200,{...headersFor(origin),'content-type':result.headers['content-type'],
+            'content-length':String(result.body.length),'content-security-policy':"sandbox; default-src 'none'",
+            'x-robots-tag':'noindex'}).end(result.body);
+          return;
+        }
         if(!result||!Number.isInteger(result.status)||result.status<200||result.status>=300&&result.status<400||result.status>599||
           typeof result.body!=='string'||Buffer.byteLength(result.body,'utf8')>1048576)throw new Error('Unavailable');
         const parsed=JSON.parse(result.body);if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new Error('Unavailable');
@@ -130,9 +143,10 @@ export function createLocalCoreApi({environment,forward}) {
 
 // Curl config is data on stdin; never a shell command, argv secret or logging payload.
 const curlQuote=value=>'"'+String(value).replaceAll('\\','\\\\').replaceAll('"','\\"').replaceAll('\r','\\r').replaceAll('\n','\\n').replaceAll('\t','\\t')+'"';
-export function curlRequestConfig(url,method,headers,body) {
+export function curlRequestConfig(url,method,headers,body,include=false) {
   return [`url = ${curlQuote(url)}`,`request = ${curlQuote(method)}`,
-    'globoff','silent','show-error','max-time = 20','max-filesize = 1048576','write-out = "\\n%{http_code}"',
+    'globoff','silent','show-error','max-time = 20',`max-filesize = ${include?10000000:1048576}`,
+    ...(include?['include']:[]),'write-out = "\\n%{http_code}"',
     ...Object.entries(headers).map(([name,value])=>`header = ${curlQuote(name+': '+value)}`),
     ...(body===undefined?[]:[`data = ${curlQuote(body)}`])].join('\n')+'\n';
 }
@@ -144,11 +158,22 @@ async function main() {
   if(runtime.environment!==environment)throw new Error('Local configuration required');
   const key=readFileSync(runtime.environment_file,'utf8').split(/\r?\n/).find(line=>line.startsWith('ANON_KEY='))?.slice(9);
   if(!key||!/^[-\w.]{16,8192}$/.test(key))throw new Error('Local configuration required');
-  const server=createLocalCoreApi({environment,forward:({path,method,headers,body})=>new Promise((resolve,reject)=>{
-    const config=curlRequestConfig('http://api-gw:8000/functions/v1'+path,method,{apikey:key,...headers},body);
+  const server=createLocalCoreApi({environment,forward:({path,method,headers,body,media})=>new Promise((resolve,reject)=>{
+    const config=curlRequestConfig('http://api-gw:8000/functions/v1'+path,method,{apikey:key,...headers},body,media);
     const child=execFile('docker',[...coreComposeArguments(),'exec','-T','db','curl','--config','-'],
-      {encoding:'utf8',timeout:25000,maxBuffer:1048581,windowsHide:true},(error,stdout)=>{
+      {encoding:media?undefined:'utf8',timeout:25000,maxBuffer:media?10500000:1048581,windowsHide:true},(error,stdout)=>{
         if(error)return reject(new Error('Unavailable'));
+        if(media) {
+          if(!Buffer.isBuffer(stdout))return reject(new Error('Unavailable'));
+          const headerEnd=stdout.indexOf(Buffer.from('\r\n\r\n'));
+          const end=stdout.lastIndexOf(10);
+          if(headerEnd<0||end<headerEnd+4||!/^\d{3}$/.test(stdout.subarray(end+1).toString('ascii')))
+            return reject(new Error('Unavailable'));
+          const head=stdout.subarray(0,headerEnd).toString('latin1');
+          const status=Number(stdout.subarray(end+1).toString('ascii'));
+          const type=/^content-type:\s*([^\r\n;]+)/im.exec(head)?.[1]?.trim().toLowerCase();
+          return resolve({status,headers:{'content-type':type},body:stdout.subarray(headerEnd+4,end)});
+        }
         const end=stdout.lastIndexOf('\n'),status=stdout.slice(end+1);
         if(end<0||!/^\d{3}$/.test(status))return reject(new Error('Unavailable'));
         resolve({status:Number(status),body:stdout.slice(0,end)});
