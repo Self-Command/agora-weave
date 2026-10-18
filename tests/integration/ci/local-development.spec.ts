@@ -65,6 +65,8 @@ test('LD05: repeated Up reuses a ready managed process and Stop preserves privat
     await main(options);
     const second = JSON.parse(readFileSync(stateFile, 'utf8')).processes.admin;
     assert.equal(second.pid, first.pid); assert.equal(second.config, first.config);
+    execFileSync('git', ['branch', '-m', 'local-renamed'], { cwd: root });
+    await assert.rejects(main(options), /Another source\/branch owns active/);
     await main({ ...options, action: 'status' });
     await main({ ...options, action: 'stop' });
     assert.equal(ownedProcess(first), undefined);
