@@ -14,6 +14,7 @@ const routes=[
   [/^\/posts$/,['POST']], [new RegExp(`^/posts/${uuid}/comments$`,'i'),['GET','POST']],
   [new RegExp(`^/resources/${uuid}/likes$`,'i'),['PUT','DELETE']],
   [/^\/auth\/(challenges|verify|refresh|logout)$/,['POST']],
+  [/^\/auth\/dev-test-login$/,['POST']],
   [/^\/auth\/password(?:\/(captcha|forgot))?$/,['POST']],
   [new RegExp(`^/auth/operations/${uuid}$`,'i'),['POST']],
   [/^\/documents\/current$/,['GET']], [/^\/me\/sessions$/,['GET']],
