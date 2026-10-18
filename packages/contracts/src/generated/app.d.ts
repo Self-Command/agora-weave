@@ -1051,8 +1051,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * listOwnedContents
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * List the current account's submitted posts
+         * @description Author-only current revisions including pending, published and rejected posts. Never used by public profile or feed reads. Cursor is bound to the current account, session, environment, limit and client release.
          */
         get: operations["listOwnedContents"];
         put?: never;
@@ -3008,6 +3008,8 @@ export interface components {
             id: components["schemas"]["Uuid"];
             media_refs: components["schemas"]["Uuid"][];
             mentions: components["schemas"]["Uuid"][];
+            /** @enum {string} */
+            publication_state: "awaiting_review" | "published" | "rejected";
             resource_id: components["schemas"]["Uuid"];
             /** @enum {string} */
             review_state: "pending" | "approved" | "rejected";

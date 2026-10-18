@@ -2348,6 +2348,8 @@ export interface components {
             id: components["schemas"]["Uuid"];
             media_refs: components["schemas"]["Uuid"][];
             mentions: components["schemas"]["Uuid"][];
+            /** @enum {string} */
+            publication_state: "awaiting_review" | "published" | "rejected";
             resource_id: components["schemas"]["Uuid"];
             /** @enum {string} */
             review_state: "pending" | "approved" | "rejected";
