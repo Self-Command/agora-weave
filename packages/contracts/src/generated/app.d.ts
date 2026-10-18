@@ -240,13 +240,13 @@ export interface paths {
         };
         /**
          * listOwnAppeals
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Lists only the authenticated appellant's own cases and public decision status.
          */
         get: operations["listOwnAppeals"];
         put?: never;
         /**
          * createAppeal
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Accepts one appeal for an owned sanction with durable operation lookup. Intake leaves the case awaiting independent review.
          */
         post: operations["createAppeal"];
         delete?: never;
@@ -1428,7 +1428,7 @@ export interface paths {
         };
         /**
          * listOwnSanctions
-         * @description Planned product API; no deployed handler. DTO design for independent client/backend development. Current authorization and registered limits apply.
+         * @description Lists sanctions on the authenticated account or its own content, without exposing another account's records.
          */
         get: operations["listOwnSanctions"];
         put?: never;
@@ -2311,9 +2311,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };

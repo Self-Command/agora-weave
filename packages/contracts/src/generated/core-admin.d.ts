@@ -1651,9 +1651,9 @@ export interface components {
         };
         AccountOperation: {
             /** @enum {string} */
-            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
+            action: "auth.register" | "session.revoke" | "auth.logout" | "recovery.request" | "config.release" | "config.rollback" | "post.create" | "comment.create" | "like.put" | "like.remove" | "block.put" | "block.remove" | "profile.update" | "report.create" | "appeal.create" | "moderation.revisions.decide" | "upload.create" | "upload.part" | "upload.complete";
             operation_id: components["schemas"]["Uuid"];
-            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
+            result?: components["schemas"]["ConfigRelease"] | components["schemas"]["RevisionReceipt"] | components["schemas"]["ReactionReceipt"] | components["schemas"]["ActionReceipt"] | components["schemas"]["Profile"] | components["schemas"]["Report"] | components["schemas"]["Appeal"] | components["schemas"]["UploadSession"] | components["schemas"]["UploadedPart"];
             /** @enum {string} */
             state: "pending" | "succeeded" | "failed" | "unknown";
         };
