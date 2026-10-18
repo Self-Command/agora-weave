@@ -2074,7 +2074,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Current account like state and visible count
+         * @description Reads current permission and reaction state for a visible resource. An old cursor or locally cached state does not grant access.
+         */
+        get: operations["getResourceLike"];
         /**
          * putResourceLike
          * @description Deployed handler sets a visible resource like for the authenticated account. Retry by querying the original operation ID after an uncertain result.
@@ -17388,6 +17392,55 @@ export interface operations {
             503: {
                 headers: {
                     "Cache-Control": components["headers"]["CacheControl"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getResourceLike: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                resourceId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current visible like state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReactionReceiptEnvelope"];
+                };
+            };
+            /** @description Current session invalid */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Resource unavailable or not visible */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Current permission or output unavailable */
+            503: {
+                headers: {
                     [name: string]: unknown;
                 };
                 content: {
