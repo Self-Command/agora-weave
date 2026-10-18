@@ -12035,6 +12035,49 @@ paths:
       - app
       x-contract-status: implemented-pending-full-flow
   /resources/{resourceId}/likes:
+    get:
+      operationId: getResourceLike
+      summary: Current account like state and visible count
+      description: Reads current permission and reaction state for a visible resource.
+        An old cursor or locally cached state does not grant access.
+      x-implementation: implemented
+      x-verification: read-only
+      x-source: supabase/functions/core/routes/reactions.ts
+      security:
+      - bearerAuth: []
+      parameters:
+      - in: path
+        name: resourceId
+        required: true
+        schema: *id004
+      responses:
+        '200':
+          description: Current visible like state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReactionReceiptEnvelope'
+        '401':
+          description: Current session invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Resource unavailable or not visible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Current permission or output unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-audiences:
+      - app
+      x-contract-status: implemented
     put:
       operationId: putResourceLike
       summary: putResourceLike
