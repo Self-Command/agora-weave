@@ -3936,6 +3936,7 @@ paths:
         type=media). Replies and reposts remain planned. Visibility, block and current
         authorization rules apply.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/profiles.ts
       x-verification: read-only
       security:
       - {}
@@ -6545,6 +6546,7 @@ paths:
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/publishing.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -8005,6 +8007,7 @@ paths:
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/discussions.ts
       x-verification: read-only
       security:
       - {}
@@ -8160,6 +8163,7 @@ paths:
       description: Planned product API; no deployed handler. DTO design for independent
         client/backend development. Current authorization and registered limits apply.
       x-implementation: implemented
+      x-source: supabase/functions/core/routes/discussions.ts
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
