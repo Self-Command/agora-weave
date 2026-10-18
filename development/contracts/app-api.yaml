@@ -3933,8 +3933,9 @@ paths:
     get:
       operationId: listProfileContents
       summary: listProfileContents
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
+      description: Deployed handler for approved posts and image posts (type=posts or
+        type=media). Replies and reposts remain planned. Visibility, block and current
+        authorization rules apply.
       x-implementation: planned
       x-verification: read-only
       security:
@@ -12037,9 +12038,9 @@ paths:
     put:
       operationId: putResourceLike
       summary: putResourceLike
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Deployed handler sets a visible resource like for the authenticated
+        account. Retry by querying the original operation ID after an uncertain result.
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -12185,13 +12186,13 @@ paths:
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
     delete:
       operationId: removeResourceLike
       summary: removeResourceLike
-      description: Planned product API; no deployed handler. DTO design for independent
-        client/backend development. Current authorization and registered limits apply.
-      x-implementation: planned
+      description: Deployed handler removes a visible resource like for the authenticated
+        account. Retry by querying the original operation ID after an uncertain result.
+      x-implementation: implemented
       x-verification: isolated-test-only
       security:
       - bearerAuth: []
@@ -12337,7 +12338,7 @@ paths:
                 value: *id009
       x-audiences:
       - app
-      x-contract-status: designed-not-implemented
+      x-contract-status: implemented
   /posts/{postId}/reposts:
     put:
       operationId: putPostRepost
