@@ -6687,6 +6687,7 @@ paths:
     get:
       operationId: listOwnedContents
       summary: List the current account's submitted posts
+      x-source: supabase/functions/core/routes/owned-contents.ts
       description: Author-only current revisions including pending, published and rejected
         posts. Never used by public profile or feed reads. Cursor is bound to the current
         account, session, environment, limit and client release.
